@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Articulo - MDR ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .tabs {
+            background: white;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            gap: 5px;
+            padding: 0 20px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        
+        .tab:hover {
+            color: #2563eb;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+        }
+        
+        .section {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .section-bar {
+            width: 4px;
+            height: 24px;
+            border-radius: 2px;
+        }
+        
+        .bar-blue { background-color: #2563eb; }
+        .bar-green { background-color: #16a34a; }
+        .bar-orange { background-color: #ea580c; }
+        .bar-purple { background-color: #9333ea; }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .col-2 { grid-column: span 2; }
+        .col-3 { grid-column: span 3; }
+        .col-4 { grid-column: span 4; }
+        .col-6 { grid-column: span 6; }
+        .col-12 { grid-column: span 12; }
+        
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+        
+        input, select, textarea {
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .checkbox-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+        }
+        
+        .checkbox-info {
+            flex: 1;
+        }
+        
+        .checkbox-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .checkbox-desc {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        
+        .info-box {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+        
+        .info-box-blue {
+            background-color: #dbeafe;
+            border: 1px solid #93c5fd;
+        }
+        
+        .info-box-yellow {
+            background-color: #fef3c7;
+            border: 1px solid #fcd34d;
+            margin-top: 20px;
+        }
+        
+        .info-box h3 {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-card {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .stat-desc {
+            font-size: 11px;
+            margin-top: 2px;
+        }
+        
+        .form-footer {
+            background-color: #f9fafb;
+            padding: 20px 30px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .footer-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+        }
+        
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <h1>ARTICULO: 0001</h1>
+                    <p>Edicion de Articulo General</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestañas -->
+        <div class="tabs">
+            <button class="tab active">Datos Generales</button>
+            <button class="tab">Elementos Fisicos (11)</button>
+            <button class="tab">Historial</button>
+        </div>
+
+        <div class="form-container">
+            <!-- Sección 1: Datos Básicos -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-bar bar-blue"></div>
+                    <h2 class="section-title">DATOS BASICOS</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-2">
+                        <label>Codigo <span class="required">*</span></label>
+                        <input type="text" value="0001" required>
+                    </div>
+                    
+                    <div class="form-group col-3">
+                        <label>Familia <span class="required">*</span></label>
+                        <select required>
+                            <option value="">Seleccione...</option>
+                            <option value="1">SON - Sonido</option>
+                            <option value="2">ILU - Iluminacion</option>
+                            <option value="11" selected>IMG - Imagen</option>
+                            <option value="3">VID - Video</option>
+                            <option value="4">EST - Estructuras</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group col-2">
+                        <label>Unidad</label>
+                        <select>
+                            <option value="">Seleccione...</option>
+                            <option value="1" selected>Unidad</option>
+                            <option value="2">Jornada</option>
+                            <option value="3">Dia</option>
+                            <option value="4">Metros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group col-2">
+                        <label>Precio/Jornada</label>
+                        <input type="number" step="0.01" value="25.00">
+                    </div>
+                    
+                    <div class="form-group col-3">
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox">
+                                <span>Es un KIT</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox">
+                                <span>Control por total</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label>Nombre (Espanol) <span class="required">*</span></label>
+                        <input type="text" value="PROYECTOR DATOS/VIDEO 2000 LUMENES" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label>Nombre (English) <span class="required">*</span></label>
+                        <input type="text" value="DATA/VIDEO PROJECTOR 2000 LUMENS" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Coeficientes y Opciones -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-bar bar-orange"></div>
+                    <h2 class="section-title">COEFICIENTES Y OPCIONES</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <label>Aplicar Coeficientes Reductores</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="coeficiente" value="null" checked>
+                                <span>Heredar de familia</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="coeficiente" value="true">
+                                <span>Si</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="coeficiente" value="false">
+                                <span>No</span>
+                            </label>
+                        </div>
+                        <p class="help-text">NULL hereda configuracion de la familia</p>
+                    </div>
+                    
+                    <div class="form-group col-4">
+                        <label>Orden Observaciones</label>
+                        <input type="number" value="200">
+                        <p class="help-text">Orden de aparicion en presupuestos (menor primero)</p>
+                    </div>
+                    
+                    <div class="form-group col-4">
+                        <label class="checkbox-card">
+                            <input type="checkbox">
+                            <div class="checkbox-info">
+                                <div class="checkbox-title">No facturar a MDRM</div>
+                                <div class="checkbox-desc">Articulo de terceros o cesion</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: Notas para Presupuestos -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-bar bar-green"></div>
+                    <h2 class="section-title">NOTAS PARA PRESUPUESTOS</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label>Notas (Espanol)</label>
+                        <textarea placeholder="Incluye cables de conexion. Requiere corriente electrica estandar 220V." rows="4"></textarea>
+                        <p class="help-text">Estas notas apareceran en presupuestos en espanol</p>
+                    </div>
+                    
+                    <div class="form-group col-6">
+                        <label>Notes (English)</label>
+                        <textarea placeholder="Includes connection cables. Requires standard 220V power supply." rows="4"></textarea>
+                        <p class="help-text">These notes will appear on English budgets</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 4: Observaciones Internas -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-bar bar-purple"></div>
+                    <h2 class="section-title">OBSERVACIONES INTERNAS</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <textarea placeholder="Notas internas sobre el articulo (no se imprimen en presupuestos)" rows="3"></textarea>
+                        <p class="help-text">Estas observaciones son solo para uso interno</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box info-box-blue">
+                <h3>Informacion sobre elementos</h3>
+                <p>Para gestionar las unidades fisicas individuales (con numero de serie, codigo de barras, etc.), accede a la pestana ELEMENTOS FISICOS</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="form-footer">
+            <div>
+                <span class="required">*</span> Campos obligatorios
+            </div>
+            <div class="footer-buttons">
+                <button class="btn btn-secondary">Cancelar</button>
+                <button class="btn btn-success">Guardar</button>
+                <button class="btn btn-primary">Guardar y Ver Elementos</button>
+            </div>
+        </div>
+
+        <!-- Stats Box -->
+        <div class="info-box info-box-yellow">
+            <h3>Datos calculados en tiempo real (no se guardan)</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Stock disponible</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-desc">Elementos disponibles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Alquilados</div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-desc">En cliente</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">En reparacion</div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-desc">En SAT</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total existencias</div>
+                    <div class="stat-value">11</div>
+                    <div class="stat-desc">Todos los elementos</div>
+                </div>
+            </div>
+            <p style="margin-top: 15px; font-size: 12px;">Estos valores se calculan automaticamente contando los elementos fisicos asociados</p>
+        </div>
+    </div>
+</body>
+</html>

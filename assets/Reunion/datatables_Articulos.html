@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Articulos - MDR ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+        }
+        
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: #ea580c;
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .filters-container {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .filters-row {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 15px;
+            align-items: end;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .col-2 { grid-column: span 2; }
+        .col-3 { grid-column: span 3; }
+        .col-4 { grid-column: span 4; }
+        
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .stats-bar {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .table-container {
+            background: white;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background-color: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        th {
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 13px;
+        }
+        
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .badge-purple {
+            background-color: #f3e8ff;
+            color: #6b21a8;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .btn-action {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .btn-elements {
+            background-color: #8b5cf6;
+            color: white;
+        }
+        
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .price {
+            font-weight: 600;
+            color: #059669;
+        }
+        
+        .code {
+            font-family: monospace;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        
+        .pagination {
+            background: white;
+            padding: 15px 20px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .pagination-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        .pagination-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .page-btn {
+            padding: 6px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .page-btn.active {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .stock-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .stock-high { background-color: #22c55e; }
+        .stock-medium { background-color: #eab308; }
+        .stock-low { background-color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <h1>ARTICULOS</h1>
+                    <p>Gestion de Articulos Generales - MDR Audiovisuales S.L.</p>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-success">+ Nuevo Articulo</button>
+                    <button class="btn btn-primary">Exportar Excel</button>
+                    <button class="btn btn-warning">Importar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-container">
+            <div class="filters-row">
+                <div class="filter-group col-3">
+                    <label>Buscar</label>
+                    <input type="text" placeholder="Codigo, nombre...">
+                </div>
+                
+                <div class="filter-group col-2">
+                    <label>Familia</label>
+                    <select>
+                        <option value="">Todas</option>
+                        <option value="1">Sonido</option>
+                        <option value="2">Iluminacion</option>
+                        <option value="11">Imagen</option>
+                        <option value="3">Video</option>
+                        <option value="4">Estructuras</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group col-2">
+                    <label>Tipo</label>
+                    <select>
+                        <option value="">Todos</option>
+                        <option value="normal">Normal</option>
+                        <option value="kit">Kit</option>
+                        <option value="control_total">Control Total</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group col-2">
+                    <label>Estado</label>
+                    <select>
+                        <option value="1">Activos</option>
+                        <option value="0">Inactivos</option>
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group col-3">
+                    <button class="btn btn-primary" style="width: 100%;">Buscar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de estadísticas -->
+        <div class="stats-bar">
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Articulos</span>
+                    <span class="stat-value">247</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Activos</span>
+                    <span class="stat-value">239</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Kits</span>
+                    <span class="stat-value">18</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Elementos</span>
+                    <span class="stat-value">1,453</span>
+                </div>
+            </div>
+            <div>
+                <span style="font-size: 13px; color: #6b7280;">Mostrando 1-25 de 247</span>
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Nombre</th>
+                        <th>Familia</th>
+                        <th>Precio/Jor</th>
+                        <th>Stock</th>
+                        <th>Disp</th>
+                        <th>Alquilado</th>
+                        <th>Reparacion</th>
+                        <th>Tipo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="code">0001</span></td>
+                        <td>PROYECTOR DATOS/VIDEO 2000 LUMENES</td>
+                        <td><span class="badge badge-info">IMAGEN</span></td>
+                        <td><span class="price">25.00 EUR</span></td>
+                        <td>
+                            <div class="stock-indicator">
+                                <span class="stock-dot stock-high"></span>
+                                <span>11</span>
+                            </div>
+                        </td>
+                        <td>8</td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td><span class="badge badge-success">Normal</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-edit">Editar</button>
+                                <button class="btn-action btn-elements">Elementos</button>
+                                <button class="btn-action btn-delete">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="code">0002</span></td>
+                        <td>PANTALLA PROYECCION 3x2 METROS</td>
+                        <td><span class="badge badge-info">IMAGEN</span></td>
+                        <td><span class="price">15.00 EUR</span></td>
+                        <td>
+                            <div class="stock-indicator">
+                                <span class="stock-dot stock-medium"></span>
+                                <span>5</span>
+                            </div>
+                        </td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>0</td>
+                        <td><span class="badge badge-success">Normal</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-edit">Editar</button>
+                                <button class="btn-action btn-elements">Elementos</button>
+                                <button class="btn-action btn-delete">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="code">MIC-SM58</span></td>
+                        <td>MICROFONO SHURE SM58</td>
+                        <td><span class="badge badge-warning">SONIDO</span></td>
+                        <td><span class="price">8.00 EUR</span></td>
+                        <td>
+                            <div class="stock-indicator">
+                                <span class="stock-dot stock-high"></span>
+                                <span>24</span>
+                            </div>
+                        </td>
+                        <td>18</td>
+                        <td>5</td>
+                        <td>1</td>
+                        <td><span class="badge badge-success">Normal</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-edit">Editar</button>
+                                <button class="btn-action btn-elements">Elementos</button>
+                                <button class="btn-action btn-delete">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="code">CON-X32</span></td>
+                        <td>CONSOLA DIGITAL BEHRINGER X32</td>
+                        <td><span class="badge badge-warning">SONIDO</span></td>
+                        <td><span class="price">120.00 EUR</span></td>
+                        <td>
+                            <div class="stock-indicator">
+                                <span class="stock-dot stock-medium"></span>
+                                <span>3</span>
+                            </div>
+                        </td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td><span class="badge badge-success">Normal</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-edit">Editar</button>
+                                <button class="btn-action btn-elements">Elementos</button>
+                                <button class="btn-action btn-delete">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="code">KIT-001</span></td>
+                        <td>KIT COMPLETO SONIDO PEQUEÑO EVENTO</td>
+                        <td><span class="badge badge-warning">SONIDO</span></td>
+                        <td><span class="price">350.00 EUR</span></td>
+                        <td>
+                            <div class="stock-indicator">
+                                <span class="stock-dot stock-low"></span>
+                                <span>2</span>
+                            </div>
+                        </td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td><span class="badge badge-purple">Kit</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-edit">Editar</button>
+                                <button class="btn-action btn-elements">Elementos</button>
+                                <button class="btn-action btn-delete">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="code">MOV-HEAD</span></td>
+                        <td>MOVING HEAD LED 15W RGBW</td>
+                        <td><span class="badge badge-success">ILUMINACION</span></td>
+                        <td><span class="price">35.00 EUR</span></td>
+                        <td>
+                            <div class="stock-indicator">
+                                <span class="stock-dot stock-high"></span>
+                                <span>16</span>
+                            </div>
+                        </td>
+                        <td>12</td>
+                        <td>3</td>
+                        <td>1</td>
+                        <td><span class="badge badge-success">Normal</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-edit">Editar</button>
+                                <button class="btn-action btn-elements">Elementos</button>
+                                <button class="btn-action btn-delete">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="code">PAR-LED64</span></td>
+                        <td>PAR LED 64 RGBW</td>
+                        <td><span class="badge badge-success">ILUMINACION</span></td>
+                        <td><span class="price">18.00 EUR</span></td>
+                        <td>
+                            <div class="stock-indicator">
+                                <span class="stock-dot stock-high"></span>
+                                <span>32</span>
+                            </div>
+                        </td>
+                        <td>25</td>
+                        <td>6</td>
+                        <td>1</td>
+                        <td><span class="badge badge-success">Normal</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-edit">Editar</button>
+                                <button class="btn-action btn-elements">Elementos</button>
+                                <button class="btn-action btn-delete">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination">
+            <div class="pagination-info">
+                Mostrando 1 a 25 de 247 articulos
+            </div>
+            <div class="pagination-buttons">
+                <button class="page-btn">Anterior</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn">...</button>
+                <button class="page-btn">10</button>
+                <button class="page-btn">Siguiente</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

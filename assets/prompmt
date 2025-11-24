@@ -1,0 +1,151 @@
+
+-- ======================================================== --
+--                         MODELS                           --
+-- ======================================================== --
+
+Hazme el archivo models llamado Observaciones.php puedes coger el modelo de Impuesto.php. Trata de no inventar nada, solo de adaptar. La tabla sobre la que tienes que actuar es la siguiente:
+CREATE TABLE proveedor (
+    id_proveedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_proveedor VARCHAR(20) NOT NULL UNIQUE,
+    nombre_proveedor VARCHAR(255) NOT NULL,
+    direccion_proveedor VARCHAR(255),
+    cp_proveedor VARCHAR(10),
+    poblacion_proveedor VARCHAR(100),
+    provincia_proveedor VARCHAR(100),
+    nif_proveedor VARCHAR(20),
+    telefono_proveedor VARCHAR(255),
+    fax_proveedor VARCHAR(50),
+    web_proveedor VARCHAR(255),
+    email_proveedor VARCHAR(255),
+    persona_contacto_proveedor VARCHAR(255),
+    direccion_sat_proveedor VARCHAR(255),
+    cp_sat_proveedor VARCHAR(10),
+    poblacion_sat_proveedor VARCHAR(100),
+    provincia_sat_proveedor VARCHAR(100),
+    telefono_sat_proveedor VARCHAR(255),
+    fax_sat_proveedor VARCHAR(50),
+    email_sat_proveedor VARCHAR(255),
+    observaciones_proveedor TEXT,
+    activo_proveedor BOOLEAN DEFAULT TRUE,
+    created_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_codigo_proveedor (codigo_proveedor),
+    INDEX idx_nombre_proveedor (nombre_proveedor),
+    INDEX idx_nif_proveedor (nif_proveedor)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ======================================================== --
+--                    CONTROLLER                            --
+-- ======================================================== --
+Generame el controller llamado proveedor.php con el models ../models/Proveedor.php y sobre esta tabla (puedes tomar como modelo el controller proveedor.php)., 
+trata de no inventar nada, solo adapta el modelo de estados.php:
+ CREATE TABLE proveedor (
+     id_proveedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+     codigo_proveedor VARCHAR(20) NOT NULL UNIQUE,
+     nombre_proveedor VARCHAR(255) NOT NULL,
+     direccion_proveedor VARCHAR(255),
+     cp_proveedor VARCHAR(10),
+     poblacion_proveedor VARCHAR(100),
+     provincia_proveedor VARCHAR(100),
+     nif_proveedor VARCHAR(20),
+     telefono_proveedor VARCHAR(255),
+     fax_proveedor VARCHAR(50),
+     web_proveedor VARCHAR(255),
+     email_proveedor VARCHAR(255),
+     persona_contacto_proveedor VARCHAR(255),
+     direccion_sat_proveedor VARCHAR(255),
+     cp_sat_proveedor VARCHAR(10),
+     poblacion_sat_proveedor VARCHAR(100),
+     provincia_sat_proveedor VARCHAR(100),
+     telefono_sat_proveedor VARCHAR(255),
+     fax_sat_proveedor VARCHAR(50),
+     email_sat_proveedor VARCHAR(255),
+     observaciones_proveedor TEXT,
+     activo_proveedor BOOLEAN DEFAULT TRUE,
+     created_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+     INDEX idx_codigo_proveedor (codigo_proveedor),
+     INDEX idx_nombre_proveedor (nombre_proveedor),
+     INDEX idx_nif_proveedor (nif_proveedor)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ======================================================== --
+--                         VIEW                             --
+-- ======================================================== --
+ Creame los archivos necesarios dentro de la carpeta ./view/Observaciones, puedes tomar el ejemplo de 
+ el contendio de la capeta ./view/MntImpuesto. el models que debes utilizar está en ./models/Observaciones.php y el controller está en ./controller/observaciones.php Trata de no invertar nada solo adaptar lo de MntImpuesto
+La tabla por si la necesitas es:
+CREATE TABLE proveedor (
+     id_proveedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+     codigo_proveedor VARCHAR(20) NOT NULL UNIQUE,
+     nombre_proveedor VARCHAR(255) NOT NULL,
+     direccion_proveedor VARCHAR(255),
+     cp_proveedor VARCHAR(10),
+     poblacion_proveedor VARCHAR(100),
+     provincia_proveedor VARCHAR(100),
+     nif_proveedor VARCHAR(20),
+     telefono_proveedor VARCHAR(255),
+     fax_proveedor VARCHAR(50),
+     web_proveedor VARCHAR(255),
+     email_proveedor VARCHAR(255),
+     persona_contacto_proveedor VARCHAR(255),
+     direccion_sat_proveedor VARCHAR(255),
+     cp_sat_proveedor VARCHAR(10),
+     poblacion_sat_proveedor VARCHAR(100),
+     provincia_sat_proveedor VARCHAR(100),
+     telefono_sat_proveedor VARCHAR(255),
+     fax_sat_proveedor VARCHAR(50),
+     email_sat_proveedor VARCHAR(255),
+     observaciones_proveedor TEXT,
+     activo_proveedor BOOLEAN DEFAULT TRUE,
+     created_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+     INDEX idx_codigo_proveedor (codigo_proveedor),
+     INDEX idx_nombre_proveedor (nombre_proveedor),
+     INDEX idx_nif_proveedor (nif_proveedor)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ===========================================================================  --
+--      CREACION DEL BOTON EN EL DATATABLES PADRE PARA ACCESO AL HIJO           --
+-- ===========================================================================  --
+Creame en el datatables del view de MntProveedor, que se visualiza en el index.php, deberas crearlo en mntproveedores.js una nueva columna que contenga un botón que nos llevará a un formulario 
+(que crearemos después), que recoja el campo id_proveedor.
+
+
+
+-- ========================================================  --
+--      PARA GENERAR LOS PIES en un CABECERAS PIES           --
+--    Por ejemplos Mntproveedores y MntProveedores_contacto  --
+-- ========================================================  --
+
+ Vamos a generar los archivos necesarios para poder mostrar (mediante un datatables), editar (con el botón del datatables) y nuevo (con el botón fuera del datatables). Puedes coger como modelo lo que está en ./view/MntProveedores.
+Toma como inicio de nombrer "MntProveedores_contacto", el models lo tienes en ./models/Proveedores_contacto.php y el controller lo tienes ./controller/proveedores_contacto.php
+Debes tener en cuenta que este formulario es dependiente del formulario ./view/MntProveedores/index.php, en este formulario se encuentra un datatables en el que en la última columna encontrarás un botón  "formulario:name" que pulsandolo debemos llegar a este nuevo formulario que te estoy pidiendo desarrollar, por supuesto el nuevo formulario deberá ir filtrado por el valor  ${row.id_proveedor}
+Trata de no inventar nada, ajustate lomás posible al modelo dado.
+La tabla a desarrollar es:
+CREATE TABLE contacto_proveedor (
+    id_contacto_proveedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_proveedor INT UNSIGNED NOT NULL,
+    nombre_contacto_proveedor VARCHAR(100) NOT NULL,
+    apellidos_contacto_proveedor VARCHAR(150),
+    cargo_contacto_proveedor VARCHAR(100),
+    departamento_contacto_proveedor VARCHAR(100),
+    telefono_contacto_proveedor VARCHAR(50),
+    movil_contacto_proveedor VARCHAR(50),
+    email_contacto_proveedor VARCHAR(255),
+    extension_contacto_proveedor VARCHAR(10),
+    principal_contacto_proveedor BOOLEAN DEFAULT FALSE,
+    observaciones_contacto_proveedor TEXT,
+    activo_contacto_proveedor BOOLEAN DEFAULT TRUE,
+    created_at_contacto_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_contacto_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_contacto_proveedor FOREIGN KEY (id_proveedor) 
+        REFERENCES proveedor(id_proveedor) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    INDEX idx_id_proveedor_contacto (id_proveedor),
+    INDEX idx_nombre_contacto_proveedor (nombre_contacto_proveedor)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

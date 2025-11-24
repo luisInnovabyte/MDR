@@ -1,0 +1,122 @@
+[
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 13:57:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 13:57:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 13:57:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 13:58:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Activado el método",
+        "mensaje": "Se activó el estado de el método con el id de método 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Desactivado el estado del metodo",
+        "mensaje": "Se desactivó el estado con el id de metodo 38",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Eliminar metodo seleccionado",
+        "mensaje": "Metodo eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-11 14:01:58"
+    }
+]

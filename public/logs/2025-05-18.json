@@ -1,0 +1,386 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:16:18"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:16:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:16:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:16:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:17:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:17:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:18:01"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:19:26"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:19:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:19:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:19:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Categorias",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de categorias",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:19:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Categorias",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de categorias",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:20:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:21:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 12:21:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:00:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:00:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:00:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:00:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:19"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:19"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:05:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Categorias",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de categorias",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:07:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:07:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:07:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:08:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:08:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Categorias",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de categorias",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:28:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Categorias",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de categorias",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:28:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:28:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:28:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:28:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:28:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:29:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:29:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Productos",
+        "actividad": "Consulta por categoría",
+        "mensaje": "Se consultaron productos de la categoría ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:29:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "productos.php",
+        "actividad": "Obtener producto seleccionado",
+        "mensaje": "Producto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-18 13:29:10"
+    }
+]

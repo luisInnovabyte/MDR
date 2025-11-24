@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demostración de Escaneo Simultáneo - MDR ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .info-box {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+            color: #444;
+        }
+        
+        .info-box li {
+            margin: 8px 0;
+        }
+        
+        .puestos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .puesto {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .puesto:hover {
+            transform: translateY(-5px);
+        }
+        
+        .puesto-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid;
+        }
+        
+        .puesto-1 .puesto-header { border-color: #4CAF50; }
+        .puesto-2 .puesto-header { border-color: #2196F3; }
+        .puesto-3 .puesto-header { border-color: #FF9800; }
+        .puesto-4 .puesto-header { border-color: #E91E63; }
+        
+        .puesto-title {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .puesto-1 .puesto-title { color: #4CAF50; }
+        .puesto-2 .puesto-title { color: #2196F3; }
+        .puesto-3 .puesto-title { color: #FF9800; }
+        .puesto-4 .puesto-title { color: #E91E63; }
+        
+        .puesto-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        .puesto-1 .puesto-status { background: #E8F5E9; color: #4CAF50; }
+        .puesto-2 .puesto-status { background: #E3F2FD; color: #2196F3; }
+        .puesto-3 .puesto-status { background: #FFF3E0; color: #FF9800; }
+        .puesto-4 .puesto-status { background: #FCE4EC; color: #E91E63; }
+        
+        .scanner-section {
+            margin-bottom: 20px;
+        }
+        
+        .scanner-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .scanner-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .scanner-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+        
+        .scanner-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .scan-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .puesto-1 .scan-btn { background: #4CAF50; }
+        .puesto-2 .scan-btn { background: #2196F3; }
+        .puesto-3 .scan-btn { background: #FF9800; }
+        .puesto-4 .scan-btn { background: #E91E63; }
+        
+        .scan-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .scan-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .scanned-items {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .scanned-items h4 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .scanned-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .puesto-1 .scanned-item { border-color: #4CAF50; }
+        .puesto-2 .scanned-item { border-color: #2196F3; }
+        .puesto-3 .scanned-item { border-color: #FF9800; }
+        .puesto-4 .scanned-item { border-color: #E91E63; }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .item-code {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .item-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .stats-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .stats-title {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .clear-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .clear-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.02);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+        
+        @media (max-width: 1024px) {
+            .puestos-container {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .puestos-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔫 Sistema de Escaneo Simultáneo</h1>
+            <p>Demostración de múltiples puestos pistoleando códigos de barras al mismo tiempo</p>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 ¿Cómo funciona?</h3>
+            <ul>
+                <li><strong>Cada puesto es independiente:</strong> Puede escanear códigos de barras sin afectar a los demás</li>
+                <li><strong>Escaneo en tiempo real:</strong> Los códigos se registran instantáneamente en cada puesto</li>
+                <li><strong>Historial individual:</strong> Cada puesto mantiene su propio registro de escaneos</li>
+                <li><strong>Estadísticas globales:</strong> El sistema consolida toda la información en tiempo real</li>
+                <li><strong>Uso práctico:</strong> Ideal para preparar múltiples alquileres simultáneamente o realizar inventarios</li>
+            </ul>
+        </div>
+
+        <div class="puestos-container">
+            <!-- Puesto 1 -->
+            <div class="puesto puesto-1">
+                <div class="puesto-header">
+                    <div class="puesto-title">🖥️ Puesto 1 - Almacén</div>
+                    <div class="puesto-status">Activo</div>
+                </div>
+                
+                <div class="scanner-section">
+                    <label class="scanner-label">Escanear Código de Barras:</label>
+                    <div class="scanner-input-group">
+                        <input type="text" 
+                               class="scanner-input" 
+                               id="input-1" 
+                               placeholder="Escanee o escriba el código..."
+                               autocomplete="off">
+                        <button class="scan-btn" onclick="escanear(1)">
+                            📷 Escanear
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="scanned-items" id="items-1">
+                    <h4>📋 Códigos Escaneados: <span id="count-1">0</span></h4>
+                    <div id="list-1" class="empty-state">
+                        No hay códigos escaneados aún
+                    </div>
+                </div>
+                
+                <button class="clear-btn" onclick="limpiarPuesto(1)">
+                    🗑️ Limpiar Historial
+                </button>
+            </div>
+
+            <!-- Puesto 2 -->
+            <div class="puesto puesto-2">
+                <div class="puesto-header">
+                    <div class="puesto-title">🖥️ Puesto 2 - Recepción</div>
+                    <div class="puesto-status">Activo</div>
+                </div>
+                
+                <div class="scanner-section">
+                    <label class="scanner-label">Escanear Código de Barras:</label>
+                    <div class="scanner-input-group">
+                        <input type="text" 
+                               class="scanner-input" 
+                               id="input-2" 
+                               placeholder="Escanee o escriba el código..."
+                               autocomplete="off">
+                        <button class="scan-btn" onclick="escanear(2)">
+                            📷 Escanear
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="scanned-items" id="items-2">
+                    <h4>📋 Códigos Escaneados: <span id="count-2">0</span></h4>
+                    <div id="list-2" class="empty-state">
+                        No hay códigos escaneados aún
+                    </div>
+                </div>
+                
+                <button class="clear-btn" onclick="limpiarPuesto(2)">
+                    🗑️ Limpiar Historial
+                </button>
+            </div>
+
+            <!-- Puesto 3 -->
+            <div class="puesto puesto-3">
+                <div class="puesto-header">
+                    <div class="puesto-title">🖥️ Puesto 3 - Taller</div>
+                    <div class="puesto-status">Activo</div>
+                </div>
+                
+                <div class="scanner-section">
+                    <label class="scanner-label">Escanear Código de Barras:</label>
+                    <div class="scanner-input-group">
+                        <input type="text" 
+                               class="scanner-input" 
+                               id="input-3" 
+                               placeholder="Escanee o escriba el código..."
+                               autocomplete="off">
+                        <button class="scan-btn" onclick="escanear(3)">
+                            📷 Escanear
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="scanned-items" id="items-3">
+                    <h4>📋 Códigos Escaneados: <span id="count-3">0</span></h4>
+                    <div id="list-3" class="empty-state">
+                        No hay códigos escaneados aún
+                    </div>
+                </div>
+                
+                <button class="clear-btn" onclick="limpiarPuesto(3)">
+                    🗑️ Limpiar Historial
+                </button>
+            </div>
+
+            <!-- Puesto 4 -->
+            <div class="puesto puesto-4">
+                <div class="puesto-header">
+                    <div class="puesto-title">🖥️ Puesto 4 - Expedición</div>
+                    <div class="puesto-status">Activo</div>
+                </div>
+                
+                <div class="scanner-section">
+                    <label class="scanner-label">Escanear Código de Barras:</label>
+                    <div class="scanner-input-group">
+                        <input type="text" 
+                               class="scanner-input" 
+                               id="input-4" 
+                               placeholder="Escanee o escriba el código..."
+                               autocomplete="off">
+                        <button class="scan-btn" onclick="escanear(4)">
+                            📷 Escanear
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="scanned-items" id="items-4">
+                    <h4>📋 Códigos Escaneados: <span id="count-4">0</span></h4>
+                    <div id="list-4" class="empty-state">
+                        No hay códigos escaneados aún
+                    </div>
+                </div>
+                
+                <button class="clear-btn" onclick="limpiarPuesto(4)">
+                    🗑️ Limpiar Historial
+                </button>
+            </div>
+        </div>
+
+        <!-- Estadísticas Globales -->
+        <div class="stats-container">
+            <h3 class="stats-title">📊 Estadísticas Globales del Sistema</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-scans">0</div>
+                    <div class="stat-label">Total Escaneos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="puesto1-scans">0</div>
+                    <div class="stat-label">Puesto 1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="puesto2-scans">0</div>
+                    <div class="stat-label">Puesto 2</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="puesto3-scans">0</div>
+                    <div class="stat-label">Puesto 3</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="puesto4-scans">0</div>
+                    <div class="stat-label">Puesto 4</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de cada puesto
+        const puestos = {
+            1: [],
+            2: [],
+            3: [],
+            4: []
+        };
+
+        // Función para escanear código
+        function escanear(puestoId) {
+            const input = document.getElementById(`input-${puestoId}`);
+            const codigo = input.value.trim();
+            
+            if (!codigo) {
+                alert('Por favor, ingrese un código de barras');
+                input.focus();
+                return;
+            }
+            
+            // Agregar código al historial del puesto
+            const ahora = new Date();
+            const hora = ahora.toLocaleTimeString('es-ES');
+            
+            puestos[puestoId].unshift({
+                codigo: codigo,
+                hora: hora
+            });
+            
+            // Actualizar visualización
+            actualizarPuesto(puestoId);
+            actualizarEstadisticas();
+            
+            // Limpiar input y enfocar para siguiente escaneo
+            input.value = '';
+            input.focus();
+        }
+
+        // Función para actualizar la visualización de un puesto
+        function actualizarPuesto(puestoId) {
+            const list = document.getElementById(`list-${puestoId}`);
+            const count = document.getElementById(`count-${puestoId}`);
+            
+            if (puestos[puestoId].length === 0) {
+                list.innerHTML = '<div class="empty-state">No hay códigos escaneados aún</div>';
+                count.textContent = '0';
+                return;
+            }
+            
+            count.textContent = puestos[puestoId].length;
+            
+            list.innerHTML = puestos[puestoId].map(item => `
+                <div class="scanned-item">
+                    <span class="item-code">${item.codigo}</span>
+                    <span class="item-time">${item.hora}</span>
+                </div>
+            `).join('');
+        }
+
+        // Función para limpiar historial de un puesto
+        function limpiarPuesto(puestoId) {
+            if (puestos[puestoId].length === 0) {
+                return;
+            }
+            
+            if (confirm(`¿Está seguro de limpiar el historial del Puesto ${puestoId}?`)) {
+                puestos[puestoId] = [];
+                actualizarPuesto(puestoId);
+                actualizarEstadisticas();
+            }
+        }
+
+        // Función para actualizar estadísticas globales
+        function actualizarEstadisticas() {
+            const total = puestos[1].length + puestos[2].length + puestos[3].length + puestos[4].length;
+            
+            document.getElementById('total-scans').textContent = total;
+            document.getElementById('puesto1-scans').textContent = puestos[1].length;
+            document.getElementById('puesto2-scans').textContent = puestos[2].length;
+            document.getElementById('puesto3-scans').textContent = puestos[3].length;
+            document.getElementById('puesto4-scans').textContent = puestos[4].length;
+        }
+
+        // Permitir escaneo con Enter
+        for (let i = 1; i <= 4; i++) {
+            document.getElementById(`input-${i}`).addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    escanear(i);
+                }
+            });
+        }
+
+        // Enfocar el primer input al cargar
+        document.getElementById('input-1').focus();
+    </script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Elementos - MDR ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background-color: #5b21b6;
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: #ea580c;
+            color: white;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+        }
+        
+        .section {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .section-bar {
+            width: 4px;
+            height: 24px;
+            border-radius: 2px;
+        }
+        
+        .bar-purple { background-color: #7c3aed; }
+        .bar-blue { background-color: #2563eb; }
+        .bar-green { background-color: #16a34a; }
+        .bar-orange { background-color: #ea580c; }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .col-2 { grid-column: span 2; }
+        .col-3 { grid-column: span 3; }
+        .col-4 { grid-column: span 4; }
+        .col-6 { grid-column: span 6; }
+        .col-12 { grid-column: span 12; }
+        
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+        
+        .auto-generated {
+            color: #7c3aed;
+            font-size: 11px;
+            font-weight: normal;
+        }
+        
+        input, select, textarea {
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        input:disabled, select:disabled {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        
+        .info-box {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+        
+        .info-box-purple {
+            background-color: #ede9fe;
+            border: 1px solid #c4b5fd;
+        }
+        
+        .info-box h3 {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #5b21b6;
+        }
+        
+        .info-box p {
+            font-size: 14px;
+            color: #6b21a8;
+        }
+        
+        .form-footer {
+            background-color: #f9fafb;
+            padding: 20px 30px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .barcode-scanner {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .barcode-scanner input {
+            flex: 1;
+        }
+        
+        .btn-scan {
+            padding: 10px 15px;
+            background-color: #7c3aed;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .articulo-info {
+            background-color: #f0fdf4;
+            border: 1px solid #86efac;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        
+        .articulo-info strong {
+            color: #166534;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <h1>ELEMENTOS FISICOS</h1>
+                    <p>MDR Audiovisuales S.L. - Gestion de Unidades Individuales</p>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-primary">Listado</button>
+                    <button class="btn btn-success">Nuevo</button>
+                    <button class="btn btn-warning">Escanear Codigo</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <!-- Info del artículo padre -->
+            <div class="articulo-info">
+                <strong>Articulo:</strong> 0001 - PROYECTOR DATOS/VIDEO 2000 LUMENES | 
+                <strong>Familia:</strong> IMAGEN | 
+                <strong>Precio alquiler:</strong> 25.00 EUR/jornada |
+                <strong>Elementos totales:</strong> 11
+            </div>
+
+            <!-- Sección 1: Identificación -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-bar bar-purple"></div>
+                    <h2 class="section-title">IDENTIFICACION DEL ELEMENTO</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-2">
+                        <label>Codigo Elemento <span class="auto-generated">(auto)</span></label>
+                        <input type="text" value="0001-012" disabled>
+                        <p class="help-text">Generado automaticamente</p>
+                    </div>
+                    
+                    <div class="form-group col-3">
+                        <label>Marca</label>
+                        <select>
+                            <option value="">Seleccione...</option>
+                            <option value="1">Barco</option>
+                            <option value="2">Christie</option>
+                            <option value="3">Panasonic</option>
+                            <option value="4">Epson</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group col-2">
+                        <label>Modelo</label>
+                        <input type="text" placeholder="DLP2000">
+                    </div>
+                    
+                    <div class="form-group col-2">
+                        <label>Estado <span class="required">*</span></label>
+                        <select required>
+                            <option value="1" selected>Disponible</option>
+                            <option value="2">Alquilado</option>
+                            <option value="3">En reparacion</option>
+                            <option value="4">Baja</option>
+                            <option value="5">Terceros</option>
+                            <option value="6">Deposito</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <label>Codigo de Barras</label>
+                        <div class="barcode-scanner">
+                            <input type="text" placeholder="7894561230123">
+                            <button class="btn-scan">Escanear</button>
+                        </div>
+                        <p class="help-text">Escanea con pistola lectora o introduce manualmente</p>
+                    </div>
+                    
+                    <div class="form-group col-4">
+                        <label>Numero de Serie</label>
+                        <input type="text" placeholder="BRC2024001">
+                    </div>
+                    
+                    <div class="form-group col-4">
+                        <label>Ubicacion</label>
+                        <input type="text" placeholder="RACK-B3">
+                        <p class="help-text">Ubicacion fisica en almacen</p>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label>Descripcion <span class="required">*</span></label>
+                        <input type="text" placeholder="Proyector Barco DLP 2000 lumenes" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Datos de Adquisición -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-bar bar-blue"></div>
+                    <h2 class="section-title">DATOS DE ADQUISICION</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-3">
+                        <label>Fecha de Compra</label>
+                        <input type="date">
+                    </div>
+                    
+                    <div class="form-group col-3">
+                        <label>Precio de Compra (EUR)</label>
+                        <input type="number" step="0.01" placeholder="1200.00">
+                    </div>
+                    
+                    <div class="form-group col-3">
+                        <label>Fecha de Alta</label>
+                        <input type="date">
+                        <p class="help-text">Fecha de puesta en servicio</p>
+                    </div>
+                    
+                    <div class="form-group col-3">
+                        <label>Proveedor</label>
+                        <select>
+                            <option value="">Seleccione...</option>
+                            <option value="1">Audiovisuales Pro S.L.</option>
+                            <option value="2">Tecnologia Escena S.A.</option>
+                            <option value="3">Sound & Light Equipment</option>
+                            <option value="4">Visual Systems Iberia</option>
+                            <option value="5">ProAudio Distribution</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: Garantía y Mantenimiento -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-bar bar-green"></div>
+                    <h2 class="section-title">GARANTIA Y MANTENIMIENTO</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label>Fecha Fin Garantia</label>
+                        <input type="date">
+                        <p class="help-text">El sistema alertara cuando se aproxime el vencimiento</p>
+                    </div>
+                    
+                    <div class="form-group col-6">
+                        <label>Proximo Mantenimiento</label>
+                        <input type="date">
+                        <p class="help-text">Fecha estimada de proxima revision</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 4: Observaciones -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-bar bar-orange"></div>
+                    <h2 class="section-title">OBSERVACIONES</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <textarea placeholder="Notas internas sobre este elemento especifico (golpes, rayones, problemas conocidos, etc.)" rows="4"></textarea>
+                        <p class="help-text">Estas observaciones son internas y no se imprimen en documentos</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box info-box-purple">
+                <h3>Informacion importante</h3>
+                <p>El codigo del elemento se genera automaticamente al guardar. El formato es: CODIGO_ARTICULO-CORRELATIVO (ej: 0001-001, 0001-002). El codigo de barras y numero de serie deben ser unicos en todo el sistema.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="form-footer">
+            <div>
+                <span class="required">*</span> Campos obligatorios
+            </div>
+            <div class="footer-buttons">
+                <button class="btn btn-secondary">Cancelar</button>
+                <button class="btn btn-success">Guardar Elemento</button>
+                <button class="btn btn-primary">Guardar y Nuevo</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

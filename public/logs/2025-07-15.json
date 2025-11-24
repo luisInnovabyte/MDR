@@ -1,0 +1,2290 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:06:57"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:06:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:06:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:06:59"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:07:02"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:12:57"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:12:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:13:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:13:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 4 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 4 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 3 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 3 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:19:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:20:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:20:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:20:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:20:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:20:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:21:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:21:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:21:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:21:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:21:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:23:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:27:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:27:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:27:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:28:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:28:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:28:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:28:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:37:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:37:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:38:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:38:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:39:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:40:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:40:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:40:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:40:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:40:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:42:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:42:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:43:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:43:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:43:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Desactivada la llamada",
+        "mensaje": "Se desactivó la llamada con el id de llamadas 22",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:44:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "llamadas.php",
+        "actividad": "Eliminar llamada seleccionada",
+        "mensaje": "Llamada eliminada exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:44:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:44:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Activada la llamada",
+        "mensaje": "Se activó la llamada con el id de llamadas 22",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:45:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "llamadas.php",
+        "actividad": "Obtener llamada seleccionada",
+        "mensaje": "Llamada activada exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:45:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:45:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Insertado adjunto",
+        "mensaje": "Se insertó adjunto ID: 77 para llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Insertado adjunto",
+        "mensaje": "Se insertó adjunto ID: 78 para llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Insertado adjunto",
+        "mensaje": "Se insertó adjunto ID: 79 para llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Insertado adjunto",
+        "mensaje": "Se insertó adjunto ID: 80 para llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:52"
+    },
+    {
+        "usuario": "user",
+        "pantalla": "llamadas.php",
+        "actividad": "Adjuntos guardados",
+        "mensaje": "4 adjuntos guardados para llamada ID: 4",
+        "tipo": "success",
+        "fecha_hora": "2025-07-15 09:47:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:47:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:48:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:48:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:49:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:49:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:49:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:49:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:49:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:50:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:50:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:50:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:50:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:51:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:51:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:52:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Desactivado el estado de adjuntos",
+        "mensaje": "Se desactivó el estado con el id de adjuntos 57",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Eliminar adjunto seleccionado",
+        "mensaje": "Adjunto eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Activado el adjunto",
+        "mensaje": "Se activó el estado de el adjunto con el id de adjunto 57",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos seleccionado",
+        "mensaje": "Adjunto activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:53:45"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:54:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:57:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:57:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:57:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:58:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:58:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Insertado adjunto",
+        "mensaje": "Se insertó adjunto ID: 81 para llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:58:28"
+    },
+    {
+        "usuario": "user",
+        "pantalla": "llamadas.php",
+        "actividad": "Adjuntos guardados",
+        "mensaje": "1 adjuntos guardados para llamada ID: 4",
+        "tipo": "success",
+        "fecha_hora": "2025-07-15 09:58:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:58:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 09:58:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Desactivado el estado de adjuntos",
+        "mensaje": "Se desactivó el estado con el id de adjuntos 57",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Eliminar adjunto seleccionado",
+        "mensaje": "Adjunto eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Activado el adjunto",
+        "mensaje": "Se activó el estado de el adjunto con el id de adjunto 57",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos seleccionado",
+        "mensaje": "Adjunto activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Desactivado el estado de adjuntos",
+        "mensaje": "Se desactivó el estado con el id de adjuntos 57",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Eliminar adjunto seleccionado",
+        "mensaje": "Adjunto eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 16",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 16",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 16",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 16",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:01:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:05:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 16",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:05:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 16",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:05:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:06:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Activado el adjunto",
+        "mensaje": "Se activó el estado de el adjunto con el id de adjunto 57",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:07:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos seleccionado",
+        "mensaje": "Adjunto activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:07:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:07:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:07:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:07:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:08:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:13:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:13:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:14:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:14:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:15:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:19:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta filtrada",
+        "mensaje": "Se consultó vacaciones entre 2025-07-01 y 2025-07-31",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:21:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta filtrada",
+        "mensaje": "Se consultó vacaciones entre 2025-07-01 y 2025-07-31",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:21:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta filtrada",
+        "mensaje": "Se consultó vacaciones entre 2025-07-01 y 2025-07-31",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:21:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:23:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta filtrada",
+        "mensaje": "Se consultó vacaciones entre 2025-07-01 y 2025-07-31",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:24:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:25:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta filtrada",
+        "mensaje": "Se consultó vacaciones entre 2025-07-01 y 2025-07-31",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:25:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:25:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta filtrada",
+        "mensaje": "Se consultó vacaciones entre 2025-07-01 y 2025-07-31",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:25:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:25:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Desactivada la vacacion",
+        "mensaje": "Se desactivó la vacación con el id de vacaciones 5",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:34:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "vacaciones.php",
+        "actividad": "Eliminar vacacion seleccionada",
+        "mensaje": "Vacacion eliminada exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:34:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:34:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Activada la vacacion",
+        "mensaje": "Se activó la vacación con el id de vacaciones 20",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:35:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "vacaciones.php",
+        "actividad": "Obtener vacacion seleccionada",
+        "mensaje": "Vacacion activada exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:35:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:35:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:39:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:39:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:41:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Desactivado el contacto",
+        "mensaje": "Se desactivó el contacto con el id de contactos 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:55:20"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Eliminar contacto seleccionado",
+        "mensaje": "Contacto eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:55:20"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:55:20"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Activada el contacto",
+        "mensaje": "Se activó el contacto con el id de contactos 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:55:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos seleccionado",
+        "mensaje": "Contacto activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:55:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 10:55:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:08:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:08:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:09:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:09:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:09:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Desactivado el estado del metodo",
+        "mensaje": "Se desactivó el estado con el id de metodo 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Eliminar metodo seleccionado",
+        "mensaje": "Metodo eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Activado el método",
+        "mensaje": "Se activó el estado de el método con el id de método 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:12:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 10",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:15:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 10",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:15:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:15:19"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de metodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:16:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:16:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de metodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Borrar imagen",
+        "mensaje": "Se borró la imagen whatsappContacto.png del método ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Actualizar imagen",
+        "mensaje": "Se asignó la imagen predeterminada al método ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "borrarImagen",
+        "mensaje": "Imagen whatsappContacto.png eliminada y reemplazada con imagen predeterminada correctamente para método ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de metodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de metodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:17:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:18:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "ObtenerImagen",
+        "mensaje": "Metodo Obtener Imagen exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:18:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:18:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Actualizado el método",
+        "mensaje": "Se actualizó el método con el id de métodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:18:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos.php",
+        "actividad": "Actualizar imagen",
+        "mensaje": "Se actualizó la imagen para el método ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:18:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Actualizar método",
+        "mensaje": "Operación realizada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:18:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:18:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:33"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:33"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "eliminar_adjunto",
+        "mensaje": "Archivo físico no encontrado: zagle-oddychajace-trojkat-niebieski5b55cf931e846_725x725_3.jpg (pero se procederá a eliminar el registro)",
+        "tipo": "warning",
+        "fecha_hora": "2025-07-15 11:21:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Eliminación de adjunto",
+        "mensaje": "Se eliminó el registro del adjunto con ID: 80",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "eliminar_adjunto",
+        "mensaje": "Adjunto eliminado completamente - ID: 80, Archivo: zagle-oddychajace-trojkat-niebieski5b55cf931e846_725x725_3.jpg",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Insertado adjunto",
+        "mensaje": "Se insertó adjunto ID: 82 para llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:59"
+    },
+    {
+        "usuario": "user",
+        "pantalla": "llamadas.php",
+        "actividad": "Adjuntos guardados",
+        "mensaje": "1 adjuntos guardados para llamada ID: 4",
+        "tipo": "success",
+        "fecha_hora": "2025-07-15 11:21:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:21:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:23:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:23:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "eliminar_adjunto",
+        "mensaje": "Archivo físico no encontrado: whatsappContacto (1).png (pero se procederá a eliminar el registro)",
+        "tipo": "warning",
+        "fecha_hora": "2025-07-15 11:23:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Eliminación de adjunto",
+        "mensaje": "Se eliminó el registro del adjunto con ID: 82",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:23:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "eliminar_adjunto",
+        "mensaje": "Adjunto eliminado completamente - ID: 82, Archivo: whatsappContacto (1).png",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:23:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:23:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:23:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:23:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "eliminar_adjunto",
+        "mensaje": "Archivo físico no encontrado: toldos-1.pdf (pero se procederá a eliminar el registro)",
+        "tipo": "warning",
+        "fecha_hora": "2025-07-15 11:25:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Eliminación de adjunto",
+        "mensaje": "Se eliminó el registro del adjunto con ID: 81",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:25:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "eliminar_adjunto",
+        "mensaje": "Adjunto eliminado completamente - ID: 81, Archivo: toldos-1.pdf",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:25:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:25:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:25:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:25:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:26:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:26:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Insertado adjunto",
+        "mensaje": "Se insertó adjunto ID: 83 para llamada ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:27:09"
+    },
+    {
+        "usuario": "user",
+        "pantalla": "llamadas.php",
+        "actividad": "Adjuntos guardados",
+        "mensaje": "1 adjuntos guardados para llamada ID: 4",
+        "tipo": "success",
+        "fecha_hora": "2025-07-15 11:27:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:27:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:28:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:28:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Estados",
+        "actividad": "Insertado el estado",
+        "mensaje": "Se insertó el estado con el id de estados 12",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estados.php",
+        "actividad": "Guardar el estado",
+        "mensaje": "Estado guardado exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Estados",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de estados 12",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estados.php",
+        "actividad": "Obtener estado seleccionado",
+        "mensaje": "Estado obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Estados",
+        "actividad": "Actualizado el estado",
+        "mensaje": "Se actualizó el estado con el id de estados 12",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estados.php",
+        "actividad": "Actualizar el estado",
+        "mensaje": "Estado actualizado exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Estados",
+        "actividad": "Desactivado el estado predeterminado",
+        "mensaje": "Se desactivó el estado con el id de estado 12",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estados.php",
+        "actividad": "Eliminar estado seleccionado",
+        "mensaje": "Estado eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:30:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Estados",
+        "actividad": "Activado el estado por defecto",
+        "mensaje": "Se activó el estado por defecto de el estado con el id de estado 12",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:31:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estados.php",
+        "actividad": "Obtener estados seleccionado",
+        "mensaje": "Estado activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:31:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:31:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Usuarios",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el usuario con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:34:59"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:35:08"
+    },
+    {
+        "usuario": "ale@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:35:23"
+    },
+    {
+        "usuario": "sistema",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Cuenta inhabilitada",
+        "tipo": "error",
+        "fecha_hora": "2025-07-15 11:35:23"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:35:37"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:35:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:35:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:35:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Usuarios",
+        "actividad": "Activar",
+        "mensaje": "Se activo el usuario con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:36:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Roles",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el rol con ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:43:33"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Roles",
+        "actividad": "Activar",
+        "mensaje": "Se activo el rol con ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:43:45"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:14"
+    },
+    {
+        "usuario": "ale@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:23"
+    },
+    {
+        "usuario": "ale@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:51"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:51"
+    },
+    {
+        "usuario": "ale@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:49:53"
+    },
+    {
+        "usuario": "carloslopez@email.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:02"
+    },
+    {
+        "usuario": "carloslopez@email.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025 para comercial 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025 para comercial 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025 para comercial 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025 para comercial 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025 para comercial 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025 para comercial 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas para comercial id: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos filtrado por comercial: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:50:42"
+    },
+    {
+        "usuario": "carloslopez@email.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:53:31"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:53:39"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:53:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:53:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 7 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:53:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 11:58:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 12:04:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-07-15 12:06:11"
+    }
+]

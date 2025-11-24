@@ -1,0 +1,1010 @@
+[
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:04:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:05:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:05:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:05:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:05:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:05:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:05:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Insertada la llamada",
+        "mensaje": "Se insertó la llamada con el id de llamadas 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "llamadas.php",
+        "actividad": "Guardar la llamada",
+        "mensaje": "Llamada guardada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de llamadas 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "llamadas.php",
+        "actividad": "Obtener llamada seleccionada",
+        "mensaje": "Llamada obtenida exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de llamadas 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "llamadas.php",
+        "actividad": "Obtener llamada seleccionada",
+        "mensaje": "Llamada obtenida exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Verificación",
+        "mensaje": "Se verificó si la llamada con ID 24 tiene una visita cerrada (excluyendo contacto ID )",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar fecha visita cerrada",
+        "mensaje": "Se verificó si existe una fecha de visita cerrada para la llamada ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Insertado el contacto",
+        "mensaje": "Se insertó el contacto con el id de contactos 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Guardar contacto",
+        "mensaje": "Contacto guardado: ID 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Verificación",
+        "mensaje": "Se verificó si la llamada con ID 24 tiene una visita cerrada (excluyendo contacto ID )",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Actualización",
+        "mensaje": "Estado de llamada ID 24 actualizado a ID estado 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:06:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de contactos 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contacto seleccionado",
+        "mensaje": "Contacto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Verificación",
+        "mensaje": "Se verificó si la llamada con ID 24 tiene una visita cerrada (excluyendo contacto ID 18)",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar fecha visita cerrada",
+        "mensaje": "Se verificó si existe una fecha de visita cerrada para la llamada ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Actualizado el contacto",
+        "mensaje": "Se actualizó el contacto con el id de contactos 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Actualizar contacto",
+        "mensaje": "Contacto actualizado: ID 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Verificación",
+        "mensaje": "Se verificó si la llamada con ID 24 tiene una visita cerrada (excluyendo contacto ID )",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Actualización",
+        "mensaje": "Estado de llamada ID 24 actualizado a ID estado 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de llamadas 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "llamadas.php",
+        "actividad": "Obtener llamada seleccionada",
+        "mensaje": "Llamada obtenida exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:07:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:09:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:09:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:09:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:09:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:09:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:09:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de contactos 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contacto seleccionado",
+        "mensaje": "Contacto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Verificación",
+        "mensaje": "Se verificó si la llamada con ID 24 tiene una visita cerrada (excluyendo contacto ID 18)",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar fecha visita cerrada",
+        "mensaje": "Se verificó si existe una fecha de visita cerrada para la llamada ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Actualizado el contacto",
+        "mensaje": "Se actualizó el contacto con el id de contactos 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Actualizar contacto",
+        "mensaje": "Contacto actualizado: ID 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Verificación",
+        "mensaje": "Se verificó si la llamada con ID 24 tiene una visita cerrada (excluyendo contacto ID )",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Actualización",
+        "mensaje": "Estado de llamada ID 24 actualizado a ID estado 3",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de contactos 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contacto seleccionado",
+        "mensaje": "Contacto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Verificación",
+        "mensaje": "Se verificó si la llamada con ID 24 tiene una visita cerrada (excluyendo contacto ID )",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar fecha visita cerrada",
+        "mensaje": "Se verificó si existe una fecha de visita cerrada para la llamada ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de contactos 18",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contacto seleccionado",
+        "mensaje": "Contacto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:10:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id_llamada",
+        "mensaje": "Se consultaron contactos con id_llamada 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contactos por id llamada seleccionado",
+        "mensaje": "Contactos obtenidos exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Verificación estado activo llamada",
+        "mensaje": "Se verificó activo_llamada para la llamada con ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Verificar estado llamada",
+        "mensaje": "Se verificó el estado de la llamada con ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de contactos 8",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "contactos.php",
+        "actividad": "Obtener contacto seleccionado",
+        "mensaje": "Contacto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:15:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:17:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:17:48"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:02"
+    },
+    {
+        "usuario": "hugo@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:20"
+    },
+    {
+        "usuario": "hugo@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:20"
+    },
+    {
+        "usuario": "hugo@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:21"
+    },
+    {
+        "usuario": "hugo@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:23"
+    },
+    {
+        "usuario": "hugo@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:28"
+    },
+    {
+        "usuario": "carloslopez@email.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:41"
+    },
+    {
+        "usuario": "carloslopez@email.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025 para comercial 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025 para comercial 2",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:25:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:26:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:26:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:26:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:26:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:27:16"
+    },
+    {
+        "usuario": "carloslopez@email.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:32:41"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:43:39"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:43:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:43:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:43:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:48:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-05-22 13:52:30"
+    }
+]

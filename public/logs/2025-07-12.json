@@ -1,0 +1,50 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-12 12:23:22"
+    },
+    {
+        "usuario": "sistema",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Cuenta inhabilitada",
+        "tipo": "error",
+        "fecha_hora": "2025-07-12 12:23:22"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-12 12:24:50"
+    },
+    {
+        "usuario": "sistema",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Cuenta inhabilitada",
+        "tipo": "error",
+        "fecha_hora": "2025-07-12 12:24:50"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-07-12 12:24:52"
+    },
+    {
+        "usuario": "sistema",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Cuenta inhabilitada",
+        "tipo": "error",
+        "fecha_hora": "2025-07-12 12:24:52"
+    }
+]

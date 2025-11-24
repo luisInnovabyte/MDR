@@ -1,0 +1,114 @@
+[
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 17:30:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 17:30:45"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de adjuntos 5",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 17:30:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjunto seleccionado",
+        "mensaje": "Adjunto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 17:30:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 17:30:54"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Contraseña incorrecta",
+        "tipo": "error",
+        "fecha_hora": "2025-05-14 19:57:18"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 19:57:32"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 19:57:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 19:57:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 19:57:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 20:09:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 20:09:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 20:11:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 5 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-05-14 20:11:41"
+    }
+]

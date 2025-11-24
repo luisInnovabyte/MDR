@@ -1,0 +1,98 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:14:23"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:14:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:14:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 6 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:14:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:14:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de llamadas 16",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:15:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "llamadas.php",
+        "actividad": "Obtener llamada seleccionada",
+        "mensaje": "Llamada obtenida exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:15:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:15:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:15:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de adjuntos",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:16:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:18:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-06-18 13:18:42"
+    }
+]

@@ -1,0 +1,242 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:25:54"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:25:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 10 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:25:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 10 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:25:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:26:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:26:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de metodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:30:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:30:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:31:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "ObtenerImagen",
+        "mensaje": "Metodo Obtener Imagen exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:31:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:31:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Actualizado el método",
+        "mensaje": "Se actualizó el método con el id de métodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:31:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Actualizar método",
+        "mensaje": "Operación realizada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:31:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:31:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Desactivado el estado del metodo",
+        "mensaje": "Se desactivó el estado con el id de metodo 1",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:35:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Eliminar metodo seleccionado",
+        "mensaje": "Metodo eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:35:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:35:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Activado el método",
+        "mensaje": "Se activó el estado de el método con el id de método 1",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:35:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:35:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 11:35:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:01:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:01:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:06:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:06:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Desactivado el estado del metodo",
+        "mensaje": "Se desactivó el estado con el id de metodo 1",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:13:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Eliminar metodo seleccionado",
+        "mensaje": "Metodo eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:13:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:13:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Activado el método",
+        "mensaje": "Se activó el estado de el método con el id de método 1",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:13:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:13:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-10-27 12:13:15"
+    }
+]

@@ -1,0 +1,153 @@
+            /* FILTRO PARA ACTIVADO/DESACTIVO TODOS */
+                .status-selector {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+                
+                .status-option {
+                    position: relative;
+                }
+                
+                .status-radio {
+                    position: absolute;
+                    opacity: 0;
+                }
+                
+                .status-label {
+                    display: flex;
+                    align-items: center;
+                    padding: 10px 15px;
+                    background-color: #f8f9fa;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+                    border: 1px solid #e9ecef;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .status-label:hover {
+                    background-color: #f1f3f5;
+                    transform: translateY(-2px);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                }
+                
+                .status-icon {
+                    margin-right: 12px;
+                    width: 20px;
+                    text-align: center;
+                    color: #6c757d;
+                    transition: all 0.3s ease;
+                    font-size: 1.1rem;
+                }
+                
+                .status-text {
+                    flex-grow: 1;
+                    font-size: 0.95rem;
+                    color: #495057;
+                    transition: all 0.3s ease;
+                }
+                
+                .status-badge {
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    border: 2px solid #dee2e6;
+                    transition: all 0.3s ease;
+                    margin-left: 10px;
+                }
+                
+                /* Estilos cuando está seleccionado */
+                .status-radio:checked + .status-label {
+                    background-color: white;
+                    border-color: #0d6efd;
+                    box-shadow: 0 0 0 1px #0d6efd;
+                }
+                
+                .status-radio:checked + .status-label .status-icon {
+                    color: #0d6efd;
+                }
+                
+                .status-radio:checked + .status-label .status-text {
+                    color: #0d6efd;
+                    font-weight: 500;
+                }
+                
+                .status-radio:checked + .status-label .status-badge {
+                    background-color: #0d6efd;
+                    border-color: #0d6efd;
+                }
+                
+                /* Estilos específicos para cada opción */
+                #filterActive:checked + .status-label {
+                    border-color: #198754;
+                    box-shadow: 0 0 0 1px #198754;
+                }
+                
+                #filterActive:checked + .status-label .status-icon {
+                    color: #198754;
+                }
+                
+                #filterActive:checked + .status-label .status-text {
+                    color: #198754;
+                }
+                
+                #filterActive:checked + .status-label .status-badge {
+                    background-color: #198754;
+                    border-color: #198754;
+                }
+                
+                #filterInactive:checked + .status-label {
+                    border-color: #dc3545;
+                    box-shadow: 0 0 0 1px #dc3545;
+                }
+                
+                #filterInactive:checked + .status-label .status-icon {
+                    color: #dc3545;
+                }
+                
+                #filterInactive:checked + .status-label .status-text {
+                    color: #dc3545;
+                }
+                
+                #filterInactive:checked + .status-label .status-badge {
+                    background-color: #dc3545;
+                    border-color: #dc3545;
+                }
+                
+                /* Efecto de ripple al hacer click */
+                .status-label::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 5px;
+                    height: 5px;
+                    background: rgba(255, 255, 255, 0.5);
+                    opacity: 0;
+                    border-radius: 100%;
+                    transform: scale(1, 1) translate(-50%, -50%);
+                    transform-origin: 50% 50%;
+                }
+                
+                .status-radio:active + .status-label::after {
+                    animation: ripple 0.6s ease-out;
+                }
+                
+                @keyframes ripple {
+                    0% {
+                        transform: scale(0, 0);
+                        opacity: 0.5;
+                    }
+                    100% {
+                        transform: scale(20, 20);
+                        opacity: 0;
+                    }
+                }
+                
+                /* Estilos existentes se mantienen */
+                .filter-container .card {
+                    border: none;
+                    transition: all 0.3s ease;
+                }

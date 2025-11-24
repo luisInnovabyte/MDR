@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructura MVC - Módulo de Roles | Sistema TOLDOS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            border-bottom: 3px solid;
+            font-weight: bold;
+        }
+
+        .mvc-model .card-header { border-color: var(--accent-color); background-color: #fdf2f2; }
+        .mvc-view .card-header { border-color: var(--success-color); background-color: #f2f9f2; }
+        .mvc-controller .card-header { border-color: var(--secondary-color); background-color: #f2f7fc; }
+        .mvc-database .card-header { border-color: var(--warning-color); background-color: #fdf9f2; }
+
+        .file-structure {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .file-icon {
+            margin-right: 0.5rem;
+        }
+
+        .php-file { color: #8892bf; }
+        .js-file { color: #f7df1e; }
+        .folder { color: #ffa500; }
+
+        .code-block {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .badge-custom {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--secondary-color);
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .flow-item {
+            text-align: center;
+            padding: 1rem;
+            margin: 0 0.5rem;
+            border-radius: 0.5rem;
+            min-width: 120px;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin: 0 1rem;
+        }
+
+        .toc {
+            position: sticky;
+            top: 20px;
+        }
+
+        .sql-table {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="fas fa-code-branch me-3"></i>
+                        Estructura MVC - Módulo de Roles
+                    </h1>
+                    <p class="lead">Documentación técnica del patrón Modelo-Vista-Controlador aplicado al módulo de gestión de roles del sistema TOLDOS</p>
+                    <span class="badge bg-light text-dark me-2">PHP</span>
+                    <span class="badge bg-light text-dark me-2">MySQL</span>
+                    <span class="badge bg-light text-dark me-2">JavaScript</span>
+                    <span class="badge bg-light text-dark">Bootstrap</span>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-users-cog" style="font-size: 8rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Tabla de Contenidos -->
+            <div class="col-md-3">
+                <div class="toc">
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="fas fa-list me-2"></i>Contenido</h6>
+                        </div>
+                        <div class="card-body">
+                            <nav class="nav nav-pills flex-column">
+                                <a class="nav-link" href="#intro">Introducción</a>
+                                <a class="nav-link" href="#database">Base de Datos</a>
+                                <a class="nav-link" href="#estructura">Estructura de Archivos</a>
+                                <a class="nav-link" href="#flujo">Flujo de Datos</a>
+                                <a class="nav-link" href="#model">Modelo</a>
+                                <a class="nav-link" href="#view">Vista</a>
+                                <a class="nav-link" href="#controller">Controlador</a>
+                                <a class="nav-link" href="#funcionalidades">Funcionalidades</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido Principal -->
+            <div class="col-md-9">
+                <!-- Introducción -->
+                <section id="intro" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0"><i class="fas fa-info-circle me-2"></i>Introducción al Patrón MVC</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>El patrón <strong>Modelo-Vista-Controlador (MVC)</strong> es una arquitectura de software que separa la lógica de negocio, la presentación y el control de flujo en componentes independientes.</p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-4 text-center">
+                                    <div class="flow-item bg-danger text-white">
+                                        <i class="fas fa-database fa-2x mb-2"></i>
+                                        <h5>MODELO</h5>
+                                        <small>Lógica de negocio y datos</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="flow-item bg-success text-white">
+                                        <i class="fas fa-eye fa-2x mb-2"></i>
+                                        <h5>VISTA</h5>
+                                        <small>Interfaz de usuario</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="flow-item bg-info text-white">
+                                        <i class="fas fa-cogs fa-2x mb-2"></i>
+                                        <h5>CONTROLADOR</h5>
+                                        <small>Lógica de control</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Base de Datos -->
+                <section id="database" class="mb-5">
+                    <div class="card mvc-database">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="fas fa-database me-2"></i>Estructura de Base de Datos</h3>
+                        </div>
+                        <div class="card-body">
+                            <h5>Tabla: <code>roles</code></h5>
+                            <p>Esta tabla almacena los diferentes roles que pueden tener los usuarios del sistema.</p>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered sql-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Campo</th>
+                                            <th>Tipo</th>
+                                            <th>Restricciones</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>id_rol</code></td>
+                                            <td>INT</td>
+                                            <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                            <td>Identificador único del rol</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>nombre_rol</code></td>
+                                            <td>VARCHAR(50)</td>
+                                            <td>NOT NULL</td>
+                                            <td>Nombre descriptivo del rol</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>est</code></td>
+                                            <td>TINYINT</td>
+                                            <td>DEFAULT 1</td>
+                                            <td>Estado: 0=Inactivo, 1=Activo</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <strong><i class="fas fa-lightbulb me-2"></i>Nota:</strong>
+                                El campo <code>est</code> implementa "borrado lógico", permitiendo desactivar roles sin perder datos históricos.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Estructura de Archivos -->
+                <section id="estructura" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-secondary text-white">
+                            <h3 class="mb-0"><i class="fas fa-folder-tree me-2"></i>Estructura de Archivos del Módulo</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="file-structure">
+                                <div class="mb-3">
+                                    <i class="fas fa-folder folder file-icon"></i><strong>TOLDOS/</strong>
+                                    <div class="ms-4">
+                                        <div><i class="fas fa-folder folder file-icon"></i><strong>models/</strong></div>
+                                        <div class="ms-4">
+                                            <i class="fab fa-php php-file file-icon"></i><code>Roles.php</code>
+                                            <span class="badge bg-danger badge-custom ms-2">MODELO</span>
+                                        </div>
+                                        
+                                        <div class="mt-2"><i class="fas fa-folder folder file-icon"></i><strong>view/MntRoles/</strong></div>
+                                        <div class="ms-4">
+                                            <i class="fab fa-php php-file file-icon"></i><code>index.php</code>
+                                            <span class="badge bg-success badge-custom ms-2">VISTA PRINCIPAL</span>
+                                        </div>
+                                        <div class="ms-4">
+                                            <i class="fab fa-php php-file file-icon"></i><code>mantenimientoRoles.php</code>
+                                            <span class="badge bg-success badge-custom ms-2">MODAL</span>
+                                        </div>
+                                        <div class="ms-4">
+                                            <i class="fab fa-js-square js-file file-icon"></i><code>mntroles.js</code>
+                                            <span class="badge bg-warning badge-custom ms-2">JAVASCRIPT</span>
+                                        </div>
+                                        
+                                        <div class="mt-2"><i class="fas fa-folder folder file-icon"></i><strong>controller/</strong></div>
+                                        <div class="ms-4">
+                                            <i class="fab fa-php php-file file-icon"></i><code>roles.php</code>
+                                            <span class="badge bg-info badge-custom ms-2">CONTROLADOR</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flujo de Datos -->
+                <section id="flujo" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h3 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Flujo de Datos MVC</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="flow-diagram flex-wrap">
+                                <div class="flow-item bg-success text-white">
+                                    <strong>1. VISTA</strong><br>
+                                    <small>Usuario interactúa</small>
+                                </div>
+                                <i class="fas fa-arrow-right flow-arrow"></i>
+                                <div class="flow-item bg-info text-white">
+                                    <strong>2. CONTROLADOR</strong><br>
+                                    <small>Procesa la petición</small>
+                                </div>
+                                <i class="fas fa-arrow-right flow-arrow"></i>
+                                <div class="flow-item bg-danger text-white">
+                                    <strong>3. MODELO</strong><br>
+                                    <small>Gestiona los datos</small>
+                                </div>
+                            </div>
+                            
+                            <div class="flow-diagram flex-wrap">
+                                <div class="flow-item bg-light text-dark border">
+                                    <strong>BASE DE DATOS</strong><br>
+                                    <small>Tabla: roles</small>
+                                </div>
+                                <i class="fas fa-arrow-up flow-arrow"></i>
+                                <div class="flow-item bg-secondary text-white">
+                                    <strong>RESPUESTA</strong><br>
+                                    <small>Datos procesados</small>
+                                </div>
+                                <i class="fas fa-arrow-left flow-arrow"></i>
+                                <div class="flow-item bg-success text-white">
+                                    <strong>VISTA ACTUALIZADA</strong><br>
+                                    <small>Muestra resultados</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Modelo -->
+                <section id="model" class="mb-5">
+                    <div class="card mvc-model">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="fas fa-database me-2"></i>MODELO - models/Roles.php</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Responsabilidad:</strong> Gestionar todas las operaciones relacionadas con los datos de roles en la base de datos.</p>
+                            
+                            <h5><i class="fas fa-cog me-2"></i>Métodos Principales:</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <strong>get_rol()</strong><br>
+                                            <small class="text-muted">Obtiene todos los roles</small>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>get_rol_disponible()</strong><br>
+                                            <small class="text-muted">Obtiene roles activos (est=1)</small>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>get_rolxid($idRol)</strong><br>
+                                            <small class="text-muted">Obtiene un rol específico por ID</small>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>insert_rol($nombrerol)</strong><br>
+                                            <small class="text-muted">Inserta un nuevo rol</small>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <strong>update_rol($idRol, $nombrerol)</strong><br>
+                                            <small class="text-muted">Actualiza un rol existente</small>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>delete_rolxid($idRol)</strong><br>
+                                            <small class="text-muted">Desactiva un rol (est=0)</small>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>activar_rolxid($idRol)</strong><br>
+                                            <small class="text-muted">Activa un rol (est=1)</small>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>verificarRol($nombreRol, $idRol)</strong><br>
+                                            <small class="text-muted">Verifica duplicados</small>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info mt-3">
+                                <strong><i class="fas fa-shield-alt me-2"></i>Seguridad:</strong>
+                                Utiliza consultas preparadas (PDO) para prevenir inyección SQL y manejo de excepciones para control de errores.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Vista -->
+                <section id="view" class="mb-5">
+                    <div class="card mvc-view">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="fas fa-eye me-2"></i>VISTA - view/MntRoles/</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Responsabilidad:</strong> Presentar la interfaz de usuario y manejar la interacción del usuario.</p>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card border-success">
+                                        <div class="card-header bg-success text-white">
+                                            <h6 class="mb-0">index.php</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Función:</strong> Página principal del módulo</p>
+                                            <ul class="list-unstyled">
+                                                <li><i class="fas fa-check text-success me-2"></i>DataTable de roles</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Botones de acción</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Filtros y búsqueda</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Paginación</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="card border-success">
+                                        <div class="card-header bg-success text-white">
+                                            <h6 class="mb-0">mantenimientoRoles.php</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Función:</strong> Modal para crear/editar roles</p>
+                                            <ul class="list-unstyled">
+                                                <li><i class="fas fa-check text-success me-2"></i>Formulario de rol</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Validación frontend</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Campos dinámicos</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Modo alta/edición</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="card border-warning">
+                                        <div class="card-header bg-warning text-dark">
+                                            <h6 class="mb-0">mntroles.js</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Función:</strong> Lógica del cliente</p>
+                                            <ul class="list-unstyled">
+                                                <li><i class="fas fa-check text-warning me-2"></i>Configuración DataTable</li>
+                                                <li><i class="fas fa-check text-warning me-2"></i>Eventos de formulario</li>
+                                                <li><i class="fas fa-check text-warning me-2"></i>Llamadas AJAX</li>
+                                                <li><i class="fas fa-check text-warning me-2"></i>Validaciones JS</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Controlador -->
+                <section id="controller" class="mb-5">
+                    <div class="card mvc-controller">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="fas fa-cogs me-2"></i>CONTROLADOR - controller/roles.php</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Responsabilidad:</strong> Procesar las peticiones del usuario y coordinar entre el modelo y la vista.</p>
+                            
+                            <h5><i class="fas fa-route me-2"></i>Operaciones Disponibles:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Operación</th>
+                                            <th>Método</th>
+                                            <th>Descripción</th>
+                                            <th>Parámetros</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>listar</code></td>
+                                            <td>GET</td>
+                                            <td>Lista todos los roles para DataTable</td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>listarDisponibles</code></td>
+                                            <td>GET</td>
+                                            <td>Lista solo roles activos</td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>guardaryeditar</code></td>
+                                            <td>POST</td>
+                                            <td>Crea o actualiza un rol</td>
+                                            <td>id_rol, nombre_rol</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>mostrar</code></td>
+                                            <td>POST</td>
+                                            <td>Obtiene datos de un rol específico</td>
+                                            <td>id_rol</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>eliminar</code></td>
+                                            <td>POST</td>
+                                            <td>Desactiva un rol (borrado lógico)</td>
+                                            <td>id_rol</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>activar</code></td>
+                                            <td>POST</td>
+                                            <td>Activa un rol desactivado</td>
+                                            <td>id_rol</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>verificarRol</code></td>
+                                            <td>GET</td>
+                                            <td>Verifica si un rol ya existe</td>
+                                            <td>nombre_rol, id_rol</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Funcionalidades -->
+                <section id="funcionalidades" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0"><i class="fas fa-tasks me-2"></i>Funcionalidades del Sistema</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-plus-circle text-success me-2"></i>Crear Rol</h5>
+                                    <ol>
+                                        <li>Usuario hace clic en "Nuevo Rol"</li>
+                                        <li>Se abre modal con formulario vacío</li>
+                                        <li>Usuario ingresa nombre del rol</li>
+                                        <li>JavaScript valida los datos</li>
+                                        <li>Se envía petición AJAX al controlador</li>
+                                        <li>Controlador llama al modelo para insertar</li>
+                                        <li>Se actualiza la tabla automáticamente</li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-edit text-warning me-2"></i>Editar Rol</h5>
+                                    <ol>
+                                        <li>Usuario hace clic en "Editar"</li>
+                                        <li>JavaScript obtiene ID del rol</li>
+                                        <li>Se cargan datos existentes en modal</li>
+                                        <li>Usuario modifica los datos</li>
+                                        <li>Se validan los cambios</li>
+                                        <li>Controlador actualiza en base de datos</li>
+                                        <li>Tabla se actualiza con nuevos datos</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-trash-alt text-danger me-2"></i>Eliminar Rol</h5>
+                                    <p>Se implementa <strong>borrado lógico</strong> cambiando el estado <code>est</code> a 0, preservando la integridad referencial y el historial de datos.</p>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-shield-alt text-info me-2"></i>Validaciones</h5>
+                                    <ul>
+                                        <li>Verificación de roles duplicados</li>
+                                        <li>Validación de longitud (3-50 caracteres)</li>
+                                        <li>Sanitización de entrada de datos</li>
+                                        <li>Manejo de errores con logs</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer de la documentación -->
+                <div class="card bg-dark text-white">
+                    <div class="card-body text-center">
+                        <h5><i class="fas fa-graduation-cap me-2"></i>Material de Formación</h5>
+                        <p class="mb-0">Este documento sirve como guía para el aprendizaje del patrón MVC en el desarrollo del sistema TOLDOS.</p>
+                        <small class="text-muted">Actualizado: Octubre 2025</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <script>
+        // Smooth scrolling para los enlaces de navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Actualizar navegación activa
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight de navegación según scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

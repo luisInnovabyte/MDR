@@ -1,0 +1,8 @@
+{
+    "host": "217.154.117.83",
+    "port": "3308",
+    "user": "administrator",
+    "password": "27979699",
+    "database": "toldos_db",
+    "charset": "utf8mb4"
+}

@@ -1,0 +1,58 @@
+[
+    {
+        "usuario": "sistema",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Usuario no encontrado",
+        "tipo": "error",
+        "fecha_hora": "2025-10-16 17:36:17"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-10-16 17:36:41"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-10-16 17:36:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 10 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-10-16 17:36:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 10 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-10-16 17:36:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 10 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-10-16 17:43:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "CHART",
+        "actividad": "getLlamadasxmesxcomercial",
+        "mensaje": "Se consultaron las llamadas del mes 10 de 2025",
+        "tipo": "info",
+        "fecha_hora": "2025-10-16 17:43:53"
+    }
+]

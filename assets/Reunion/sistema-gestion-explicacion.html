@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión - Documentación para Cliente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 3px solid #667eea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav a {
+            display: block;
+            padding: 10px 20px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s;
+            border: 2px solid #667eea;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 80px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 30px 0 15px 0;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateX(5px);
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+            margin: 20px 0;
+        }
+
+        .diagram {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #e9ecef;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .flow-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            min-width: 200px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .flow-arrow {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .example {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #2196F3;
+            margin: 20px 0;
+        }
+
+        .example h4 {
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .badge-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .badge-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        footer {
+            background: #343a40;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .flow-container {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        .icon {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Sistema de Gestión de Base de Datos</h1>
+            <p>Documentación completa del sistema - Artículos, Elementos y Situaciones</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#introduccion">Introducción</a></li>
+                <li><a href="#conceptos">Conceptos Clave</a></li>
+                <li><a href="#articulos">Artículos</a></li>
+                <li><a href="#elementos">Elementos</a></li>
+                <li><a href="#situacion">Situación</a></li>
+                <li><a href="#ejemplos">Ejemplos Prácticos</a></li>
+                <li><a href="#flujo">Flujo de Trabajo</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- INTRODUCCIÓN -->
+            <section id="introduccion">
+                <h2>🎯 Introducción al Sistema</h2>
+                
+                <div class="card">
+                    <h3>¿Qué es este sistema?</h3>
+                    <p>Este sistema de gestión está diseñado para controlar de manera eficiente y organizada todos los productos y servicios de su empresa. El sistema se basa en tres conceptos fundamentales que trabajan juntos:</p>
+                    <ul>
+                        <li><strong>Artículos:</strong> Los productos o servicios base que ofrece su empresa</li>
+                        <li><strong>Elementos:</strong> Las unidades físicas individuales de cada artículo</li>
+                        <li><strong>Situación de Artículos:</strong> El estado o ubicación actual de cada elemento</li>
+                    </ul>
+                </div>
+
+                <div class="highlight">
+                    <h3>💡 Ventajas del Sistema</h3>
+                    <ul>
+                        <li>✅ Control total del inventario en tiempo real</li>
+                        <li>✅ Trazabilidad completa de cada producto</li>
+                        <li>✅ Gestión eficiente de ubicaciones y estados</li>
+                        <li>✅ Información detallada de cada unidad</li>
+                        <li>✅ Reportes y estadísticas automáticas</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- CONCEPTOS CLAVE -->
+            <section id="conceptos">
+                <h2>🔑 Conceptos Clave</h2>
+
+                <div class="flow-container">
+                    <div class="flow-box">
+                        <span class="icon">📦</span><br>
+                        ARTÍCULO<br>
+                        <small>(Producto Base)</small>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">
+                        <span class="icon">🔢</span><br>
+                        ELEMENTOS<br>
+                        <small>(Unidades Físicas)</small>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">
+                        <span class="icon">📍</span><br>
+                        SITUACIÓN<br>
+                        <small>(Estado/Ubicación)</small>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Jerarquía del Sistema</h3>
+                    <p>El sistema funciona con una estructura jerárquica clara:</p>
+                    <ol>
+                        <li><strong>Artículo (Maestro):</strong> Define QUÉ es el producto</li>
+                        <li><strong>Elementos (Instancias):</strong> Representa cada unidad física individual</li>
+                        <li><strong>Situación (Estado):</strong> Indica DÓNDE está y en QUÉ condición</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ARTÍCULOS -->
+            <section id="articulos">
+                <h2>📦 Artículos - El Producto Base</h2>
+
+                <div class="card">
+                    <h3>¿Qué es un Artículo?</h3>
+                    <p>Un <strong>artículo</strong> es la definición genérica de un producto o servicio. Es como la "ficha técnica" o el "modelo" de referencia. No representa una unidad física concreta, sino el tipo de producto en sí.</p>
+                </div>
+
+                <div class="diagram">
+                    <h3>Información de un Artículo - Estructura de Base de Datos</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Ejemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>codigo_articulo</strong></td>
+                                <td>Código único identificador del artículo (VARCHAR 50)</td>
+                                <td>MH-LED-001</td>
+                            </tr>
+                            <tr>
+                                <td><strong>nombre_articulo</strong></td>
+                                <td>Nombre del artículo en español (VARCHAR 255)</td>
+                                <td>Moving Head LED RGBW 200W</td>
+                            </tr>
+                            <tr>
+                                <td><strong>name_articulo</strong></td>
+                                <td>Nombre del artículo en inglés (VARCHAR 255)</td>
+                                <td>Moving Head LED RGBW 200W</td>
+                            </tr>
+                            <tr>
+                                <td><strong>id_familia</strong></td>
+                                <td>Familia a la que pertenece (FK)</td>
+                                <td>5 → Iluminación Móvil</td>
+                            </tr>
+                            <tr>
+                                <td><strong>precio_alquiler_articulo</strong></td>
+                                <td>Precio de alquiler base del artículo (DECIMAL 10,2)</td>
+                                <td>45.00 €/día</td>
+                            </tr>
+                            <tr>
+                                <td><strong>coeficiente_articulo</strong></td>
+                                <td>Indica si aplica coeficiente reductor (BOOLEAN NULL)<br>
+                                <small>• NULL = hereda de la familia<br>
+                                • TRUE = aplica coeficiente<br>
+                                • FALSE = no aplica (sobrescribe familia)</small></td>
+                                <td>NULL (hereda)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>es_kit_articulo</strong></td>
+                                <td>Indica si es un kit compuesto por otros artículos (BOOLEAN)</td>
+                                <td>FALSE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>control_total_articulo</strong></td>
+                                <td>Requiere control exhaustivo de elementos (BOOLEAN)
+                                    ¿A que afecta ? - Duda
+                                </td>
+
+                                <td>TRUE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>no_facturar_articulo</strong></td>
+                                <td>Artículo de cortesía, no se factura (BOOLEAN)</td>
+                                <td>FALSE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>notas_presupuesto_articulo</strong></td>
+                                <td>Notas técnicas en español que aparecen en presupuestos (TEXT)</td>
+                                <td>"Incluye estuche rígido de transporte..."</td>
+                            </tr>
+                            <tr>
+                                <td><strong>notes_budget_articulo</strong></td>
+                                <td>Notas técnicas en inglés para presupuestos (TEXT)</td>
+                                <td>"Includes hard transport case..."</td>
+                            </tr>
+                            <tr>
+                                <td><strong>orden_obs_articulo</strong></td>
+                                <td>Orden de aparición de observaciones en presupuesto (INT)</td>
+                                <td>200</td>
+                            </tr>
+                            <tr>
+                                <td><strong>observaciones_articulo</strong></td>
+                                <td>Observaciones internas, NO se imprimen en documentos (TEXT)</td>
+                                <td>"Proveedor preferente: LuzTech..."</td>
+                            </tr>
+                            <tr>
+                                <td><strong>activo_articulo</strong></td>
+                                <td>Indica si el artículo está activo en el catálogo (BOOLEAN)</td>
+                                <td>TRUE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>created_at_articulo</strong></td>
+                                <td>Fecha y hora de alta en el sistema (TIMESTAMP)</td>
+                                <td>2024-01-15 10:30:00</td>
+                            </tr>
+                            <tr>
+                                <td><strong>updated_at_articulo</strong></td>
+                                <td>Última actualización del registro (TIMESTAMP)</td>
+                                <td>2024-11-18 14:25:30</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>🎯 Características Especiales de los Artículos</h3>
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">📊 Sistema de Coeficientes Reductores</h4>
+                        <p>El campo <strong>coeficiente_articulo</strong> permite gestionar descuentos por alquileres de múltiples jornadas:</p>
+                        <ul>
+                            <li><strong>NULL:</strong> El artículo hereda el comportamiento de coeficiente de su familia</li>
+                            <li><strong>TRUE:</strong> Se aplica coeficiente reductor (más jornadas = menos precio/día)</li>
+                            <li><strong>FALSE:</strong> NO se aplica coeficiente (precio fijo independiente de jornadas)</li>
+                        </ul>
+                        <div class="example" style="margin-top: 15px;">
+                            <p><strong>Ejemplo práctico:</strong></p>
+                            <p>Si alquilas un Moving Head por 5 días y tiene coeficiente activado:</p>
+                            <ul>
+                                <li>Precio base: 45€/día</li>
+                                <li>5 jornadas → Coeficiente 0.65 (tabla coeficiente)</li>
+                                <li>Precio final: 45€ × 5 días × 0.65 = 146.25€ (en vez de 225€)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">📦 Artículos de Tipo Kit</h4>
+                        <p>El campo <strong>es_kit_articulo</strong> identifica artículos compuestos:</p>
+                        <ul>
+                            <li><strong>TRUE:</strong> Es un kit que agrupa varios artículos (ej: "Pack Iluminación Básica")</li>
+                            <li><strong>FALSE:</strong> Es un artículo individual</li>
+                        </ul>
+                        <div class="example" style="margin-top: 15px;">
+                            <p><strong>Ejemplo de Kit:</strong> "Pack DJ Completo"</p>
+                            <ul>
+                                <li>2× PAR LED 64</li>
+                                <li>1× Controlador DMX</li>
+                                <li>4× Cables DMX</li>
+                                <li>1× Maleta de transporte</li>
+                            </ul>
+                            <p>Se factura como un solo artículo con precio especial.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">🔍 Control Total de Elementos</h4>
+                        <p>El campo <strong>control_total_articulo</strong> activa seguimiento exhaustivo:</p>
+                        <ul>
+                            <li><strong>TRUE:</strong> Requiere control individual de cada elemento físico (equipos de alto valor)</li>
+                            <li><strong>FALSE:</strong> Control de stock general, sin seguimiento individual</li>
+                        </ul>
+                        <div class="example" style="margin-top: 15px;">
+                            <p><strong>Control Total = TRUE:</strong> Moving Heads, consolas digitales, cámaras (cada unidad tiene número de serie)</p>
+                            <p><strong>Control Total = FALSE:</strong> Cables, adaptadores, consumibles (solo cantidad en stock)</p>
+                        </div>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">🌐 Multiidioma (Español/Inglés)</h4>
+                        <p>Todos los campos de texto tienen versión en ambos idiomas:</p>
+                        <ul>
+                            <li><strong>nombre_articulo / name_articulo:</strong> Nombre del producto</li>
+                            <li><strong>notas_presupuesto_articulo / notes_budget_articulo:</strong> Especificaciones técnicas</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Permite generar presupuestos y documentos en español o inglés según el cliente.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>💡 Ejemplo Práctico - Artículo Real del Sistema</h4>
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <p><strong>Artículo:</strong> Moving Head LED RGBW 200W</p>
+                        <table style="margin-top: 10px; box-shadow: none;">
+                            <tbody>
+                                <tr style="background: #f8f9fa;">
+                                    <td style="width: 40%;"><strong>codigo_articulo</strong></td>
+                                    <td>MH-LED-001</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>nombre_articulo</strong></td>
+                                    <td>Moving Head LED RGBW 200W</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td><strong>name_articulo</strong></td>
+                                    <td>Moving Head LED RGBW 200W</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>id_familia</strong></td>
+                                    <td>5 → Iluminación Móvil</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td><strong>precio_alquiler_articulo</strong></td>
+                                    <td>45.00 €/día</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>coeficiente_articulo</strong></td>
+                                    <td>NULL (hereda de familia)</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td><strong>es_kit_articulo</strong></td>
+                                    <td>FALSE (es un artículo individual)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>control_total_articulo</strong></td>
+                                    <td>TRUE (requiere seguimiento individual)</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td><strong>no_facturar_articulo</strong></td>
+                                    <td>FALSE (se factura normalmente)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>notas_presupuesto_articulo</strong></td>
+                                    <td>"Incluye estuche rígido de transporte y set de gobos básico. Requiere toma corriente 220V monofásica."</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td><strong>orden_obs_articulo</strong></td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>observaciones_articulo</strong></td>
+                                    <td>"Proveedor preferente: LuzTech. Revisar lámparas cada 1000h uso."</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td><strong>activo_articulo</strong></td>
+                                    <td>TRUE</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="margin-top: 15px;"><strong>🎯 Importante:</strong> Este artículo NO es una unidad física. Es la "ficha técnica maestra" que describe este tipo de equipo de iluminación. Cuando compres 10 Moving Heads de este modelo, tendrás 10 ELEMENTOS distintos (cada uno con su número de serie) que pertenecen a este ARTÍCULO.</p>
+                    
+                    <div class="highlight" style="margin-top: 15px;">
+                        <p><strong>¿Qué significa esto en la práctica?</strong></p>
+                        <ul>
+                            <li>📋 El ARTÍCULO define las características comunes: precio, especificaciones</li>
+                            <li>🔢 Los ELEMENTOS son las unidades físicas: MH-LED-001-U001, MH-LED-001-U002, etc.</li>
+                            <li>💰 Precio base: 45€/día, pero se aplica coeficiente si alquilas varios días</li>
+                            <li>🔍 Control total activo: cada Moving Head tiene seguimiento individual</li>
+                            <li>📝 Las notas técnicas aparecen automáticamente en presupuestos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Botones de acceso a simulaciones de artículos -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px;">
+                    <div class="card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 15px;">📊 Vista de Tabla</h3>
+                        <p style="color: white; font-size: 1em; margin-bottom: 25px;">Visualiza todos los artículos en formato DataTable con búsqueda y filtros</p>
+                        <a href="../../assets/Reunion/datatables_Articulos.html" target="_blank" style="display: inline-block; background: white; color: #11998e; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 1em; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: all 0.3s;">
+                            📋 Abrir Listado de Artículos
+                        </a>
+                        <p style="color: white; font-size: 0.85em; margin-top: 12px; opacity: 0.9;">Se abrirá en una nueva pestaña</p>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 30px; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 15px;">📝 Formulario de Edición</h3>
+                        <p style="color: white; font-size: 1em; margin-bottom: 25px;">Simulación del formulario para crear o editar artículos</p>
+                        <a href="../../assets/Reunion/articulos.html" target="_blank" style="display: inline-block; background: white; color: #f5576c; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 1em; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: all 0.3s;">
+                            ✏️ Abrir Formulario de Artículos
+                        </a>
+                        <p style="color: white; font-size: 0.85em; margin-top: 12px; opacity: 0.9;">Se abrirá en una nueva pestaña</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ELEMENTOS -->
+            <section id="elementos">
+                <h2>🔢 Elementos - Las Unidades Físicas</h2>
+
+                <div class="card">
+                    <h3>¿Qué es un Elemento?</h3>
+                    <p>Un <strong>elemento</strong> es cada unidad física individual de un artículo. Si el artículo es la "ficha técnica", el elemento es el equipo real que está en el almacén, alquilado a un cliente, en reparación, o en cualquier otra ubicación.</p>
+                    
+                    <div class="highlight" style="margin-top: 20px;">
+                        <strong>📌 Relación importante:</strong> Un artículo puede tener MUCHOS elementos. Cada elemento representa una unidad física concreta y rastreable de ese artículo. Por ejemplo, si tienes 15 Moving Heads del mismo modelo, tendrás 15 elementos diferentes, cada uno con su propio número de serie y estado.
+                    </div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-top: 30px;">
+                    <h3 style="color: white; border-bottom: 2px solid white; padding-bottom: 10px;">🎯 Sistema de Estados de Elementos</h3>
+                    <p style="font-size: 1.1em; margin-top: 15px;">El sistema utiliza una <strong>tabla de estados independiente</strong> (estado_elemento) que define todos los estados posibles y sus características. Cada elemento hace referencia a su estado actual mediante una clave foránea.</p>
+                </div>
+
+                <div class="diagram">
+                    <h3>📋 Tabla ESTADO_ELEMENTO - Definición de Estados</h3>
+                    <p style="margin-bottom: 15px;">Esta tabla maestra define todos los estados posibles y sus características:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Ejemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>id_estado_elemento</strong></td>
+                                <td>Identificador único del estado (INT AUTO_INCREMENT PK)</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td><strong>codigo_estado_elemento</strong></td>
+                                <td>Código corto del estado (VARCHAR 20 UNIQUE)</td>
+                                <td>DISP, ALQU, REPA, BAJA</td>
+                            </tr>
+                            <tr>
+                                <td><strong>descripcion_estado_elemento</strong></td>
+                                <td>Descripción legible del estado (VARCHAR 50)</td>
+                                <td>Disponible, Alquilado, En reparación</td>
+                            </tr>
+                            <tr>
+                                <td><strong>color_estado_elemento</strong></td>
+                                <td>Color hexadecimal para visualización en interfaz (VARCHAR 7)</td>
+                                <td>#4CAF50 (verde), #2196F3 (azul)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>permite_alquiler_estado_elemento</strong></td>
+                                <td>Indica si el elemento puede ser alquilado en este estado (BOOLEAN)</td>
+                                <td>TRUE (Disponible), FALSE (Alquilado)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>observaciones_estado_elemento</strong></td>
+                                <td>Notas sobre el uso de este estado (TEXT)</td>
+                                <td>"Estado para equipos recién adquiridos"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>activo_estado_elemento</strong></td>
+                                <td>Indica si el estado está activo (BOOLEAN)</td>
+                                <td>TRUE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>created_at_estado_elemento</strong></td>
+                                <td>Fecha y hora de creación del estado (TIMESTAMP)</td>
+                                <td>2024-01-10 09:00:00</td>
+                            </tr>
+                            <tr>
+                                <td><strong>updated_at_estado_elemento</strong></td>
+                                <td>Última actualización (TIMESTAMP)</td>
+                                <td>2024-01-10 09:00:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>🎨 Estados Predefinidos del Sistema</h3>
+                    <p>El sistema viene con 8 estados predefinidos listos para usar:</p>
+                    
+                    <table style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descripción</th>
+                                <th style="width: 80px;">Color</th>
+                                <th>¿Permite Alquiler?</th>
+                                <th>Uso Típico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>DISP</strong></td>
+                                <td>Disponible</td>
+                                <td><div style="background: #4CAF50; color: white; padding: 5px; border-radius: 5px; text-align: center;">#4CAF50</div></td>
+                                <td><span class="badge badge-success">SÍ</span></td>
+                                <td>En almacén, listo para alquilar</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ALQU</strong></td>
+                                <td>Alquilado</td>
+                                <td><div style="background: #2196F3; color: white; padding: 5px; border-radius: 5px; text-align: center;">#2196F3</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>Actualmente en uso por cliente</td>
+                            </tr>
+                            <tr>
+                                <td><strong>REPA</strong></td>
+                                <td>En reparación</td>
+                                <td><div style="background: #FF9800; color: white; padding: 5px; border-radius: 5px; text-align: center;">#FF9800</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>En taller técnico por avería</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BAJA</strong></td>
+                                <td>Dado de baja</td>
+                                <td><div style="background: #F44336; color: white; padding: 5px; border-radius: 5px; text-align: center;">#F44336</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>Equipo obsoleto o irreparable</td>
+                            </tr>
+                            <tr>
+                                <td><strong>TERC</strong></td>
+                                <td>De terceros</td>
+                                <td><div style="background: #9C27B0; color: white; padding: 5px; border-radius: 5px; text-align: center;">#9C27B0</div></td>
+                                <td><span class="badge badge-success">SÍ</span></td>
+                                <td>Prestado a empresa colaboradora</td>
+                            </tr>
+                            <tr>
+                                <td><strong>DEPO</strong></td>
+                                <td>En depósito</td>
+                                <td><div style="background: #607D8B; color: white; padding: 5px; border-radius: 5px; text-align: center;">#607D8B</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>En almacén secundario externo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MANT</strong></td>
+                                <td>Mantenimiento</td>
+                                <td><div style="background: #FFC107; color: #333; padding: 5px; border-radius: 5px; text-align: center;">#FFC107</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>Mantenimiento preventivo programado</td>
+                            </tr>
+                            <tr>
+                                <td><strong>TRAN</strong></td>
+                                <td>En tránsito</td>
+                                <td><div style="background: #00BCD4; color: white; padding: 5px; border-radius: 5px; text-align: center;">#00BCD4</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>En transporte entre ubicaciones</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight" style="margin-top: 20px;">
+                        <strong>✨ Ventajas de usar tabla de estados:</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>🎨 <strong>Colores personalizables:</strong> Cada estado tiene su color para visualización</li>
+                            <li>➕ <strong>Extensible:</strong> Puedes añadir nuevos estados sin modificar la tabla elemento</li>
+                            <li>🔒 <strong>Control de reglas:</strong> El campo "permite_alquiler" define qué estados pueden alquilarse</li>
+                            <li>📊 <strong>Reportes precisos:</strong> Consultas más rápidas y legibles</li>
+                            <li>🌐 <strong>Consistencia:</strong> Un solo lugar donde gestionar todos los estados</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="diagram">
+                    <h3>🔧 Estructura de un Elemento - Campos de Base de Datos</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Ejemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>id_elemento</strong></td>
+                                <td>Identificador único interno (INT AUTO_INCREMENT PK)</td>
+                                <td>1247</td>
+                            </tr>
+                            <tr>
+                                <td><strong>id_articulo_elemento</strong></td>
+                                <td>Referencia al artículo al que pertenece (FK NOT NULL)<br>
+                                <small>La familia se obtiene automáticamente del artículo</small></td>
+                                <td>5 → MH-LED-001</td>
+                            </tr>
+                            <tr>
+                                <td><strong>id_marca_elemento</strong></td>
+                                <td>Marca específica de este elemento (FK NULL)</td>
+                                <td>8 → Chauvet</td>
+                            </tr>
+                            <tr>
+                                <td><strong>modelo_elemento</strong></td>
+                                <td>Modelo específico del fabricante (VARCHAR 100)</td>
+                                <td>Intimidator Spot 375Z IRC</td>
+                            </tr>
+                            <tr>
+                                <td><strong>codigo_elemento</strong></td>
+                                <td>Código único del elemento - <strong>GENERADO AUTOMÁTICAMENTE</strong> (VARCHAR 50 UNIQUE)</td>
+                                <td>MH-LED-001-001</td>
+                            </tr>
+                            <tr>
+                                <td><strong>codigo_barras_elemento</strong></td>
+                                <td>Código de barras para escaneo rápido (VARCHAR 100 UNIQUE)</td>
+                                <td>EAN13:7894561230987</td>
+                            </tr>
+                            <tr>
+                                <td><strong>descripcion_elemento</strong></td>
+                                <td>Descripción específica de esta unidad (VARCHAR 255 NOT NULL)</td>
+                                <td>Moving Head Chauvet Intimidator Spot 375Z</td>
+                            </tr>
+                            <tr>
+                                <td><strong>numero_serie_elemento</strong></td>
+                                <td>Número de serie del fabricante (VARCHAR 100 UNIQUE)</td>
+                                <td>CH-2024-789456</td>
+                            </tr>
+                            <tr style="background: #e7f3ff;">
+                                <td><strong>id_estado_elemento</strong></td>
+                                <td><strong>🎯 REFERENCIA AL ESTADO ACTUAL</strong> (FK NOT NULL DEFAULT 1)<br>
+                                <small>Vincula con tabla estado_elemento</small></td>
+                                <td>1 → DISP (Disponible)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ubicacion_elemento</strong></td>
+                                <td>Ubicación física actual (VARCHAR 100)</td>
+                                <td>Almacén Principal - A3-14</td>
+                            </tr>
+                            <tr>
+                                <td><strong>fecha_compra_elemento</strong></td>
+                                <td>Fecha de compra del elemento (DATE)</td>
+                                <td>2024-01-15</td>
+                            </tr>
+                            <tr>
+                                <td><strong>precio_compra_elemento</strong></td>
+                                <td>Precio de compra (DECIMAL 10,2)</td>
+                                <td>1250.00 €</td>
+                            </tr>
+                            <tr>
+                                <td><strong>proveedor_compra_elemento</strong></td>
+                                <td>Proveedor que lo vendió (VARCHAR 255)</td>
+                                <td>LuzTech S.L.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>fecha_alta_elemento</strong></td>
+                                <td>Fecha de puesta en servicio (DATE)</td>
+                                <td>2024-01-20</td>
+                            </tr>
+                            <!-- <tr>
+                                <td><strong>valor_actual_elemento</strong></td>
+                                <td>Valor actual estimado (DECIMAL 10,2)</td>
+                                <td>900.00 €</td>
+                            </tr> -->
+                            <tr>
+                                <td><strong>fecha_fin_garantia_elemento</strong></td>
+                                <td>Fecha de finalización de garantía (DATE)</td>
+                                <td>2026-01-15</td>
+                            </tr>
+                            <tr>
+                                <td><strong>proximo_mantenimiento_elemento</strong></td>
+                                <td>Fecha del próximo mantenimiento programado (DATE)</td>
+                                <td>2025-06-01</td>
+                            </tr>
+                            <tr>
+                                <td><strong>observaciones_elemento</strong></td>
+                                <td>Notas específicas sobre este elemento (TEXT)</td>
+                                <td>"Incluye case Pelican. Lente sustituida 12/2024"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>activo_elemento</strong></td>
+                                <td>Indica si el elemento está activo en el sistema (BOOLEAN)</td>
+                                <td>TRUE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>created_at_elemento</strong></td>
+                                <td>Fecha y hora de alta en el sistema (TIMESTAMP)</td>
+                                <td>2024-01-15 10:30:00</td>
+                            </tr>
+                            <tr>
+                                <td><strong>updated_at_elemento</strong></td>
+                                <td>Última actualización del registro (TIMESTAMP)</td>
+                                <td>2024-11-18 14:25:30</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>🔄 Cómo Funciona el Sistema de Estados</h3>
+                    
+                    <div class="diagram" style="margin: 20px 0;">
+                        <h4 style="color: #667eea; margin-bottom: 15px;">Relación entre Tablas</h4>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border: 3px solid #667eea; min-width: 250px;">
+                                <h5 style="color: #667eea; margin-bottom: 10px;">📋 ESTADO_ELEMENTO</h5>
+                                <p style="font-size: 0.9em; margin: 5px 0;">id = 1</p>
+                                <p style="font-size: 0.9em; margin: 5px 0;">codigo = "DISP"</p>
+                                <p style="font-size: 0.9em; margin: 5px 0;">descripcion = "Disponible"</p>
+                                <p style="font-size: 0.9em; margin: 5px 0;">color = "#4CAF50"</p>
+                                <p style="font-size: 0.9em; margin: 5px 0;">permite_alquiler = TRUE</p>
+                            </div>
+                            
+                            <span style="font-size: 2em; color: #667eea;">→</span>
+                            
+                            <div style="background: #e7f3ff; padding: 20px; border-radius: 10px; border: 3px solid #2196F3; min-width: 250px;">
+                                <h5 style="color: #2196F3; margin-bottom: 10px;">🔧 ELEMENTO</h5>
+                                <p style="font-size: 0.9em; margin: 5px 0;">id_elemento = 1247</p>
+                                <p style="font-size: 0.9em; margin: 5px 0;">codigo = "MH-LED-001-001"</p>
+                                <p style="font-size: 0.9em; margin: 5px 0;"><strong>id_estado_elemento = 1</strong></p>
+                                <p style="font-size: 0.9em; margin: 5px 0;">descripcion = "Moving Head..."</p>
+                                <p style="font-size: 0.9em; margin: 5px 0;">ubicacion = "Almacén A3-14"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="highlight" style="margin-top: 20px;">
+                            <strong>🔗 Clave Foránea:</strong> El campo <code>id_estado_elemento</code> de la tabla elemento hace referencia al <code>id_estado_elemento</code> de la tabla estado_elemento. Esto garantiza que solo se puedan usar estados válidos y permite obtener automáticamente el color, descripción y reglas de cada estado.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>💰 Datos de Adquisición y Control Económico</h3>
+                    <p>El nuevo diseño incluye campos específicos para gestión económica y administrativa:</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                            <h4 style="color: #764ba2; margin-bottom: 10px;">📦 Datos de Compra</h4>
+                            <ul style="margin-left: 20px;">
+                                <li><strong>fecha_compra_elemento:</strong> Cuándo se adquirió</li>
+                                <li><strong>precio_compra_elemento:</strong> Cuánto costó</li>
+                                <li><strong>proveedor_compra_elemento:</strong> Quién lo vendió</li>
+                                <li><strong>fecha_alta_elemento:</strong> Cuándo se puso en servicio</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                            <h4 style="color: #764ba2; margin-bottom: 10px;">📊 Control de Valor</h4>
+                            <ul style="margin-left: 20px;">
+                                <li><strong>valor_actual_elemento:</strong> Valor estimado actual</li>
+                                <li><strong>Depreciación:</strong> precio_compra - valor_actual</li>
+                                <li><strong>ROI:</strong> Ingresos generados vs coste</li>
+                                <li><strong>Rentabilidad:</strong> Análisis por elemento</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="example" style="margin-top: 20px;">
+                        <h4>💡 Ejemplo Práctico - Control Económico</h4>
+                        <p><strong>Elemento:</strong> Moving Head Chauvet MH-LED-001-001</p>
+                        <ul style="margin-top: 10px;">
+                            <li>📅 <strong>Comprado:</strong> 15/01/2024 por 1.250€ a LuzTech S.L.</li>
+                            <li>🚀 <strong>Puesto en servicio:</strong> 20/01/2024</li>
+                            <li>💵 <strong>Valor actual:</strong> 900€ (depreciación: 350€)</li>
+                            <li>📈 <strong>Alquilado 45 veces</strong> a 45€/día = 2.025€ generados</li>
+                            <li>✅ <strong>ROI:</strong> 162% → Equipo rentable y amortizado</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>�️ Gestión de Garantías y Mantenimiento</h3>
+                    <p>Campos dedicados para control de garantías y mantenimiento preventivo:</p>
+                    
+                    <table style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Propósito</th>
+                                <th>Ejemplo de Uso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>fecha_fin_garantia_elemento</strong></td>
+                                <td>Control de garantía del fabricante</td>
+                                <td>Alerta 30 días antes del vencimiento</td>
+                            </tr>
+                            <tr>
+                                <td><strong>proximo_mantenimiento_elemento</strong></td>
+                                <td>Programación de mantenimiento preventivo</td>
+                                <td>Email automático cuando se acerca la fecha</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="example" style="margin-top: 20px;">
+                        <h4>🔔 Alertas Automáticas</h4>
+                        <p>El sistema puede generar alertas automáticas:</p>
+                        <ul style="margin-top: 10px;">
+                            <li>⚠️ "Moving Head MH-LED-001-003: Garantía vence en 25 días"</li>
+                            <li>🔧 "Moving Head MH-LED-001-001: Mantenimiento programado para el 01/06/2025"</li>
+                            <li>� "5 elementos requieren mantenimiento esta semana"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📦 Código de Barras y Gestión Física</h3>
+                    <p>El campo <code>codigo_barras_elemento</code> es fundamental para la operativa diaria:</p>
+                    <ul>
+                        <li><strong>Salida de almacén:</strong> Escanear elementos al prepararlos para alquiler</li>
+                        <li><strong>Entrada de almacén:</strong> Verificar devoluciones escaneando códigos</li>
+                        <li><strong>Inventarios:</strong> Conteo rápido con pistola lectora</li>
+                        <li><strong>Trazabilidad:</strong> Registro automático de movimientos</li>
+                    </ul>
+                    
+                    <div class="example" style="margin-top: 15px;">
+                        <h4>Ejemplo de Proceso con Código de Barras:</h4>
+                        <ol>
+                            <li>Cliente solicita 8× Moving Heads para evento</li>
+                            <li>Operario escanea los 8 elementos seleccionados</li>
+                            <li>Sistema genera albarán automáticamente con esos elementos exactos</li>
+                            <li>Estado cambia automáticamente a "alquilado"</li>
+                            <li>En la devolución, se escanean de nuevo para confirmar</li>
+                            <li>Estado vuelve a "disponible" automáticamente</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>💡 Ejemplo Práctico - Elementos de un Artículo con Nuevo Sistema de Estados</h4>
+                    <p><strong>Artículo Base:</strong> Moving Head LED RGBW 200W (MH-LED-001)</p>
+                    <p style="margin-top: 10px;">Has comprado 5 unidades físicas de este modelo. El sistema crea 5 ELEMENTOS con estados gestionados por la tabla estado_elemento:</p>
+                    
+                    <table style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>N° Serie</th>
+                                <th>Estado (id_estado)</th>
+                                <th>Color</th>
+                                <th>¿Alquilable?</th>
+                                <th>Ubicación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-primary">MH-LED-001-001</span></td>
+                                <td>CH-2024-789456</td>
+                                <td>1 → <strong>DISP</strong> (Disponible)</td>
+                                <td><div style="background: #4CAF50; color: white; padding: 3px 8px; border-radius: 3px; text-align: center;">#4CAF50</div></td>
+                                <td><span class="badge badge-success">SÍ</span></td>
+                                <td>Almacén A3-14</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-primary">MH-LED-001-002</span></td>
+                                <td>CH-2024-789457</td>
+                                <td>2 → <strong>ALQU</strong> (Alquilado)</td>
+                                <td><div style="background: #2196F3; color: white; padding: 3px 8px; border-radius: 3px; text-align: center;">#2196F3</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>Teatro Municipal</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-primary">MH-LED-001-003</span></td>
+                                <td>CH-2024-789458</td>
+                                <td>7 → <strong>MANT</strong> (Mantenimiento)</td>
+                                <td><div style="background: #FFC107; color: #333; padding: 3px 8px; border-radius: 3px; text-align: center;">#FFC107</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>Taller - Revisión 500h</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-primary">MH-LED-001-004</span></td>
+                                <td>CH-2024-789459</td>
+                                <td>3 → <strong>REPA</strong> (En reparación)</td>
+                                <td><div style="background: #FF9800; color: white; padding: 3px 8px; border-radius: 3px; text-align: center;">#FF9800</div></td>
+                                <td><span class="badge" style="background: #dc3545; color: white;">NO</span></td>
+                                <td>SAT LuzTech</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-primary">MH-LED-001-005</span></td>
+                                <td>CH-2024-789460</td>
+                                <td>5 → <strong>TERC</strong> (De terceros)</td>
+                                <td><div style="background: #9C27B0; color: white; padding: 3px 8px; border-radius: 3px; text-align: center;">#9C27B0</div></td>
+                                <td><span class="badge badge-success">SÍ</span></td>
+                                <td>EventosPro S.L.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="highlight" style="margin-top: 15px;">
+                        <p><strong>🎯 Análisis del Ejemplo:</strong></p>
+                        <ul>
+                            <li>✅ Existe UN solo ARTÍCULO: "Moving Head LED RGBW 200W"</li>
+                            <li>✅ Hay CINCO ELEMENTOS físicos con identificadores únicos</li>
+                            <li>✅ Cada elemento referencia su estado mediante <code>id_estado_elemento</code></li>
+                            <li>✅ Los colores se obtienen automáticamente de la tabla estado_elemento</li>
+                            <li>✅ El sistema sabe qué elementos pueden alquilarse (campo <code>permite_alquiler</code>)</li>
+                            <li>📊 <strong>Disponibles para alquilar:</strong> 2 elementos (DISP y TERC)</li>
+                            <li>🚫 <strong>No disponibles:</strong> 3 elementos (ALQU, MANT, REPA)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h4 style="color: white; margin-bottom: 10px;">� Consulta SQL del Ejemplo</h4>
+                        <pre style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; overflow-x: auto; color: white; margin-top: 10px;"><code>SELECT 
+    e.codigo_elemento,
+    e.numero_serie_elemento,
+    est.codigo_estado_elemento,
+    est.descripcion_estado_elemento,
+    est.color_estado_elemento,
+    est.permite_alquiler_estado_elemento,
+    e.ubicacion_elemento
+FROM elemento e
+INNER JOIN estado_elemento est 
+    ON e.id_estado_elemento = est.id_estado_elemento
+WHERE e.id_articulo_elemento = 5  -- Moving Head
+    AND e.activo_elemento = TRUE
+ORDER BY e.codigo_elemento;</code></pre>
+                        <p style="margin-top: 10px; font-size: 0.95em;">Esta consulta obtiene todos los elementos del artículo junto con la información completa de sus estados.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Consultas Útiles con el Nuevo Sistema</h3>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #667eea;">1. Elementos disponibles para alquilar ahora mismo</h4>
+                        <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em;"><code>SELECT COUNT(*) as disponibles
+FROM elemento e
+INNER JOIN estado_elemento est 
+    ON e.id_estado_elemento = est.id_estado_elemento
+WHERE est.permite_alquiler_estado_elemento = TRUE
+    AND e.activo_elemento = TRUE;</code></pre>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #667eea;">2. Elementos por estado con colores</h4>
+                        <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em;"><code>SELECT 
+    est.descripcion_estado_elemento,
+    est.color_estado_elemento,
+    COUNT(*) as cantidad
+FROM elemento e
+INNER JOIN estado_elemento est 
+    ON e.id_estado_elemento = est.id_estado_elemento
+WHERE e.activo_elemento = TRUE
+GROUP BY est.id_estado_elemento
+ORDER BY cantidad DESC;</code></pre>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #667eea;">3. Cambiar estado de un elemento</h4>
+                        <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em;"><code>-- Pasar elemento de DISP a ALQU cuando se alquila
+UPDATE elemento 
+SET id_estado_elemento = (
+    SELECT id_estado_elemento 
+    FROM estado_elemento 
+    WHERE codigo_estado_elemento = 'ALQU'
+),
+ubicacion_elemento = 'Teatro Municipal'
+WHERE codigo_elemento = 'MH-LED-001-001';</code></pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🎯 ¿Por qué es importante separar Artículos y Elementos?</h3>
+                    <p>En un negocio de alquiler de equipos audiovisuales, la distinción entre Artículos y Elementos es <strong>CRÍTICA</strong>:</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #764ba2;">📍 Trazabilidad Individual</h4>
+                        <p>Cada unidad física tiene su propio historial completo:</p>
+                        <ul>
+                            <li>Historial de alquileres: ¿Cuántas veces se ha alquilado?</li>
+                            <li>Registro de reparaciones: ¿Qué averías ha tenido?</li>
+                            <li>Horas de uso acumuladas (si aplica)</li>
+                            <li>Última revisión técnica y mantenimiento</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #764ba2;">💰 Control Financiero Preciso</h4>
+                        <ul>
+                            <li><strong>Rentabilidad por elemento:</strong> ¿Cuánto ha generado cada Moving Head específico?</li>
+                            <li><strong>Costes de mantenimiento:</strong> ¿Cuánto ha costado reparar el elemento MH-LED-001-U007?</li>
+                            <li><strong>ROI individual:</strong> ¿Qué equipos son más rentables?</li>
+                            <li><strong>Depreciación:</strong> Valor real del equipo según uso y estado</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #764ba2;">🔧 Gestión de Mantenimiento</h4>
+                        <ul>
+                            <li>Programar revisiones según horas de uso de cada elemento</li>
+                            <li>Identificar equipos problemáticos (frecuentes reparaciones)</li>
+                            <li>Garantías del fabricante vinculadas a número de serie</li>
+                            <li>Historial técnico completo por unidad</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #764ba2;">📊 Disponibilidad Real</h4>
+                        <ul>
+                            <li><strong>Stock disponible:</strong> No solo "cuántos tengo", sino "cuáles están disponibles"</li>
+                            <li><strong>Planificación de eventos:</strong> Asignar equipos específicos a eventos concretos</li>
+                            <li><strong>Evitar overbooking:</strong> No prometer más equipos de los que hay disponibles</li>
+                            <li><strong>Rotación inteligente:</strong> Distribuir uso entre elementos para equilibrar desgaste</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #764ba2;">⚖️ Responsabilidad Legal</h4>
+                        <ul>
+                            <li>Identificar qué equipo específico entregaste a cada cliente</li>
+                            <li>Verificar estado antes y después del alquiler</li>
+                            <li>Documentación precisa en caso de daños o pérdidas</li>
+                            <li>Seguros: valor y estado de cada elemento individual</li>
+                        </ul>
+                    </div>
+
+                    <div class="example" style="margin-top: 20px;">
+                        <h4>💡 Caso Real: ¿Por qué no basta con saber "tengo 15 Moving Heads"?</h4>
+                        <p><strong>Escenario:</strong> Cliente solicita 10 Moving Heads para un evento este sábado.</p>
+                        <p><strong>Sin control individual (solo artículo):</strong></p>
+                        <ul>
+                            <li>❌ "Tengo 15 en stock, adelante" → ¡ERROR!</li>
+                            <li>❌ Resulta que 3 están alquilados, 2 en reparación, 1 prestado a colaborador</li>
+                            <li>❌ Solo tienes 9 disponibles realmente → Cliente insatisfecho</li>
+                        </ul>
+                        <p><strong>Con control individual (elementos):</strong></p>
+                        <ul>
+                            <li>✅ Consulta instantánea: 9 elementos con estado "disponible"</li>
+                            <li>✅ Identificas los 9 elementos específicos disponibles</li>
+                            <li>✅ Propones al cliente 9 unidades o esperar a devoluciones</li>
+                            <li>✅ Asignas los 9 elementos concretos al alquiler</li>
+                            <li>✅ Preparas exactamente esos 9 con sus códigos de barras</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; margin-top: 40px;">
+                    <h3 style="color: white; border-bottom: 2px solid white; padding-bottom: 10px;">✨ Ventajas del Nuevo Sistema de Estados</h3>
+                    <p style="font-size: 1.1em; margin-top: 15px;">El uso de una tabla independiente para estados ofrece múltiples ventajas frente al uso de ENUM o campos booleanos:</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
+                    <div class="card" style="background: #e8f5e9; border-left: 5px solid #4CAF50;">
+                        <h4 style="color: #4CAF50;">🎨 Personalización Visual</h4>
+                        <p>Cada estado tiene su propio color hexadecimal que se puede cambiar sin modificar código. Ideal para interfaces modernas con indicadores visuales.</p>
+                    </div>
+                    
+                    <div class="card" style="background: #e3f2fd; border-left: 5px solid #2196F3;">
+                        <h4 style="color: #2196F3;">➕ Extensibilidad Total</h4>
+                        <p>Añadir nuevos estados es tan simple como insertar un registro. Sin necesidad de ALTER TABLE ni modificar enumeraciones.</p>
+                    </div>
+                    
+                    <div class="card" style="background: #fff3e0; border-left: 5px solid #FF9800;">
+                        <h4 style="color: #FF9800;">🔒 Reglas de Negocio</h4>
+                        <p>El campo <code>permite_alquiler</code> centraliza la lógica: un único lugar donde definir qué estados pueden alquilarse.</p>
+                    </div>
+                    
+                    <div class="card" style="background: #f3e5f5; border-left: 5px solid #9C27B0;">
+                        <h4 style="color: #9C27B0;">📊 Reportes Mejorados</h4>
+                        <p>Los JOINs con estado_elemento hacen que las consultas sean más legibles y mantenibles. Fácil agrupar por descripción y color.</p>
+                    </div>
+                    
+                    <div class="card" style="background: #fce4ec; border-left: 5px solid #E91E63;">
+                        <h4 style="color: #E91E63;">🌐 Multiidioma Fácil</h4>
+                        <p>Puedes añadir campos como <code>descripcion_en</code>, <code>descripcion_es</code> sin tocar la tabla elemento. Soporte internacional sin complicaciones.</p>
+                    </div>
+                    
+                    <div class="card" style="background: #e0f2f1; border-left: 5px solid #009688;">
+                        <h4 style="color: #009688;">🔄 Auditoría y Cambios</h4>
+                        <p>Cambiar la descripción o color de un estado actualiza automáticamente todos los elementos que lo usan. Un cambio, miles de elementos actualizados.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🆚 Comparativa: ENUM vs Tabla de Estados</h3>
+                    
+                    <table style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Aspecto</th>
+                                <th>Sistema Antiguo (ENUM)</th>
+                                <th>Nuevo Sistema (Tabla)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Añadir nuevo estado</strong></td>
+                                <td>❌ ALTER TABLE elemento MODIFY...</td>
+                                <td>✅ INSERT INTO estado_elemento...</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cambiar descripción</strong></td>
+                                <td>❌ Requiere ALTER TABLE</td>
+                                <td>✅ Simple UPDATE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Colores personalizados</strong></td>
+                                <td>❌ Hardcodeados en código PHP/JS</td>
+                                <td>✅ En base de datos, centralizados</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Reglas de negocio</strong></td>
+                                <td>❌ Lógica dispersa en código</td>
+                                <td>✅ Campo permite_alquiler centralizado</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Consultas SQL</strong></td>
+                                <td>⚠️ CASE WHEN estado = 'DISP'...</td>
+                                <td>✅ JOIN estado_elemento...</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Multiidioma</strong></td>
+                                <td>❌ Traducciones en código</td>
+                                <td>✅ Campos adicionales en tabla</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Auditoría de cambios</strong></td>
+                                <td>❌ Compleja</td>
+                                <td>✅ Timestamps automáticos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td>✅ Ligeramente más rápido</td>
+                                <td>✅ Prácticamente igual con índices</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="highlight" style="margin-top: 20px;">
+                        <strong>🎯 Conclusión:</strong> El nuevo sistema con tabla de estados es mucho más flexible, mantenible y escalable. El pequeño coste de un JOIN adicional se compensa ampliamente con las ventajas de gestión y personalización.
+                    </div>
+                </div>
+
+                <!-- NUEVA SECCIÓN: GENERACIÓN AUTOMÁTICA DE CÓDIGOS -->
+                <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; margin-top: 40px;">
+                    <h3 style="color: white; border-bottom: 2px solid white; padding-bottom: 10px;">⚡ Generación Automática de Códigos de Elementos</h3>
+                    <p style="font-size: 1.1em; margin-top: 15px;">El sistema utiliza un <strong>TRIGGER (disparador automático)</strong> que genera códigos únicos para cada elemento sin intervención humana.</p>
+                </div>
+
+                <div class="card">
+                    <h3>🤖 ¿Qué es un TRIGGER y para qué sirve?</h3>
+                    <p>Un <strong>trigger</strong> (o disparador) es un código que se ejecuta <strong>automáticamente</strong> en la base de datos ANTES de insertar un nuevo elemento. Su función principal es:</p>
+                    <ul>
+                        <li>✅ Generar automáticamente el <code>codigo_elemento</code></li>
+                        <li>✅ Calcular el <code>correlativo_elemento</code> (secuencia por artículo)</li>
+                        <li>✅ Garantizar códigos únicos sin duplicados</li>
+                        <li>✅ Evitar errores humanos en la numeración</li>
+                        <li>✅ Mantener consistencia en el formato de códigos</li>
+                    </ul>
+                </div>
+
+                <div class="diagram">
+                    <h3>🎯 Problema que Resuelve el Trigger</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div style="background: #ffebee; padding: 20px; border-radius: 10px; border-left: 5px solid #f44336;">
+                            <h4 style="color: #f44336; margin-bottom: 10px;">❌ SIN TRIGGER (Manual)</h4>
+                            <p><strong>Usuario debe calcular manualmente:</strong></p>
+                            <pre style="background: white; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 0.85em;">INSERT INTO elemento (
+    id_articulo_elemento,
+    codigo_elemento,      <span style="color: #f44336;">← ¡Calcular!</span>
+    correlativo_elemento, <span style="color: #f44336;">← ¡Calcular!</span>
+    descripcion_elemento
+) VALUES (
+    1,
+    'MH-LED-001-004',    <span style="color: #f44336;">← ¿Era 003 o 004?</span>
+    4,                   <span style="color: #f44336;">← ¿Cuál era el último?</span>
+    'Moving Head'
+);</pre>
+                            <p style="color: #f44336; margin-top: 10px;"><strong>RIESGO:</strong> Error humano → código duplicado → ERROR en base de datos</p>
+                        </div>
+
+                        <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; border-left: 5px solid #4caf50;">
+                            <h4 style="color: #4caf50; margin-bottom: 10px;">✅ CON TRIGGER (Automático)</h4>
+                            <p><strong>Usuario solo indica lo esencial:</strong></p>
+                            <pre style="background: white; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 0.85em;">INSERT INTO elemento (
+    id_articulo_elemento,
+    descripcion_elemento,
+    numero_serie_elemento
+) VALUES (
+    1,
+    'Moving Head Chauvet',
+    'CH-2024-789460'
+);</pre>
+                            <p style="color: #4caf50; margin-top: 10px;"><strong>El TRIGGER genera automáticamente:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>codigo_elemento: "MH-LED-001-004"</li>
+                                <li>correlativo_elemento: 4</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔄 Cómo Funciona el Trigger - Paso a Paso</h3>
+                    
+                    <div class="example" style="margin-top: 20px;">
+                        <h4>📘 Ejemplo 1: Primer Elemento de un Artículo Nuevo</h4>
+                        <p><strong>Situación:</strong> Artículo "MH-LED-001" no tiene ningún elemento todavía.</p>
+                        
+                        <div style="background: white; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                            <p><strong>1️⃣ Usuario inserta:</strong></p>
+                            <pre style="background: #f5f5f5; padding: 10px; border-radius: 5px; font-size: 0.9em;">INSERT INTO elemento (
+    id_articulo_elemento,
+    id_marca_elemento,
+    modelo_elemento,
+    descripcion_elemento,
+    numero_serie_elemento
+) VALUES (
+    1,                              <span style="color: #667eea;">-- Artículo "MH-LED-001"</span>
+    3,                              <span style="color: #667eea;">-- Marca Chauvet</span>
+    'Intimidator Spot 375Z',
+    'Moving Head LED RGBW 200W',
+    'CH-2024-789456'
+);</pre>
+                        </div>
+
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                            <p><strong>2️⃣ El TRIGGER ejecuta automáticamente:</strong></p>
+                            <pre style="background: white; padding: 10px; border-radius: 5px; font-size: 0.85em; line-height: 1.8;">
+<span style="color: #667eea;">-- PASO 1: Buscar código del artículo</span>
+SELECT codigo_articulo 
+FROM articulo 
+WHERE id_articulo = 1;
+<span style="color: #4caf50;">-- Resultado: codigo_articulo = "MH-LED-001"</span>
+
+<span style="color: #667eea;">-- PASO 2: Buscar último correlativo del artículo 1</span>
+SELECT MAX(correlativo_elemento) 
+FROM elemento 
+WHERE id_articulo_elemento = 1;
+<span style="color: #4caf50;">-- Resultado: NULL (no hay elementos todavía)</span>
+<span style="color: #4caf50;">-- Calcula: COALESCE(NULL, 0) + 1 = 1</span>
+
+<span style="color: #667eea;">-- PASO 3: Asignar correlativo</span>
+SET correlativo_elemento = 1;
+
+<span style="color: #667eea;">-- PASO 4: Generar código</span>
+SET codigo_elemento = CONCAT('MH-LED-001', '-', LPAD(1, 3, '0'));
+<span style="color: #4caf50;">-- Resultado: "MH-LED-001-001"</span></pre>
+                        </div>
+
+                        <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                            <p><strong>3️⃣ Resultado final insertado en la base de datos:</strong></p>
+                            <table style="margin-top: 10px; font-size: 0.9em;">
+                                <tbody>
+                                    <tr style="background: #f5f5f5;">
+                                        <td style="width: 40%;"><strong>id_elemento</strong></td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>id_articulo_elemento</strong></td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr style="background: #f5f5f5;">
+                                        <td><strong>codigo_elemento</strong></td>
+                                        <td>"MH-LED-001-001" <span class="badge badge-success">AUTO-GENERADO</span></td>
+                                    </tr>
+                                    <tr style="background: #f5f5f5;">
+                                        <td><strong>correlativo_elemento</strong></td>
+                                        <td>1 <span class="badge badge-success">AUTO-GENERADO</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>descripcion_elemento</strong></td>
+                                        <td>"Moving Head LED RGBW 200W"</td>
+                                    </tr>
+                                    <tr style="background: #f5f5f5;">
+                                        <td><strong>numero_serie_elemento</strong></td>
+                                        <td>"CH-2024-789456"</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="example" style="margin-top: 30px;">
+                        <h4>📗 Ejemplo 2: Añadiendo Más Elementos al Mismo Artículo</h4>
+                        <p><strong>Situación:</strong> Ya existen MH-LED-001-001, MH-LED-001-002, MH-LED-001-003</p>
+                        
+                        <div style="background: white; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                            <p><strong>Usuario inserta el cuarto elemento:</strong></p>
+                            <pre style="background: #f5f5f5; padding: 10px; border-radius: 5px; font-size: 0.9em;">INSERT INTO elemento (
+    id_articulo_elemento,
+    descripcion_elemento,
+    numero_serie_elemento
+) VALUES (
+    1,                              <span style="color: #667eea;">-- Mismo artículo "MH-LED-001"</span>
+    'Moving Head LED RGBW 200W',
+    'CH-2024-789459'               <span style="color: #667eea;">-- Nuevo número de serie</span>
+);</pre>
+                        </div>
+
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                            <p><strong>El TRIGGER calcula:</strong></p>
+                            <pre style="background: white; padding: 10px; border-radius: 5px; font-size: 0.85em;">
+<span style="color: #667eea;">-- Buscar último correlativo del artículo 1</span>
+SELECT MAX(correlativo_elemento) 
+FROM elemento 
+WHERE id_articulo_elemento = 1;
+<span style="color: #4caf50;">-- Resultado: 3 (porque ya existen 001, 002, 003)</span>
+<span style="color: #4caf50;">-- Calcula: 3 + 1 = 4</span>
+
+<span style="color: #667eea;">-- Generar código</span>
+SET codigo_elemento = 'MH-LED-001-004';
+<span style="color: #4caf50;">-- ✅ Siguiente automático sin duplicados</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="example" style="margin-top: 30px;">
+                        <h4>📙 Ejemplo 3: Elementos de Diferentes Artículos</h4>
+                        <p><strong>Los correlativos son INDEPENDIENTES por artículo:</strong></p>
+                        
+                        <table style="margin-top: 15px;">
+                            <thead>
+                                <tr>
+                                    <th>Artículo</th>
+                                    <th>Código Artículo</th>
+                                    <th>Elementos Generados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Moving Head LED</td>
+                                    <td><span class="badge badge-primary">MH-LED-001</span></td>
+                                    <td>
+                                        <span class="badge" style="background: #667eea;">MH-LED-001-001</span>
+                                        <span class="badge" style="background: #667eea;">MH-LED-001-002</span>
+                                        <span class="badge" style="background: #667eea;">MH-LED-001-003</span>
+                                        <span class="badge" style="background: #667eea;">MH-LED-001-004</span>
+                                        <span class="badge" style="background: #667eea;">MH-LED-001-005</span>
+                                    </td>
+                                </tr>
+                                <tr style="background: #f5f5f5;">
+                                    <td>Micrófono Shure SM58</td>
+                                    <td><span class="badge badge-primary">MIC-SM58</span></td>
+                                    <td>
+                                        <span class="badge" style="background: #764ba2;">MIC-SM58-001</span>
+                                        <span class="badge" style="background: #764ba2;">MIC-SM58-002</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Consola Digital X32</td>
+                                    <td><span class="badge badge-primary">CON-X32-001</span></td>
+                                    <td>
+                                        <span class="badge" style="background: #f5576c;">CON-X32-001-001</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="highlight" style="margin-top: 15px;">
+                            <p><strong>🎯 Observa:</strong> Cada artículo mantiene su propia secuencia de correlativos independiente. El Moving Head puede tener 001-005, mientras el Micrófono empieza de nuevo en 001-002.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>✨ Ventajas del Sistema con TRIGGER</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; border-left: 4px solid #4caf50;">
+                            <h4 style="color: #4caf50;">🚫 Sin Errores Humanos</h4>
+                            <p>Imposible crear códigos duplicados o saltar números en la secuencia.</p>
+                        </div>
+                        <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; border-left: 4px solid #2196F3;">
+                            <h4 style="color: #2196F3;">⚡ Totalmente Automático</h4>
+                            <p>No necesitas calcular nada, el sistema lo hace instantáneamente.</p>
+                        </div>
+                        <div style="background: #f3e5f5; padding: 20px; border-radius: 10px; border-left: 4px solid #9c27b0;">
+                            <h4 style="color: #9c27b0;">📏 Códigos Consistentes</h4>
+                            <p>Todos los códigos siguen el mismo patrón: ARTICULO-001, ARTICULO-002...</p>
+                        </div>
+                        <div style="background: #fff3e0; padding: 20px; border-radius: 10px; border-left: 4px solid #ff9800;">
+                            <h4 style="color: #ff9800;">🏃 Ejecución Rápida</h4>
+                            <p>El cálculo se realiza en milisegundos, sin esperas.</p>
+                        </div>
+                        <div style="background: #fce4ec; padding: 20px; border-radius: 10px; border-left: 4px solid #e91e63;">
+                            <h4 style="color: #e91e63;">🔗 Familia Heredada</h4>
+                            <p>Siempre coincide con la familia del artículo padre.</p>
+                        </div>
+                        <div style="background: #e0f2f1; padding: 20px; border-radius: 10px; border-left: 4px solid #009688;">
+                            <h4 style="color: #009688;">📊 Correlativos Ordenados</h4>
+                            <p>Secuencia perfecta: 001, 002, 003... sin saltos ni huecos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diagram" style="background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%); border: 2px solid #667eea;">
+                    <h3>🎬 Resumen Visual del Proceso Completo</h3>
+                    
+                    <div style="margin-top: 30px;">
+                        <div style="text-align: center; padding: 20px; background: white; border-radius: 10px; margin-bottom: 20px;">
+                            <h4 style="color: #667eea;">👤 USUARIO INSERTA</h4>
+                            <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; display: inline-block; text-align: left; margin-top: 10px;">id_articulo_elemento: 1
+descripcion_elemento: "Moving Head"
+numero_serie: "CH-2024-789460"</pre>
+                        </div>
+
+                        <div style="text-align: center; font-size: 2em; color: #667eea; margin: 20px 0;">
+                            ↓
+                        </div>
+
+                        <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; margin-bottom: 20px;">
+                            <h4>⚡ TRIGGER ACTÚA AUTOMÁTICAMENTE</h4>
+                            <div style="text-align: left; margin-top: 15px; font-size: 0.9em;">
+                                <p>1️⃣ Busca artículo → "MH-LED-001"</p>
+                                <p>2️⃣ Busca familia → 5 (Iluminación Móvil)</p>
+                                <p>3️⃣ Busca max correlativo → 4</p>
+                                <p>4️⃣ Calcula siguiente → 5</p>
+                                <p>5️⃣ Genera código → "MH-LED-001-005"</p>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; font-size: 2em; color: #667eea; margin: 20px 0;">
+                            ↓
+                        </div>
+
+                        <div style="text-align: center; padding: 20px; background: #e8f5e9; border-radius: 10px; border: 2px solid #4caf50;">
+                            <h4 style="color: #4caf50;">💾 BASE DE DATOS GUARDA</h4>
+                            <pre style="background: white; padding: 15px; border-radius: 8px; display: inline-block; text-align: left; margin-top: 10px; border: 1px solid #4caf50;">id_elemento: 157
+id_articulo_elemento: 1
+codigo_elemento: "MH-LED-001-005" <span style="color: #4caf50;">← AUTO</span>
+correlativo_elemento: 5 <span style="color: #4caf50;">← AUTO</span>
+descripcion_elemento: "Moving Head"
+numero_serie: "CH-2024-789460"</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight" style="margin-top: 30px;">
+                    <h3>🎓 Conclusión sobre Elementos y Triggers</h3>
+                    <p>El sistema de <strong>elementos con generación automática de códigos</strong> mediante triggers ofrece:</p>
+                    <ul>
+                        <li>✅ <strong>Control total:</strong> Cada unidad física tiene un código único y rastreable</li>
+                        <li>✅ <strong>Automatización:</strong> No hay intervención manual en la codificación</li>
+                        <li>✅ <strong>Escalabilidad:</strong> Funciona con 10 o con 10,000 elementos</li>
+                        <li>✅ <strong>Consistencia:</strong> Todos los códigos siguen el mismo patrón lógico</li>
+                        <li>✅ <strong>Trazabilidad:</strong> Puedes seguir el ciclo de vida de cada equipo</li>
+                        <li>✅ <strong>Fiabilidad:</strong> Imposible tener códigos duplicados o errores de secuencia</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-size: 1.1em;"><strong>💡 Resultado:</strong> Un sistema profesional, robusto y preparado para gestionar miles de equipos audiovisuales de forma eficiente.</p>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; margin-top: 40px;">
+                    <h3 style="color: white; margin-bottom: 15px;">🖥️ ¿Quieres ver cómo funciona en la práctica?</h3>
+                    <p style="color: white; font-size: 1.1em; margin-bottom: 25px;">Accede a una simulación de la pantalla de introducción de elementos físicos</p>
+                    <a href="elementos.html" target="_blank" style="display: inline-block; background: white; color: #667eea; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 1.1em; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: all 0.3s;">
+                        🔢 Abrir Formulario de Elementos
+                    </a>
+                    <p style="color: white; font-size: 0.9em; margin-top: 15px; opacity: 0.9;">Se abrirá en una nueva pestaña</p>
+                </div>
+            </section>
+
+            <!-- SITUACIÓN -->
+            <section id="situacion">
+                <h2>📍 Situación de Artículos - Estado y Ubicación</h2>
+
+                <div class="card">
+                    <h3>¿Qué es la Situación?</h3>
+                    <p>La <strong>situación</strong> indica el estado actual y la ubicación de cada elemento. Es fundamental para saber en todo momento dónde está cada unidad física y en qué condición se encuentra.</p>
+                </div>
+
+                <div class="diagram">
+                    <h3>Estados Posibles de Situación</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Descripción</th>
+                                <th>Ejemplos de Uso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-success">En Almacén</span></td>
+                                <td>Producto disponible en stock</td>
+                                <td>Listo para venta o instalación</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-info">En Tránsito</span></td>
+                                <td>En camino desde proveedor o entre ubicaciones</td>
+                                <td>Pedido en camino, transferencia entre almacenes</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">En Preparación</span></td>
+                                <td>Siendo preparado para envío o instalación</td>
+                                <td>Recogido del almacén, en zona de preparación</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">En Instalación</span></td>
+                                <td>Actualmente siendo instalado en cliente</td>
+                                <td>Equipo técnico trabajando en montaje</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-info">Instalado</span></td>
+                                <td>Instalado y funcionando en cliente</td>
+                                <td>Producto entregado y operativo</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">En Reparación</span></td>
+                                <td>En servicio técnico</td>
+                                <td>Avería, mantenimiento, revisión</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge" style="background: #6c757d; color: white;">Retirado</span></td>
+                                <td>Retirado de cliente</td>
+                                <td>Sustitución, fin de vida útil</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge" style="background: #dc3545; color: white;">Dado de Baja</span></td>
+                                <td>Fuera de servicio definitivamente</td>
+                                <td>Irreparable, obsoleto, destruido</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Información Adicional de Situación</h3>
+                    <p>Además del estado, la situación puede incluir:</p>
+                    <ul>
+                        <li><strong>Ubicación Específica:</strong> Almacén A - Pasillo 3 - Estantería 12</li>
+                        <li><strong>Cliente Asignado:</strong> Si está instalado o en instalación</li>
+                        <li><strong>Fecha de Cambio:</strong> Cuándo cambió a ese estado</li>
+                        <li><strong>Responsable:</strong> Quién gestionó el cambio</li>
+                        <li><strong>Observaciones:</strong> Notas sobre el estado actual</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <h4>💡 Ejemplo Práctico - Ciclo de Vida Completo</h4>
+                    <p><strong>Elemento:</strong> TOLDO-001-U004 (Número de Serie: SN-2024-0004)</p>
+                    <p><strong>Historial de Situaciones:</strong></p>
+                    
+                    <table style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Situación</th>
+                                <th>Ubicación/Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10/01/2024</td>
+                                <td><span class="badge badge-info">En Tránsito</span></td>
+                                <td>Pedido a proveedor - Ref: PED-2024-001</td>
+                            </tr>
+                            <tr>
+                                <td>15/01/2024</td>
+                                <td><span class="badge badge-success">En Almacén</span></td>
+                                <td>Almacén Central - Zona A-12</td>
+                            </tr>
+                            <tr>
+                                <td>20/02/2024</td>
+                                <td><span class="badge badge-warning">En Preparación</span></td>
+                                <td>Preparado para instalación cliente: García López</td>
+                            </tr>
+                            <tr>
+                                <td>22/02/2024</td>
+                                <td><span class="badge badge-warning">En Instalación</span></td>
+                                <td>Calle Mayor 45, Madrid - Equipo: Juan Pérez</td>
+                            </tr>
+                            <tr>
+                                <td>22/02/2024</td>
+                                <td><span class="badge badge-info">Instalado</span></td>
+                                <td>Cliente: García López - Instalación completada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p style="margin-top: 15px;"><strong>Estado Actual:</strong> Este toldo está instalado en el domicilio del cliente García López y funcionando correctamente.</p>
+                </div>
+            </section>
+
+            <!-- EJEMPLOS PRÁCTICOS -->
+            <section id="ejemplos">
+                <h2>📚 Ejemplos Prácticos Completos</h2>
+
+                <div class="card">
+                    <h3>Ejemplo 1: Control de Inventario</h3>
+                    
+                    <p><strong>Situación:</strong> Necesitas saber cuántos toldos modelo "Premium 3x2m" tienes disponibles para vender.</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <p><strong>Artículo:</strong></p>
+                        <ul>
+                            <li>Código: TOLDO-001</li>
+                            <li>Nombre: Toldo Eléctrico Premium 3x2m</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Elementos registrados:</strong></p>
+                    <table style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Elemento</th>
+                                <th>Serie</th>
+                                <th>Situación</th>
+                                <th>Disponible Venta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TOLDO-001-U001</td>
+                                <td>SN-0001</td>
+                                <td><span class="badge badge-success">En Almacén</span></td>
+                                <td>✅ SÍ</td>
+                            </tr>
+                            <tr>
+                                <td>TOLDO-001-U002</td>
+                                <td>SN-0002</td>
+                                <td><span class="badge badge-success">En Almacén</span></td>
+                                <td>✅ SÍ</td>
+                            </tr>
+                            <tr>
+                                <td>TOLDO-001-U003</td>
+                                <td>SN-0003</td>
+                                <td><span class="badge badge-warning">En Instalación</span></td>
+                                <td>❌ NO</td>
+                            </tr>
+                            <tr>
+                                <td>TOLDO-001-U004</td>
+                                <td>SN-0004</td>
+                                <td><span class="badge badge-info">Instalado</span></td>
+                                <td>❌ NO</td>
+                            </tr>
+                            <tr>
+                                <td>TOLDO-001-U005</td>
+                                <td>SN-0005</td>
+                                <td><span class="badge badge-info">En Tránsito</span></td>
+                                <td>❌ NO (aún no ha llegado)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="highlight" style="margin-top: 20px;">
+                        <strong>Conclusión:</strong> Tienes 2 unidades disponibles para venta inmediata (U001 y U002), 1 en proceso de instalación (U003), 1 ya instalada (U004), y 1 en camino (U005).
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Ejemplo 2: Trazabilidad de Garantía</h3>
+                    
+                    <p><strong>Situación:</strong> Un cliente llama reportando un problema con su toldo. Necesitas localizar la unidad específica y su historial.</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <p><strong>Datos del Cliente:</strong> García López - Instalación: 22/02/2024</p>
+                        <p><strong>Consulta en Sistema:</strong></p>
+                        <ul>
+                            <li>Artículo: TOLDO-001 - Toldo Eléctrico Premium 3x2m</li>
+                            <li>Elemento: TOLDO-001-U004</li>
+                            <li>Número de Serie: SN-2024-0004</li>
+                            <li>Situación Actual: <span class="badge badge-info">Instalado</span></li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Historial Completo del Elemento:</strong></p>
+                    <table style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Evento</th>
+                                <th>Responsable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10/01/2024</td>
+                                <td>Pedido a proveedor</td>
+                                <td>Dpto. Compras</td>
+                            </tr>
+                            <tr>
+                                <td>15/01/2024</td>
+                                <td>Recepción en almacén</td>
+                                <td>Almacén - Pedro Ruiz</td>
+                            </tr>
+                            <tr>
+                                <td>20/02/2024</td>
+                                <td>Asignado a cliente García López</td>
+                                <td>Comercial - Ana Martín</td>
+                            </tr>
+                            <tr>
+                                <td>22/02/2024</td>
+                                <td>Instalación completada</td>
+                                <td>Técnico - Juan Pérez</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="highlight" style="margin-top: 20px;">
+                        <strong>Información para Garantía:</strong>
+                        <ul>
+                            <li>✅ Producto dentro del período de garantía (5 años)</li>
+                            <li>✅ Instalación realizada por técnico autorizado: Juan Pérez</li>
+                            <li>✅ Fecha de instalación: 22/02/2024</li>
+                            <li>✅ Número de serie verificado: SN-2024-0004</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Ejemplo 3: Gestión de Reparaciones</h3>
+                    
+                    <p><strong>Situación:</strong> El elemento TOLDO-001-U004 presenta un fallo en el motor. Necesitas gestionar la reparación.</p>
+                    
+                    <p><strong>Proceso en el Sistema:</strong></p>
+                    <ol>
+                        <li>
+                            <strong>Cambio de Situación:</strong>
+                            <ul>
+                                <li>De: <span class="badge badge-info">Instalado</span></li>
+                                <li>A: <span class="badge badge-warning">En Reparación</span></li>
+                                <li>Observaciones: "Fallo en motor Somfy - No responde a mando"</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Durante la Reparación:</strong>
+                            <ul>
+                                <li>Ubicación: Taller técnico</li>
+                                <li>Responsable: Servicio Técnico - Luis Gómez</li>
+                                <li>Fecha inicio: 15/05/2024</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Tras la Reparación:</strong>
+                            <ul>
+                                <li>Situación: <span class="badge badge-info">Instalado</span></li>
+                                <li>Observaciones: "Motor sustituido por garantía - Ref: REP-2024-045"</li>
+                                <li>Fecha finalización: 18/05/2024</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <div class="highlight" style="margin-top: 20px;">
+                        <strong>Ventaja:</strong> El sistema mantiene todo el historial de reparaciones de cada elemento específico, permitiendo análisis de calidad y control de garantías.
+                    </div>
+                </div>
+            </section>
+
+            <!-- FLUJO DE TRABAJO -->
+            <section id="flujo">
+                <h2>🔄 Flujo de Trabajo Típico</h2>
+
+                <div class="card">
+                    <h3>Proceso Completo: Desde la Compra hasta la Instalación</h3>
+                    
+                    <div class="diagram">
+                        <h4>Paso 1️⃣: Definición del Artículo</h4>
+                        <p>Se crea el artículo base en el sistema con toda su información</p>
+                        <div class="example">
+                            <strong>Artículo:</strong> MH-LED-001 - Moving Head LED RGBW 200W<br>
+                            <strong>Precio Alquiler:</strong> 45.00 €/día<br>
+                            <strong>Familia:</strong> Iluminación Móvil<br>
+                            <strong>Control Total:</strong> TRUE (seguimiento individual)<br>
+                            <strong>Coeficiente:</strong> NULL (hereda de familia)
+                        </div>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>Paso 2️⃣: Pedido a Proveedor</h4>
+                        <p>Se realiza un pedido de unidades físicas del artículo</p>
+                        <div class="example">
+                            <strong>Pedido:</strong> 5 unidades del artículo MH-LED-001<br>
+                            <strong>Proveedor:</strong> LuzTech - Ref. Pedido: PED-2024-0045<br>
+                            <strong>Se registrarán:</strong> 5 elementos (MH-LED-001-U001 a U005)<br>
+                            <strong>Estado inicial:</strong> <span class="badge" style="background: #6c757d; color: white;">En tránsito desde proveedor</span>
+                        </div>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>Paso 3️⃣: Recepción en Almacén</h4>
+                        <p>Las unidades físicas llegan y se registran individualmente</p>
+                        <div class="example">
+                            <strong>Acción:</strong> Crear 5 elementos con números de serie<br>
+                            <strong>Registros creados:</strong><br>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>MH-LED-001-U001 (S/N: CH-2024-789456)</li>
+                                <li>MH-LED-001-U002 (S/N: CH-2024-789457)</li>
+                                <li>MH-LED-001-U003 (S/N: CH-2024-789458)</li>
+                                <li>MH-LED-001-U004 (S/N: CH-2024-789459)</li>
+                                <li>MH-LED-001-U005 (S/N: CH-2024-789460)</li>
+                            </ul>
+                            <strong>Estado:</strong> <span class="badge badge-success">disponible</span><br>
+                            <strong>Ubicación:</strong> Almacén Principal - Pasillo A3, Estantería 14-15<br>
+                            <strong>Marca asignada:</strong> Chauvet
+                        </div>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>Paso 4️⃣: Solicitud de Alquiler</h4>
+                        <p>Un cliente solicita alquilar equipos de iluminación</p>
+                        <div class="example">
+                            <strong>Cliente:</strong> Ayuntamiento de Valencia - Concierto Fiestas Patronales<br>
+                            <strong>Presupuesto:</strong> PPTO-2024-0156<br>
+                            <strong>Artículos solicitados:</strong> 8× Moving Head LED RGBW 200W<br>
+                            <strong>Período:</strong> Del 15 al 20 de marzo (6 jornadas)<br>
+                            <strong>Cálculo precio:</strong><br>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Precio base: 45€/día × 8 unidades × 6 días = 2.160€</li>
+                                <li>Coeficiente 6 jornadas: 0.70</li>
+                                <li>Precio final: 2.160€ × 0.70 = 1.512€</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>Paso 5️⃣: Preparación y Entrega</h4>
+                        <p>Se asignan elementos específicos y se preparan para el evento</p>
+                        <div class="example">
+                            <strong>Elementos asignados al alquiler:</strong><br>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>MH-LED-001-U001, U002, U003, U005</li>
+                                <li>MH-LED-002-U001, U002, U003, U004 (otro modelo compatible)</li>
+                            </ul>
+                            <strong>Estado cambiado a:</strong> <span class="badge badge-warning">alquilado</span><br>
+                            <strong>Situación registrada:</strong><br>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Cliente: Ayuntamiento de Valencia</li>
+                                <li>Fecha inicio: 15/03/2024</li>
+                                <li>Fecha fin prevista: 20/03/2024</li>
+                                <li>Ubicación: Plaza del Ayuntamiento, Valencia</li>
+                                <li>Documento: Albarán ALB-2024-0298</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>Paso 6️⃣: Devolución y Facturación</h4>
+                        <p>El evento finaliza, los equipos vuelven y se factura el servicio</p>
+                        <div class="example">
+                            <strong>Fecha devolución:</strong> 21/03/2024<br>
+                            <strong>Revisión técnica:</strong> Todos los equipos en perfecto estado<br>
+                            <strong>Estado cambiado a:</strong> <span class="badge badge-success">disponible</span><br>
+                            <strong>Situación actualizada:</strong> Historico = TRUE (se archiva el registro del alquiler)<br>
+                            <strong>Factura generada:</strong> FACT-2024-0187 por importe de 1.512€ + IVA<br>
+                            <strong>Ubicación actual:</strong> Almacén Principal - A3-14/15 (disponibles para siguiente alquiler)
+                        </div>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>Paso 7️⃣: Incidencia (Caso Alternativo)</h4>
+                        <p>Qué ocurre si un elemento se avería durante el alquiler</p>
+                        <div class="example">
+                            <strong>Elemento afectado:</strong> MH-LED-001-U002<br>
+                            <strong>Problema:</strong> Motor Pan no funciona correctamente<br>
+                            <strong>Acción inmediata:</strong><br>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Estado cambiado a: <span class="badge" style="background: #dc3545; color: white;">reparacion</span></li>
+                                <li>Ubicación: Taller Técnico</li>
+                                <li>Observaciones: "Motor Pan bloqueado. Revisión completa necesaria."</li>
+                                <li>Fecha entrada taller: 21/03/2024</li>
+                            </ul>
+                            <strong>Seguimiento:</strong> El sistema registra todo el proceso de reparación hasta que vuelve a estar <span class="badge badge-success">disponible</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Resumen del Estado del Stock</h3>
+                    <p>En cualquier momento, el sistema puede informar del estado general en tiempo real:</p>
+                    
+                    <table style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>Artículo</th>
+                                <th>Código</th>
+                                <th>Total Elementos</th>
+                                <th>Disponibles</th>
+                                <th>Alquilados</th>
+                                <th>Reparación</th>
+                                <th>Terceros</th>
+                                <th>Baja</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Moving Head LED RGBW 200W</td>
+                                <td><span class="badge badge-primary">MH-LED-001</span></td>
+                                <td style="text-align: center;"><strong>15</strong></td>
+                                <td style="text-align: center;"><span class="badge badge-success">8</span></td>
+                                <td style="text-align: center;"><span class="badge badge-warning">5</span></td>
+                                <td style="text-align: center;"><span class="badge" style="background: #dc3545; color: white;">1</span></td>
+                                <td style="text-align: center;"><span class="badge badge-info">1</span></td>
+                                <td style="text-align: center;"><span class="badge" style="background: #6c757d; color: white;">0</span></td>
+                            </tr>
+                            <tr>
+                                <td>PAR LED 64 RGBW</td>
+                                <td><span class="badge badge-primary">PAR-LED-064</span></td>
+                                <td style="text-align: center;"><strong>40</strong></td>
+                                <td style="text-align: center;"><span class="badge badge-success">28</span></td>
+                                <td style="text-align: center;"><span class="badge badge-warning">10</span></td>
+                                <td style="text-align: center;"><span class="badge" style="background: #dc3545; color: white;">2</span></td>
+                                <td style="text-align: center;"><span class="badge badge-info">0</span></td>
+                                <td style="text-align: center;"><span class="badge" style="background: #6c757d; color: white;">0</span></td>
+                            </tr>
+                            <tr>
+                                <td>Consola Digital X32</td>
+                                <td><span class="badge badge-primary">CON-X32-001</span></td>
+                                <td style="text-align: center;"><strong>3</strong></td>
+                                <td style="text-align: center;"><span class="badge badge-success">1</span></td>
+                                <td style="text-align: center;"><span class="badge badge-warning">2</span></td>
+                                <td style="text-align: center;"><span class="badge" style="background: #dc3545; color: white;">0</span></td>
+                                <td style="text-align: center;"><span class="badge badge-info">0</span></td>
+                                <td style="text-align: center;"><span class="badge" style="background: #6c757d; color: white;">0</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="highlight" style="margin-top: 20px;">
+                        <h4>🎯 Información en Tiempo Real</h4>
+                        <p>El sistema permite consultas instantáneas como:</p>
+                        <ul>
+                            <li>¿Cuántos Moving Heads tengo disponibles para alquilar AHORA? → <strong>8 unidades</strong></li>
+                            <li>¿Dónde está el elemento MH-LED-001-U007? → <strong>Alquilado - Cliente: Teatro Municipal</strong></li>
+                            <li>¿Qué equipos vencen su alquiler mañana? → <strong>Lista automática</strong></li>
+                            <li>¿Cuánto he facturado con Moving Heads este mes? → <strong>Reportes automáticos</strong></li>
+                            <li>¿Qué equipos están en reparación y desde cuándo? → <strong>Seguimiento completo</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BENEFICIOS -->
+            <section>
+                <h2>✨ Beneficios del Sistema</h2>
+
+                <div class="flow-container">
+                    <div class="card" style="flex: 1; min-width: 300px;">
+                        <h3>🎯 Control Total</h3>
+                        <ul>
+                            <li>Visibilidad completa del inventario</li>
+                            <li>Ubicación exacta de cada unidad</li>
+                            <li>Estado actualizado en tiempo real</li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="flex: 1; min-width: 300px;">
+                        <h3>📈 Trazabilidad</h3>
+                        <ul>
+                            <li>Historial completo de cada elemento</li>
+                            <li>Control de garantías</li>
+                            <li>Seguimiento de reparaciones</li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="flex: 1; min-width: 300px;">
+                        <h3>⚡ Eficiencia</h3>
+                        <ul>
+                            <li>Búsqueda rápida de unidades</li>
+                            <li>Reportes automáticos</li>
+                            <li>Menos errores humanos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <h3>🚀 En Resumen</h3>
+                    <p>Este sistema le permite tener el control absoluto de su inventario, desde que compra un producto hasta que lo instala en el cliente final, pasando por todas las etapas intermedias. Cada unidad física es rastreable, cada movimiento es registrado, y toda la información está siempre disponible y actualizada.</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p><strong>Sistema de Gestión de Base de Datos</strong></p>
+            <p>Documentación técnica para cliente - Versión 1.0</p>
+            <p>© 2025 - Todos los derechos reservados</p>
+        </footer>
+    </div>
+</body>
+</html>
+
+
