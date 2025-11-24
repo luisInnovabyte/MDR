@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  // Agregar estilos CSS para el modal de imagen
+  // Agregar estilos CSS para el modal de imagen y grupos
   if (!document.getElementById("imagen-modal-styles")) {
     const style = document.createElement("style");
     style.id = "imagen-modal-styles";
@@ -15,6 +15,19 @@ $(document).ready(function () {
             .img-thumbnail:hover {
                 transform: scale(1.05);
                 transition: transform 0.3s ease;
+            }
+            .group-row {
+                background-color: #f8f9fa !important;
+                font-weight: bold;
+                font-size: 1.1em;
+                cursor: pointer;
+            }
+            .group-row:hover {
+                background-color: #e9ecef !important;
+            }
+            .group-row td {
+                padding: 12px 8px !important;
+                border-bottom: 2px solid #0d6efd !important;
             }
         `;
     document.head.appendChild(style);
@@ -115,6 +128,12 @@ $(document).ready(function () {
         defaultContent: "",
         className: "text-center",
       }, // Columna 10: EDITAR
+      {
+        name: "elementos",
+        data: null,
+        defaultContent: "",
+        className: "text-center",
+      }, // Columna 11: ELEMENTOS
     ],
     columnDefs: [
       // Columna 0: BOTÓN MÁS
@@ -269,6 +288,20 @@ $(document).ready(function () {
                              </button>`;
         },
       },
+      // Columna 11: BOTON PARA VER ELEMENTOS
+      {
+        targets: "elementos:name",
+        width: "8%",
+        searchable: false,
+        orderable: false,
+        class: "text-center",
+        render: function (data, type, row) {
+          return `<button type="button" class="btn btn-warning btn-sm verElementos" data-toggle="tooltip-primary" data-placement="top" title="Ver Elementos"  
+                             data-id_articulo="${row.id_articulo}"> 
+                             <i class="bi bi-list-ul"></i>
+                             </button>`;
+        },
+      },
     ],
     ajax: {
       url: "../../controller/articulo.php?op=listar",
@@ -278,6 +311,26 @@ $(document).ready(function () {
         return json.data || json;
       },
     },
+    order: [[4, 'asc']], // Ordenar por columna de familia (índice 4)
+    rowGroup: {
+      dataSrc: 'nombre_familia',
+      startRender: function (rows, group) {
+        // Obtener información del grupo
+        var familiaData = rows.data()[0];
+        var codigoFamilia = familiaData.codigo_familia || 'Sin código';
+        var nombreFamilia = group || 'Sin familia';
+        var count = rows.count();
+        
+        return $('<tr/>')
+          .addClass('group-row bg-light')
+          .append('<td colspan="12" class="text-start fw-bold text-primary">' +
+            '<i class="bi bi-folder-fill me-2"></i>' +
+            '<span class="badge bg-primary me-2">' + codigoFamilia + '</span>' +
+            nombreFamilia + 
+            ' <span class="badge bg-secondary ms-2">' + count + ' artículo(s)</span>' +
+            '</td>');
+      }
+    }
   };
   ////////////////////////////
   // FIN DE LA TABLA DE ARTÍCULOS //
@@ -659,6 +712,26 @@ $(document).ready(function () {
   });
   ///////////////////////////////////////
   //        FIN ZONA EDITAR           //
+  /////////////////////////////////////
+
+  ///////////////////////////////////////
+  //   INICIO ZONA VER ELEMENTOS       //
+  /////////////////////////////////////
+  // CAPTURAR EL CLICK EN EL BOTÓN DE VER ELEMENTOS
+  $(document).on("click", ".verElementos", function (event) {
+    event.preventDefault();
+
+    let id_articulo = $(this).data("id_articulo");
+    console.log("Ver elementos del artículo:", id_articulo);
+
+    // Por ahora mostrar alert
+    alert("ID del artículo: " + id_articulo);
+    
+    // TODO: Redirigir a la tabla de elementos filtrada
+    // window.location.href = `../MntElementos/index.php?id_articulo=${id_articulo}`;
+  });
+  ///////////////////////////////////////
+  //     FIN ZONA VER ELEMENTOS        //
   /////////////////////////////////////
 
   ////////////////////////////////////////////////

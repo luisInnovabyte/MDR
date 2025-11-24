@@ -73,6 +73,7 @@ function puedeVerMenu($idRol, $modulo) {
 <!--             
             <li class="sub-item"><a href="../MntFamilia/index.php" class="sub-link">Familias</a></li> -->
             
+            <li class="sub-item"><a href="../MntEstados_elemento/index.php" class="sub-link">Estados elementos</a></li>
             <li class="sub-item"><a href="../MntGrupo_articulo/index.php" class="sub-link">Grupo</a></li>
             <li class="sub-item"><a href="../MntFamilia_unidad/index.php" class="sub-link">Familias</a></li>
             <li class="sub-item"><a href="../MntMarca/index.php" class="sub-link">Marcas</a></li>

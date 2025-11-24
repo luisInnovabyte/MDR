@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test AJAX Estado Elemento</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        .log { margin: 10px 0; padding: 10px; background: #f9f9f9; border-left: 3px solid #007bff; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test AJAX - Estado Elemento</h1>
+    
+    <div class="test-section info">
+        <h3>Información del Test</h3>
+        <p>Este script prueba la comunicación AJAX con el controller de estado_elemento.</p>
+        <p><strong>URL del Controller:</strong> ../../controller/estado_elemento.php</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Test 1: Listar Estados</h3>
+        <button id="btnListar">Ejecutar Test de Listar</button>
+        <div id="resultListar"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test 2: Mostrar Estado por ID</h3>
+        <label>ID del Estado: <input type="number" id="idEstado" value="1" style="width: 80px;"></label>
+        <button id="btnMostrar">Ejecutar Test de Mostrar</button>
+        <div id="resultMostrar"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test 3: Verificar Controller Directo</h3>
+        <button id="btnVerificar">Ver Controller en Nueva Ventana</button>
+        <p><small>Abrirá el controller directamente para ver si hay errores PHP</small></p>
+    </div>
+
+    <div class="test-section">
+        <h3>Logs del Console</h3>
+        <div id="consoleLogs"></div>
+    </div>
+
+    <script>
+        // Función para agregar logs
+        function addLog(message, type = 'info') {
+            const logDiv = $('<div class="log"></div>').html(
+                `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`
+            );
+            $('#consoleLogs').prepend(logDiv);
+            console.log(message);
+        }
+
+        // Test 1: Listar Estados
+        $('#btnListar').click(function() {
+            addLog('🚀 Iniciando test de listar estados...');
+            $('#resultListar').html('<p>⏳ Cargando...</p>');
+            
+            $.ajax({
+                url: '../../controller/estado_elemento.php',
+                method: 'GET',
+                data: { op: 'listar' },
+                dataType: 'json',
+                success: function(response) {
+                    addLog('✅ Respuesta recibida de listar', 'success');
+                    console.log('Respuesta completa:', response);
+                    
+                    let html = '<div class="success">';
+                    html += '<h4>✅ Éxito</h4>';
+                    html += '<p><strong>Total de registros:</strong> ' + (response.data ? response.data.length : 0) + '</p>';
+                    
+                    if (response.data && response.data.length > 0) {
+                        html += '<table border="1" cellpadding="5" style="border-collapse: collapse; width: 100%; margin-top: 10px;">';
+                        html += '<tr style="background: #007bff; color: white;">';
+                        html += '<th>ID</th><th>Código</th><th>Descripción</th><th>Permite Alquiler</th><th>Activo</th>';
+                        html += '</tr>';
+                        
+                        response.data.forEach(function(estado) {
+                            html += '<tr>';
+                            html += '<td>' + estado.id_estado_elemento + '</td>';
+                            html += '<td>' + estado.codigo_estado_elemento + '</td>';
+                            html += '<td>' + estado.descripcion_estado_elemento + '</td>';
+                            html += '<td>' + (estado.permite_alquiler_estado_elemento == 1 ? '✅ SÍ' : '❌ NO') + '</td>';
+                            html += '<td>' + (estado.activo_estado_elemento == 1 ? '✅ Activo' : '❌ Inactivo') + '</td>';
+                            html += '</tr>';
+                        });
+                        html += '</table>';
+                    }
+                    
+                    html += '<h4>Respuesta JSON Completa:</h4>';
+                    html += '<pre>' + JSON.stringify(response, null, 2) + '</pre>';
+                    html += '</div>';
+                    
+                    $('#resultListar').html(html);
+                },
+                error: function(xhr, status, error) {
+                    addLog('❌ Error en listar: ' + error, 'error');
+                    console.error('Error completo:', xhr);
+                    
+                    let html = '<div class="error">';
+                    html += '<h4>❌ Error</h4>';
+                    html += '<p><strong>Status:</strong> ' + xhr.status + '</p>';
+                    html += '<p><strong>Error:</strong> ' + error + '</p>';
+                    html += '<h4>Respuesta del Servidor:</h4>';
+                    html += '<pre>' + xhr.responseText + '</pre>';
+                    html += '</div>';
+                    
+                    $('#resultListar').html(html);
+                }
+            });
+        });
+
+        // Test 2: Mostrar Estado por ID
+        $('#btnMostrar').click(function() {
+            const id = $('#idEstado').val();
+            addLog('🚀 Iniciando test de mostrar estado ID: ' + id);
+            $('#resultMostrar').html('<p>⏳ Cargando...</p>');
+            
+            $.ajax({
+                url: '../../controller/estado_elemento.php',
+                method: 'POST',
+                data: {
+                    op: 'mostrar',
+                    id_estado_elemento: id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    addLog('✅ Respuesta recibida de mostrar', 'success');
+                    console.log('Respuesta completa:', response);
+                    
+                    let html = '<div class="success">';
+                    
+                    if (response.status === 'error') {
+                        html = '<div class="error">';
+                        html += '<h4>❌ Error en la Respuesta</h4>';
+                        html += '<p>' + response.message + '</p>';
+                        html += '</div>';
+                    } else if (response.id_estado_elemento) {
+                        html += '<h4>✅ Estado Encontrado</h4>';
+                        html += '<table border="1" cellpadding="5" style="border-collapse: collapse; margin-top: 10px;">';
+                        html += '<tr><th style="background: #007bff; color: white; text-align: left;">Campo</th><th style="background: #007bff; color: white; text-align: left;">Valor</th></tr>';
+                        html += '<tr><td><strong>ID</strong></td><td>' + response.id_estado_elemento + '</td></tr>';
+                        html += '<tr><td><strong>Código</strong></td><td>' + response.codigo_estado_elemento + '</td></tr>';
+                        html += '<tr><td><strong>Descripción</strong></td><td>' + response.descripcion_estado_elemento + '</td></tr>';
+                        html += '<tr><td><strong>Color</strong></td><td><span style="background: ' + response.color_estado_elemento + '; padding: 5px 15px; color: white; border-radius: 3px;">' + response.color_estado_elemento + '</span></td></tr>';
+                        html += '<tr><td><strong>Permite Alquiler</strong></td><td>' + (response.permite_alquiler_estado_elemento == 1 ? '✅ SÍ' : '❌ NO') + '</td></tr>';
+                        html += '<tr><td><strong>Observaciones</strong></td><td>' + (response.observaciones_estado_elemento || '(vacío)') + '</td></tr>';
+                        html += '<tr><td><strong>Activo</strong></td><td>' + (response.activo_estado_elemento == 1 ? '✅ Activo' : '❌ Inactivo') + '</td></tr>';
+                        html += '</table>';
+                    }
+                    
+                    html += '<h4>Respuesta JSON Completa:</h4>';
+                    html += '<pre>' + JSON.stringify(response, null, 2) + '</pre>';
+                    html += '</div>';
+                    
+                    $('#resultMostrar').html(html);
+                },
+                error: function(xhr, status, error) {
+                    addLog('❌ Error en mostrar: ' + error, 'error');
+                    console.error('Error completo:', xhr);
+                    
+                    let html = '<div class="error">';
+                    html += '<h4>❌ Error AJAX</h4>';
+                    html += '<p><strong>Status HTTP:</strong> ' + xhr.status + '</p>';
+                    html += '<p><strong>Error:</strong> ' + error + '</p>';
+                    html += '<h4>Respuesta del Servidor:</h4>';
+                    html += '<pre>' + xhr.responseText + '</pre>';
+                    html += '</div>';
+                    
+                    $('#resultMostrar').html(html);
+                }
+            });
+        });
+
+        // Test 3: Verificar Controller
+        $('#btnVerificar').click(function() {
+            window.open('../../controller/estado_elemento.php?op=listar', '_blank');
+        });
+
+        // Inicializar
+        addLog('✅ Script de test cargado correctamente');
+    </script>
+</body>
+</html>

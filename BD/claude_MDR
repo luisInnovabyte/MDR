@@ -1458,15 +1458,72 @@ END$$
 DELIMITER ;
 
 
+-- ========================================================
+-- TABLA DE DOCUMENTOS DE ELEMENTOS
+-- ========================================================
 
-
-
+CREATE TABLE documento_elemento (
+    id_documento_elemento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_elemento INT UNSIGNED NOT NULL,
+    
+    -- Identificación del documento
+    codigo_documento_elemento VARCHAR(50) COMMENT 'Código o referencia del documento',
+    descripcion_documento_elemento TEXT,
+    tipo_documento_elemento VARCHAR(100) COMMENT 'Tipo: Manual, Garantía, Factura, Certificado, etc.',
+    
+    -- Información del archivo
+    archivo_documento VARCHAR(500) NOT NULL COMMENT 'Ruta completa con nombre del archivo',
+    
+    observaciones_documento TEXT,
+    activo_documento BOOLEAN DEFAULT TRUE,
+    created_at_documento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_documento TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_documento_elemento FOREIGN KEY (id_elemento) 
+        REFERENCES elemento(id_elemento) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    INDEX idx_id_elemento_documento (id_elemento),
+    INDEX idx_tipo_documento (tipo_documento_elemento)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
 -- ========================================================
--- MODIFICACIONES PARA GESTIÓN DE OBSERVACIONES EN PRESUPUESTOS
+-- TABLA DE FOTOS DE ELEMENTOS
 -- ========================================================
+
+CREATE TABLE foto_elemento (
+    id_foto_elemento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_elemento INT UNSIGNED NOT NULL,
+    
+    -- Información del archivo
+    archivo_foto VARCHAR(500) NOT NULL COMMENT 'Ruta completa con nombre del archivo de imagen',
+    
+    observaciones_foto TEXT,
+    activo_foto BOOLEAN DEFAULT TRUE,
+    created_at_foto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_foto TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_foto_elemento FOREIGN KEY (id_elemento) 
+        REFERENCES elemento(id_elemento) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    INDEX idx_id_elemento_foto (id_elemento)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+
+
+
+
+
+-- ======================================================================
+-- YA ESTA - MODIFICACIONES PARA GESTIÓN DE OBSERVACIONES EN PRESUPUESTOS
+-- ======================================================================
 
 ## 1. AÑADIR CAMPOS A TABLAS EXISTENTES
 
