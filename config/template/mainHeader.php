@@ -191,7 +191,7 @@ switch (strtolower($rolUsuario)) {
             </a>
             <div class="dropdown-menu dropdown-menu-header wd-250">
                 <div class="tx-center">
-                    <!-- <a href=""><img src="<?php echo htmlspecialchars($imagenUsuario); ?>" class="wd-80 rounded-circle" alt="User Image"></a> -->
+                    <!-- <a href=""><img src="<?php echo isset($imagenUsuario) ? htmlspecialchars($imagenUsuario) : ''; ?>" class="wd-80 rounded-circle" alt="User Image"></a> -->
                     <h6 class="logged-fullname"><?php echo htmlspecialchars($nombreUsuario); ?></h6>
                     <p><?php echo htmlspecialchars($correoUsuario); ?></p>
                 </div>

@@ -97,6 +97,12 @@ $(document).ready(function () {
         });
     }
 
+     // ===============================================
+    // VALIDACIONES EN TIEMPO REAL
+    // ===============================================
+    
+
+
     // Verificar si estamos en modo edición
     const idUnidad = getUrlParameter('id');
     const modo = getUrlParameter('modo') || 'nuevo';

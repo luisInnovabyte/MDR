@@ -124,7 +124,7 @@ switch ($_GET["op"]) {
         break;
 
     case "listar":
-        $datos = $articulo->get_articulo();
+        $datos = $articulo->get_articulo_con_elementos();
         $data = array();
         foreach ($datos as $row) {
             $data[] = array(
@@ -148,6 +148,7 @@ switch ($_GET["op"]) {
                 "precio_alquiler_articulo" => $row["precio_alquiler_articulo"],
                 "coeficiente_articulo" => $row["coeficiente_articulo"] ?? null,
                 "coeficiente_efectivo" => $row["coeficiente_efectivo"] ?? 0,
+                "coeficiente_familia" => $row["coeficiente_familia"] ?? 0,
                 "es_kit_articulo" => $row["es_kit_articulo"],
                 "control_total_articulo" => $row["control_total_articulo"],
                 "no_facturar_articulo" => $row["no_facturar_articulo"],
@@ -159,7 +160,8 @@ switch ($_GET["op"]) {
                 "configuracion_completa" => $row["configuracion_completa"] ?? 0,
                 "activo_articulo" => $row["activo_articulo"],
                 "created_at_articulo" => $row["created_at_articulo"],
-                "updated_at_articulo" => $row["updated_at_articulo"]
+                "updated_at_articulo" => $row["updated_at_articulo"],
+                "total_elementos" => $row["total_elementos"] ?? 0
             );
         }
 

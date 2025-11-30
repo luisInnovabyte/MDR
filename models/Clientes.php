@@ -56,7 +56,7 @@ class Clientes
     public function get_clientes()
     {
         try {
-            $sql = "SELECT * FROM cliente ORDER BY nombre_cliente ASC";
+            $sql = "SELECT * FROM contacto_cantidad_cliente ORDER BY nombre_cliente ASC";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->execute();
 

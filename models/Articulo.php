@@ -76,6 +76,31 @@ class Articulo
         }
     }
 
+    public function get_articulo_con_elementos()
+    {
+        try {
+            $sql = "SELECT 
+                        vac.*, 
+                        COUNT(CASE WHEN e.activo_elemento = 1 THEN 1 END) as total_elementos
+                    FROM vista_articulo_completa vac
+                    LEFT JOIN elemento e ON vac.id_articulo = e.id_articulo_elemento
+                    GROUP BY vac.id_articulo";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Articulo',
+                'get_articulo_con_elementos',
+                "Error al listar los artículos con elementos: " . $e->getMessage(),
+                "error"
+            );
+            return false;
+        }
+    }
+
     public function get_articulo_disponible()
     {
         try {

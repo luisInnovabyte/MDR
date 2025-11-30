@@ -78,6 +78,7 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item"><a href="../MntFamilia_unidad/index.php" class="sub-link">Familias</a></li>
             <li class="sub-item"><a href="../MntMarca/index.php" class="sub-link">Marcas</a></li>
             <li class="sub-item"><a href="../MntArticulos/index.php" class="sub-link">Artículos</a></li>
+            <li class="sub-item"><a href="../MntElementos_consulta/index.php" class="sub-link">Elementos - consulta</a></li>
             
             
             <!-- <li class="sub-item"><a href="../MntFamilia_plus/index.php" class="sub-link">Familias Plus</a></li> -->
@@ -109,7 +110,7 @@ function puedeVerMenu($idRol, $modulo) {
         </a>
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../MntLlamadas/index.php" class="sub-link">Llamadas</a></li>
-            <li class="sub-item"><a href="../MntAdjuntosLlamadas/index.php" class="sub-link">Adjuntos Llamadas</a></li>
+            <!-- <li class="sub-item"><a href="../MntAdjuntosLlamadas/index.php" class="sub-link">Adjuntos Llamadas</a></li> -->
              <li class="sub-item"><a href="../MntComerciales/index.php" class="sub-link">Comerciales</a></li>
                       <li class="sub-item"><a href="../MntComercialesVacaciones/index.php" class="sub-link">Comerciales Vacaciones</a></li>
         </ul>
@@ -141,6 +142,24 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../Logs/index.php" class="sub-link">Logs</a></li>
             <li class="sub-item"><a href="../../assets/Reunion/sistema-gestion-explicacion.html" class="sub-link">Sistema Gestión</a></li>
+        </ul>
+        <!-- assets/Reunion/sistema-gestion-explicacion.html -->
+    </li>
+    <?php endif; ?>
+
+
+
+
+     <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
+    <li class="br-menu-item">
+        <a href="#" class="br-menu-link with-sub">
+            <i class="menu-item-icon icon ion-ios-paper tx-24"></i>
+            <span class="menu-item-label">Informes</span>
+        </a>
+        <ul class="br-menu-sub">
+            <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendarios Garantías</a></li>
+            <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendarios Mantenimientos</a></li>
+            
         </ul>
         <!-- assets/Reunion/sistema-gestion-explicacion.html -->
     </li>

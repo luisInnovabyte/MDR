@@ -1,0 +1,34 @@
+[2025-11-30 18:22:53] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 18:22:53"}
+[2025-11-30 18:22:53] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"FlujoLeader.pdf","full_path":"FlujoLeader.pdf","type":"application\/pdf","tmp_name":"\/tmp\/php5uo0nsncpip8bbEDDb8","error":0,"size":79392}},"post_info":{"id_elemento":"1","descripcion_documento_elemento":"Prueba de coumento","tipo_documento_elemento":"Certificado","privado_documento":"0","observaciones_documento":"Prueba de documentos","activo_documento_elemento":"1"}}
+[2025-11-30 18:22:53] {"action":"procesando_documento_nuevo"}
+[2025-11-30 18:22:53] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"FlujoLeader.pdf","type":"application\/pdf","size":79392,"error":0,"tmp_name":"\/tmp\/php5uo0nsncpip8bbEDDb8"}}
+[2025-11-30 18:22:53] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-30 18:22:53] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-30 18:22:53] {"action":"moviendo_archivo","desde":"\/tmp\/php5uo0nsncpip8bbEDDb8","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_692c8b7dac770.pdf","nombre_final":"documento_elemento_692c8b7dac770.pdf"}
+[2025-11-30 18:22:53] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_692c8b7dac770.pdf"}
+[2025-11-30 18:22:53] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_692c8b7dac770.pdf"}
+[2025-11-30 18:22:53] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_692c8b7dac770.pdf","descripcion_documento_elemento":"Prueba de coumento","tipo_documento_elemento":"Certificado","privado_documento":false,"observaciones_documento":"Prueba de documentos"}
+[2025-11-30 19:22:53] {"action":"resultado_insert","resultado":"1"}
+[2025-11-30 18:33:59] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 18:33:59"}
+[2025-11-30 18:33:59] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"id_elemento":"1","descripcion_documento_elemento":"Prueba de coumento","tipo_documento_elemento":"Certificado","privado_documento":"1","observaciones_documento":"Prueba de documentossss","activo_documento_elemento":"0","id_documento_elemento":"1"}}
+[2025-11-30 18:33:59] {"action":"manteniendo_archivo_actual","archivo":"documento_elemento_692c8b7dac770.pdf"}
+[2025-11-30 18:34:29] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 18:34:29"}
+[2025-11-30 18:34:29] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"id_elemento":"1","descripcion_documento_elemento":"Prueba de doumento","tipo_documento_elemento":"Certificado","privado_documento":"1","observaciones_documento":"Prueba de documentossss","activo_documento_elemento":"0","id_documento_elemento":"1"}}
+[2025-11-30 18:34:29] {"action":"manteniendo_archivo_actual","archivo":"documento_elemento_692c8b7dac770.pdf"}
+[2025-11-30 18:51:03] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 18:51:03"}
+[2025-11-30 18:51:03] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"id_elemento":"1","descripcion_documento_elemento":"Prueba de documento","tipo_documento_elemento":"Certificado","privado_documento":"1","observaciones_documento":"Prueba de documentossss","activo_documento_elemento":"0","id_documento_elemento":"1"}}
+[2025-11-30 18:51:03] {"action":"manteniendo_archivo_actual","archivo":"documento_elemento_692c8b7dac770.pdf"}
+[2025-11-30 18:59:41] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 18:59:41"}
+[2025-11-30 18:59:41] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"id_elemento":"1","descripcion_documento_elemento":"Prueba de documentosssssss","tipo_documento_elemento":"Certificado","privado_documento":"1","observaciones_documento":"Prueba de documentossss","activo_documento_elemento":"0","id_documento_elemento":"1"}}
+[2025-11-30 18:59:41] {"action":"manteniendo_archivo_actual","archivo":"documento_elemento_692c8b7dac770.pdf"}
+[2025-11-30 19:00:41] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 19:00:41"}
+[2025-11-30 19:00:41] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"Comparativa.pdf","full_path":"Comparativa.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpt2vqc3g6aqse9OZTuUj","error":0,"size":158498}},"post_info":{"id_elemento":"1","descripcion_documento_elemento":"Prueba de segundo documento","tipo_documento_elemento":"Certificado","privado_documento":"0","observaciones_documento":"","activo_documento_elemento":"1"}}
+[2025-11-30 19:00:41] {"action":"procesando_documento_nuevo"}
+[2025-11-30 19:00:41] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"Comparativa.pdf","type":"application\/pdf","size":158498,"error":0,"tmp_name":"\/tmp\/phpt2vqc3g6aqse9OZTuUj"}}
+[2025-11-30 19:00:41] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-30 19:00:41] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-30 19:00:41] {"action":"moviendo_archivo","desde":"\/tmp\/phpt2vqc3g6aqse9OZTuUj","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_692c945939d91.pdf","nombre_final":"documento_elemento_692c945939d91.pdf"}
+[2025-11-30 19:00:41] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_692c945939d91.pdf"}
+[2025-11-30 19:00:41] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_692c945939d91.pdf"}
+[2025-11-30 19:00:41] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_692c945939d91.pdf","descripcion_documento_elemento":"Prueba de segundo documento","tipo_documento_elemento":"Certificado","privado_documento":false,"observaciones_documento":null}
+[2025-11-30 20:00:41] {"action":"resultado_insert","resultado":"2"}

@@ -1,0 +1,12 @@
+[2025-11-24 11:26:14] {"action":"verificarUnidad","nombre_unidad":"Metros","name_unidad":"Meters","simbolo_unidad":"","id_unidad":"1","method":"POST","post_data":{"nombre_unidad":"Metros","name_unidad":"Meters","id_unidad":"1"},"get_data":{"op":"verificarUnidad"}}
+[2025-11-24 11:26:15] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-24 11:26:15"}
+[2025-11-24 11:26:15] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"nombre_unidad":"Metros","name_unidad":"Meters","simbolo_unidad":"m","descr_unidad":"Unidad de longitud bbbbbbx","activo_unidad":"1","id_unidad":"1"}}
+[2025-11-24 11:32:47] {"action":"verificarUnidad","nombre_unidad":"Metroa","name_unidad":"Meters","simbolo_unidad":"","id_unidad":"1","method":"POST","post_data":{"nombre_unidad":"Metroa","name_unidad":"Meters","id_unidad":"1"},"get_data":{"op":"verificarUnidad"}}
+[2025-11-24 11:32:47] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-24 11:32:47"}
+[2025-11-24 11:32:47] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"nombre_unidad":"Metroa","name_unidad":"Meters","simbolo_unidad":"m","descr_unidad":"Unidad de longitud bbbbbbx","activo_unidad":"1","id_unidad":"1"}}
+[2025-11-24 11:32:55] {"action":"verificarUnidad","nombre_unidad":"Metros","name_unidad":"Meters","simbolo_unidad":"","id_unidad":"1","method":"POST","post_data":{"nombre_unidad":"Metros","name_unidad":"Meters","id_unidad":"1"},"get_data":{"op":"verificarUnidad"}}
+[2025-11-24 11:32:56] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-24 11:32:56"}
+[2025-11-24 11:32:56] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"nombre_unidad":"Metros","name_unidad":"Meters","simbolo_unidad":"m","descr_unidad":"Unidad de longitud bbbbbbx","activo_unidad":"1","id_unidad":"1"}}
+[2025-11-24 11:54:07] {"action":"verificarUnidad","nombre_unidad":"Metros","name_unidad":"Meters","simbolo_unidad":"","id_unidad":"1","method":"POST","post_data":{"nombre_unidad":"Metros","name_unidad":"Meters","id_unidad":"1"},"get_data":{"op":"verificarUnidad"}}
+[2025-11-24 11:54:07] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-24 11:54:07"}
+[2025-11-24 11:54:07] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"nombre_unidad":"Metros","name_unidad":"Meters","simbolo_unidad":"m","descr_unidad":"Unidad de longitud bbbbbbx","activo_unidad":"1","id_unidad":"1"}}

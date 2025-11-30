@@ -97,8 +97,15 @@
             <div class="br-pagetitle">
                 <i class="icon icon ion-ios-bookmarks-outline"></i>
                 <div>
-                    <h4>Mantenimiento de Llamadas</h4>
+                    <div class="d-flex align-items-center">
+                        <h4>Mantenimiento de Llamadas</h4>
+                            <button type="button" class="btn btn-link p-0 ms-1" data-toggle="modal" data-target="#modalAyudaLlamadas" title="Ayuda sobre el módulo">
+                <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
+            </button>
+                    </div>
+                    
                     <p class="mg-b-0">Tabla básica para el mantenimiento de las llamadas</p>
+                    
                 </div>
             </div><!-- d-flex -->
 
@@ -418,7 +425,9 @@
         <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
         <!--             NUEVO                   -->
         <!-- *********************************** -->
-
+        <!-- Modal de Ayuda Llamadas -->
+        <?php include_once('ayudaLlamadas.php') ?>
+        <!-- Fin Modal de Ayuda Llamadas -->
         <?php include_once('mantenimientoLlamadas.php') ?>
         <?php include_once('mantenimientoAdjuntos.php') ?>
 
@@ -439,6 +448,14 @@
         <!--     END mainJs.php        -->
         <!-- ------------------------- -->
         <script type="text/javascript" src="mntllamadas.js"></script>
+
+    <script>
+        // Colapsar el sidebar al cargar la página
+        $(document).ready(function() {
+            $('body').addClass('collapsed-menu');
+            $('.br-sideleft').addClass('collapsed');
+        });
+    </script>
 
     </body>
 

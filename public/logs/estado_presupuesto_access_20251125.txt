@@ -1,0 +1,4 @@
+[2025-11-25 11:34:51] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-11-25 12:10:35] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-11-25 19:48:27] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-11-25 19:48:57] estado_presupuesto.php ejecutado - IP: 192.168.31.3

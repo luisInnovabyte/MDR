@@ -1,0 +1,2 @@
+[2025-11-26 00:02:16] metodospago.php ejecutado - IP: 192.168.31.3
+[2025-11-26 00:03:09] metodospago.php ejecutado - IP: 192.168.31.3

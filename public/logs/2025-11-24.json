@@ -1,0 +1,522 @@
+[
+    {
+        "usuario": "admin",
+        "pantalla": "unidad.php",
+        "actividad": "Verificar unidad",
+        "mensaje": "Unidad disponible: Metros",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:26:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Unidad",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó la unidad con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:26:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "unidad.php",
+        "actividad": "Actualizar la unidad",
+        "mensaje": "Unidad actualizada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:26:15"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:28:16"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:28:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:30:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:30:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Estado_presupuesto",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el estado de presupuesto con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:30:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Actualizar el estado de presupuesto",
+        "mensaje": "Estado de presupuesto actualizado exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:30:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:30:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:30:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Estado_presupuesto",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el estado de presupuesto con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:30:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Actualizar el estado de presupuesto",
+        "mensaje": "Estado de presupuesto actualizado exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:30:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "unidad.php",
+        "actividad": "Verificar unidad",
+        "mensaje": "Unidad disponible: Metroa",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:32:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Unidad",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó la unidad con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:32:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "unidad.php",
+        "actividad": "Actualizar la unidad",
+        "mensaje": "Unidad actualizada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:32:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "unidad.php",
+        "actividad": "Verificar unidad",
+        "mensaje": "Unidad disponible: Metros",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:32:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Unidad",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó la unidad con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:32:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "unidad.php",
+        "actividad": "Actualizar la unidad",
+        "mensaje": "Unidad actualizada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:32:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:49:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:49:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:49:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:49:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:49:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:49:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "estado_presupuesto.php",
+        "actividad": "Verificar estado de presupuesto",
+        "mensaje": "Estado de presupuesto disponible: ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:51:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "unidad.php",
+        "actividad": "Verificar unidad",
+        "mensaje": "Unidad disponible: Metros",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:54:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Unidad",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó la unidad con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:54:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "unidad.php",
+        "actividad": "Actualizar la unidad",
+        "mensaje": "Unidad actualizada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 12:54:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 13:29:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 13:30:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 13:30:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 13:30:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 13:31:01"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 14:05:51"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 14:05:51"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "articulo.php",
+        "actividad": "Verificar artículo",
+        "mensaje": "Artículo disponible: Cable XLR 10 metros",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 14:06:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Articulo",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el artículo con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 14:06:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "articulo.php",
+        "actividad": "Actualizar artículo",
+        "mensaje": "Artículo actualizado: Cable XLR 10 metros (ID: 24)",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 14:06:23"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 16:33:54"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 16:33:54"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 19:16:56"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 19:16:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 19:18:12"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 19:21:07"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 19:21:07"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:09:21"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:09:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:09:33"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:09:33"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:12:26"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:12:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:12:33"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:14:33"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:14:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:15:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "articulo.php",
+        "actividad": "Verificar artículo",
+        "mensaje": "Artículo disponible: Pantalla LED modular P3 interior (por m²)",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:27:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Articulo",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el artículo con ID: 25",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:27:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "articulo.php",
+        "actividad": "Actualizar artículo",
+        "mensaje": "Artículo actualizado: Pantalla LED modular P3 interior (por m²) (ID: 25)",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:27:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:28:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:29:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:32:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:33:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:34:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-24 20:41:00"
+    }
+]

@@ -1,0 +1,22 @@
+[2025-11-24 11:30:47] Datos recibidos: Array
+(
+    [codigo_estado_ppto] => PEN
+    [nombre_estado_ppto] => Pendiente
+    [color_estado_ppto] => #0000ff
+    [orden_estado_ppto] => 1
+    [observaciones_estado_ppto] => Presupuesto pendiente de revisión
+    [activo_estado_ppto] => 1
+    [id_estado_ppto] => 1
+)
+
+[2025-11-24 11:30:57] Datos recibidos: Array
+(
+    [codigo_estado_ppto] => PEND
+    [nombre_estado_ppto] => Pendiente
+    [color_estado_ppto] => #0000ff
+    [orden_estado_ppto] => 1
+    [observaciones_estado_ppto] => Presupuesto pendiente de revisión
+    [activo_estado_ppto] => 1
+    [id_estado_ppto] => 1
+)
+

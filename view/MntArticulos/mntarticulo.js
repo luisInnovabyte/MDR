@@ -288,18 +288,26 @@ $(document).ready(function () {
                              </button>`;
         },
       },
-      // Columna 11: BOTON PARA VER ELEMENTOS
+      // Columna 11: CONTEO Y BOTON PARA VER ELEMENTOS
       {
         targets: "elementos:name",
         width: "8%",
         searchable: false,
-        orderable: false,
+        orderable: true,
         class: "text-center",
         render: function (data, type, row) {
-          return `<button type="button" class="btn btn-warning btn-sm verElementos" data-toggle="tooltip-primary" data-placement="top" title="Ver Elementos"  
-                             data-id_articulo="${row.id_articulo}"> 
-                             <i class="bi bi-list-ul"></i>
-                             </button>`;
+          if (type === "display") {
+            const totalElementos = row.total_elementos || 0;
+            const badgeClass = totalElementos > 0 ? 'bg-success' : 'bg-secondary';
+            return `<div class="d-flex align-items-center justify-content-center gap-2">
+                      <span class="badge ${badgeClass} fs-6">${totalElementos}</span>
+                      <button type="button" class="btn btn-warning btn-sm verElementos" data-toggle="tooltip-primary" data-placement="top" title="Ver Elementos"  
+                                 data-id_articulo="${row.id_articulo}"> 
+                                 <i class="bi bi-list-ul"></i>
+                      </button>
+                    </div>`;
+          }
+          return row.total_elementos || 0;
         },
       },
     ],
@@ -724,11 +732,8 @@ $(document).ready(function () {
     let id_articulo = $(this).data("id_articulo");
     console.log("Ver elementos del artículo:", id_articulo);
 
-    // Por ahora mostrar alert
-    alert("ID del artículo: " + id_articulo);
-    
-    // TODO: Redirigir a la tabla de elementos filtrada
-    // window.location.href = `../MntElementos/index.php?id_articulo=${id_articulo}`;
+    // Redirigir a la tabla de elementos filtrada por artículo
+    window.location.href = `../MntElementos/index.php?id_articulo=${id_articulo}`;
   });
   ///////////////////////////////////////
   //     FIN ZONA VER ELEMENTOS        //
@@ -842,4 +847,23 @@ function descargarImagen(rutaImagen, nombreArchivo) {
     timeOut: 2000,
     positionClass: "toast-bottom-right",
   });
+}
+
+// Función global para formatear fecha al formato europeo
+function formatoFechaEuropeo(fechaString) {
+    if (!fechaString) return 'Sin fecha';
+    
+    try {
+        const fecha = new Date(fechaString);
+        if (isNaN(fecha.getTime())) return 'Fecha inválida';
+        
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const año = fecha.getFullYear();
+        
+        return `${dia}/${mes}/${año}`;
+    } catch (error) {
+        console.error('Error al formatear fecha:', error);
+        return 'Error en fecha';
+    }
 }

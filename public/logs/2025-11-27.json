@@ -1,0 +1,330 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 07:38:55"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 07:38:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 07:39:22"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 08:11:10"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 08:11:10"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:29:22"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:29:22"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Contraseña incorrecta",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 12:30:56"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:31:03"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:31:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:38:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:40:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:43:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:54:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:55:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:56:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:56:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:58:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:58:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 12:59:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 13:03:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 13:03:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 13:03:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 13:08:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 13:08:27"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 14:47:40"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 14:47:40"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 19:14:55"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-27 19:14:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:05:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:07:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:09:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:14:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:19:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:25:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:50:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:51:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 20:55:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 21:14:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 21:24:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | Code: HY000",
+        "tipo": "error",
+        "fecha_hora": "2025-11-27 21:25:07"
+    }
+]

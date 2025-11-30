@@ -1,0 +1,2 @@
+[2025-11-28 09:13:31] grupo_articulo.php ejecutado - IP: 192.168.31.130
+[2025-11-28 09:16:06] grupo_articulo.php ejecutado - IP: 192.168.31.130

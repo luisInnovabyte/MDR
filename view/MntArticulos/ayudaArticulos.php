@@ -490,6 +490,16 @@
                                     <td>Botón Activar</td>
                                     <td>Activa el artículo (solo si está inactivo)</td>
                                 </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <span class="badge bg-success fs-6">5</span>
+                                        <button class="btn btn-warning btn-sm">
+                                            <i class="bi bi-list-ul"></i>
+                                        </button>
+                                    </td>
+                                    <td>Contador de Elementos</td>
+                                    <td>El número indica la cantidad de elementos <strong>activos</strong> asociados a este artículo. El botón permite ver el listado completo de elementos</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

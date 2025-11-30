@@ -1,0 +1,58 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-28 10:09:27"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-28 10:09:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-28 10:11:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "familia.php",
+        "actividad": "Verificar familia",
+        "mensaje": "Familia disponible: Microfonía y Sonido",
+        "tipo": "info",
+        "fecha_hora": "2025-11-28 10:17:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Familia",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó la familia con ID: 19",
+        "tipo": "info",
+        "fecha_hora": "2025-11-28 10:17:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "familia.php",
+        "actividad": "Actualizar la familia",
+        "mensaje": "Familia actualizada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-28 10:17:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Documento_elemento",
+        "actividad": "insert_documento_elemento",
+        "mensaje": "Error al insertar el documento de elemento: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like' | SQLSTATE: HY000 | Driver Error: Illegal mix of collations (utf8mb4_0900_ai_ci,IMPLICIT) and (utf8mb4_general_ci,IMPLICIT) for operation 'like'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-28 10:38:33"
+    }
+]

@@ -1,0 +1,22 @@
+[2025-11-30 19:51:09] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 19:51:09"}
+[2025-11-30 19:51:09] {"action":"guardaryeditar_inicio","files_info":{"archivo_foto":{"name":"Captura de pantalla 2025-08-05 100349.png","full_path":"Captura de pantalla 2025-08-05 100349.png","type":"image\/png","tmp_name":"\/tmp\/php0ggdn2jde6g6dBggzZr","error":0,"size":201234}},"post_info":{"id_elemento":"1","descripcion_foto_elemento":"Microfono","privado_foto":"0","observaciones_foto":"Prueba de observaciones","activo_foto_elemento":"1"}}
+[2025-11-30 19:51:09] {"action":"procesando_foto_nueva"}
+[2025-11-30 19:51:09] {"action":"procesarFotoElemento_inicio","archivo_info":{"name":"Captura de pantalla 2025-08-05 100349.png","type":"image\/png","size":201234,"error":0,"tmp_name":"\/tmp\/php0ggdn2jde6g6dBggzZr"}}
+[2025-11-30 19:51:09] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/fotos_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-30 19:51:09] {"error":"Directorio no es escribible","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/fotos_elementos\/","perms":"0755"}
+[2025-11-30 19:51:09] {"error":"No se pudieron ajustar permisos del directorio"}
+[2025-11-30 19:51:09] {"error":"Falló el procesamiento de la foto"}
+[2025-11-30 19:54:52] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 19:54:52"}
+[2025-11-30 19:54:52] {"action":"guardaryeditar_inicio","files_info":{"archivo_foto":{"name":"Captura de pantalla 2025-08-05 100349.png","full_path":"Captura de pantalla 2025-08-05 100349.png","type":"image\/png","tmp_name":"\/tmp\/phpea3jmmma4u9bf86EEBJ","error":0,"size":201234}},"post_info":{"id_elemento":"1","descripcion_foto_elemento":"Microfono","privado_foto":"0","observaciones_foto":"Prueba de observaciones","activo_foto_elemento":"1"}}
+[2025-11-30 19:54:52] {"action":"procesando_foto_nueva"}
+[2025-11-30 19:54:52] {"action":"procesarFotoElemento_inicio","archivo_info":{"name":"Captura de pantalla 2025-08-05 100349.png","type":"image\/png","size":201234,"error":0,"tmp_name":"\/tmp\/phpea3jmmma4u9bf86EEBJ"}}
+[2025-11-30 19:54:52] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/fotos_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-30 19:54:52] {"info":"Validación de tipos","tipo_reportado":"image\/png","tipo_real":"image\/png"}
+[2025-11-30 19:54:52] {"action":"moviendo_archivo","desde":"\/tmp\/phpea3jmmma4u9bf86EEBJ","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/fotos_elementos\/foto_elemento_692ca10c2a911.png","nombre_final":"foto_elemento_692ca10c2a911.png"}
+[2025-11-30 19:54:52] {"success":"Archivo movido exitosamente","archivo":"foto_elemento_692ca10c2a911.png"}
+[2025-11-30 19:54:52] {"success":"Foto procesada correctamente","nombre_archivo":"foto_elemento_692ca10c2a911.png"}
+[2025-11-30 19:54:52] {"action":"antes_de_insertar","id_elemento":"1","archivo_foto":"foto_elemento_692ca10c2a911.png","descripcion_foto_elemento":"Microfono","privado_foto":false,"observaciones_foto":"Prueba de observaciones"}
+[2025-11-30 20:54:52] {"action":"resultado_insert","resultado":"1"}
+[2025-11-30 19:55:26] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-30 19:55:26"}
+[2025-11-30 19:55:26] {"action":"guardaryeditar_inicio","files_info":[],"post_info":{"id_elemento":"1","descripcion_foto_elemento":"Microfonosssss","privado_foto":"0","observaciones_foto":"Prueba de observacionesssssss","activo_foto_elemento":"1","id_foto_elemento":"1"}}
+[2025-11-30 19:55:26] {"action":"manteniendo_archivo_actual","archivo":"foto_elemento_692ca10c2a911.png"}

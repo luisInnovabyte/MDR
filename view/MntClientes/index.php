@@ -134,6 +134,7 @@
                             <th>NIF</th>
                             <th>Teléfono</th>
                             <th>Email</th>
+                            <th><i class="bi bi-people-fill"></i> Contactos</th>
                             <th>Estado</th>
                             <th>Act./Desac.</th>
                             <th>Edit.</th>
@@ -152,6 +153,7 @@
                             <th><input type="text" placeholder="Buscar NIF" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar teléfono" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar email" class="form-control form-control-sm" /></th>
+                            <th></th>
                             <th>
                                 <select class="form-control form-control-sm" title="Filtrar por estado">
                                     <option value="">Todos los estados</option>

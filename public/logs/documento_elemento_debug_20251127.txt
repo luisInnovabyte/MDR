@@ -1,0 +1,199 @@
+[2025-11-27 18:52:08] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 18:52:08"}
+[2025-11-27 18:52:08] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/php7k8784pc590geMsUydy","error":0,"size":147037}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Prueba de garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de observaciones","activo_documento_elemento":"1"}}
+[2025-11-27 18:52:08] {"action":"procesando_documento_nuevo"}
+[2025-11-27 18:52:08] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/php7k8784pc590geMsUydy"}}
+[2025-11-27 18:52:08] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 18:52:08] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 18:52:08] {"action":"moviendo_archivo","desde":"\/tmp\/php7k8784pc590geMsUydy","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289dd85d651.pdf","nombre_final":"documento_elemento_69289dd85d651.pdf"}
+[2025-11-27 18:52:08] {"error":"Error al mover archivo","tmp_name":"\/tmp\/php7k8784pc590geMsUydy","destino":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289dd85d651.pdf"}
+[2025-11-27 18:52:08] {"error":"Falló el procesamiento del documento"}
+[2025-11-27 18:52:26] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 18:52:26"}
+[2025-11-27 18:52:26] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpc9renr6k1m8h5Fn7bVy","error":0,"size":147037}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Prueba de garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de observaciones","activo_documento_elemento":"1"}}
+[2025-11-27 18:52:26] {"action":"procesando_documento_nuevo"}
+[2025-11-27 18:52:26] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpc9renr6k1m8h5Fn7bVy"}}
+[2025-11-27 18:52:26] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 18:52:26] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 18:52:26] {"action":"moviendo_archivo","desde":"\/tmp\/phpc9renr6k1m8h5Fn7bVy","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289dead5810.pdf","nombre_final":"documento_elemento_69289dead5810.pdf"}
+[2025-11-27 18:52:26] {"error":"Error al mover archivo","tmp_name":"\/tmp\/phpc9renr6k1m8h5Fn7bVy","destino":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289dead5810.pdf"}
+[2025-11-27 18:52:26] {"error":"Falló el procesamiento del documento"}
+[2025-11-27 18:55:21] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 18:55:21"}
+[2025-11-27 18:55:21] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpqp0ei1cb0m057zUEWf0","error":0,"size":147037}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de garantías","activo_documento_elemento":"1"}}
+[2025-11-27 18:55:21] {"action":"procesando_documento_nuevo"}
+[2025-11-27 18:55:21] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpqp0ei1cb0m057zUEWf0"}}
+[2025-11-27 18:55:21] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 18:55:21] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 18:55:21] {"action":"moviendo_archivo","desde":"\/tmp\/phpqp0ei1cb0m057zUEWf0","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289e993be6e.pdf","nombre_final":"documento_elemento_69289e993be6e.pdf"}
+[2025-11-27 18:55:21] {"error":"Error al mover archivo","tmp_name":"\/tmp\/phpqp0ei1cb0m057zUEWf0","destino":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289e993be6e.pdf"}
+[2025-11-27 18:55:21] {"error":"Falló el procesamiento del documento"}
+[2025-11-27 18:55:33] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 18:55:33"}
+[2025-11-27 18:55:33] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A1.docx","full_path":"A1.docx","type":"application\/vnd.openxmlformats-officedocument.wordprocessingml.document","tmp_name":"\/tmp\/phpvh49hormqaoo2ZzQKkF","error":0,"size":17390}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de garantías","activo_documento_elemento":"1"}}
+[2025-11-27 18:55:33] {"action":"procesando_documento_nuevo"}
+[2025-11-27 18:55:33] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A1.docx","type":"application\/vnd.openxmlformats-officedocument.wordprocessingml.document","size":17390,"error":0,"tmp_name":"\/tmp\/phpvh49hormqaoo2ZzQKkF"}}
+[2025-11-27 18:55:33] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 18:55:33] {"info":"Validación de tipos","tipo_reportado":"application\/vnd.openxmlformats-officedocument.wordprocessingml.document","tipo_real":"application\/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+[2025-11-27 18:55:33] {"action":"moviendo_archivo","desde":"\/tmp\/phpvh49hormqaoo2ZzQKkF","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289ea5c673e.docx","nombre_final":"documento_elemento_69289ea5c673e.docx"}
+[2025-11-27 18:55:33] {"error":"Error al mover archivo","tmp_name":"\/tmp\/phpvh49hormqaoo2ZzQKkF","destino":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289ea5c673e.docx"}
+[2025-11-27 18:55:33] {"error":"Falló el procesamiento del documento"}
+[2025-11-27 18:55:41] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 18:55:41"}
+[2025-11-27 18:55:41] {"action":"guardaryeditar_inicio","files_info":[],"post_info":[]}
+[2025-11-27 18:55:41] {"action":"sin_archivo"}
+[2025-11-27 18:55:51] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 18:55:51"}
+[2025-11-27 18:55:51] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"prueba.pdf","full_path":"prueba.pdf","type":"application\/pdf","tmp_name":"\/tmp\/php96dvlbs0jhbb8F9XsRb","error":0,"size":192346}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de garantías","activo_documento_elemento":"1"}}
+[2025-11-27 18:55:51] {"action":"procesando_documento_nuevo"}
+[2025-11-27 18:55:51] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"prueba.pdf","type":"application\/pdf","size":192346,"error":0,"tmp_name":"\/tmp\/php96dvlbs0jhbb8F9XsRb"}}
+[2025-11-27 18:55:51] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 18:55:51] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 18:55:51] {"action":"moviendo_archivo","desde":"\/tmp\/php96dvlbs0jhbb8F9XsRb","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289eb785eff.pdf","nombre_final":"documento_elemento_69289eb785eff.pdf"}
+[2025-11-27 18:55:51] {"error":"Error al mover archivo","tmp_name":"\/tmp\/php96dvlbs0jhbb8F9XsRb","destino":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_69289eb785eff.pdf"}
+[2025-11-27 18:55:51] {"error":"Falló el procesamiento del documento"}
+[2025-11-27 19:05:15] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:05:15"}
+[2025-11-27 19:05:15] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phprcsuiki3s3rubm6QndC","error":0,"size":147037}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Certificado","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de observaciones","activo_documento_elemento":"1"}}
+[2025-11-27 19:05:15] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:05:15] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phprcsuiki3s3rubm6QndC"}}
+[2025-11-27 19:05:15] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:05:15] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:05:15] {"action":"moviendo_archivo","desde":"\/tmp\/phprcsuiki3s3rubm6QndC","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928a0eb2dc62.pdf","nombre_final":"documento_elemento_6928a0eb2dc62.pdf"}
+[2025-11-27 19:05:15] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928a0eb2dc62.pdf"}
+[2025-11-27 19:05:15] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928a0eb2dc62.pdf"}
+[2025-11-27 19:07:35] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:07:35"}
+[2025-11-27 19:07:35] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"prueba.pdf","full_path":"prueba.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpv1rhlcd1ra21bFbLlh0","error":0,"size":192346}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Prueba de garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de observaciones","activo_documento_elemento":"1"}}
+[2025-11-27 19:07:35] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:07:35] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"prueba.pdf","type":"application\/pdf","size":192346,"error":0,"tmp_name":"\/tmp\/phpv1rhlcd1ra21bFbLlh0"}}
+[2025-11-27 19:07:35] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:07:35] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:07:35] {"action":"moviendo_archivo","desde":"\/tmp\/phpv1rhlcd1ra21bFbLlh0","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928a17765bb5.pdf","nombre_final":"documento_elemento_6928a17765bb5.pdf"}
+[2025-11-27 19:07:35] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928a17765bb5.pdf"}
+[2025-11-27 19:07:35] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928a17765bb5.pdf"}
+[2025-11-27 19:07:35] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928a17765bb5.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"Prueba de garantía","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"Prueba de observaciones"}
+[2025-11-27 20:07:35] {"action":"resultado_insert","resultado":false}
+[2025-11-27 19:09:39] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:09:39"}
+[2025-11-27 19:09:39] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"prueba.pdf","full_path":"prueba.pdf","type":"application\/pdf","tmp_name":"\/tmp\/php562tji5s2qcj9qzFJ7u","error":0,"size":192346}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Prueba de garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de nuevo","activo_documento_elemento":"1"}}
+[2025-11-27 19:09:39] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:09:39] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"prueba.pdf","type":"application\/pdf","size":192346,"error":0,"tmp_name":"\/tmp\/php562tji5s2qcj9qzFJ7u"}}
+[2025-11-27 19:09:39] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:09:39] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:09:39] {"action":"moviendo_archivo","desde":"\/tmp\/php562tji5s2qcj9qzFJ7u","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928a1f328113.pdf","nombre_final":"documento_elemento_6928a1f328113.pdf"}
+[2025-11-27 19:09:39] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928a1f328113.pdf"}
+[2025-11-27 19:09:39] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928a1f328113.pdf"}
+[2025-11-27 19:09:39] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928a1f328113.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"Prueba de garantía","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"Prueba de nuevo"}
+[2025-11-27 20:09:39] {"action":"resultado_insert","resultado":false}
+[2025-11-27 20:09:39] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 19:14:56] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:14:56"}
+[2025-11-27 19:14:56] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"prueba.pdf","full_path":"prueba.pdf","type":"application\/pdf","tmp_name":"\/tmp\/php7flb1nqusueh19vB7nL","error":0,"size":192346}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Prueba de garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de observaciones","activo_documento_elemento":"1"}}
+[2025-11-27 19:14:56] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:14:56] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"prueba.pdf","type":"application\/pdf","size":192346,"error":0,"tmp_name":"\/tmp\/php7flb1nqusueh19vB7nL"}}
+[2025-11-27 19:14:56] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:14:56] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:14:56] {"action":"moviendo_archivo","desde":"\/tmp\/php7flb1nqusueh19vB7nL","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928a330e0067.pdf","nombre_final":"documento_elemento_6928a330e0067.pdf"}
+[2025-11-27 19:14:56] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928a330e0067.pdf"}
+[2025-11-27 19:14:56] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928a330e0067.pdf"}
+[2025-11-27 19:14:56] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928a330e0067.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"Prueba de garantía","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"Prueba de observaciones"}
+[2025-11-27 20:14:56] {"action":"resultado_insert","resultado":false}
+[2025-11-27 20:14:56] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 19:19:18] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:19:18"}
+[2025-11-27 19:19:18] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"prueba.pdf","full_path":"prueba.pdf","type":"application\/pdf","tmp_name":"\/tmp\/php8euvmbpom3n2ao10GC5","error":0,"size":192346}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Garantia","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de observaciones","activo_documento_elemento":"1"}}
+[2025-11-27 19:19:18] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:19:18] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"prueba.pdf","type":"application\/pdf","size":192346,"error":0,"tmp_name":"\/tmp\/php8euvmbpom3n2ao10GC5"}}
+[2025-11-27 19:19:18] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:19:18] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:19:18] {"action":"moviendo_archivo","desde":"\/tmp\/php8euvmbpom3n2ao10GC5","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928a436296ca.pdf","nombre_final":"documento_elemento_6928a436296ca.pdf"}
+[2025-11-27 19:19:18] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928a436296ca.pdf"}
+[2025-11-27 19:19:18] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928a436296ca.pdf"}
+[2025-11-27 19:19:18] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928a436296ca.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"Garantia","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"Prueba de observaciones"}
+[2025-11-27 20:19:18] {"action":"resultado_insert","resultado":false}
+[2025-11-27 20:19:18] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 19:25:25] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:25:25"}
+[2025-11-27 19:25:25] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"prueba.pdf","full_path":"prueba.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpf2ikh9errraubzIcGkr","error":0,"size":192346}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Garantia","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba de documentos","activo_documento_elemento":"1"}}
+[2025-11-27 19:25:25] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:25:25] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"prueba.pdf","type":"application\/pdf","size":192346,"error":0,"tmp_name":"\/tmp\/phpf2ikh9errraubzIcGkr"}}
+[2025-11-27 19:25:25] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:25:25] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:25:25] {"action":"moviendo_archivo","desde":"\/tmp\/phpf2ikh9errraubzIcGkr","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928a5a5679b1.pdf","nombre_final":"documento_elemento_6928a5a5679b1.pdf"}
+[2025-11-27 19:25:25] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928a5a5679b1.pdf"}
+[2025-11-27 19:25:25] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928a5a5679b1.pdf"}
+[2025-11-27 19:25:25] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928a5a5679b1.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"Garantia","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"Prueba de documentos"}
+[2025-11-27 20:25:25] {"action":"resultado_insert","resultado":false}
+[2025-11-27 20:25:25] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 19:50:02] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:50:02"}
+[2025-11-27 19:50:02] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpdt1fa46e4s6gaZ1AzMK","error":0,"size":147037}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"garan","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"prueba","activo_documento_elemento":"1"}}
+[2025-11-27 19:50:02] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:50:02] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpdt1fa46e4s6gaZ1AzMK"}}
+[2025-11-27 19:50:02] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:50:02] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:50:02] {"action":"moviendo_archivo","desde":"\/tmp\/phpdt1fa46e4s6gaZ1AzMK","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928ab6a429fe.pdf","nombre_final":"documento_elemento_6928ab6a429fe.pdf"}
+[2025-11-27 19:50:02] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928ab6a429fe.pdf"}
+[2025-11-27 19:50:02] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928ab6a429fe.pdf"}
+[2025-11-27 19:50:02] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928ab6a429fe.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"garan","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"prueba"}
+[2025-11-27 20:50:02] {"action":"resultado_insert","resultado":false}
+[2025-11-27 20:50:02] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 19:51:58] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:51:58"}
+[2025-11-27 19:51:58] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phphcf70m1oi9prdjLPIPD","error":0,"size":147037}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"garan","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"prueba","activo_documento_elemento":"1"}}
+[2025-11-27 19:51:58] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:51:58] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phphcf70m1oi9prdjLPIPD"}}
+[2025-11-27 19:51:58] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:51:58] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:51:58] {"action":"moviendo_archivo","desde":"\/tmp\/phphcf70m1oi9prdjLPIPD","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928abde00ebd.pdf","nombre_final":"documento_elemento_6928abde00ebd.pdf"}
+[2025-11-27 19:51:58] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928abde00ebd.pdf"}
+[2025-11-27 19:51:58] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928abde00ebd.pdf"}
+[2025-11-27 19:51:58] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928abde00ebd.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"garan","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"prueba"}
+[2025-11-27 20:51:58] {"action":"resultado_insert","resultado":false}
+[2025-11-27 20:51:58] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 19:55:00] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 19:55:00"}
+[2025-11-27 19:55:00] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpr6bn2rl65qrl5hD3zHI","error":0,"size":147037}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"garan","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"prueba","activo_documento_elemento":"1"}}
+[2025-11-27 19:55:00] {"action":"procesando_documento_nuevo"}
+[2025-11-27 19:55:00] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpr6bn2rl65qrl5hD3zHI"}}
+[2025-11-27 19:55:00] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 19:55:00] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 19:55:00] {"action":"moviendo_archivo","desde":"\/tmp\/phpr6bn2rl65qrl5hD3zHI","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928ac94d438b.pdf","nombre_final":"documento_elemento_6928ac94d438b.pdf"}
+[2025-11-27 19:55:00] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928ac94d438b.pdf"}
+[2025-11-27 19:55:00] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928ac94d438b.pdf"}
+[2025-11-27 19:55:00] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928ac94d438b.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"garan","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"prueba"}
+[2025-11-27 20:55:00] {"action":"resultado_insert","resultado":false}
+[2025-11-27 20:55:00] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 20:02:57] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 20:02:57"}
+[2025-11-27 20:02:57] {"action":"guardaryeditar_inicio","files_info":[],"post_info":[]}
+[2025-11-27 20:02:57] {"action":"sin_archivo"}
+[2025-11-27 20:03:04] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 20:03:04"}
+[2025-11-27 20:03:04] {"action":"guardaryeditar_inicio","files_info":[],"post_info":[]}
+[2025-11-27 20:03:04] {"action":"sin_archivo"}
+[2025-11-27 20:05:48] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 20:05:48"}
+[2025-11-27 20:05:48] {"action":"guardaryeditar_inicio","files_info":[],"post_info":[]}
+[2025-11-27 20:05:48] {"action":"sin_archivo"}
+[2025-11-27 20:14:06] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 20:14:06"}
+[2025-11-27 20:14:06] {"action":"guardaryeditar_inicio","files_info":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpc0fsorrf7bm125bISCD","error":0,"size":147037}},"post_info":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba","activo_documento_elemento":"1"}}
+[2025-11-27 20:14:06] {"action":"procesando_documento_nuevo"}
+[2025-11-27 20:14:06] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpc0fsorrf7bm125bISCD"}}
+[2025-11-27 20:14:06] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 20:14:06] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 20:14:06] {"action":"moviendo_archivo","desde":"\/tmp\/phpc0fsorrf7bm125bISCD","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928b10e39ac9.pdf","nombre_final":"documento_elemento_6928b10e39ac9.pdf"}
+[2025-11-27 20:14:06] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928b10e39ac9.pdf"}
+[2025-11-27 20:14:06] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928b10e39ac9.pdf"}
+[2025-11-27 20:14:06] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928b10e39ac9.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"Garantía","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"Prueba"}
+[2025-11-27 21:14:06] {"action":"resultado_insert","resultado":false}
+[2025-11-27 21:14:06] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 20:24:06] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 20:24:06"}
+[2025-11-27 20:24:06] {"DIAGNOSTICO_COMPLETO":{"PHP_VERSION":"8.4.5","upload_max_filesize":"2M","post_max_size":"8M","memory_limit":"128M","max_file_uploads":"20","REQUEST_METHOD":"POST","CONTENT_TYPE":"multipart\/form-data; boundary=----WebKitFormBoundaryFEIgPt0rLWh1z5Bt","CONTENT_LENGTH":"148042","FILES_count":1,"FILES_keys":["archivo_documento"],"POST_count":7,"POST_keys":["id_elemento","codigo_documento_elemento","descripcion_documento_elemento","tipo_documento_elemento","privado_documento","observaciones_documento","activo_documento_elemento"]}}
+[2025-11-27 20:24:06] {"action":"guardaryeditar_datos_recibidos","files_array":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpmg33aiig64vdeUYZJQa","error":0,"size":147037}},"files_detalle":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpmg33aiig64vdeUYZJQa"},"post_data":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"Garantía","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"Prueba","activo_documento_elemento":"1"}}
+[2025-11-27 20:24:06] {"action":"procesando_documento_nuevo"}
+[2025-11-27 20:24:06] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpmg33aiig64vdeUYZJQa"}}
+[2025-11-27 20:24:06] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 20:24:06] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 20:24:06] {"action":"moviendo_archivo","desde":"\/tmp\/phpmg33aiig64vdeUYZJQa","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928b366bbecd.pdf","nombre_final":"documento_elemento_6928b366bbecd.pdf"}
+[2025-11-27 20:24:06] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928b366bbecd.pdf"}
+[2025-11-27 20:24:06] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928b366bbecd.pdf"}
+[2025-11-27 20:24:06] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928b366bbecd.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"Garantía","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"Prueba"}
+[2025-11-27 21:24:06] {"action":"resultado_insert","resultado":false}
+[2025-11-27 21:24:06] {"error":"Fallo al insertar en base de datos","resultado":false}
+[2025-11-27 20:25:07] {"action":"guardaryeditar_iniciado","timestamp":"2025-11-27 20:25:07"}
+[2025-11-27 20:25:07] {"DIAGNOSTICO_COMPLETO":{"PHP_VERSION":"8.4.5","upload_max_filesize":"2M","post_max_size":"8M","memory_limit":"128M","max_file_uploads":"20","REQUEST_METHOD":"POST","CONTENT_TYPE":"multipart\/form-data; boundary=----WebKitFormBoundaryRpSlCa8zYGiUgnnK","CONTENT_LENGTH":"148036","FILES_count":1,"FILES_keys":["archivo_documento"],"POST_count":7,"POST_keys":["id_elemento","codigo_documento_elemento","descripcion_documento_elemento","tipo_documento_elemento","privado_documento","observaciones_documento","activo_documento_elemento"]}}
+[2025-11-27 20:25:07] {"action":"guardaryeditar_datos_recibidos","files_array":{"archivo_documento":{"name":"A4 Project Proposal.pdf","full_path":"A4 Project Proposal.pdf","type":"application\/pdf","tmp_name":"\/tmp\/phpf9m0v79ffjc847BsP5C","error":0,"size":147037}},"files_detalle":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpf9m0v79ffjc847BsP5C"},"post_data":{"id_elemento":"1","codigo_documento_elemento":"","descripcion_documento_elemento":"gar","tipo_documento_elemento":"Garantía","privado_documento":"0","observaciones_documento":"prueba","activo_documento_elemento":"1"}}
+[2025-11-27 20:25:07] {"action":"procesando_documento_nuevo"}
+[2025-11-27 20:25:07] {"action":"procesarDocumentoElemento_inicio","archivo_info":{"name":"A4 Project Proposal.pdf","type":"application\/pdf","size":147037,"error":0,"tmp_name":"\/tmp\/phpf9m0v79ffjc847BsP5C"}}
+[2025-11-27 20:25:07] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-11-27 20:25:07] {"info":"Validación de tipos","tipo_reportado":"application\/pdf","tipo_real":"application\/pdf"}
+[2025-11-27 20:25:07] {"action":"moviendo_archivo","desde":"\/tmp\/phpf9m0v79ffjc847BsP5C","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/docs_elementos\/documento_elemento_6928b3a3970ae.pdf","nombre_final":"documento_elemento_6928b3a3970ae.pdf"}
+[2025-11-27 20:25:07] {"success":"Archivo movido exitosamente","archivo":"documento_elemento_6928b3a3970ae.pdf"}
+[2025-11-27 20:25:07] {"success":"Documento procesado correctamente","nombre_archivo":"documento_elemento_6928b3a3970ae.pdf"}
+[2025-11-27 20:25:07] {"action":"antes_de_insertar","id_elemento":"1","archivo_documento":"documento_elemento_6928b3a3970ae.pdf","codigo_documento_elemento":null,"descripcion_documento_elemento":"gar","tipo_documento_elemento":"Garantía","privado_documento":false,"observaciones_documento":"prueba"}
+[2025-11-27 21:25:07] {"action":"resultado_insert","resultado":false}
+[2025-11-27 21:25:07] {"error":"Fallo al insertar en base de datos","resultado":false}

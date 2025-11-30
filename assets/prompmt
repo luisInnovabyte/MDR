@@ -3,7 +3,9 @@
 --                         MODELS                           --
 -- ======================================================== --
 
-Hazme el archivo models llamado Observaciones.php puedes coger el modelo de Impuesto.php. Trata de no inventar nada, solo de adaptar. La tabla sobre la que tienes que actuar es la siguiente:
+Hazme el archivo models llamado Observaciones.php puedes coger el modelo de Impuesto.php. Trata de no inventar nada, solo de adaptar. Lo debes 
+hacer dentro de la carpeta ./models/
+La tabla sobre la que tienes que actuar es la siguiente:
 CREATE TABLE proveedor (
     id_proveedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     codigo_proveedor VARCHAR(20) NOT NULL UNIQUE,
@@ -39,7 +41,8 @@ CREATE TABLE proveedor (
 --                    CONTROLLER                            --
 -- ======================================================== --
 Generame el controller llamado proveedor.php con el models ../models/Proveedor.php y sobre esta tabla (puedes tomar como modelo el controller proveedor.php)., 
-trata de no inventar nada, solo adapta el modelo de estados.php:
+trata de no inventar nada, solo adapta el modelo de estados.php, lo debes ghacer dentro de la carpeta ./controller/
+La tabla es la siguiente:
  CREATE TABLE proveedor (
      id_proveedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
      codigo_proveedor VARCHAR(20) NOT NULL UNIQUE,
@@ -121,7 +124,7 @@ Creame en el datatables del view de MntProveedor, que se visualiza en el index.p
 --    Por ejemplos Mntproveedores y MntProveedores_contacto  --
 -- ========================================================  --
 
- Vamos a generar los archivos necesarios para poder mostrar (mediante un datatables), editar (con el botón del datatables) y nuevo (con el botón fuera del datatables). Puedes coger como modelo lo que está en ./view/MntProveedores.
+Vamos a generar los archivos necesarios para poder mostrar (mediante un datatables), editar (con el botón del datatables) y nuevo (con el botón fuera del datatables). Puedes coger como modelo lo que está en ./view/MntProveedores.
 Toma como inicio de nombrer "MntProveedores_contacto", el models lo tienes en ./models/Proveedores_contacto.php y el controller lo tienes ./controller/proveedores_contacto.php
 Debes tener en cuenta que este formulario es dependiente del formulario ./view/MntProveedores/index.php, en este formulario se encuentra un datatables en el que en la última columna encontrarás un botón  "formulario:name" que pulsandolo debemos llegar a este nuevo formulario que te estoy pidiendo desarrollar, por supuesto el nuevo formulario deberá ir filtrado por el valor  ${row.id_proveedor}
 Trata de no inventar nada, ajustate lomás posible al modelo dado.

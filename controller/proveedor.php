@@ -46,10 +46,32 @@ switch ($_GET["op"]) {
                 "fax_sat_proveedor" => $row["fax_sat_proveedor"],
                 "email_sat_proveedor" => $row["email_sat_proveedor"],
                 "observaciones_proveedor" => $row["observaciones_proveedor"],
-                "cantidad_contactos" => isset($row["cantidad_contactos"]) ? intval($row["cantidad_contactos"]) : 0,
+                "cantidad_contactos" => isset($row["cantidad_contacto_proveedor"]) ? intval($row["cantidad_contacto_proveedor"]) : 0,
                 "activo_proveedor" => $row["activo_proveedor"],
                 "created_at_proveedor" => $row["created_at_proveedor"],
                 "updated_at_proveedor" => $row["updated_at_proveedor"]
+            );
+        }
+
+        $results = array(
+            "draw" => 1,
+            "recordsTotal" => count($data),
+            "recordsFiltered" => count($data),
+            "data" => $data
+        );
+
+        header('Content-Type: application/json');
+        echo json_encode($results, JSON_UNESCAPED_UNICODE);
+        break;
+
+    case "listarDisponibles":
+        $datos = $proveedor->get_proveedores_disponibles();
+        $data = array();
+        foreach ($datos as $row) {
+            $data[] = array(
+                "id_proveedor" => $row["id_proveedor"],
+                "codigo_proveedor" => $row["codigo_proveedor"],
+                "nombre_proveedor" => $row["nombre_proveedor"]
             );
         }
 

@@ -88,7 +88,12 @@
     <div class="br-pagetitle">
         <i class="icon icon ion-ios-bookmarks-outline"></i>
         <div>
+            <div class="d-flex align-items-center">
             <h4>Mantenimiento de Vacaciones</h4>
+            <button type="button" class="btn btn-link p-0 ms-1" data-toggle="modal" data-target="#modalAyudaVacaciones" title="Ayuda sobre el módulo">
+                <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
+            </button>
+            </div>
             <p class="mg-b-0">Tabla básica para el mantenimiento de las vacaciones</p>
         </div>
     </div><!-- d-flex -->
@@ -128,7 +133,7 @@
                                data-toggle="collapse" 
                                href="#collapseOne"
                                style="text-decoration: none;">
-                                <i class="fas fa-filter me-2"></i>Filtros de Métodos
+                                <i class="fas fa-filter me-2"></i>Filtros de Vacaciones
                             </a>
                         </h6>
                     </div>
@@ -141,7 +146,7 @@
                                     <div class="card shadow-sm h-100">
                                         <div class="card-header bg-white border-bottom py-2">
                                             <h6 class="mb-0 text-primary">
-                                                <i class="fas fa-address-book me-2"></i>Métodos de Contacto
+                                                <i class="fas fa-address-book me-2"></i>Vacaciones de Comercialesy
                                             </h6>
                                         </div>
                                         <div class="card-body p-2">
@@ -307,6 +312,10 @@
     <!--             columDef                -->
     <!-- *********************************** -->
 
+
+    <!-- Modal ayuda -->
+    <?php include_once('ayudaVacaciones.php') ?>
+    <!-- Fin modal ayuda -->
 
     <!-- *********************************** -->
     <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->

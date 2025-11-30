@@ -1,0 +1,1170 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 06:40:13"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 06:40:13"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 07:30:46"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 07:30:46"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 07:40:34"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 07:40:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 07:54:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 07:55:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "articulo.php",
+        "actividad": "Verificar artículo",
+        "mensaje": "Artículo disponible: Micrófono inalámbrico",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:01:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Articulo",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el artículo con ID: 21",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:01:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "articulo.php",
+        "actividad": "Actualizar artículo",
+        "mensaje": "Artículo actualizado: Micrófono inalámbrico (ID: 21)",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:01:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Insertar",
+        "mensaje": "Se insertó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:18:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "elemento.php",
+        "actividad": "Guardar elemento",
+        "mensaje": "Elemento guardado exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:18:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:25:49"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:32:17"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:32:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:39:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Activar",
+        "mensaje": "Se activó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 08:45:03"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:13:08"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:13:08"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Contraseña incorrecta",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 12:14:57"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Contraseña incorrecta",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 12:14:58"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:15:04"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:15:04"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:20:22"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:20:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:20:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:23:08"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:32:44"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:32:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:35:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:36:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:38:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:38:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:38:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:38:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:41:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:43:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:45:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:46:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:48:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:49:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 12:58:19"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:08:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:09:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:10:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:11:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:11:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de metodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:16:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Obtener metodo seleccionado",
+        "mensaje": "Metodo obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:16:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:16:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "ObtenerImagen",
+        "mensaje": "Metodo Obtener Imagen exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:16:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:16:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Actualizado el método",
+        "mensaje": "Se actualizó el método con el id de métodos ",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:16:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "metodos.php",
+        "actividad": "Actualizar método",
+        "mensaje": "Operación realizada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:16:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:16:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:23:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:24:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:34:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:36:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:38:12"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Contraseña incorrecta",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 13:42:24"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:42:29"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:42:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:44:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:47:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:47:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:49:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:53:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:55:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 13:57:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:01:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:03:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:04:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:04:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:04:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:04:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:05:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:05:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:09:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:09:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:09:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:09:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:12:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:16:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:16:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:17:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:17:19"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 14:17:27"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:20:26"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:20:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:44:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:51:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Activar",
+        "mensaje": "Se activó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:51:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:51:45"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:53:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:55:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Activar",
+        "mensaje": "Se activó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:55:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 16:55:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 17:30:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:37:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:37:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:37:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:37:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:38:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:39:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:39:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:40:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:40:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:44:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:44:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "get_elementos_by_articulo",
+        "mensaje": "Error al listar elementos del artículo 21: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.id_grupo' in 'on clause'",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 17:44:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 17:50:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Activar",
+        "mensaje": "Se activó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 17:50:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 17:50:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Activar",
+        "mensaje": "Se activó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 17:51:00"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 17:59:39"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 17:59:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 18:03:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Activar",
+        "mensaje": "Se activó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 18:03:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 18:03:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Activar",
+        "mensaje": "Se activó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 18:03:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 18:26:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "elemento.php",
+        "actividad": "Actualizar elemento",
+        "mensaje": "Elemento actualizado exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 18:26:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 18:36:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "elemento.php",
+        "actividad": "Actualizar elemento",
+        "mensaje": "Elemento actualizado exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 18:36:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 19:08:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "Activar",
+        "mensaje": "Se activó el elemento con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 19:08:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 19:11:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 19:13:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 19:18:33"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 19:18:36"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 20:39:52"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 20:39:52"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 20:45:59"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 20:45:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 20:49:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Coeficiente",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de coeficientes",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 20:50:06"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Contraseña incorrecta",
+        "tipo": "error",
+        "fecha_hora": "2025-11-25 22:46:12"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 22:46:34"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 22:46:34"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 22:47:43"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 22:47:43"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "cerrarSesion",
+        "mensaje": "Sesión cerrada correctamente.",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 23:13:26"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 23:13:50"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-11-25 23:13:50"
+    }
+]

@@ -80,10 +80,11 @@ $(document).ready(function () {
             { name: 'nif_cliente', data: 'nif_cliente', className: "text-center"  }, // Columna 4: NIF_CLIENTE
             { name: 'telefono_cliente', data: 'telefono_cliente', className: "text-center"  }, // Columna 5: TELEFONO_CLIENTE
             { name: 'email_cliente', data: 'email_cliente', className: "text-center"  }, // Columna 6: EMAIL_CLIENTE
-            { name: 'activo_cliente', data: 'activo_cliente', className: "text-center"  }, // Columna 7: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 8: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center"  },  // Columna 9: EDITAR
-            { name: 'formulario', data: null, defaultContent: '', className: "text-center"  },  // Columna 10: FORMULARIO
+            { name: 'cantidad_contactos', data: 'cantidad_contactos', className: "text-center"  }, // Columna 7: CANTIDAD_CONTACTOS
+            { name: 'activo_cliente', data: 'activo_cliente', className: "text-center"  }, // Columna 8: ESTADO
+            { name: 'activar', data: null, className: "text-center" }, // Columna 9: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center"  },  // Columna 10: EDITAR
+            { name: 'formulario', data: null, defaultContent: '', className: "text-center"  },  // Columna 11: FORMULARIO
             
         ], // de las columnas
         columnDefs: [
@@ -103,7 +104,21 @@ $(document).ready(function () {
             { targets: "telefono_cliente:name", width: '12%', searchable: true, orderable: true, className: "text-center" },
             // Columna 6: email_cliente
             { targets: "email_cliente:name", width: '15%', searchable: true, orderable: true, className: "text-center" },
-            // Columna 7: activo_cliente
+             // Columna 7: cantidad_contactos
+            {
+                targets: "cantidad_contactos:name", width: '8%', orderable: true, searchable: false, className: "text-center",
+                render: function (data, type, row) {
+                    if (type === "display") {
+                        var cantidad = parseInt(data) || 0;
+                        var badgeClass = cantidad > 0 ? 'bg-success' : 'bg-secondary';
+                        return `<span class="badge ${badgeClass} fs-6">
+                                    <i class="bi bi-people-fill me-1"></i>${cantidad}
+                                </span>`;
+                    }
+                    return parseInt(data) || 0;
+                }
+            },
+            // Columna 8: activo_cliente
             {
                 targets: "activo_cliente:name", width: '8%', orderable: true, searchable: true, className: "text-center",
                 render: function (data, type, row) {

@@ -1278,7 +1278,12 @@ INSERT INTO estado_elemento (codigo_estado_elemento, descripcion_estado_elemento
 
 
 -- ========================================================
--- TABLA DE ELEMENTOS ESPECÍFICOS (SIN FAMILIA REDUNDANTE)
+-- ELIMINAR TABLA ELEMENTO SI EXISTE
+-- ========================================================
+DROP TABLE IF EXISTS elemento;
+
+-- ========================================================
+-- TABLA DE ELEMENTOS ESPECÍFICOS CON UBICACIÓN DETALLADA
 -- ========================================================
 
 CREATE TABLE elemento (
@@ -1291,21 +1296,25 @@ CREATE TABLE elemento (
     -- Ejemplo: "0001-001", "0001-002", "0001-003"
     codigo_elemento VARCHAR(50) NOT NULL UNIQUE COMMENT 'Formato: codigo_articulo-correlativo',
     
-    
     codigo_barras_elemento VARCHAR(100) UNIQUE,
     descripcion_elemento VARCHAR(255) NOT NULL,
     numero_serie_elemento VARCHAR(100) UNIQUE,
     
     -- Estado (referencia a tabla estado_elemento)
     id_estado_elemento INT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Estado actual del elemento',
-    ubicacion_elemento VARCHAR(100),
+    
+    -- =====================================================
+    -- UBICACIÓN DETALLADA (3 CAMPOS)
+    -- =====================================================
+    nave_elemento VARCHAR(50) COMMENT 'Nave o almacén donde se encuentra (ej: "Nave 1", "Nave Principal")',
+    pasillo_columna_elemento VARCHAR(50) COMMENT 'Pasillo y columna (ej: "A-5", "B-12", "C-3")',
+    altura_elemento VARCHAR(50) COMMENT 'Altura o nivel (ej: "Planta baja", "Nivel 2", "Altura 3m")',
     
     -- Datos de adquisición
     fecha_compra_elemento DATE COMMENT 'Fecha de compra del elemento',
     precio_compra_elemento DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Precio de compra',
     proveedor_compra_elemento VARCHAR(255) COMMENT 'Proveedor que lo vendió',
     fecha_alta_elemento DATE COMMENT 'Fecha de puesta en servicio',
-    -- valor_actual_elemento DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Valor actual estimado', 
     
     -- Garantía y mantenimiento
     fecha_fin_garantia_elemento DATE,
@@ -1330,7 +1339,7 @@ CREATE TABLE elemento (
         ON UPDATE CASCADE,
     
     -- Índice único compuesto
-    UNIQUE KEY uk_articulo (id_articulo_elemento),
+    
     
     INDEX idx_codigo_elemento (codigo_elemento),
     INDEX idx_codigo_barras_elemento (codigo_barras_elemento),
@@ -1338,89 +1347,313 @@ CREATE TABLE elemento (
     INDEX idx_id_articulo_elemento (id_articulo_elemento),
     INDEX idx_id_marca_elemento (id_marca_elemento),
     INDEX idx_id_estado_elemento (id_estado_elemento),
-    INDEX idx_ubicacion_elemento (ubicacion_elemento),
+    INDEX idx_nave_elemento (nave_elemento),
+    INDEX idx_pasillo_columna_elemento (pasillo_columna_elemento),
     INDEX idx_fecha_compra_elemento (fecha_compra_elemento)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+ALTER TABLE elemento DROP INDEX uk_articulo;
+
 -- ========================================================
--- VISTA COMPLETA DE ELEMENTOS (SIN REDUNDANCIA DE FAMILIA)
+-- VISTA COMPLETA DE ELEMENTOS (ACTUALIZADA CON UBICACIÓN DETALLADA)
+-- CUIDADO SOLO ACTIVOS
 -- ========================================================
+
+DROP VIEW IF EXISTS vista_elemento_completa;
 
 CREATE VIEW vista_elemento_completa AS
 SELECT 
-    -- Datos del elemento
+    -- =====================================================
+    -- DATOS DEL ELEMENTO
+    -- =====================================================
     e.id_elemento,
     e.codigo_elemento,
     e.codigo_barras_elemento,
     e.descripcion_elemento,
     e.numero_serie_elemento,
     e.modelo_elemento,
-    e.ubicacion_elemento,
     
-    -- Datos del artículo
+    -- =====================================================
+    -- UBICACIÓN DETALLADA (3 CAMPOS)
+    -- =====================================================
+    e.nave_elemento,
+    e.pasillo_columna_elemento,
+    e.altura_elemento,
+    
+    -- Ubicación concatenada para visualización rápida
+    CONCAT_WS(' | ', 
+        COALESCE(e.nave_elemento, ''),
+        COALESCE(e.pasillo_columna_elemento, ''),
+        COALESCE(e.altura_elemento, '')
+    ) AS ubicacion_completa_elemento,
+    
+    -- =====================================================
+    -- DATOS DEL ARTÍCULO
+    -- =====================================================
     a.id_articulo,
     a.codigo_articulo,
     a.nombre_articulo,
     a.name_articulo,
     a.precio_alquiler_articulo,
     
-    -- Datos de la familia (viene del artículo)
+    -- =====================================================
+    -- DATOS DE LA FAMILIA (viene del artículo)
+    -- =====================================================
     f.id_familia,
     f.codigo_familia,
     f.nombre_familia,
     f.name_familia,
     
-    -- Datos del grupo (viene de la familia)
+    -- =====================================================
+    -- DATOS DEL GRUPO (viene de la familia)
+    -- =====================================================
     g.id_grupo,
     g.codigo_grupo,
     g.nombre_grupo,
     
-    -- Datos de la marca
+    -- =====================================================
+    -- DATOS DE LA MARCA
+    -- =====================================================
     m.id_marca,
     m.codigo_marca,
     m.nombre_marca,
     
-    -- Datos del estado
+    -- =====================================================
+    -- DATOS DEL ESTADO
+    -- =====================================================
     est.id_estado_elemento,
     est.codigo_estado_elemento,
     est.descripcion_estado_elemento,
     est.color_estado_elemento,
     est.permite_alquiler_estado_elemento,
     
-    -- Datos económicos
+    -- =====================================================
+    -- DATOS ECONÓMICOS
+    -- =====================================================
     e.fecha_compra_elemento,
     e.precio_compra_elemento,
     e.proveedor_compra_elemento,
     e.fecha_alta_elemento,
-    e.valor_actual_elemento,
     
-    -- Garantía y mantenimiento
+    -- =====================================================
+    -- GARANTÍA Y MANTENIMIENTO
+    -- =====================================================
     e.fecha_fin_garantia_elemento,
     e.proximo_mantenimiento_elemento,
     
-    -- Observaciones
+    -- Indicadores de vencimientos
+    CASE 
+        WHEN e.fecha_fin_garantia_elemento < CURDATE() THEN 'Vencida'
+        WHEN e.fecha_fin_garantia_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Por vencer'
+        WHEN e.fecha_fin_garantia_elemento > DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Vigente'
+        ELSE 'Sin garantía'
+    END AS estado_garantia_elemento,
+    
+    CASE 
+        WHEN e.proximo_mantenimiento_elemento < CURDATE() THEN 'Atrasado'
+        WHEN e.proximo_mantenimiento_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Próximo'
+        WHEN e.proximo_mantenimiento_elemento > DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Al día'
+        ELSE 'Sin programar'
+    END AS estado_mantenimiento_elemento,
+    
+    -- =====================================================
+    -- OBSERVACIONES
+    -- =====================================================
     e.observaciones_elemento,
     
-    -- Estado activo
+    -- =====================================================
+    -- ESTADO ACTIVO
+    -- =====================================================
     e.activo_elemento,
     
-    -- Timestamps
+    -- =====================================================
+    -- TIMESTAMPS
+    -- =====================================================
     e.created_at_elemento,
-    e.updated_at_elemento
+    e.updated_at_elemento,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS ADICIONALES
+    -- =====================================================
+    
+    -- Jerarquía completa
+    CONCAT_WS(' > ',
+        COALESCE(g.nombre_grupo, 'Sin grupo'),
+        f.nombre_familia,
+        a.nombre_articulo,
+        e.descripcion_elemento
+    ) AS jerarquia_completa_elemento,
+    
+    -- Antigüedad en días
+    DATEDIFF(CURDATE(), e.fecha_alta_elemento) AS dias_en_servicio_elemento,
+    
+    -- Antigüedad en años (redondeado a 2 decimales)
+    ROUND(DATEDIFF(CURDATE(), e.fecha_alta_elemento) / 365.25, 2) AS anios_en_servicio_elemento
     
 FROM elemento e
 INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
-INNER JOIN familia f ON a.id_familia = f.id_familia  -- La familia viene del artículo
+INNER JOIN familia f ON a.id_familia = f.id_familia
 LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
 LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
 INNER JOIN estado_elemento est ON e.id_estado_elemento = est.id_estado_elemento
 WHERE e.activo_elemento = TRUE;
 
 
+
+
+
+-- ========================================================
+-- VISTA COMPLETA DE ELEMENTOS (ACTUALIZADA CON UBICACIÓN DETALLADA)
+-- TODOS LOS ELEMENTOS
+-- ========================================================
+
+DROP VIEW IF EXISTS vista_elementos_completa;
+
+CREATE VIEW vista_elementos_completa AS
+SELECT 
+    -- =====================================================
+    -- DATOS DEL ELEMENTO
+    -- =====================================================
+    e.id_elemento,
+    e.codigo_elemento,
+    e.codigo_barras_elemento,
+    e.descripcion_elemento,
+    e.numero_serie_elemento,
+    e.modelo_elemento,
+    
+    -- =====================================================
+    -- UBICACIÓN DETALLADA (3 CAMPOS)
+    -- =====================================================
+    e.nave_elemento,
+    e.pasillo_columna_elemento,
+    e.altura_elemento,
+    
+    -- Ubicación concatenada para visualización rápida
+    CONCAT_WS(' | ', 
+        COALESCE(e.nave_elemento, ''),
+        COALESCE(e.pasillo_columna_elemento, ''),
+        COALESCE(e.altura_elemento, '')
+    ) AS ubicacion_completa_elemento,
+    
+    -- =====================================================
+    -- DATOS DEL ARTÍCULO
+    -- =====================================================
+    a.id_articulo,
+    a.codigo_articulo,
+    a.nombre_articulo,
+    a.name_articulo,
+    a.precio_alquiler_articulo,
+    
+    -- =====================================================
+    -- DATOS DE LA FAMILIA (viene del artículo)
+    -- =====================================================
+    f.id_familia,
+    f.codigo_familia,
+    f.nombre_familia,
+    f.name_familia,
+    
+    -- =====================================================
+    -- DATOS DEL GRUPO (viene de la familia)
+    -- =====================================================
+    g.id_grupo,
+    g.codigo_grupo,
+    g.nombre_grupo,
+    
+    -- =====================================================
+    -- DATOS DE LA MARCA
+    -- =====================================================
+    m.id_marca,
+    m.codigo_marca,
+    m.nombre_marca,
+    
+    -- =====================================================
+    -- DATOS DEL ESTADO
+    -- =====================================================
+    est.id_estado_elemento,
+    est.codigo_estado_elemento,
+    est.descripcion_estado_elemento,
+    est.color_estado_elemento,
+    est.permite_alquiler_estado_elemento,
+    
+    -- =====================================================
+    -- DATOS ECONÓMICOS
+    -- =====================================================
+    e.fecha_compra_elemento,
+    e.precio_compra_elemento,
+    e.proveedor_compra_elemento,
+    e.fecha_alta_elemento,
+    
+    -- =====================================================
+    -- GARANTÍA Y MANTENIMIENTO
+    -- =====================================================
+    e.fecha_fin_garantia_elemento,
+    e.proximo_mantenimiento_elemento,
+    
+    -- Indicadores de vencimientos
+    CASE 
+        WHEN e.fecha_fin_garantia_elemento < CURDATE() THEN 'Vencida'
+        WHEN e.fecha_fin_garantia_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Por vencer'
+        WHEN e.fecha_fin_garantia_elemento > DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Vigente'
+        ELSE 'Sin garantía'
+    END AS estado_garantia_elemento,
+    
+    CASE 
+        WHEN e.proximo_mantenimiento_elemento < CURDATE() THEN 'Atrasado'
+        WHEN e.proximo_mantenimiento_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Próximo'
+        WHEN e.proximo_mantenimiento_elemento > DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Al día'
+        ELSE 'Sin programar'
+    END AS estado_mantenimiento_elemento,
+    
+    -- =====================================================
+    -- OBSERVACIONES
+    -- =====================================================
+    e.observaciones_elemento,
+    
+    -- =====================================================
+    -- ESTADO ACTIVO
+    -- =====================================================
+    e.activo_elemento,
+    
+    -- =====================================================
+    -- TIMESTAMPS
+    -- =====================================================
+    e.created_at_elemento,
+    e.updated_at_elemento,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS ADICIONALES
+    -- =====================================================
+    
+    -- Jerarquía completa
+    CONCAT_WS(' > ',
+        COALESCE(g.nombre_grupo, 'Sin grupo'),
+        f.nombre_familia,
+        a.nombre_articulo,
+        e.descripcion_elemento
+    ) AS jerarquia_completa_elemento,
+    
+    -- Antigüedad en días
+    DATEDIFF(CURDATE(), e.fecha_alta_elemento) AS dias_en_servicio_elemento,
+    
+    -- Antigüedad en años (redondeado a 2 decimales)
+    ROUND(DATEDIFF(CURDATE(), e.fecha_alta_elemento) / 365.25, 2) AS anios_en_servicio_elemento
+    
+FROM elemento e
+INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
+INNER JOIN familia f ON a.id_familia = f.id_familia
+LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
+INNER JOIN estado_elemento est ON e.id_estado_elemento = est.id_estado_elemento
+
+
+
+
 -- ========================================================
 -- DISPARADOR
 -- ========================================================
 DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_elemento_before_insert$$
 
 CREATE TRIGGER trg_elemento_before_insert
 BEFORE INSERT ON elemento
@@ -1429,50 +1662,43 @@ BEGIN
     DECLARE codigo_art VARCHAR(50);
     DECLARE max_correlativo INT;
     
-    -- Obtener código del artículo
     SELECT codigo_articulo 
     INTO codigo_art
     FROM articulo
     WHERE id_articulo = NEW.id_articulo_elemento;
     
-    -- Si no se especifica estado, asignar "Disponible"
     IF NEW.id_estado_elemento IS NULL THEN
         SET NEW.id_estado_elemento = 1;
     END IF;
     
-    -- Calcular siguiente correlativo extrayéndolo de códigos existentes
-    SELECT COALESCE(MAX(
-        CAST(SUBSTRING_INDEX(codigo_elemento, '-', -1) AS UNSIGNED)
-    ), 0) + 1 INTO max_correlativo
+    SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(codigo_elemento, '-', -1) AS UNSIGNED)), 0) + 1 INTO max_correlativo
     FROM elemento
     WHERE id_articulo_elemento = NEW.id_articulo_elemento;
     
-    -- Generar código completo
-    SET NEW.codigo_elemento = CONCAT(
-        codigo_art,
-        '-',
-        LPAD(max_correlativo, 3, '0')
-    );
+    SET NEW.codigo_elemento = CONCAT(codigo_art, '-', LPAD(max_correlativo, 3, '0'));
 END$$
 
 DELIMITER ;
 
 
--- ========================================================
--- TABLA DE DOCUMENTOS DE ELEMENTOS
--- ========================================================
+-- ==========================================================================
+-- YA ESTA - TABLA DE DOCUMENTOS DE ELEMENTOS - con campo boolean de privado
+-- ==========================================================================
 
 CREATE TABLE documento_elemento (
     id_documento_elemento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_elemento INT UNSIGNED NOT NULL,
     
     -- Identificación del documento
-    codigo_documento_elemento VARCHAR(50) COMMENT 'Código o referencia del documento',
+    -- codigo_documento_elemento VARCHAR(50) COMMENT 'Código o referencia del documento', -- No lo vamos a utilizar
     descripcion_documento_elemento TEXT,
     tipo_documento_elemento VARCHAR(100) COMMENT 'Tipo: Manual, Garantía, Factura, Certificado, etc.',
     
     -- Información del archivo
     archivo_documento VARCHAR(500) NOT NULL COMMENT 'Ruta completa con nombre del archivo',
+    
+    -- Control de acceso
+    privado_documento BOOLEAN DEFAULT FALSE COMMENT 'Si TRUE, solo visible para administración',
     
     observaciones_documento TEXT,
     activo_documento BOOLEAN DEFAULT TRUE,
@@ -1485,8 +1711,57 @@ CREATE TABLE documento_elemento (
         ON UPDATE CASCADE,
     
     INDEX idx_id_elemento_documento (id_elemento),
-    INDEX idx_tipo_documento (tipo_documento_elemento)
+    INDEX idx_tipo_documento (tipo_documento_elemento),
+    INDEX idx_privado_documento (privado_documento)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ===============================================================
+-- TABLA DE DOCUMENTOS DE ELEMENTOS - 
+-- DISPARADOR PARA GENERAR CÓDIGO AUTOMÁTICO
+-- No lo vamos autilizar , al cliente este código no le interesa
+-- ===============================================================
+
+
+-- DELIMITER $$
+-- 
+-- DROP TRIGGER IF EXISTS trg_documento_elemento_before_insert$$
+-- 
+-- CREATE TRIGGER trg_documento_elemento_before_insert
+-- BEFORE INSERT ON documento_elemento
+-- FOR EACH ROW
+-- BEGIN
+--     DECLARE iniciales_tipo VARCHAR(2);
+--     DECLARE codigo_elem VARCHAR(255);
+--     DECLARE max_secuencial INT;
+--     DECLARE nuevo_codigo VARCHAR(50);
+--     
+--     SET iniciales_tipo = UPPER(LEFT(TRIM(NEW.tipo_documento_elemento), 2));
+--     
+--     SELECT codigo_elemento 
+--     INTO codigo_elem
+--     FROM elemento
+--     WHERE id_elemento = NEW.id_elemento;
+--     
+--     SET codigo_elem = REPLACE(TRIM(codigo_elem), '-', '_');
+--     SET codigo_elem = REPLACE(codigo_elem, '/', '-');
+--     SET codigo_elem = REPLACE(codigo_elem, '\\', '-');
+--     SET codigo_elem = REPLACE(codigo_elem, ' ', '_');
+--     
+--     SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(codigo_documento_elemento, '-', -1) AS UNSIGNED)), 0) + 1 
+--     INTO max_secuencial
+--     FROM documento_elemento
+--     WHERE id_elemento = NEW.id_elemento
+--     AND codigo_documento_elemento LIKE CONCAT(iniciales_tipo, '-', codigo_elem, '-%');
+--     
+--     SET nuevo_codigo = CONCAT(iniciales_tipo, '-', codigo_elem, '-', LPAD(max_secuencial, 3, '0'));
+--     
+--     SET NEW.codigo_documento_elemento = nuevo_codigo;
+--     
+-- END$$
+-- 
+-- DELIMITER ;
+
 
 
 
@@ -1499,8 +1774,13 @@ CREATE TABLE foto_elemento (
     id_elemento INT UNSIGNED NOT NULL,
     
     -- Información del archivo
+    descripcion_foto_elemento TEXT,
     archivo_foto VARCHAR(500) NOT NULL COMMENT 'Ruta completa con nombre del archivo de imagen',
     
+ -- Control de acceso
+    privado_foto BOOLEAN DEFAULT FALSE COMMENT 'Si TRUE, solo visible para administración',
+
+
     observaciones_foto TEXT,
     activo_foto BOOLEAN DEFAULT TRUE,
     created_at_foto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -1511,7 +1791,8 @@ CREATE TABLE foto_elemento (
         ON DELETE CASCADE 
         ON UPDATE CASCADE,
     
-    INDEX idx_id_elemento_foto (id_elemento)
+    INDEX idx_id_elemento_foto (id_elemento),
+    INDEX idx_privado_foto (privado_foto)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

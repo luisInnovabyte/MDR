@@ -1,0 +1,601 @@
+<?php
+
+require_once '../config/conexion.php';
+require_once '../config/funciones.php';
+
+class Elemento
+{
+    private $conexion;
+    private $registro;
+
+    public function __construct()
+    {
+        $this->conexion = (new Conexion())->getConexion();
+        $this->registro = new RegistroActividad();
+        
+        // Configurar zona horaria Madrid para todas las operaciones
+        try {
+            $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
+        } catch (PDOException $e) {
+            // Si no se puede establecer la zona horaria, registrar error pero continuar
+            $this->registro->registrarActividad(
+                'system',
+                'Elemento',
+                '__construct',
+                "No se pudo establecer zona horaria Madrid: " . $e->getMessage(),
+                'warning'
+            );
+        }
+    }
+
+    public function get_elementos()
+    {
+        try {
+            $sql = "SELECT * FROM vista_elementos_completa 
+                    ORDER BY codigo_articulo ASC, codigo_elemento ASC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'get_elementos',
+                "Error al listar elementos: " . $e->getMessage(),
+                "error"
+            );
+            return [];
+        }
+    }
+
+    public function get_elementos_by_articulo($id_articulo)
+    {
+        try {
+            $sql = "SELECT * FROM vista_elementos_completa 
+                    WHERE id_articulo = ? 
+                    ORDER BY codigo_elemento ASC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_articulo, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'get_elementos_by_articulo',
+                "Error al listar elementos del artículo {$id_articulo}: " . $e->getMessage(),
+                "error"
+            );
+            return [];
+        }
+    }
+
+    public function get_elementos_by_estado($id_estado_elemento)
+    {
+        try {
+            $sql = "SELECT * FROM vista_elemento_completa 
+                    WHERE id_estado_elemento = ? 
+                    ORDER BY codigo_articulo ASC, codigo_elemento ASC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_estado_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'get_elementos_by_estado',
+                "Error al listar elementos del estado {$id_estado_elemento}: " . $e->getMessage(),
+                "error"
+            );
+            return [];
+        }
+    }
+
+    public function get_elementos_disponibles()
+    {
+        try {
+            $sql = "SELECT * FROM vista_elemento_completa 
+                    WHERE permite_alquiler_estado_elemento = 1 
+                    ORDER BY codigo_articulo ASC, codigo_elemento ASC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'get_elementos_disponibles',
+                "Error al listar elementos disponibles: " . $e->getMessage(),
+                "error"
+            );
+            return [];
+        }
+    }
+
+    public function get_elementoxid($id_elemento)
+    {
+        try {
+            // Usar vista_elementos_completa que ya incluye todos los campos calculados
+            // Esta vista muestra TODOS los elementos (activos e inactivos)
+            $sql = "SELECT * FROM vista_elementos_completa 
+                    WHERE id_elemento = ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $resultado;
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'get_elementoxid',
+                "Error al mostrar el elemento {$id_elemento}: " . $e->getMessage(),
+                "error"
+            );
+            return false;
+        }
+    }
+
+    public function activar_elementoxid($id_elemento)
+    {
+        try {
+            $sql = "UPDATE elemento SET activo_elemento = 1 WHERE id_elemento = ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'Activar',
+                "Se activó el elemento con ID: $id_elemento",
+                'info'
+            );
+            
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'activar_elementoxid',
+                "Error al activar el elemento {$id_elemento}: " . $e->getMessage(),
+                "error"
+            );
+            return false;
+        }
+    }
+
+    public function desactivar_elementoxid($id_elemento)
+    {
+        try {
+            $sql = "UPDATE elemento SET activo_elemento = 0 WHERE id_elemento = ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'Desactivar',
+                "Se desactivó el elemento con ID: $id_elemento",
+                'info'
+            );
+            
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'desactivar_elementoxid',
+                "Error al desactivar el elemento {$id_elemento}: " . $e->getMessage(),
+                "error"
+            );
+            return false;
+        }
+    }
+
+    public function insert_elemento(
+        $id_articulo_elemento, 
+        $id_marca_elemento, 
+        $modelo_elemento, 
+        $codigo_barras_elemento, 
+        $descripcion_elemento, 
+        $numero_serie_elemento, 
+        $id_estado_elemento, 
+        $nave_elemento, 
+        $pasillo_columna_elemento, 
+        $altura_elemento, 
+        $fecha_compra_elemento, 
+        $precio_compra_elemento, 
+        $proveedor_compra_elemento, 
+        $fecha_alta_elemento, 
+        $fecha_fin_garantia_elemento, 
+        $proximo_mantenimiento_elemento, 
+        $observaciones_elemento
+    ) {
+        try {
+            // Configurar zona horaria para esta operación
+            $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
+            
+            // El código_elemento se genera automáticamente por el trigger trg_elemento_before_insert
+            $sql = "INSERT INTO elemento ( 
+                        id_articulo_elemento, 
+                        id_marca_elemento, 
+                        modelo_elemento, 
+                        codigo_barras_elemento, 
+                        descripcion_elemento, 
+                        numero_serie_elemento, 
+                        id_estado_elemento, 
+                        nave_elemento, 
+                        pasillo_columna_elemento, 
+                        altura_elemento, 
+                        fecha_compra_elemento, 
+                        precio_compra_elemento, 
+                        proveedor_compra_elemento, 
+                        fecha_alta_elemento, 
+                        fecha_fin_garantia_elemento, 
+                        proximo_mantenimiento_elemento, 
+                        observaciones_elemento, 
+                        activo_elemento, 
+                        created_at_elemento, 
+                        updated_at_elemento
+                    ) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+            
+            $stmt = $this->conexion->prepare($sql);
+            
+            if (!$stmt) {
+                throw new Exception("Error al preparar la consulta SQL");
+            }
+                              
+            $stmt->bindValue(1, $id_articulo_elemento, PDO::PARAM_INT); 
+            $stmt->bindValue(2, $id_marca_elemento ?: null, PDO::PARAM_INT); 
+            $stmt->bindValue(3, $modelo_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(4, $codigo_barras_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(5, $descripcion_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(6, $numero_serie_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(7, $id_estado_elemento ?: 1, PDO::PARAM_INT); 
+            $stmt->bindValue(8, $nave_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(9, $pasillo_columna_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(11, $fecha_compra_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(12, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR); 
+            $stmt->bindValue(13, $proveedor_compra_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(14, $fecha_alta_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(15, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(16, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(17, $observaciones_elemento, PDO::PARAM_STR); 
+                              
+            $resultado = $stmt->execute();
+            
+            if (!$resultado) {
+                $errorInfo = $stmt->errorInfo();
+                throw new Exception("Error al ejecutar la consulta: " . $errorInfo[2]);
+            }
+                              
+            $idInsert = $this->conexion->lastInsertId();
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'Insertar',
+                "Se insertó el elemento con ID: $idInsert",
+                'info'
+            );
+
+            return $idInsert;
+            
+        } catch (PDOException $e) {
+            throw new Exception("Error SQL en insert_elemento: " . $e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception("Error general en insert_elemento: " . $e->getMessage());
+        }
+    }
+
+    public function update_elemento(
+        $id_elemento, 
+        $id_articulo_elemento, 
+        $id_marca_elemento, 
+        $modelo_elemento, 
+        $codigo_barras_elemento, 
+        $descripcion_elemento, 
+        $numero_serie_elemento, 
+        $id_estado_elemento, 
+        $nave_elemento, 
+        $pasillo_columna_elemento, 
+        $altura_elemento, 
+        $fecha_compra_elemento, 
+        $precio_compra_elemento, 
+        $proveedor_compra_elemento, 
+        $fecha_alta_elemento, 
+        $fecha_fin_garantia_elemento, 
+        $proximo_mantenimiento_elemento, 
+        $observaciones_elemento
+    ) {
+        try {
+            // Configurar zona horaria para esta operación
+            $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
+            
+            $sql = "UPDATE elemento SET 
+                        id_articulo_elemento = ?, 
+                        id_marca_elemento = ?, 
+                        modelo_elemento = ?, 
+                        codigo_barras_elemento = ?, 
+                        descripcion_elemento = ?, 
+                        numero_serie_elemento = ?, 
+                        id_estado_elemento = ?, 
+                        nave_elemento = ?, 
+                        pasillo_columna_elemento = ?, 
+                        altura_elemento = ?, 
+                        fecha_compra_elemento = ?, 
+                        precio_compra_elemento = ?, 
+                        proveedor_compra_elemento = ?, 
+                        fecha_alta_elemento = ?, 
+                        fecha_fin_garantia_elemento = ?, 
+                        proximo_mantenimiento_elemento = ?, 
+                        observaciones_elemento = ?, 
+                        updated_at_elemento = NOW() 
+                    WHERE id_elemento = ?";
+            
+            $stmt = $this->conexion->prepare($sql);
+            
+            if (!$stmt) {
+                throw new Exception("Error al preparar la consulta de actualización");
+            }
+            
+            $stmt->bindValue(1, $id_articulo_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_marca_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(3, $modelo_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(4, $codigo_barras_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(5, $descripcion_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(6, $numero_serie_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(7, $id_estado_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(8, $nave_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(9, $pasillo_columna_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(11, $fecha_compra_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(12, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR);
+            $stmt->bindValue(13, $proveedor_compra_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(14, $fecha_alta_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(15, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(16, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(17, $observaciones_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(18, $id_elemento, PDO::PARAM_INT); 
+
+            $resultado = $stmt->execute();
+            
+            if (!$resultado) {
+                $errorInfo = $stmt->errorInfo();
+                throw new Exception("Error al ejecutar la actualización: " . $errorInfo[2]);
+            }
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'Actualizar',
+                "Se actualizó el elemento con ID: $id_elemento",
+                'info'
+            );
+
+            return $stmt->rowCount();
+
+        } catch (PDOException $e) {
+            throw new Exception("Error SQL en update_elemento: " . $e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception("Error general en update_elemento: " . $e->getMessage());
+        }
+    }
+
+    public function verificarCodigoBarras($codigo_barras_elemento, $id_elemento = null)
+    {
+        try {
+            if (empty($codigo_barras_elemento)) {
+                return ['existe' => false];
+            }
+
+            $sql = "SELECT COUNT(*) AS total FROM elemento WHERE codigo_barras_elemento = ?";
+            $params = [trim($codigo_barras_elemento)];
+    
+            if (!empty($id_elemento)) {
+                $sql .= " AND id_elemento != ?";
+                $params[] = $id_elemento;
+            }
+    
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute($params);
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            return [
+                'existe' => ($resultado['total'] > 0)
+            ];
+    
+        } catch (PDOException $e) {
+            if (isset($this->registro)) {
+                $this->registro->registrarActividad(
+                    null,
+                    'Elemento',
+                    'verificarCodigoBarras',
+                    "Error al verificar código de barras: " . $e->getMessage(),
+                    'error'
+                );
+            }
+    
+            return [
+                'existe' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function verificarNumeroSerie($numero_serie_elemento, $id_elemento = null)
+    {
+        try {
+            if (empty($numero_serie_elemento)) {
+                return ['existe' => false];
+            }
+
+            $sql = "SELECT COUNT(*) AS total FROM elemento WHERE numero_serie_elemento = ?";
+            $params = [trim($numero_serie_elemento)];
+    
+            if (!empty($id_elemento)) {
+                $sql .= " AND id_elemento != ?";
+                $params[] = $id_elemento;
+            }
+    
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute($params);
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            return [
+                'existe' => ($resultado['total'] > 0)
+            ];
+    
+        } catch (PDOException $e) {
+            if (isset($this->registro)) {
+                $this->registro->registrarActividad(
+                    null,
+                    'Elemento',
+                    'verificarNumeroSerie',
+                    "Error al verificar número de serie: " . $e->getMessage(),
+                    'error'
+                );
+            }
+    
+            return [
+                'existe' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function cambiar_estado_elemento($id_elemento, $id_estado_elemento_nuevo)
+    {
+        try {
+            // Configurar zona horaria para esta operación
+            $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
+            
+            $sql = "UPDATE elemento SET 
+                        id_estado_elemento = ?, 
+                        updated_at_elemento = NOW() 
+                    WHERE id_elemento = ?";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_estado_elemento_nuevo, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_elemento, PDO::PARAM_INT);
+            
+            $resultado = $stmt->execute();
+            
+            if (!$resultado) {
+                $errorInfo = $stmt->errorInfo();
+                throw new Exception("Error al ejecutar el cambio de estado: " . $errorInfo[2]);
+            }
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'Cambiar Estado',
+                "Se cambió el estado del elemento ID: $id_elemento al estado ID: $id_estado_elemento_nuevo",
+                'info'
+            );
+
+            return $stmt->rowCount();
+
+        } catch (PDOException $e) {
+            throw new Exception("Error SQL en cambiar_estado_elemento: " . $e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception("Error general en cambiar_estado_elemento: " . $e->getMessage());
+        }
+    }
+
+    public function getWarrantyEvents($month, $year)
+    {
+        try {
+            $sql = "SELECT 
+                        id_elemento,
+                        codigo_elemento,
+                        descripcion_elemento,
+                        modelo_elemento,
+                        numero_serie_elemento,
+                        fecha_fin_garantia_elemento,
+                        estado_garantia_elemento,
+                        nombre_articulo,
+                        nombre_familia,
+                        nombre_marca,
+                        nombre_grupo,
+                        nave_elemento,
+                        pasillo_columna_elemento,
+                        altura_elemento
+                    FROM vista_elemento_completa
+                    WHERE fecha_fin_garantia_elemento IS NOT NULL
+                    AND MONTH(fecha_fin_garantia_elemento) = :month
+                    AND YEAR(fecha_fin_garantia_elemento) = :year
+                    ORDER BY fecha_fin_garantia_elemento";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':month', $month, PDO::PARAM_INT);
+            $stmt->bindParam(':year', $year, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'getWarrantyEvents',
+                "Error al obtener eventos de garantía: " . $e->getMessage(),
+                "error"
+            );
+            return [];
+        }
+    }
+
+    public function getMaintenanceEvents($month, $year)
+    {
+        try {
+            $sql = "SELECT 
+                        id_elemento,
+                        codigo_elemento,
+                        descripcion_elemento,
+                        modelo_elemento,
+                        numero_serie_elemento,
+                        proximo_mantenimiento_elemento,
+                        estado_mantenimiento_elemento,
+                        nombre_articulo,
+                        nombre_familia,
+                        nombre_marca,
+                        nombre_grupo,
+                        nave_elemento,
+                        pasillo_columna_elemento,
+                        altura_elemento
+                    FROM vista_elemento_completa
+                    WHERE proximo_mantenimiento_elemento IS NOT NULL
+                    AND MONTH(proximo_mantenimiento_elemento) = :month
+                    AND YEAR(proximo_mantenimiento_elemento) = :year
+                    ORDER BY proximo_mantenimiento_elemento";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':month', $month, PDO::PARAM_INT);
+            $stmt->bindParam(':year', $year, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'getMaintenanceEvents',
+                "Error al obtener eventos de mantenimiento: " . $e->getMessage(),
+                "error"
+            );
+            return [];
+        }
+    }
+}

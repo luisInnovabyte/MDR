@@ -1,0 +1,1 @@
+[2025-11-25 12:16:28] "Intento de obtener imagen - ID Método: 1"

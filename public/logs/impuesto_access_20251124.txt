@@ -1,0 +1,2 @@
+[2025-11-24 11:28:28] impuesto.php ejecutado - IP: 192.168.31.3
+[2025-11-24 18:17:14] impuesto.php ejecutado - IP: 192.168.31.3

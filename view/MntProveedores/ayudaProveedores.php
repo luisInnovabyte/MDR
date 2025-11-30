@@ -196,16 +196,16 @@
             </div>
 
             <!-- Footer del Modal -->
-            <div class="modal-footer border-0 bg-light">
-                <div class="d-flex justify-content-between w-100">
+            <div class="modal-footer bg-light">
+                <div class="text-left flex-grow-1">
                     <small class="text-muted">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Versión del sistema: MDR v1.0
+                        <i class="bi bi-clock mr-1"></i>
+                        Versión del sistema: SMM v1.0 - Última actualización: 24-11-2025
                     </small>
-                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">
-                        <i class="bi bi-check-lg me-1"></i>Entendido
-                    </button>
                 </div>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <i class="bi bi-check-lg mr-2"></i>Entendido
+                </button>
             </div>
         </div>
     </div>

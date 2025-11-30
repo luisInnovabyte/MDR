@@ -1,0 +1,16 @@
+[2025-11-24 19:10:35] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:10:47] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:10:52] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:11:03] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:13:35] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:14:02] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:16:23] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:16:26] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:18:43] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:18:46] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:21:17] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:24:45] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:25:23] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:25:59] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:26:28] elemento.php ejecutado - IP: 192.168.31.135
+[2025-11-24 19:27:49] elemento.php ejecutado - IP: 192.168.31.135

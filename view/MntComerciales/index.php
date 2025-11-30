@@ -96,7 +96,12 @@
     <div class="br-pagetitle">
         <i class="icon icon ion-ios-bookmarks-outline"></i>
         <div>
+            <div class="d-flex align-items-center">
             <h4>Mantenimiento de Comerciales</h4>
+            <button type="button" class="btn btn-link p-0 ms-1" data-toggle="modal" data-target="#modalAyudaComerciales" title="Ayuda sobre el módulo">
+                <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
+            </button>
+            </div>
             <p class="mg-b-0">Tabla básica para el mantenimiento de los comerciales</p>
         </div>
     </div><!-- d-flex -->
@@ -267,7 +272,7 @@
     <!--             columDef                -->
     <!-- *********************************** -->
 
-
+    <?php include_once('ayudaComerciales.php') ?>
     <!-- *********************************** -->
     <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
     <!--             NUEVO                   -->

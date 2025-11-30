@@ -99,8 +99,14 @@
         <div class="br-pagetitle">
             <i class="icon icon ion-ios-bookmarks-outline"></i>
             <div>
+                <div class="d-flex align-items-center">
                 <h4>Mantenimiento de Contactos</h4>
+                <button type="button" class="btn btn-link p-0 ms-1" data-toggle="modal" data-target="#modalAyudaContactos" title="Ayuda sobre el módulo">
+                    <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
+                </button>
+                </div>
                 <p class="mg-b-0">Tabla básica para el mantenimiento de los contactos</p>
+                
             </div>
         </div><!-- d-flex -->
 
@@ -303,6 +309,13 @@
     <!--        DE LA PROPIA TABLA           -->
     <!--        columDef                     -->
     <!-- *********************************** -->
+
+    <!--Ayuda Contactos-->
+    <?php include_once('ayudaContactos.php')  ?>
+    <!------------------->
+
+
+
 
     <?php //include_once('detalleProductoBra.php') 
     ?>

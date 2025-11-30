@@ -42,6 +42,7 @@ switch ($_GET["op"]) {
                 "cp_facturacion_cliente" => $row["cp_facturacion_cliente"],
                 "poblacion_facturacion_cliente" => $row["poblacion_facturacion_cliente"],
                 "provincia_facturacion_cliente" => $row["provincia_facturacion_cliente"],
+                "cantidad_contactos" => isset($row["cantidad_contactos_cliente"]) ? intval($row["cantidad_contactos_cliente"]) : 0,
                 "observaciones_cliente" => $row["observaciones_cliente"],
                 "activo_cliente" => $row["activo_cliente"],
                 "created_at_cliente" => $row["created_at_cliente"],

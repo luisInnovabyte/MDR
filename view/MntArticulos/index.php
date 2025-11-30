@@ -224,6 +224,7 @@ try {
                             <th>Estado</th>
                             <th>Act./Desac.</th>
                             <th>Edit.</th>
+                            <th>Elementos</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -259,6 +260,7 @@ try {
                                 </select>
                             </th>
                             <th class="d-none"><input type="text" placeholder="NO Buscar" class="form-control form-control-sm" /></th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </tfoot>
@@ -327,6 +329,14 @@ try {
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
     <script type="text/javascript" src="mntarticulo.js"></script>
+    
+    <script>
+        // Colapsar el sidebar al cargar la página
+        $(document).ready(function() {
+            $('body').addClass('collapsed-menu');
+            $('.br-sideleft').addClass('collapsed');
+        });
+    </script>
 
 </body>
 

@@ -597,3 +597,24 @@ function descargarImagen(rutaImagen, nombreArchivo) {
         positionClass: 'toast-bottom-right'
     });
 }
+
+
+
+// Función global para formatear fecha al formato europeo
+function formatoFechaEuropeo(fechaString) {
+    if (!fechaString) return 'Sin fecha';
+    
+    try {
+        const fecha = new Date(fechaString);
+        if (isNaN(fecha.getTime())) return 'Fecha inválida';
+        
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const año = fecha.getFullYear();
+        
+        return `${dia}/${mes}/${año}`;
+    } catch (error) {
+        console.error('Error al formatear fecha:', error);
+        return 'Error en fecha';
+    }
+}
