@@ -89,7 +89,7 @@
     <div class="br-pageheader">
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="index.html">Dashboard</a>
-            <span class="breadcrumb-item active">Mantenimiento Comercial</span>
+            <span class="breadcrumb-item active">Mantenimiento Responsables atención</span>
         </nav>
     </div><!-- br-pageheader -->
 
@@ -97,12 +97,12 @@
         <i class="icon icon ion-ios-bookmarks-outline"></i>
         <div>
             <div class="d-flex align-items-center">
-            <h4>Mantenimiento de Comerciales</h4>
+            <h4>Mantenimiento de Responsables de atención</h4>
             <button type="button" class="btn btn-link p-0 ms-1" data-toggle="modal" data-target="#modalAyudaComerciales" title="Ayuda sobre el módulo">
                 <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
             </button>
             </div>
-            <p class="mg-b-0">Tabla básica para el mantenimiento de los comerciales</p>
+            <p class="mg-b-0">Tabla básica para el mantenimiento de los responsables de atención</p>
         </div>
     </div><!-- d-flex -->
 
@@ -128,7 +128,7 @@
 
                 <!-- Botón Nuevo Comercial -->
                 <button class="btn btn-oblong btn-outline-primary flex-shrink-0 mt-2 mt-sm-0" id="btnnuevo">
-                    <i class="fas fa-plus-circle me-2"></i>Nuevo Comercial
+                    <i class="fas fa-plus-circle me-2"></i>Nuevo Responsable
                 </button>
             </div>
 
@@ -142,7 +142,7 @@
                                data-toggle="collapse" 
                                href="#collapseOne"
                                style="text-decoration: none;">
-                                <i class="fas fa-filter me-2"></i>Filtros de Comerciales
+                                <i class="fas fa-filter me-2"></i>Filtros de Responsables
                             </a>
                         </h6>
                     </div>
@@ -155,7 +155,7 @@
                                     <div class="card shadow-sm h-100">
                                         <div class="card-header bg-white border-bottom py-2">
                                             <h6 class="mb-0 text-primary">
-                                                <i class="fas fa-toggle-on me-2"></i>Estado Comerciales
+                                                <i class="fas fa-toggle-on me-2"></i>Estado Responsables
                                             </h6>
                                         </div>
                                         <div class="card-body p-2">
@@ -209,7 +209,7 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Id Comercial</th>
+                                    <th>Id Responsable</th>
                                     <th>Nombre</th>
                                     <th>Apellidos</th>
                                     <th>Movil</th>

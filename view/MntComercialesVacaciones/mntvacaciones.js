@@ -604,7 +604,7 @@ function format(d) {
             // Limpiar las opciones existentes
             select.empty();
             // Agregar la opción por defecto
-            select.append($('<option>', { value: '', text: 'Seleccione un comercial...' }));
+            select.append($('<option>', { value: '', text: 'Seleccione un responsable...' }));
 
             if (data) {
                 if (typeof data === 'string') {
@@ -623,7 +623,7 @@ function format(d) {
                 select.append(optionHtml);
             });
         }, "json").fail(function (xhr, status, error) {
-            console.error("Error al cargar los comerciales:", error);
+            console.error("Error al cargar los responsables:", error);
         });
     }
 
@@ -633,11 +633,11 @@ function format(d) {
         dropdownParent: $('#modalMantenimiento .modal-content'),
         dropdownPosition: 'below',
         dropdownAutoWidth: true,
-        placeholder: 'Seleccione un comercial',
+        placeholder: 'Seleccione un responsable',
         allowClear: true,
         language: {
             noResults: function () {
-                return "No hay comerciales disponibles";
+                return "No hay responsables disponibles";
             }
         }
     });
@@ -650,12 +650,12 @@ function format(d) {
                 
                 // Limpiar y agregar opción "Todos" como base
                 select.empty().append(
-                    '<option value="" selected>Todos los comerciales</option>'
+                    '<option value="" selected>Todos los responsables</option>'
                 );
                 
                 
                 if (data && data.data) {
-                    // Añadir comerciales directamente
+                    // Añadir responsables directamente
                     data.data.forEach(comercial => {
                         
                         select.append(
@@ -855,7 +855,7 @@ function format(d) {
                 if (response.solapamiento) {
                     swal.fire({
                         title: 'Conflicto de fechas',
-                        text: 'El comercial ya tiene vacaciones programadas en este período',
+                        text: 'El responsable ya tiene vacaciones programadas en este período',
                         icon: 'warning',
                         confirmButtonText: 'Entendido'
                     });

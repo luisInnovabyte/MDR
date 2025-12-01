@@ -1,0 +1,194 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 07:34:23"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 07:34:23"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 08:32:34"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 08:32:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 08:33:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:02:51"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Adjuntos",
+        "actividad": "Consulta por llamada",
+        "mensaje": "Se consultaron adjuntos para la llamada ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:02:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "adjuntos.php",
+        "actividad": "Obtener adjuntos por llamada",
+        "mensaje": "Adjuntos obtenidos para la llamada ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:02:57"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:06:07"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:06:07"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:10:20"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:10:20"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:13:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:15:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta por id",
+        "mensaje": "Se consultó el id de llamada 4",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:15:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "llamadas.php",
+        "actividad": "Obtener llamada seleccionada",
+        "mensaje": "Llamada obtenida exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:15:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:15:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:15:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:21:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:23:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:23:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:24:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:29:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-12-01 09:32:30"
+    }
+]

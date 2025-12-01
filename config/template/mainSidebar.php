@@ -111,8 +111,8 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../MntLlamadas/index.php" class="sub-link">Llamadas</a></li>
             <!-- <li class="sub-item"><a href="../MntAdjuntosLlamadas/index.php" class="sub-link">Adjuntos Llamadas</a></li> -->
-             <li class="sub-item"><a href="../MntComerciales/index.php" class="sub-link">Comerciales</a></li>
-                      <li class="sub-item"><a href="../MntComercialesVacaciones/index.php" class="sub-link">Comerciales Vacaciones</a></li>
+             <li class="sub-item"><a href="../MntComerciales/index.php" class="sub-link">Responsables atención</a></li>
+                      <li class="sub-item"><a href="../MntComercialesVacaciones/index.php" class="sub-link">Responsables Vacaciones</a></li>
         </ul>
     </li>
     <?php endif; ?>

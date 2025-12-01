@@ -146,7 +146,7 @@
                                     <div class="card shadow-sm h-100">
                                         <div class="card-header bg-white border-bottom py-2">
                                             <h6 class="mb-0 text-primary">
-                                                <i class="fas fa-address-book me-2"></i>Vacaciones de Comercialesy
+                                                <i class="fas fa-address-book me-2"></i>Vacaciones de responsables
                                             </h6>
                                         </div>
                                         <div class="card-body p-2">
@@ -230,12 +230,12 @@
                                     <div class="card shadow-sm h-100 border-0">
                                         <div class="card-header bg-transparent border-0 pb-0">
                                             <h6 class="text-primary fw-normal">
-                                                <i class="fas fa-user-tie me-2 text-muted"></i>Comercial
+                                                <i class="fas fa-user-tie me-2 text-muted"></i>Responsable
                                             </h6>
                                         </div>
                                         <div class="card-body d-flex align-items-center pt-2">
                                             <select id="filtroComercial" class="form-select border-0 border-bottom rounded-0 py-2 px-1 bg-transparent">
-                                                <option value="" selected>Todos los comerciales</option>
+                                                <option value="" selected>Todos los responsables</option>
                                             </select>
                                         </div>
                                     </div>
@@ -253,7 +253,7 @@
                         <tr>
                             <th></th>
                             <th>Id Vacacion</th>
-                            <th>Comercial</th>
+                            <th>Responsable</th>
                             <th>Fecha Inicio</th>
                             <th>Fecha Fin</th>
                             <th>Descripción</th>
@@ -269,7 +269,7 @@
                         <tr>
                             <th></th>
                             <th class="d-none"><input type="text" placeholder="ID" class="form-control form-control-sm" disabled /></th>
-                            <th><input type="text" placeholder="Buscar Comercial" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar Responsable" class="form-control form-control-sm" /></th>
                             <th><input type="text" id="fechaInicioFiltroPies" placeholder="Buscar fecha inicio: dd-mm-yyyy" class="form-control form-control-sm" /></th>
                             <th><input type="text" id="fechaFinFiltroPies" placeholder="Buscar fecha fin: dd-mm-yyyy" class="form-control form-control-sm" /></th>
                             <th class="d-none"><input type="text" placeholder="Descripción" class="form-control form-control-sm" disabled /></th>

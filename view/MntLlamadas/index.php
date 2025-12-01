@@ -311,7 +311,7 @@
                                     <th>Email de Contacto.</th>
                                     <th>Fecha hora Preferida</th>
                                     <th>Observaciones</th>
-                                    <th>Id Comercial Asignado</th>
+                                    <th>Responsable Asignado</th>
                                     <th>Estado</th>
                                     <th>Fecha Recepcion</th>
                                     <th>Semáforo</th>

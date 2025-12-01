@@ -145,17 +145,17 @@
                                 <h5 class="mb-0 tx-bold">Gestión de la Llamada</h5>
                             </div>
                             <div class="card-body">
-                                <!-- ID COMERCIAL ASIGNADO -->
+                                <!-- RESPONSABLE ASIGNADO -->
                                 <div class="form-group row mb-3">
                                     <div class="col-12 col-lg-3">
-                                        <label for="id_comercial_asignado" class="form-label">Comercial Asignado:<span class="tx-danger">*</span></label>
+                                        <label for="id_comercial_asignado" class="form-label">Responsable Asignado:<span class="tx-danger">*</span></label>
                                     </div>
                                     <div class="col-7 col-sm-9">
                                         <select id="id_comercial_asignado" name="id_comercial_asignado" class="form-control wd-300" required>
                                             <!-- Vacío, se llenará vía AJAX -->
                                         </select>
                                         <div class="invalid-feedback small-invalid-feedback">
-                                            Por favor seleccione un comercial.
+                                            Por favor seleccione un Responsable de atender la llamada.
                                         </div>
                                     </div>
                                 </div>

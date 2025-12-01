@@ -22,7 +22,7 @@
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title d-flex align-items-center" id="modalAyudaComercialLabel">
                     <i class="bi bi-question-circle-fill mr-2" style="font-size: 1.4rem;"></i>
-                    Ayuda - Mantenimiento de Comerciales
+                    Ayuda - Mantenimiento de Responsables
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar" style="opacity:1;">
                     <span aria-hidden="true">&times;</span>
@@ -35,10 +35,10 @@
                 <!-- Sección: Introducción -->
                 <div class="mb-4">
                     <h6 class="text-primary d-flex align-items-center">
-                        <i class="bi bi-chat-dots-fill mr-2"></i> ¿Qué es el Mantenimiento de Comerciales?
+                        <i class="bi bi-chat-dots-fill mr-2"></i> ¿Qué es el Mantenimiento de Responsables?
                     </h6>
                     <p class="text-muted">
-                        El mantenimiento de comerciales permite gestionar toda la información relacionada con los agentes o asesores del sistema. Incluye crear, actualizar, activar, desactivar y organizar los datos de cada comercial, 
+                        El mantenimiento de responsables permite gestionar toda la información relacionada con los agentes o asesores del sistema. Incluye crear, actualizar, activar, desactivar y organizar los datos de cada responsable, 
                         garantizando un control preciso sobre quién puede atender, registrar o gestionar clientes y llamadas.
                     </p>
                 </div>
@@ -81,7 +81,7 @@
                             </div>
                             <div id="collapseNombre" class="collapse" role="tabpanel" aria-labelledby="headingNombre" data-parent="#accordionCampos">
                                 <div class="card-body">
-                                    <strong>Campo obligatorio.</strong> Nombre del Comercial
+                                    <strong>Campo obligatorio.</strong> Nombre del Responsable
                                     <br>
                                    
                                     <strong>Uso:</strong> Identificación clara del canal en todo el sistema

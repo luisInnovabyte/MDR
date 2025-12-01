@@ -21,7 +21,7 @@
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title d-flex align-items-center" id="modalAyudaVacacionesLabel">
                     <i class="bi bi-question-circle-fill mr-2" style="font-size: 1.4rem;"></i>
-                    Ayuda - Mantenimiento de Vacaciones de Comerciales
+                    Ayuda - Mantenimiento de Vacaciones de Responsables
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar" style="opacity:1;">
                     <span aria-hidden="true">&times;</span>
@@ -37,9 +37,9 @@
                         <i class="bi bi-chat-dots-fill mr-2"></i> ¿Qué es el Mantenimiento de Vacaciones?
                     </h6>
                     <p class="text-muted">
-                        La gestión de vacaciones de comerciales permite registrar, actualizar y controlar los periodos en los 
-                        que cada comercial estará ausente. Esto evita asignaciones erróneas, asegura una correcta planificación del equipo 
-                        y garantiza que las llamadas, clientes y tareas no se asignen a un comercial que no está disponible.
+                        La gestión de vacaciones de responsables permite registrar, actualizar y controlar los periodos en los 
+                        que cada responsable estará ausente. Esto evita asignaciones erróneas, asegura una correcta planificación del equipo 
+                        y garantiza que las llamadas, clientes y tareas no se asignen a un responsable que no está disponible.
                     </p>
                 </div>
 
@@ -75,17 +75,17 @@
                             <div class="card-header" role="tab" id="headingComercial">
                                 <h5 class="mb-0">
                                     <a class="collapsed d-flex align-items-center" data-toggle="collapse" href="#collapseComercial" aria-expanded="false" aria-controls="collapseComercial">
-                                        <i class="bi bi-person-fill mr-2"></i> Comercial
+                                        <i class="bi bi-person-fill mr-2"></i> Responsable
                                     </a>
                                 </h5>
                             </div>
                             <div id="collapseComercial" class="collapse" role="tabpanel" aria-labelledby="headingComercial" data-parent="#accordionCampos">
                                 <div class="card-body">
-                                    <strong>Campo obligatorio.</strong> Nombre del comercial que tomará vacaciones.
-                                    <br><strong>Tipo:</strong> Lista desplegable de comerciales activos en el sistema
+                                    <strong>Campo obligatorio.</strong> Nombre del responsable que tomará vacaciones.
+                                    <br><strong>Tipo:</strong> Lista desplegable de responsables activos en el sistema
                                     <br><strong>Uso:</strong> Identificación clara del empleado ausente
-                                    <br><strong>Validaciones:</strong> Debe existir en el catálogo de comerciales
-                                    <br><strong>Impacto:</strong> Durante las fechas indicadas, el comercial no recibirá asignaciones
+                                    <br><strong>Validaciones:</strong> Debe existir en el catálogo de responsables
+                                    <br><strong>Impacto:</strong> Durante las fechas indicadas, el responsable no recibirá asignaciones
                                     <br><strong>Recomendación:</strong> Verifique que el nombre sea correcto antes de guardar
                                 </div>
                             </div>
@@ -105,10 +105,10 @@
                                     <strong>Campo obligatorio.</strong> Fecha en que comienzan las vacaciones.
                                     <br><strong>Formato:</strong> DD/MM/AAAA (día/mes/año)
                                     <br><strong>Selector:</strong> Calendario interactivo para facilitar selección
-                                    <br><strong>Uso:</strong> Marca el primer día de ausencia del comercial
+                                    <br><strong>Uso:</strong> Marca el primer día de ausencia del responsable
                                     <br><strong>Validaciones:</strong> Debe ser igual o posterior a la fecha actual
                                     <br><strong>Restricción:</strong> No puede ser posterior a la fecha fin
-                                    <br><strong>Importante:</strong> El comercial no estará disponible desde este día (inclusive)
+                                    <br><strong>Importante:</strong> El responsable no estará disponible desde este día (inclusive)
                                 </div>
                             </div>
                         </div>
@@ -127,10 +127,10 @@
                                     <strong>Campo obligatorio.</strong> Fecha en que finalizan las vacaciones.
                                     <br><strong>Formato:</strong> DD/MM/AAAA (día/mes/año)
                                     <br><strong>Selector:</strong> Calendario interactivo para facilitar selección
-                                    <br><strong>Uso:</strong> Marca el último día de ausencia del comercial
+                                    <br><strong>Uso:</strong> Marca el último día de ausencia del responsable
                                     <br><strong>Validaciones:</strong> Debe ser igual o posterior a la fecha inicio
                                     <br><strong>Cálculo automático:</strong> El sistema calcula días totales entre ambas fechas
-                                    <br><strong>Importante:</strong> El comercial vuelve a estar disponible al día siguiente
+                                    <br><strong>Importante:</strong> El responsable vuelve a estar disponible al día siguiente
                                 </div>
                             </div>
                         </div>
@@ -146,15 +146,15 @@
                             </div>
                             <div id="collapseTieneVacaciones" class="collapse" role="tabpanel" aria-labelledby="headingTieneVacaciones" data-parent="#accordionCampos">
                                 <div class="card-body">
-                                    <strong>Campo informativo.</strong> Indica si el comercial está actualmente de vacaciones.
+                                    <strong>Campo informativo.</strong> Indica si el responsable está actualmente de vacaciones.
                                     <br><strong>Estados posibles:</strong>
                                     <ul class="mt-2 mb-2">
-                                        <li><i class="bi bi-check-circle text-success"></i> <strong>Sí (✓):</strong> El comercial está actualmente de vacaciones</li>
-                                        <li><i class="bi bi-x-circle text-danger"></i> <strong>No (✗):</strong> El comercial está disponible o las vacaciones son futuras/pasadas</li>
+                                        <li><i class="bi bi-check-circle text-success"></i> <strong>Sí (✓):</strong> El responsable está actualmente de vacaciones</li>
+                                        <li><i class="bi bi-x-circle text-danger"></i> <strong>No (✗):</strong> El responsable está disponible o las vacaciones son futuras/pasadas</li>
                                     </ul>
                                     <strong>Cálculo automático:</strong> El sistema verifica si la fecha actual está dentro del periodo
                                     <br><strong>Uso:</strong> Identificación rápida de quién está ausente hoy
-                                    <br><strong>Impacto:</strong> Los comerciales con "Sí" no aparecen en asignaciones automáticas
+                                    <br><strong>Impacto:</strong> Los responsables con "Sí" no aparecen en asignaciones automáticas
                                     <br><strong>Actualización:</strong> Se actualiza automáticamente cada día
                                 </div>
                             </div>
@@ -174,10 +174,10 @@
                                     <strong>Control de disponibilidad.</strong> Cambia el estado del registro de vacaciones.
                                     <br><strong>Botón rojo (🗑️):</strong> Desactivar/Cancelar periodo de vacaciones
                                     <br><strong>Vacaciones activas:</strong> El sistema considera el periodo al hacer asignaciones
-                                    <br><strong>Vacaciones inactivas:</strong> Periodo cancelado, el comercial vuelve a estar disponible
+                                    <br><strong>Vacaciones inactivas:</strong> Periodo cancelado, el responsable vuelve a estar disponible
                                     <br><strong>Uso común:</strong>
                                     <ul class="mt-2 mb-0">
-                                        <li>Cancelar vacaciones cuando el comercial regresa anticipadamente</li>
+                                        <li>Cancelar vacaciones cuando el responsable regresa anticipadamente</li>
                                         <li>Desactivar periodos erróneos sin eliminar el registro histórico</li>
                                         <li>Anular vacaciones por cambios en la planificación</li>
                                     </ul>
@@ -201,13 +201,13 @@
                                     <br><strong>Botón azul (✏️):</strong> Abre el formulario de edición con datos precargados
                                     <br><strong>Campos editables:</strong>
                                     <ul class="mt-2 mb-0">
-                                        <li>Comercial asignado</li>
+                                        <li>Responsable asignado</li>
                                         <li>Fecha de inicio</li>
                                         <li>Fecha de fin</li>
                                         <li>Observaciones o notas</li>
                                         <li>Estado (activo/inactivo)</li>
                                     </ul>
-                                    <br><strong>Uso común:</strong> Corregir fechas, cambiar comercial, actualizar duración
+                                    <br><strong>Uso común:</strong> Corregir fechas, cambiar responsable, actualizar duración
                                     <br><strong>Importante:</strong> Modificar fechas recalcula automáticamente los días totales
                                 </div>
                             </div>
@@ -272,13 +272,13 @@
                         <div class="col-md-6">
                             <h6 class="text-secondary">Búsqueda General:</h6>
                             <p class="text-muted small">
-                                Use el campo de búsqueda superior para encontrar periodos por nombre de comercial.
+                                Use el campo de búsqueda superior para encontrar periodos por nombre de responsable.
                             </p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-secondary">Ordenar Columnas:</h6>
                             <p class="text-muted small">
-                                Haga clic en las cabeceras para ordenar por comercial, fecha o estado.
+                                Haga clic en las cabeceras para ordenar por responsable, fecha o estado.
                             </p>
                         </div>
                         <div class="col-md-6">
@@ -426,7 +426,7 @@
                                         </button>
                                     </td>
                                     <td>Editar Periodo</td>
-                                    <td>Permite modificar comercial, fechas y observaciones</td>
+                                    <td>Permite modificar Responsable, fechas y observaciones</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -449,7 +449,7 @@
                             <li><strong>Verifique disponibilidad:</strong> Asegúrese de que no haya solapamientos críticos en el equipo</li>
                             <li><strong>Documente motivos:</strong> Use el campo de observaciones para justificar ausencias especiales</li>
                             <li><strong>No elimine registros:</strong> Desactive en lugar de eliminar para conservar el historial</li>
-                            <li><strong>Actualice cambios:</strong> Si un comercial regresa antes, edite la fecha fin inmediatamente</li>
+                            <li><strong>Actualice cambios:</strong> Si un responsable regresa antes, edite la fecha fin inmediatamente</li>
                             <li><strong>Revise periódicamente:</strong> Mantenga el calendario actualizado semanalmente</li>
                             <li><strong>Comunique al equipo:</strong> Notifique las ausencias largas a todos los afectados</li>
                             <li><strong>Redistribuya carga:</strong> Planifique la reasignación temporal de clientes antes de la ausencia</li>

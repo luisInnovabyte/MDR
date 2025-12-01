@@ -16,19 +16,19 @@
                     <!-- SECCIÓN 1: COMERCIAL -->
                     <div class="card mb-4 border-primary">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0 tx-bold">Comercial</h5>
+                            <h5 class="mb-0 tx-bold">Responsable</h5>
                         </div>
                         <div class="card-body">
                             <div class="form-group row mb-3">
                                 <div class="col-12 col-lg-3">
-                                    <label for="comercial" class="form-label">Comercial: <span class="tx-danger">*</span></label>
+                                    <label for="comercial" class="form-label">Responsable: <span class="tx-danger">*</span></label>
                                 </div>
                                 <div class="col-7 col-sm-9">
                                     <select id="id_comercial" name="id_comercial" class="form-control">
                                         <!-- Se llenará dinámicamente con AJAX -->
                                     </select>
                                     <div class="invalid-feedback small-invalid-feedback">
-                                        Por favor seleccione un comercial.
+                                        Por favor seleccione un responsable.
                                     </div>
                                 </div>
                             </div>
@@ -55,7 +55,7 @@
                                         </div>
                                         <input id="fecha_inicio" name="fecha_inicio" type="text" class="form-control fc-datepicker" placeholder="dd-mm-aaaa" readonly>
                                     </div>
-                                    <div class="tx-8 tx-info" id="borrarFechaInicioCarrera">Borrar fecha de inicio de carrera</div>
+                                    <div class="tx-8 tx-info" id="borrarFechaInicioCarrera">Borrar fecha de inicio </div>
                                 </div>
                             </div>
 
@@ -73,7 +73,7 @@
                                         </div>
                                         <input id="fecha_fin" name="fecha_fin" type="text" class="form-control fc-datepicker" placeholder="dd-mm-aaaa" readonly>
                                     </div>
-                                    <div class="tx-8 tx-info" id="borrarFechaFinCarrera">Borrar fecha de fin de carrera</div>
+                                    <div class="tx-8 tx-info" id="borrarFechaFinCarrera">Borrar fecha de fin </div>
                                 </div>
                             </div>
                         </div>
