@@ -1,0 +1,4 @@
+[2025-12-01 08:49:45] foto_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-01 09:38:12] foto_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-01 09:38:23] foto_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-01 09:38:31] foto_elemento.php ejecutado - IP: 192.168.31.3

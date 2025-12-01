@@ -1,0 +1,1 @@
+[2025-12-01 11:40:25] estado_presupuesto.php ejecutado - IP: 192.168.31.3

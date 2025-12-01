@@ -201,6 +201,20 @@
                         </div>
                     </div>
 
+                    <!-- Empresas -->
+                    <div class="col-lg-2 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center" style="cursor: pointer; transition: all 0.3s; border-radius: 8px;" 
+                             onclick="window.location.href='../MntEmpresas/index.php'"
+                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                            <div class="card-body pd-25">
+                                <i class="fa fa-building tx-50 mg-b-10" style="color: #ff9800;"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Empresas</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de empresas</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div><!-- row -->
 
                 <!-- Sección: Llamadas -->

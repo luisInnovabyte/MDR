@@ -1766,7 +1766,7 @@ CREATE TABLE documento_elemento (
 
 
 -- ========================================================
--- TABLA DE FOTOS DE ELEMENTOS
+-- YA ESTA - TABLA DE FOTOS DE ELEMENTOS
 -- ========================================================
 
 CREATE TABLE foto_elemento (
@@ -1846,6 +1846,889 @@ ADD COLUMN text_obs_general TEXT NOT NULL COMMENT 'Texto en inglés' AFTER texto
 
 -- Opcional: Eliminar el DEFAULT '' del título después de rellenar los datos
 -- ALTER TABLE observacion_general MODIFY COLUMN title_obs_general VARCHAR(100) NOT NULL COMMENT 'Título en inglés';
+
+
+
+-- ========================================================
+-- TABLA DE EMPRESAS - DOCUMENTACIÓN COMPLETA
+-- ========================================================
+
+/*
+PROPÓSITO:
+Gestión de empresas del grupo para emisión de presupuestos y facturas.
+Permite trabajar con empresas ficticias para presupuestos y empresas 
+reales para facturación, cumpliendo con la normativa VeriFact española.
+
+CASOS DE USO:
+1. Empresa ficticia para presupuestos (empresa_ficticia_principal = TRUE)
+2. Múltiples empresas reales para facturación
+3. Cualquier empresa puede emitir presupuestos
+4. Control de series y numeración independiente por empresa
+5. Cumplimiento normativa VeriFact para empresas reales
+*/
+
+-- ========================================================
+-- TABLA DE EMPRESAS (COLLATION CORREGIDA)
+-- ========================================================
+
+DROP TABLE IF EXISTS empresa;
+
+CREATE TABLE empresa (
+    id_empresa INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    -- =====================================================
+    -- IDENTIFICACIÓN BÁSICA
+    -- =====================================================
+    codigo_empresa VARCHAR(20) NOT NULL UNIQUE COMMENT 'Código único identificador (ej: MDR01, MDR02, FICTICIA)',
+    nombre_empresa VARCHAR(255) NOT NULL COMMENT 'Razón social completa',
+    nombre_comercial_empresa VARCHAR(255) COMMENT 'Nombre comercial si difiere de la razón social',
+    
+    -- =====================================================
+    -- TIPO DE EMPRESA
+    -- =====================================================
+    ficticia_empresa BOOLEAN DEFAULT FALSE 
+        COMMENT 'Si TRUE, empresa ficticia solo para presupuestos. Si FALSE, empresa real que factura',
+    
+    empresa_ficticia_principal BOOLEAN DEFAULT FALSE 
+        COMMENT 'Si TRUE, esta es la empresa ficticia por defecto para presupuestos',
+    
+    -- =====================================================
+    -- DATOS FISCALES (obligatorios para VeriFact)
+    -- =====================================================
+    nif_empresa VARCHAR(20) NOT NULL UNIQUE COMMENT 'NIF/CIF de la empresa',
+    
+    -- Dirección fiscal
+    direccion_fiscal_empresa VARCHAR(255) NOT NULL COMMENT 'Dirección completa del domicilio fiscal',
+    cp_fiscal_empresa VARCHAR(10) NOT NULL COMMENT 'Código postal',
+    poblacion_fiscal_empresa VARCHAR(100) NOT NULL COMMENT 'Población/Ciudad',
+    provincia_fiscal_empresa VARCHAR(100) NOT NULL COMMENT 'Provincia',
+    pais_fiscal_empresa VARCHAR(100) DEFAULT 'España' COMMENT 'País',
+    
+    -- =====================================================
+    -- DATOS DE CONTACTO
+    -- =====================================================
+    telefono_empresa VARCHAR(50) COMMENT 'Teléfono principal',
+    movil_empresa VARCHAR(50) COMMENT 'Teléfono móvil',
+    email_empresa VARCHAR(255) COMMENT 'Email general',
+    email_facturacion_empresa VARCHAR(255) COMMENT 'Email específico para facturación',
+    web_empresa VARCHAR(255) COMMENT 'Sitio web',
+    
+    -- =====================================================
+    -- DATOS BANCARIOS
+    -- =====================================================
+    iban_empresa VARCHAR(34) COMMENT 'IBAN para domiciliaciones y transferencias',
+    swift_empresa VARCHAR(11) COMMENT 'Código SWIFT/BIC',
+    banco_empresa VARCHAR(100) COMMENT 'Nombre del banco',
+    
+    -- =====================================================
+    -- SERIES DE NUMERACIÓN
+    -- =====================================================
+    
+    -- PRESUPUESTOS
+    serie_presupuesto_empresa VARCHAR(10) DEFAULT 'P' 
+        COMMENT 'Serie para presupuestos (ej: P, PPTO, MDR-P)',
+    
+    numero_actual_presupuesto_empresa INT UNSIGNED DEFAULT 0 
+        COMMENT 'Último número de presupuesto emitido',
+    
+    -- FACTURAS
+    serie_factura_empresa VARCHAR(10) DEFAULT 'F' 
+        COMMENT 'Serie para facturas (ej: F, FAC, A)',
+    
+    numero_actual_factura_empresa INT UNSIGNED DEFAULT 0 
+        COMMENT 'Último número de factura emitido',
+    
+    -- FACTURAS RECTIFICATIVAS (ABONOS)
+    serie_abono_empresa VARCHAR(10) DEFAULT 'R' 
+        COMMENT 'Serie para facturas rectificativas/abonos (ej: R, AB, REC)',
+    
+    numero_actual_abono_empresa INT UNSIGNED DEFAULT 0 
+        COMMENT 'Último número de abono emitido',
+    
+    -- =====================================================
+    -- DATOS ESPECÍFICOS VERIFACTU
+    -- =====================================================
+    
+    verifactu_activo_empresa BOOLEAN DEFAULT TRUE 
+        COMMENT 'Si TRUE, esta empresa debe cumplir con VeriFact',
+    
+    verifactu_software_empresa VARCHAR(100) COMMENT 'Nombre del software de facturación',
+    verifactu_version_empresa VARCHAR(50) COMMENT 'Versión del software',
+    verifactu_nif_desarrollador_empresa VARCHAR(20) COMMENT 'NIF del desarrollador del software',
+    verifactu_nombre_desarrollador_empresa VARCHAR(255) COMMENT 'Nombre del desarrollador',
+    
+    -- Sistema de envío VeriFact
+    verifactu_sistema_empresa ENUM('online', 'offline') DEFAULT 'online' 
+        COMMENT 'online=envío inmediato | offline=envío diferido',
+    
+    verifactu_url_empresa VARCHAR(255) COMMENT 'URL del endpoint de VeriFact',
+    verifactu_certificado_empresa TEXT COMMENT 'Ruta o datos del certificado digital',
+    
+    -- =====================================================
+    -- LOGOTIPO Y MARCA
+    -- =====================================================
+    logotipo_empresa VARCHAR(255) COMMENT 'Ruta al archivo del logotipo (para facturas y presupuestos)',
+    logotipo_pie_empresa VARCHAR(255) COMMENT 'Logotipo secundario para pie de página',
+    
+    -- =====================================================
+    -- TEXTOS LEGALES PARA DOCUMENTOS
+    -- =====================================================
+    texto_legal_factura_empresa TEXT 
+        COMMENT 'Texto legal que aparece en facturas (registro mercantil, etc.)',
+    
+    texto_pie_presupuesto_empresa TEXT 
+        COMMENT 'Texto que aparece en el pie de los presupuestos',
+    
+    texto_pie_factura_empresa TEXT 
+        COMMENT 'Texto que aparece en el pie de las facturas',
+    
+    -- =====================================================
+    -- DATOS ADICIONALES
+    -- =====================================================
+    observaciones_empresa TEXT 
+        COMMENT 'Observaciones internas sobre la empresa',
+    
+    -- =====================================================
+    -- CONTROL
+    -- =====================================================
+    activo_empresa BOOLEAN DEFAULT TRUE 
+        COMMENT 'Si FALSE, la empresa no estará disponible para nuevos documentos',
+    
+    created_at_empresa TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_empresa TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- =====================================================
+    -- ÍNDICES
+    -- =====================================================
+    INDEX idx_codigo_empresa (codigo_empresa),
+    INDEX idx_nif_empresa (nif_empresa),
+    INDEX idx_ficticia_empresa (ficticia_empresa),
+    INDEX idx_empresa_ficticia_principal (empresa_ficticia_principal),
+    INDEX idx_activo_empresa (activo_empresa)
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci 
+COMMENT='Gestión de empresas del grupo para facturación y presupuestos';
+
+-- ========================================================
+-- EXPLICACIÓN DE CAMPOS CLAVE
+-- ========================================================
+
+/*
+TIPO DE EMPRESA:
+----------------
+ficticia_empresa (BOOLEAN):
+  - TRUE  = Empresa ficticia que solo emite presupuestos (sin validez fiscal)
+  - FALSE = Empresa real que puede emitir presupuestos Y facturas
+
+empresa_ficticia_principal (BOOLEAN):
+  - TRUE  = Esta es la empresa por defecto para presupuestos
+  - FALSE = Empresa secundaria
+  - Solo debe haber UNA empresa con este valor en TRUE
+
+CASO DE USO MDR:
+  1. Empresa FICTICIA (ficticia_empresa=TRUE, empresa_ficticia_principal=TRUE)
+     → Se usa para hacer presupuestos
+     
+  2. MDR AUDIOVISUALES S.L. (ficticia_empresa=FALSE)
+     → Empresa real que factura
+     
+  3. MDR EVENTOS S.L. (ficticia_empresa=FALSE)
+     → Segunda empresa real que factura
+     
+  Flujo: 
+  - Presupuesto → Se emite con empresa FICTICIA
+  - Al aceptar → Cliente elige si factura MDR AUDIOVISUALES o MDR EVENTOS
+  - Factura → Se emite con la empresa real elegida
+
+
+SERIES DE NUMERACIÓN:
+---------------------
+Cada empresa tiene sus propias series independientes:
+  
+  serie_presupuesto_empresa: "P", "PPTO", "MDR-P"
+  serie_factura_empresa:     "F", "FAC", "A", "B"
+  serie_abono_empresa:       "R", "AB", "REC"
+
+Los contadores (numero_actual_*_empresa) se incrementan automáticamente 
+al emitir cada documento.
+
+FORMATO DE NUMERACIÓN (hardcoded en procedimientos):
+  Presupuestos: SERIE + AÑO + "-" + NÚMERO  → P2024-0001
+  Facturas:     SERIE + AÑO + "/" + NÚMERO  → F2024/0001
+  Abonos:       SERIE + AÑO + "/" + NÚMERO  → R2024/0001
+
+
+VERIFACTU:
+----------
+Solo aplica a empresas REALES (ficticia_empresa = FALSE).
+
+Campos obligatorios para cumplir normativa:
+  - verifactu_activo_empresa: Activar/desactivar cumplimiento
+  - verifactu_software_empresa: Nombre del software (ej: "MDR ERP Manager")
+  - verifactu_version_empresa: Versión del software
+  - verifactu_nif_desarrollador_empresa: NIF del desarrollador
+  - verifactu_nombre_desarrollador_empresa: Nombre del desarrollador
+  - verifactu_sistema_empresa: 'online' (envío inmediato) o 'offline' (diferido)
+  - verifactu_url_empresa: Endpoint de la AEAT para envío
+  - verifactu_certificado_empresa: Certificado digital de la empresa
+
+Las empresas ficticias NO necesitan VeriFact (verifactu_activo_empresa = FALSE)
+*/
+
+-- ========================================================
+-- DATOS INICIALES DE EJEMPLO
+-- ========================================================
+
+-- 1. EMPRESA FICTICIA PARA PRESUPUESTOS
+INSERT INTO empresa (
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    ficticia_empresa,
+    empresa_ficticia_principal,
+    nif_empresa,
+    direccion_fiscal_empresa,
+    cp_fiscal_empresa,
+    poblacion_fiscal_empresa,
+    provincia_fiscal_empresa,
+    telefono_empresa,
+    email_empresa,
+    serie_presupuesto_empresa,
+    verifactu_activo_empresa,
+    logotipo_empresa,
+    texto_pie_presupuesto_empresa,
+    observaciones_empresa
+) VALUES (
+    'FICTICIA',
+    'MDR Audiovisuales Group',
+    'MDR Group',
+    TRUE,                    -- Es ficticia
+    TRUE,                    -- Es la principal para presupuestos
+    'B00000000',            -- NIF ficticio
+    'Polígono Industrial La Paz',
+    '06006',
+    'Badajoz',
+    'Badajoz',
+    '+34 924 000 000',
+    'info@mdrgroup.com',
+    'P',                     -- Serie de presupuestos
+    FALSE,                   -- NO requiere VeriFact
+    '/images/logos/mdr_group_logo.png',
+    'Presupuesto sin validez fiscal. La factura se emitirá por la empresa que corresponda según se indique en la aceptación del presupuesto.',
+    'Empresa ficticia creada únicamente para emisión de presupuestos comerciales. No emite facturas.'
+);
+
+-- 2. PRIMERA EMPRESA REAL - MDR AUDIOVISUALES S.L.
+INSERT INTO empresa (
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    ficticia_empresa,
+    empresa_ficticia_principal,
+    nif_empresa,
+    direccion_fiscal_empresa,
+    cp_fiscal_empresa,
+    poblacion_fiscal_empresa,
+    provincia_fiscal_empresa,
+    telefono_empresa,
+    movil_empresa,
+    email_empresa,
+    email_facturacion_empresa,
+    web_empresa,
+    iban_empresa,
+    swift_empresa,
+    banco_empresa,
+    serie_presupuesto_empresa,
+    serie_factura_empresa,
+    serie_abono_empresa,
+    verifactu_activo_empresa,
+    verifactu_software_empresa,
+    verifactu_version_empresa,
+    verifactu_nif_desarrollador_empresa,
+    verifactu_nombre_desarrollador_empresa,
+    verifactu_sistema_empresa,
+    verifactu_url_empresa,
+    logotipo_empresa,
+    logotipo_pie_empresa,
+    texto_legal_factura_empresa,
+    texto_pie_presupuesto_empresa,
+    texto_pie_factura_empresa,
+    observaciones_empresa
+) VALUES (
+    'MDR01',
+    'MDR AUDIOVISUALES S.L.',
+    'MDR Audiovisuales',
+    FALSE,                   -- Es empresa REAL
+    FALSE,                   -- No es la principal (solo hay una principal: la ficticia)
+    'B06123456',
+    'Polígono Industrial La Paz, Nave 15',
+    '06006',
+    'Badajoz',
+    'Badajoz',
+    '+34 924 123 456',
+    '+34 600 123 456',
+    'info@mdraudiovisuales.com',
+    'facturacion@mdraudiovisuales.com',
+    'www.mdraudiovisuales.com',
+    'ES91 2100 0418 4502 0005 1332',
+    'CAIXESBBXXX',
+    'CaixaBank',
+    'P',                     -- Serie de presupuestos
+    'F',                     -- Serie de facturas
+    'R',                     -- Serie de abonos/rectificativas
+    TRUE,                    -- SÍ requiere VeriFact
+    'MDR ERP Manager',
+    '1.0',
+    'B00000001',            -- NIF del desarrollador
+    'Software Solutions S.L.',
+    'online',                -- Envío inmediato
+    'https://www.agenciatributaria.gob.es/verifactu/api',
+    '/images/logos/mdr_audiovisuales_logo.png',
+    '/images/logos/mdr_audiovisuales_pie.png',
+    'MDR AUDIOVISUALES S.L. - B06123456 - Inscrita en el Registro Mercantil de Badajoz, Tomo 123, Folio 456, Hoja BA-7890. Capital Social: 3.000,00 EUR',
+    'Oferta sujeta a disponibilidad de equipos. Consulte condiciones generales en www.mdraudiovisuales.com',
+    'Factura sujeta a la Ley General Tributaria. Conserve este documento para su contabilidad.',
+    'Empresa principal del grupo para alquiler de equipos audiovisuales profesionales.'
+);
+
+-- 3. SEGUNDA EMPRESA REAL - MDR EVENTOS Y PRODUCCIONES S.L.
+INSERT INTO empresa (
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    ficticia_empresa,
+    empresa_ficticia_principal,
+    nif_empresa,
+    direccion_fiscal_empresa,
+    cp_fiscal_empresa,
+    poblacion_fiscal_empresa,
+    provincia_fiscal_empresa,
+    telefono_empresa,
+    movil_empresa,
+    email_empresa,
+    email_facturacion_empresa,
+    web_empresa,
+    iban_empresa,
+    swift_empresa,
+    banco_empresa,
+    serie_presupuesto_empresa,
+    serie_factura_empresa,
+    serie_abono_empresa,
+    verifactu_activo_empresa,
+    verifactu_software_empresa,
+    verifactu_version_empresa,
+    verifactu_nif_desarrollador_empresa,
+    verifactu_nombre_desarrollador_empresa,
+    verifactu_sistema_empresa,
+    logotipo_empresa,
+    texto_legal_factura_empresa,
+    texto_pie_factura_empresa,
+    observaciones_empresa
+) VALUES (
+    'MDR02',
+    'MDR EVENTOS Y PRODUCCIONES S.L.',
+    'MDR Eventos',
+    FALSE,                   -- Es empresa REAL
+    FALSE,
+    'B06654321',
+    'Polígono Industrial La Paz, Nave 16',
+    '06006',
+    'Badajoz',
+    'Badajoz',
+    '+34 924 654 321',
+    '+34 600 654 321',
+    'info@mdreventos.com',
+    'facturacion@mdreventos.com',
+    'www.mdreventos.com',
+    'ES91 2100 0418 4502 0005 9999',
+    'CAIXESBBXXX',
+    'CaixaBank',
+    'PE',                    -- Serie diferente para presupuestos
+    'FE',                    -- Serie diferente para facturas
+    'RE',                    -- Serie diferente para abonos
+    TRUE,                    -- SÍ requiere VeriFact
+    'MDR ERP Manager',
+    '1.0',
+    'B00000001',
+    'Software Solutions S.L.',
+    'online',
+    '/images/logos/mdr_eventos_logo.png',
+    'MDR EVENTOS Y PRODUCCIONES S.L. - B06654321 - Inscrita en el Registro Mercantil de Badajoz, Tomo 456, Folio 789, Hoja BA-1234. Capital Social: 5.000,00 EUR',
+    'Factura sujeta a la Ley General Tributaria. Conserve este documento para su contabilidad.',
+    'Empresa especializada en producción y gestión integral de eventos.'
+);
+
+-- ========================================================
+-- CONSULTAS ÚTILES
+-- ========================================================
+
+-- 1. Obtener empresa ficticia principal para presupuestos
+-- --------------------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    serie_presupuesto_empresa,
+    numero_actual_presupuesto_empresa,
+    logotipo_empresa
+FROM empresa 
+WHERE empresa_ficticia_principal = TRUE 
+AND activo_empresa = TRUE;
+
+-- 2. Obtener todas las empresas reales para facturación
+-- ------------------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    nif_empresa,
+    serie_factura_empresa,
+    numero_actual_factura_empresa,
+    serie_abono_empresa,
+    numero_actual_abono_empresa,
+    verifactu_activo_empresa
+FROM empresa 
+WHERE ficticia_empresa = FALSE 
+AND activo_empresa = TRUE
+ORDER BY nombre_empresa;
+
+-- 3. Verificar empresas que requieren VeriFact
+-- ---------------------------------------------
+SELECT 
+    codigo_empresa,
+    nombre_empresa,
+    nif_empresa,
+    verifactu_activo_empresa,
+    verifactu_sistema_empresa,
+    verifactu_software_empresa,
+    verifactu_version_empresa,
+    verifactu_nif_desarrollador_empresa
+FROM empresa 
+WHERE verifactu_activo_empresa = TRUE
+AND ficticia_empresa = FALSE
+AND activo_empresa = TRUE;
+
+-- 4. Resumen de todas las empresas
+-- ---------------------------------
+SELECT 
+    codigo_empresa,
+    nombre_empresa,
+    CASE 
+        WHEN ficticia_empresa = TRUE THEN 'FICTICIA'
+        ELSE 'REAL'
+    END as tipo_empresa,
+    CASE 
+        WHEN empresa_ficticia_principal = TRUE THEN 'SÍ'
+        ELSE 'NO'
+    END as principal,
+    serie_presupuesto_empresa AS serie_ppto,
+    numero_actual_presupuesto_empresa AS num_ppto,
+    serie_factura_empresa AS serie_fact,
+    numero_actual_factura_empresa AS num_fact,
+    serie_abono_empresa AS serie_abono,
+    numero_actual_abono_empresa AS num_abono,
+    CASE 
+        WHEN verifactu_activo_empresa = TRUE THEN 'ACTIVO'
+        ELSE 'INACTIVO'
+    END as verifact,
+    CASE 
+        WHEN activo_empresa = TRUE THEN 'ACTIVA'
+        ELSE 'INACTIVA'
+    END as estado
+FROM empresa
+ORDER BY ficticia_empresa DESC, nombre_empresa;
+
+-- 5. Datos completos de una empresa específica
+-- ---------------------------------------------
+SELECT * FROM empresa 
+WHERE codigo_empresa = 'MDR01';
+
+-- 6. Siguiente número de presupuesto para empresa ficticia
+-- ---------------------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    serie_presupuesto_empresa,
+    numero_actual_presupuesto_empresa + 1 AS siguiente_numero,
+    CONCAT(
+        serie_presupuesto_empresa,
+        YEAR(CURDATE()),
+        '-',
+        LPAD(numero_actual_presupuesto_empresa + 1, 4, '0')
+    ) AS numero_presupuesto_completo
+FROM empresa
+WHERE empresa_ficticia_principal = TRUE;
+-- Resultado esperado: P2024-0001
+
+-- 7. Siguiente número de factura para empresa real
+-- -------------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    serie_factura_empresa,
+    numero_actual_factura_empresa + 1 AS siguiente_numero,
+    CONCAT(
+        serie_factura_empresa,
+        YEAR(CURDATE()),
+        '/',
+        LPAD(numero_actual_factura_empresa + 1, 4, '0')
+    ) AS numero_factura_completo
+FROM empresa
+WHERE codigo_empresa = 'MDR01';
+-- Resultado esperado: F2024/0001
+
+-- 8. Siguiente número de abono para empresa real
+-- -----------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    serie_abono_empresa,
+    numero_actual_abono_empresa + 1 AS siguiente_numero,
+    CONCAT(
+        serie_abono_empresa,
+        YEAR(CURDATE()),
+        '/',
+        LPAD(numero_actual_abono_empresa + 1, 4, '0')
+    ) AS numero_abono_completo
+FROM empresa
+WHERE codigo_empresa = 'MDR01';
+-- Resultado esperado: R2024/0001
+
+-- 9. Verificar que solo hay una empresa ficticia principal
+-- ---------------------------------------------------------
+SELECT 
+    COUNT(*) as total,
+    CASE 
+        WHEN COUNT(*) = 1 THEN '✓ CORRECTO'
+        WHEN COUNT(*) = 0 THEN '⚠ ADVERTENCIA: No hay empresa ficticia principal'
+        ELSE '✗ ERROR: Hay más de una empresa ficticia principal'
+    END as validacion
+FROM empresa
+WHERE empresa_ficticia_principal = TRUE
+AND activo_empresa = TRUE;
+
+-- 10. Empresas con datos incompletos
+-- -----------------------------------
+SELECT 
+    codigo_empresa,
+    nombre_empresa,
+    CASE WHEN logotipo_empresa IS NULL THEN '✗ Sin logotipo' ELSE '✓' END as logo,
+    CASE WHEN iban_empresa IS NULL THEN '✗ Sin IBAN' ELSE '✓' END as iban,
+    CASE WHEN email_facturacion_empresa IS NULL THEN '✗ Sin email facturación' ELSE '✓' END as email,
+    CASE 
+        WHEN ficticia_empresa = FALSE 
+            AND verifactu_activo_empresa = TRUE 
+            AND verifactu_software_empresa IS NULL 
+        THEN '✗ Sin datos VeriFact' 
+        ELSE '✓' 
+    END as verifact
+FROM empresa
+WHERE activo_empresa = TRUE;
+
+-- ========================================================
+-- PROCEDIMIENTOS ALMACENADOS
+-- ========================================================
+
+-- PROCEDIMIENTO 1: Obtener siguiente número de documento
+-- -------------------------------------------------------
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_obtener_siguiente_numero$$
+
+CREATE PROCEDURE sp_obtener_siguiente_numero(
+    IN p_codigo_empresa VARCHAR(20),
+    IN p_tipo_documento ENUM('presupuesto', 'factura', 'abono'),
+    OUT p_numero_completo VARCHAR(50)
+)
+BEGIN
+    DECLARE v_serie VARCHAR(10);
+    DECLARE v_numero_actual INT;
+    DECLARE v_anio VARCHAR(4);
+    
+    SET v_anio = YEAR(CURDATE());
+    
+    -- Obtener datos según tipo de documento
+    IF p_tipo_documento = 'presupuesto' THEN
+        SELECT 
+            serie_presupuesto_empresa,
+            numero_actual_presupuesto_empresa + 1
+        INTO v_serie, v_numero_actual
+        FROM empresa
+        WHERE codigo_empresa = p_codigo_empresa
+        AND activo_empresa = TRUE;
+        
+        -- Formato: P2024-0001
+        SET p_numero_completo = CONCAT(
+            v_serie,
+            v_anio,
+            '-',
+            LPAD(v_numero_actual, 4, '0')
+        );
+        
+    ELSEIF p_tipo_documento = 'factura' THEN
+        SELECT 
+            serie_factura_empresa,
+            numero_actual_factura_empresa + 1
+        INTO v_serie, v_numero_actual
+        FROM empresa
+        WHERE codigo_empresa = p_codigo_empresa
+        AND activo_empresa = TRUE;
+        
+        -- Formato: F2024/0001
+        SET p_numero_completo = CONCAT(
+            v_serie,
+            v_anio,
+            '/',
+            LPAD(v_numero_actual, 4, '0')
+        );
+        
+    ELSEIF p_tipo_documento = 'abono' THEN
+        SELECT 
+            serie_abono_empresa,
+            numero_actual_abono_empresa + 1
+        INTO v_serie, v_numero_actual
+        FROM empresa
+        WHERE codigo_empresa = p_codigo_empresa
+        AND activo_empresa = TRUE;
+        
+        -- Formato: R2024/0001
+        SET p_numero_completo = CONCAT(
+            v_serie,
+            v_anio,
+            '/',
+            LPAD(v_numero_actual, 4, '0')
+        );
+    END IF;
+    
+END$$
+
+DELIMITER ;
+
+-- PROCEDIMIENTO 2: Actualizar contador de documentos
+-- ---------------------------------------------------
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_actualizar_contador_empresa$$
+
+CREATE PROCEDURE sp_actualizar_contador_empresa(
+    IN p_id_empresa INT UNSIGNED,
+    IN p_tipo_documento ENUM('presupuesto', 'factura', 'abono')
+)
+BEGIN
+    IF p_tipo_documento = 'presupuesto' THEN
+        UPDATE empresa 
+        SET numero_actual_presupuesto_empresa = numero_actual_presupuesto_empresa + 1
+        WHERE id_empresa = p_id_empresa;
+        
+    ELSEIF p_tipo_documento = 'factura' THEN
+        UPDATE empresa 
+        SET numero_actual_factura_empresa = numero_actual_factura_empresa + 1
+        WHERE id_empresa = p_id_empresa;
+        
+    ELSEIF p_tipo_documento = 'abono' THEN
+        UPDATE empresa 
+        SET numero_actual_abono_empresa = numero_actual_abono_empresa + 1
+        WHERE id_empresa = p_id_empresa;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- PROCEDIMIENTO 3: Obtener empresa ficticia principal
+-- ----------------------------------------------------
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_obtener_empresa_ficticia_principal$$
+
+CREATE PROCEDURE sp_obtener_empresa_ficticia_principal()
+BEGIN
+    SELECT 
+        id_empresa,
+        codigo_empresa,
+        nombre_empresa,
+        nombre_comercial_empresa,
+        serie_presupuesto_empresa,
+        numero_actual_presupuesto_empresa,
+        logotipo_empresa,
+        texto_pie_presupuesto_empresa
+    FROM empresa
+    WHERE empresa_ficticia_principal = TRUE
+    AND activo_empresa = TRUE
+    LIMIT 1;
+END$$
+
+DELIMITER ;
+
+-- PROCEDIMIENTO 4: Listar empresas reales para facturación
+-- ---------------------------------------------------------
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_listar_empresas_facturacion$$
+
+CREATE PROCEDURE sp_listar_empresas_facturacion()
+BEGIN
+    SELECT 
+        id_empresa,
+        codigo_empresa,
+        nombre_empresa,
+        nombre_comercial_empresa,
+        nif_empresa,
+        serie_factura_empresa,
+        serie_abono_empresa,
+        logotipo_empresa,
+        verifactu_activo_empresa
+    FROM empresa
+    WHERE ficticia_empresa = FALSE
+    AND activo_empresa = TRUE
+    ORDER BY nombre_empresa;
+END$$
+
+DELIMITER ;
+
+-- ========================================================
+-- EJEMPLOS DE USO DE LOS PROCEDIMIENTOS
+-- ========================================================
+
+-- Ejemplo 1: Obtener siguiente número de presupuesto
+CALL sp_obtener_siguiente_numero('FICTICIA', 'presupuesto', @numero);
+SELECT @numero AS siguiente_presupuesto;
+-- Resultado: P2024-0001
+
+-- Ejemplo 2: Obtener siguiente número de factura
+CALL sp_obtener_siguiente_numero('MDR01', 'factura', @numero);
+SELECT @numero AS siguiente_factura;
+-- Resultado: F2024/0001
+
+-- Ejemplo 3: Obtener siguiente número de abono
+CALL sp_obtener_siguiente_numero('MDR02', 'abono', @numero);
+SELECT @numero AS siguiente_abono;
+-- Resultado: RE2024/0001
+
+-- Ejemplo 4: Actualizar contador después de emitir presupuesto
+CALL sp_actualizar_contador_empresa(1, 'presupuesto');
+
+-- Ejemplo 5: Actualizar contador después de emitir factura
+CALL sp_actualizar_contador_empresa(2, 'factura');
+
+-- Ejemplo 6: Obtener datos de empresa ficticia principal
+CALL sp_obtener_empresa_ficticia_principal();
+
+-- Ejemplo 7: Listar empresas disponibles para facturación
+CALL sp_listar_empresas_facturacion();
+
+-- ========================================================
+-- VALIDACIONES Y REGLAS DE NEGOCIO
+-- ========================================================
+
+/*
+REGLAS IMPORTANTES:
+
+1. UNICIDAD DE EMPRESA FICTICIA PRINCIPAL:
+   - Solo debe existir UNA empresa con empresa_ficticia_principal = TRUE
+   - Esta es la que se usa por defecto en todos los presupuestos
+
+2. EMPRESAS FICTICIAS NO FACTURAN:
+   - Si ficticia_empresa = TRUE → NO puede emitir facturas ni abonos
+   - Solo puede emitir presupuestos
+
+3. EMPRESAS REALES SÍ FACTURAN:
+   - Si ficticia_empresa = FALSE → Puede emitir presupuestos, facturas y abonos
+
+4. VERIFACT SOLO PARA EMPRESAS REALES:
+   - Las empresas ficticias NO requieren VeriFact
+   - Las empresas reales DEBEN tener verifactu_activo_empresa = TRUE
+
+5. SERIES INDEPENDIENTES:
+   - Cada empresa tiene sus propias series y contadores
+   - Los números NO se comparten entre empresas
+
+6. FORMATO DE NUMERACIÓN:
+   - Presupuestos: SERIE + AÑO + "-" + NÚMERO (4 dígitos)
+   - Facturas:     SERIE + AÑO + "/" + NÚMERO (4 dígitos)
+   - Abonos:       SERIE + AÑO + "/" + NÚMERO (4 dígitos)
+
+7. DATOS OBLIGATORIOS:
+   - Todas las empresas necesitan: código, nombre, NIF, dirección fiscal completa
+   - Empresas reales necesitan además: IBAN, datos VeriFact (si activo)
+
+8. FLUJO DE TRABAJO MDR:
+   Paso 1: Cliente solicita presupuesto
+   Paso 2: Se crea presupuesto con empresa FICTICIA
+   Paso 3: Cliente acepta presupuesto
+   Paso 4: Cliente elige empresa real para facturación (MDR01 o MDR02)
+   Paso 5: Se genera factura con la empresa real elegida
+*/
+
+-- ========================================================
+-- TRIGGER DE VALIDACIÓN (OPCIONAL)
+-- ========================================================
+
+/*
+Este trigger asegura que solo haya una empresa ficticia principal activa
+*/
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_empresa_validar_ficticia_principal$$
+
+CREATE TRIGGER trg_empresa_validar_ficticia_principal
+BEFORE INSERT ON empresa
+FOR EACH ROW
+BEGIN
+    DECLARE v_existe_principal INT;
+    
+    -- Si estamos marcando esta empresa como principal ficticia
+    IF NEW.empresa_ficticia_principal = TRUE THEN
+        
+        -- Verificar si ya existe otra empresa ficticia principal activa
+        SELECT COUNT(*) INTO v_existe_principal
+        FROM empresa
+        WHERE empresa_ficticia_principal = TRUE
+        AND activo_empresa = TRUE;
+        
+        -- Si ya existe una, lanzar error
+        IF v_existe_principal > 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Ya existe una empresa ficticia principal activa. Solo puede haber una.';
+        END IF;
+        
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- ========================================================
+-- NOTAS FINALES
+-- ========================================================
+
+/*
+MANTENIMIENTO:
+--------------
+- Los contadores se incrementan automáticamente con sp_actualizar_contador_empresa
+- NO modificar manualmente los campos numero_actual_*_empresa
+- Si necesitas resetear contadores (nuevo año fiscal), hazlo con UPDATE controlado
+
+SEGURIDAD:
+----------
+- Los campos verifactu_certificado_empresa contienen información sensible
+- Asegurar permisos adecuados en la base de datos
+- Considerar encriptación para certificados digitales
+
+EXTENSIBILIDAD:
+---------------
+- Puedes añadir más empresas reales sin límite
+- Puedes tener múltiples empresas ficticias (pero solo una principal)
+- Las series son totalmente personalizables por empresa
+
+INTEGRACIÓN CON PRESUPUESTOS Y FACTURAS:
+-----------------------------------------
+- Tabla presupuesto debe tener FK a id_empresa
+- Tabla factura debe tener FK a id_empresa
+- Al crear presupuesto → usar empresa ficticia principal
+- Al crear factura → usar empresa real elegida por el cliente
+*/
 
 
 

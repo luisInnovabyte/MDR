@@ -1,0 +1,1 @@
+[2025-12-01 08:49:58] grupo_articulo.php ejecutado - IP: 192.168.31.3

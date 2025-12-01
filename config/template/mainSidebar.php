@@ -57,6 +57,7 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item"><a href="../MntObservaciones/index.php" class="sub-link">Observaciones generales</a></li>
             <li class="sub-item"><a href="../MntMetodos_pago/index.php" class="sub-link">Métodos de Pago</a></li>
             <li class="sub-item"><a href="../MntFormas_Pago/index.php" class="sub-link">Formas de Pago</a></li>
+            <li class="sub-item"><a href="../MntEmpresas/index.php" class="sub-link">Empresas</a></li>
 
 
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
@@ -159,6 +160,7 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendarios Garantías</a></li>
             <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendarios Mantenimientos</a></li>
+            <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantias</a></li>
             
         </ul>
         <!-- assets/Reunion/sistema-gestion-explicacion.html -->
