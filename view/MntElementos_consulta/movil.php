@@ -360,7 +360,7 @@
                             <tr>
                                 <th class="text-center"></th>
                                 <th class="text-center">ID</th>
-                                <th class="text-center">Artículo</th>
+                                <th class="text-center">Artículooooo</th>
                                 <th class="text-center">Código</th>
                                 <th class="text-center">Descripción</th>
                                 <th class="text-center">Marca</th>

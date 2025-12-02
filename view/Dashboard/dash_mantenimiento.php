@@ -83,6 +83,13 @@
                 <h4>Mantenimientos</h4>
                 <p class="mg-b-0">Accesos directos a la configuración del sistema</p>
             </div>
+
+             <div class="mg-l-auto">
+                <a href="index.php" class="btn btn-secondary btn-oblong tx-11 tx-uppercase tx-mont tx-medium">
+                    <i class="fa fa-arrow-left mg-r-10"></i> Volver al Dashboard
+                </a>
+            </div>
+            
         </div><!-- d-flex -->
 
         <!-- ----------------------- -->

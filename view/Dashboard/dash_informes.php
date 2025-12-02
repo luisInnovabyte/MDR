@@ -83,6 +83,13 @@
                 <h4>Informes y Calendarios</h4>
                 <p class="mg-b-0">Accesos directos a informes y calendarios del sistema</p>
             </div>
+
+             <div class="mg-l-auto">
+                <a href="index.php" class="btn btn-secondary btn-oblong tx-11 tx-uppercase tx-mont tx-medium">
+                    <i class="fa fa-arrow-left mg-r-10"></i> Volver al Dashboard
+                </a>
+            </div>
+            
         </div><!-- d-flex -->
 
         <!-- ----------------------- -->
@@ -112,7 +119,7 @@
                             <div class="card-body pd-30">
                                 <i class="fa fa-shield-alt tx-60 tx-primary mg-b-15"></i>
                                 <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Calendarios Garantías</h5>
-                                <p class="tx-12 tx-gray-500 mg-b-0">Control de vigencia de garantías</p>
+                                <p class="tx-12 tx-gray-500 mg-b-0">Control de garantías</p>
                             </div>
                         </div>
                     </div>
@@ -126,7 +133,7 @@
                             <div class="card-body pd-30">
                                 <i class="fa fa-tools tx-60 tx-success mg-b-15"></i>
                                 <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Calendarios Mantenimientos</h5>
-                                <p class="tx-12 tx-gray-500 mg-b-0">Programación de mantenimientos preventivos</p>
+                                <p class="tx-12 tx-gray-500 mg-b-0">Control mantenimientos</p>
                             </div>
                         </div>
                     </div>

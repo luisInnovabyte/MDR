@@ -137,7 +137,7 @@
                             <div class="card-body pd-30">
                                 <i class="icon ion-ios-telephone tx-60 tx-success mg-b-10"></i>
                                 <h5 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Llamadas</h5>
-                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de contactos</p>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de llamadas</p>
                             </div>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
                             <div class="card-body pd-30">
                                 <i class="icon ion-ios-people tx-60 tx-warning mg-b-10"></i>
                                 <h5 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Clientes-Proveedores</h5>
-                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de contactos comerciales</p>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de contactos</p>
                             </div>
                         </div>
                     </div>
@@ -179,7 +179,7 @@
                             <div class="card-body pd-30">
                                 <i class="icon ion-ios-paper-outline tx-60 tx-danger mg-b-10"></i>
                                 <h5 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Informes</h5>
-                                <p class="tx-11 tx-gray-500 mg-b-0">Calendarios y reportes</p>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Calendarios-reportes</p>
                             </div>
                         </div>
                     </div>

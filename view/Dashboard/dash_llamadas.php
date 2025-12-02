@@ -83,6 +83,13 @@
                 <h4>Gestión de Llamadas</h4>
                 <p class="mg-b-0">Accesos directos a la gestión de llamadas y responsables</p>
             </div>
+
+             <div class="mg-l-auto">
+                <a href="index.php" class="btn btn-secondary btn-oblong tx-11 tx-uppercase tx-mont tx-medium">
+                    <i class="fa fa-arrow-left mg-r-10"></i> Volver al Dashboard
+                </a>
+            </div>
+            
         </div><!-- d-flex -->
 
         <!-- ----------------------- -->
@@ -112,7 +119,7 @@
                             <div class="card-body pd-30">
                                 <i class="fa fa-phone-alt tx-60 tx-primary mg-b-15"></i>
                                 <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Llamadas</h5>
-                                <p class="tx-12 tx-gray-500 mg-b-0">Registro y seguimiento de llamadas</p>
+                                <p class="tx-12 tx-gray-500 mg-b-0">Registro-seguimiento</p>
                             </div>
                         </div>
                     </div>
@@ -126,7 +133,7 @@
                             <div class="card-body pd-30">
                                 <i class="fa fa-user-tie tx-60 tx-success mg-b-15"></i>
                                 <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Responsables</h5>
-                                <p class="tx-12 tx-gray-500 mg-b-0">Gestión de responsables de atención</p>
+                                <p class="tx-12 tx-gray-500 mg-b-0">Gestión de responsables</p>
                             </div>
                         </div>
                     </div>
@@ -140,7 +147,7 @@
                             <div class="card-body pd-30">
                                 <i class="fa fa-calendar-times tx-60 tx-warning mg-b-15"></i>
                                 <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Vacaciones</h5>
-                                <p class="tx-12 tx-gray-500 mg-b-0">Gestión de vacaciones de responsables</p>
+                                <p class="tx-12 tx-gray-500 mg-b-0">Gestión de vacaciones</p>
                             </div>
                         </div>
                     </div>

@@ -2,10 +2,10 @@ $(document).ready(function () {
   // ================================
   // ESTILOS CSS MEJORADOS RESPONSIVE
   // ================================
-  if (!document.getElementById("elementos-styles")) {
-    const style = document.createElement("style");
-    style.id = "elementos-styles";
-    style.textContent = `
+    if (!document.getElementById("elementos-styles")) {
+        const style = document.createElement("style");
+        style.id = "elementos-styles";
+        style.textContent = `
             .swal-wide {
                 max-width: 90% !important;
                 width: auto !important;
@@ -60,7 +60,7 @@ $(document).ready(function () {
             }
         `;
     document.head.appendChild(style);
-  }
+    }
 
     // ================================
     // DETECTAR SCROLL HORIZONTAL
