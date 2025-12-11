@@ -5,9 +5,6 @@ $(document).ready(function () {
     ///////////////////////////////////
 
     var formValidator = new FormValidator('formPresupuesto', {
-        numero_presupuesto: {
-            required: true
-        },
         fecha_presupuesto: {
             required: true
         },
@@ -18,6 +15,61 @@ $(document).ready(function () {
             required: true
         }
     });
+
+    /////////////////////////////////////////
+    //   VALIDACIONES DE FECHAS           //
+    ///////////////////////////////////////
+
+    // Validar fecha de validez >= fecha presupuesto
+    function validarFechaValidez() {
+        var fechaPresupuesto = $('#fecha_presupuesto').val();
+        var fechaValidez = $('#fecha_validez_presupuesto').val();
+        
+        if (fechaPresupuesto && fechaValidez) {
+            if (fechaValidez < fechaPresupuesto) {
+                $('#fecha_validez_presupuesto').addClass('is-invalid');
+                toastr.warning('La fecha de validez debe ser mayor o igual a la fecha del presupuesto');
+                return false;
+            } else {
+                $('#fecha_validez_presupuesto').removeClass('is-invalid');
+                return true;
+            }
+        }
+        $('#fecha_validez_presupuesto').removeClass('is-invalid');
+        return true;
+    }
+
+    // Validar fecha fin evento >= fecha inicio evento
+    function validarFechasEvento() {
+        var fechaInicio = $('#fecha_inicio_evento_presupuesto').val();
+        var fechaFin = $('#fecha_fin_evento_presupuesto').val();
+        
+        if (fechaInicio && fechaFin) {
+            if (fechaFin < fechaInicio) {
+                $('#fecha_fin_evento_presupuesto').addClass('is-invalid');
+                toastr.warning('La fecha de fin del evento debe ser mayor o igual a la fecha de inicio');
+                return false;
+            } else {
+                $('#fecha_fin_evento_presupuesto').removeClass('is-invalid');
+                return true;
+            }
+        }
+        $('#fecha_fin_evento_presupuesto').removeClass('is-invalid');
+        return true;
+    }
+
+    // Listeners para validación en tiempo real
+    $('#fecha_presupuesto, #fecha_validez_presupuesto').on('change', function() {
+        validarFechaValidez();
+    });
+
+    $('#fecha_inicio_evento_presupuesto, #fecha_fin_evento_presupuesto').on('change', function() {
+        validarFechasEvento();
+    });
+
+    /////////////////////////////////////////
+    //   FIN VALIDACIONES DE FECHAS       //
+    ///////////////////////////////////////
 
     /////////////////////////////////////////
     //     FIN FORMATEO DE CAMPOS          //
@@ -310,6 +362,15 @@ $(document).ready(function () {
         // Validar el formulario
         if (!formValidator.validateForm(event)) {
             toastr.error('Por favor, corrija los errores en el formulario.', 'Error de Validación');
+            return;
+        }
+
+        // Validar fechas
+        if (!validarFechaValidez()) {
+            return;
+        }
+        
+        if (!validarFechasEvento()) {
             return;
         }
         

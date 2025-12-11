@@ -500,12 +500,20 @@ $(document).ready(function () {
                     url: '../../controller/presupuesto.php?op=desactivar',
                     type: 'POST',
                     data: { id_presupuesto: id_presupuesto },
+                    dataType: 'json',
                     success: function (response) {
-                        Swal.fire('Desactivado!', 'El presupuesto ha sido desactivado.', 'success');
-                        table_e.ajax.reload();
+                        console.log('Respuesta desactivar:', response);
+                        if (response.success) {
+                            Swal.fire('Desactivado!', response.message || 'El presupuesto ha sido desactivado.', 'success');
+                            table_e.ajax.reload();
+                        } else {
+                            Swal.fire('Error!', response.message || 'No se pudo desactivar el presupuesto.', 'error');
+                        }
                     },
-                    error: function () {
-                        Swal.fire('Error!', 'No se pudo desactivar el presupuesto.', 'error');
+                    error: function (xhr, status, error) {
+                        console.error('Error en desactivar:', error);
+                        console.error('Response:', xhr.responseText);
+                        Swal.fire('Error!', 'No se pudo desactivar el presupuesto. Error: ' + error, 'error');
                     }
                 });
             }
@@ -528,12 +536,20 @@ $(document).ready(function () {
                     url: '../../controller/presupuesto.php?op=activar',
                     type: 'POST',
                     data: { id_presupuesto: id_presupuesto },
+                    dataType: 'json',
                     success: function (response) {
-                        Swal.fire('Activado!', 'El presupuesto ha sido activado.', 'success');
-                        table_e.ajax.reload();
+                        console.log('Respuesta activar:', response);
+                        if (response.success) {
+                            Swal.fire('Activado!', response.message || 'El presupuesto ha sido activado.', 'success');
+                            table_e.ajax.reload();
+                        } else {
+                            Swal.fire('Error!', response.message || 'No se pudo activar el presupuesto.', 'error');
+                        }
                     },
-                    error: function () {
-                        Swal.fire('Error!', 'No se pudo activar el presupuesto.', 'error');
+                    error: function (xhr, status, error) {
+                        console.error('Error en activar:', error);
+                        console.error('Response:', xhr.responseText);
+                        Swal.fire('Error!', 'No se pudo activar el presupuesto. Error: ' + error, 'error');
                     }
                 });
             }

@@ -363,16 +363,71 @@ switch ($_GET["op"]) {
         break;
 
     case "activar":
-        $presupuesto->activar_presupuestoxid($_POST["id_presupuesto"]);
+        try {
+            $resultado = $presupuesto->activar_presupuestoxid($_POST["id_presupuesto"]);
 
-        $registro->registrarActividad(
-            'admin',
-            'presupuesto.php',
-            'Activar presupuesto seleccionado',
-            "Presupuesto activado exitosamente ",
-            "info"
-        );
+            if ($resultado) {
+                $registro->registrarActividad(
+                    'admin',
+                    'presupuesto.php',
+                    'Activar presupuesto seleccionado',
+                    "Presupuesto activado exitosamente ",
+                    "info"
+                );
 
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Presupuesto activado correctamente'
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'No se pudo activar el presupuesto'
+                ], JSON_UNESCAPED_UNICODE);
+            }
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al activar el presupuesto: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    case "desactivar":
+        try {
+            $resultado = $presupuesto->desactivar_presupuestoxid($_POST["id_presupuesto"]);
+
+            if ($resultado) {
+                $registro->registrarActividad(
+                    'admin',
+                    'presupuesto.php',
+                    'Desactivar presupuesto seleccionado',
+                    "Presupuesto desactivado exitosamente ",
+                    "info"
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Presupuesto desactivado correctamente'
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'No se pudo desactivar el presupuesto'
+                ], JSON_UNESCAPED_UNICODE);
+            }
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al desactivar el presupuesto: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
         break;
 
     case "verificar":

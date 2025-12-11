@@ -114,8 +114,8 @@
                             <div class="row mb-3">
                                 <div class="col-12 col-md-3">
                                     <label for="numero_presupuesto" class="form-label">Número: <span class="tx-danger">*</span></label>
-                                    <input type="text" class="form-control" name="numero_presupuesto" id="numero_presupuesto" maxlength="50" placeholder="Ej: P2025-0001" required>
-                                    <div class="invalid-feedback small-invalid-feedback">Ingrese un número válido (máximo 50 caracteres, único)</div>
+                                    <input type="text" class="form-control" name="numero_presupuesto" id="numero_presupuesto" placeholder="Se generará automáticamente" readonly>
+                                    <small class="form-text text-muted">Se asigna automáticamente al guardar</small>
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <label for="fecha_presupuesto" class="form-label">Fecha: <span class="tx-danger">*</span></label>
@@ -125,6 +125,8 @@
                                 <div class="col-12 col-md-3">
                                     <label for="fecha_validez_presupuesto" class="form-label">Validez:</label>
                                     <input type="date" class="form-control" name="fecha_validez_presupuesto" id="fecha_validez_presupuesto">
+                                    <div class="invalid-feedback small-invalid-feedback">Debe ser mayor o igual a la fecha del presupuesto</div>
+                                    <small class="form-text text-muted">Fecha de validez del presupuesto</small>
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <label class="form-label">Estado:</label>
@@ -219,6 +221,7 @@
                                 <div class="col-12 col-md-6">
                                     <label for="fecha_fin_evento_presupuesto" class="form-label">Fecha fin evento:</label>
                                     <input type="date" class="form-control" name="fecha_fin_evento_presupuesto" id="fecha_fin_evento_presupuesto">
+                                    <div class="invalid-feedback small-invalid-feedback">Debe ser mayor o igual a la fecha de inicio del evento</div>
                                     <small class="form-text text-muted">Fecha de finalización del evento/servicio</small>
                                 </div>
                             </div>

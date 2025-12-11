@@ -265,6 +265,36 @@ class Presupuesto
         }
     }
 
+    public function desactivar_presupuestoxid($id_presupuesto)
+    {
+        try {
+            $sql = "UPDATE presupuesto SET activo_presupuesto = 0 WHERE id_presupuesto = ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Presupuesto',
+                'Desactivar',
+                "Se desactivó el presupuesto con ID: $id_presupuesto",
+                'info'
+            );
+            
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Presupuesto',
+                'desactivar_presupuestoxid',
+                "Error al desactivar el presupuesto {$id_presupuesto}: " . $e->getMessage(),
+                "error"
+            );
+
+            return false;
+        }
+    }
+
     public function insert_presupuesto($numero_presupuesto, $id_cliente, $id_contacto_cliente, $id_estado_ppto, $id_forma_pago, $id_metodo, $fecha_presupuesto, $fecha_validez_presupuesto, $fecha_inicio_evento_presupuesto, $fecha_fin_evento_presupuesto, $numero_pedido_cliente_presupuesto, $nombre_evento_presupuesto, $direccion_evento_presupuesto, $poblacion_evento_presupuesto, $cp_evento_presupuesto, $provincia_evento_presupuesto, $observaciones_cabecera_presupuesto, $observaciones_pie_presupuesto, $mostrar_obs_familias_presupuesto, $mostrar_obs_articulos_presupuesto, $observaciones_internas_presupuesto)
     {
         try {
