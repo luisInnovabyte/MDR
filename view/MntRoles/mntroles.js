@@ -56,10 +56,10 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_rol', data: 'id_rol', visible: false, className: "text-center" }, // Columna 1: ID_ROL
-            { name: 'nombre_rol', data: 'nombre_rol' , className: "text-center" }, // Columna 2: NOMBRE_ROL
-            { name: 'est', data: 'est', className: "text-center"  }, // Columna 3: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 4: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center"  },  // Columna // 5: EDITAR
+            { name: 'nombre_rol', data: 'nombre_rol' , className: "text-center align-middle" }, // Columna 2: NOMBRE_ROL
+            { name: 'est', data: 'est', className: "text-center align-middle"  }, // Columna 3: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 4: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna // 5: EDITAR
             
         ], // de las columnas
         columnDefs: [

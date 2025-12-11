@@ -232,30 +232,30 @@ $(document).ready(function () {
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más   
             { name: 'id_llamada', data: 'id_llamada', visible: false }, // Columna 1: ID_LLAMADA
             { name: 'id_metodo', data: 'id_metodo', className: 'text-center' }, // Columna 2: ID_METODO
-            { name: 'nombre_comunicante', data: 'nombre_comunicante', className: 'text-center' }, // Columna 3: NOMBRE_COMUNICANTE
+            { name: 'nombre_comunicante', data: 'nombre_comunicante', className: 'text-center align-middle' }, // Columna 3: NOMBRE_COMUNICANTE
             { name: 'domicilio_instalacion', data: 'domicilio_instalacion', visible: false }, // Columna 4: DOMICILIO_INSTALACION
             { name: 'telefono_fijo', data: 'telefono_fijo', visible: false }, // Columna 5: TELEFONO FIJO
             { name: 'telefono_movil', data: 'telefono_movil', visible: false }, // Columna 6: TELEFONO MOVIL
             { name: 'email_contacto', data: 'email_contacto', visible: false }, // Columna 7: EMAIL CONTACTO
             { name: 'fecha_hora_preferida', data: 'fecha_hora_preferida', visible: false }, // Columna 8: FECHA HORA PREFERIDA
             { name: 'observaciones', data: 'observaciones', visible: false }, // Columna 9: OBSERVACIONES
-            { name: 'id_comercial_asignado', data: 'id_comercial_asignado', className: 'text-center' }, // Columna 10: ID COMERCIAL ASIGNADO
-            { name: 'estado', data: 'estado', className: 'text-center' }, // Columna 11: ESTADO
-            { name: 'fecha_recepcion', data: 'fecha_recepcion', className: 'text-center' }, // Columna 12: FECHA_RECEPCION
+            { name: 'id_comercial_asignado', data: 'id_comercial_asignado', className: 'text-center align-middle' }, // Columna 10: ID COMERCIAL ASIGNADO
+            { name: 'estado', data: 'estado', className: 'text-center align-middle' }, // Columna 11: ESTADO
+            { name: 'fecha_recepcion', data: 'fecha_recepcion', className: 'text-center align-middle' }, // Columna 12: FECHA_RECEPCION
             { name: 'desfase', data: null }, // Columna 13: DESFASE
-            { name: 'activo_llamada', data: 'activo_llamada', className: 'text-center' }, // Columna 14: ACTIVA_LLAMADA
+            { name: 'activo_llamada', data: 'activo_llamada', className: 'text-center align-middle' }, // Columna 14: ACTIVA_LLAMADA
             { name: 'activar', data: null, defaultContent: '' }, // Columna 15: ACTIVAR/DESACTIVAR/
             { name: 'contactos', data: null, defaultContent: '' }, // Columna 15: CONTACTOS/
-            { name: 'adjuntar', data: null, className: 'text-center' }, // Columna 16: ADJUNTAR
-            { name: 'editar', data: null, defaultContent: '', className: 'text-center' },  // Columna 17: EDITAR
-            { name: 'archivos_adjuntos', data: 'archivos_adjuntos', className: 'text-center', visible: false },  // Columna 18: ARCHIVOS ADJUNTOS
-            { name: 'imagen_metodo', data: 'imagen_metodo', className: 'text-center', visible: false },  // Columna 18: IMAGEN MÉTODO
+            { name: 'adjuntar', data: null, className: 'text-center align-middle' }, // Columna 16: ADJUNTAR
+            { name: 'editar', data: null, defaultContent: '', className: 'text-center align-middle' },  // Columna 17: EDITAR
+            { name: 'archivos_adjuntos', data: 'archivos_adjuntos', className: 'text-center align-middle', visible: false },  // Columna 18: ARCHIVOS ADJUNTOS
+            { name: 'imagen_metodo', data: 'imagen_metodo', className: 'text-center align-middle', visible: false },  // Columna 18: IMAGEN MÉTODO
 
         ], // de las columnas
         columnDefs: [
             // Cuidado que el ordrData puede interferir con el ordenamiento de la tabla    
             {
-                targets: "control:name", width: '5%', searchable: false, orderable: false, className: "text-center"
+                targets: "control:name", width: '5%', searchable: false, orderable: false, className: "text-center align-middle"
             },
             // 1 - id_llamada
             { targets: "id_llamada:name", searchable: false, orderable: false },
