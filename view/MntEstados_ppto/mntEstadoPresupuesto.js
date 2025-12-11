@@ -62,34 +62,34 @@ $(document).ready(function () {
       {
         name: "codigo_estado_ppto",
         data: "codigo_estado_ppto",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 2: CODIGO_ESTADO_PPTO
       {
         name: "nombre_estado_ppto",
         data: "nombre_estado_ppto",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 3: NOMBRE_ESTADO_PPTO
       {
         name: "color_estado_ppto",
         data: "color_estado_ppto",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 4: COLOR_ESTADO_PPTO
       {
         name: "orden_estado_ppto",
         data: "orden_estado_ppto",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 5: ORDEN_ESTADO_PPTO
       {
         name: "activo_estado_ppto",
         data: "activo_estado_ppto",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 6: ESTADO
-      { name: "activar", data: null, className: "text-center" }, // Columna 7: ACTIVAR/DESACTIVAR
+      { name: "activar", data: null, className: "text-center align-middle" }, // Columna 7: ACTIVAR/DESACTIVAR
       {
         name: "editar",
         data: null,
         defaultContent: "",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 8: EDITAR
     ], // de las columnas
     columnDefs: [

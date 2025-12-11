@@ -51,12 +51,12 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_impuesto', data: 'id_impuesto', visible: false, className: "text-center" }, // Columna 1: ID_IMPUESTO
-            { name: 'tipo_impuesto', data: 'tipo_impuesto', className: "text-center" }, // Columna 2: TIPO_IMPUESTO
-            { name: 'tasa_impuesto', data: 'tasa_impuesto', className: "text-center" }, // Columna 3: TASA_IMPUESTO
+            { name: 'tipo_impuesto', data: 'tipo_impuesto', className: "text-center align-middle" }, // Columna 2: TIPO_IMPUESTO
+            { name: 'tasa_impuesto', data: 'tasa_impuesto', className: "text-center align-middle" }, // Columna 3: TASA_IMPUESTO
             
-            { name: 'activo_impuesto', data: 'activo_impuesto', className: "text-center" }, // Columna 4: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 5: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center" },  // Columna 6: EDITAR
+            { name: 'activo_impuesto', data: 'activo_impuesto', className: "text-center align-middle" }, // Columna 4: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 5: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" },  // Columna 6: EDITAR
             
         ], // de las columnas
         columnDefs: [

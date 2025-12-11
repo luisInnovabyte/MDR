@@ -1,6 +1,6 @@
 <!-- Modal de Ayuda para Presupuestos -->
 <div class="modal fade" id="modalAyudaPresupuestos" tabindex="-1" aria-labelledby="modalAyudaPresupuestosLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 75%; width: 75%;">
         <div class="modal-content">
             <!-- Encabezado del Modal -->
             <div class="modal-header bg-primary text-white">
@@ -18,217 +18,448 @@
                 <div class="help-section mb-4">
                     <h6 class="text-primary d-flex align-items-center">
                         <i class="bi bi-file-earmark-text me-2"></i>
-                        ¿Qué son los Presupuestos en el Sistema?
+                        ¿Qué es el Módulo de Presupuestos?
                     </h6>
                     <p class="text-muted">
-                        Los presupuestos son documentos comerciales que detallan los costos estimados de productos o servicios
-                        para un cliente. El sistema permite crear, gestionar y dar seguimiento a presupuestos desde su creación
-                        hasta su aceptación o rechazo.
+                        El módulo de presupuestos permite crear, gestionar y dar seguimiento a cotizaciones comerciales. 
+                        Incluye información detallada del cliente, evento, productos/servicios, formas de pago y estados de seguimiento.
+                        El sistema calcula automáticamente días de validez, duración de eventos y alertas de vencimiento.
                     </p>
                 </div>
 
-            
-                <!-- Sección: Campos del Formulario -->
+                <!-- Sección: Columnas de la Tabla -->
                 <div class="help-section mb-4">
                     <h6 class="text-primary d-flex align-items-center">
-                        <i class="bi bi-clipboard-data me-2"></i>
-                        Campos del Formulario
+                        <i class="bi bi-table me-2"></i>
+                        Columnas de la Tabla Principal
                     </h6>
                     
-                    <div class="accordion" id="accordionCampos">
-                        <!-- Campo Número de Presupuesto -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingNumero">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNumero" aria-expanded="false" aria-controls="collapseNumero">
-                                    <i class="bi bi-hash me-2"></i>
-                                    Número de Presupuesto *
-                                </button>
-                            </h2>
-                            <div id="collapseNumero" class="accordion-collapse collapse" aria-labelledby="headingNumero" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campo obligatorio.</strong> Identificador único del presupuesto.
-                                    <br><strong>Ejemplos:</strong> P2025-0001, PPTO-001, 2025/001
-                                    <br><strong>Validaciones:</strong> Máximo 50 caracteres, debe ser único en el sistema
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 20%;">Columna</th>
+                                    <th style="width: 80%;">Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong><i class="bi bi-plus-circle text-primary me-1"></i> Botón Expandir</strong></td>
+                                    <td>
+                                        Botón integrado en la columna <strong>Número</strong> que despliega información detallada del presupuesto en 3 columnas:
+                                        <ul class="mb-0 mt-2">
+                                            <li><strong>Columna 1:</strong> Datos del Presupuesto, Datos del Evento, Datos del Cliente</li>
+                                            <li><strong>Columna 2:</strong> Observaciones, Contacto del Cliente, Método de Contacto</li>
+                                            <li><strong>Columna 3:</strong> Estado del Presupuesto, Forma de Pago, Control (fechas de creación/actualización)</li>
+                                        </ul>
+                                        <span class="badge bg-info mt-2">El botón cambia de <i class="bi bi-plus-circle"></i> a <i class="bi bi-dash-circle"></i> al expandir</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Número</strong></td>
+                                    <td>Número único identificador del presupuesto. <strong>Incluye botón de expansión integrado.</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cliente</strong></td>
+                                    <td>Nombre del cliente al que va dirigido el presupuesto.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Evento</strong></td>
+                                    <td>Nombre descriptivo del evento asociado al presupuesto (boda, cumpleaños, corporativo, etc.).</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>F. Inicio</strong></td>
+                                    <td>Fecha de inicio del evento. Formato: <code>dd/mm/yyyy</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>F. Fin</strong></td>
+                                    <td>Fecha de finalización del evento. Formato: <code>dd/mm/yyyy</code></td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <td><strong><i class="bi bi-calendar-check me-1"></i> Días Val.</strong></td>
+                                    <td>
+                                        <strong>DÍAS DE VALIDEZ RESTANTES del presupuesto.</strong> Calcula cuántos días quedan hasta que expire el presupuesto.
+                                        <div class="mt-2">
+                                            <span class="badge bg-danger me-2">Negativo (Rojo)</span> = Presupuesto vencido
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-warning text-dark me-2">≤ 7 días (Amarillo)</span> = Próximo a vencer
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-success me-2">&gt; 7 días (Verde)</span> = Vigente con margen
+                                        </div>
+                                        <div class="alert alert-info mt-2 mb-0 small">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Se calcula automáticamente desde la <strong>fecha de validez del presupuesto</strong> hasta la fecha actual.
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="table-info">
+                                    <td><strong><i class="bi bi-hourglass-split me-1"></i> Duración</strong></td>
+                                    <td>
+                                        <strong>DURACIÓN DEL EVENTO EN DÍAS.</strong> Calcula cuántos días durará el evento completo.
+                                        <div class="mt-2">
+                                            <span class="badge bg-info">Badge azul</span> con el número de días
+                                        </div>
+                                        <div class="alert alert-info mt-2 mb-0 small">
+                                            <i class="bi bi-calculator me-1"></i>
+                                            Se calcula automáticamente restando la <strong>fecha fin del evento</strong> menos la <strong>fecha inicio del evento</strong>.
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <td><strong><i class="bi bi-alarm me-1"></i> Días Inicio</strong></td>
+                                    <td>
+                                        <strong>DÍAS HASTA EL INICIO DEL EVENTO.</strong> Indica cuántos días faltan para que comience el evento.
+                                        <div class="mt-2">
+                                            <span class="badge bg-secondary me-2">Negativo (Gris)</span> = Evento ya comenzó o finalizó
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-danger me-2">≤ 7 días (Rojo)</span> = Evento muy próximo (¡urgente!)
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-primary me-2">&gt; 7 días (Azul)</span> = Evento futuro con tiempo
+                                        </div>
+                                        <div class="alert alert-info mt-2 mb-0 small">
+                                            <i class="bi bi-calendar-event me-1"></i>
+                                            Se calcula automáticamente desde la fecha actual hasta la <strong>fecha de inicio del evento</strong>.
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="table-success">
+                                    <td><strong><i class="bi bi-flag me-1"></i> Estado Evento</strong></td>
+                                    <td>
+                                        <strong>ESTADO AUTOMÁTICO DEL EVENTO</strong> según su relación temporal con la fecha actual.
+                                        <div class="mt-2">
+                                            <span class="badge bg-dark me-2">Evento finalizado</span> = El evento ya terminó
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-success me-2">Evento en curso</span> = El evento está sucediendo ahora
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-danger me-2">Evento hoy</span> = El evento comienza hoy
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-warning text-dark me-2">Evento próximo</span> = Faltan pocos días (≤7)
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-info me-2">Evento futuro</span> = Faltan más de 7 días
+                                        </div>
+                                        <div class="alert alert-success mt-2 mb-0 small">
+                                            <i class="bi bi-stars me-1"></i>
+                                            <strong>Se calcula automáticamente</strong> comparando la fecha actual con las fechas de inicio y fin del evento. 
+                                            Permite identificar rápidamente eventos urgentes o activos.
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado</strong></td>
+                                    <td>Estado administrativo del presupuesto (Pendiente, Aprobado, Rechazado, etc.). Se muestra con el color definido en la tabla de estados.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Activo</strong></td>
+                                    <td>
+                                        Indica si el presupuesto está activo o inactivo:
+                                        <div class="mt-2">
+                                            <i class="bi bi-check-circle text-success fa-2x"></i> = Activo
+                                        </div>
+                                        <div class="mt-1">
+                                            <i class="bi bi-x-circle text-danger fa-2x"></i> = Inactivo
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Act./Desac.</strong></td>
+                                    <td>
+                                        Botones para cambiar el estado activo/inactivo del presupuesto:
+                                        <div class="mt-2">
+                                            <button class="btn btn-danger btn-sm" disabled><i class="fa-solid fa-trash"></i></button> Desactivar presupuesto activo
+                                        </div>
+                                        <div class="mt-1">
+                                            <button class="btn btn-success btn-sm" disabled><i class="bi bi-hand-thumbs-up-fill"></i></button> Activar presupuesto inactivo
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Edit.</strong></td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" disabled><i class="fa-solid fa-edit"></i></button> 
+                                        Botón para editar el presupuesto. Redirige al formulario de edición.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sección: Información Detallada (Vista Expandida) -->
+                <div class="help-section mb-4">
+                    <h6 class="text-primary d-flex align-items-center">
+                        <i class="bi bi-eye me-2"></i>
+                        Vista Detallada (Al Expandir con el Botón +)
+                    </h6>
+                    <p class="text-muted">
+                        Al hacer clic en el botón <i class="bi bi-plus-circle text-primary"></i> de la columna <strong>Número</strong>, 
+                        se despliega una vista con <strong>toda la información del presupuesto organizada en 3 columnas</strong>:
+                    </p>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card border-primary mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <strong><i class="bi bi-1-circle me-2"></i>Columna 1</strong>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="text-primary"><i class="bi bi-file-text me-1"></i>Datos del Presupuesto</h6>
+                                    <ul class="small">
+                                        <li>ID Presupuesto</li>
+                                        <li>Número</li>
+                                        <li>Fecha Presupuesto</li>
+                                        <li>Fecha Validez</li>
+                                   
+                                    </ul>
+
+                                    <h6 class="text-success"><i class="bi bi-geo-alt me-1"></i>Datos del Evento</h6>
+                                    <ul class="small">
+                                        <li>Ubicación Completa del Evento</li>
+                                        <li>Fecha Inicio Evento</li>
+                                        <li>Fecha Fin Evento</li>
+                                    </ul>
+
+                                    <h6 class="text-info"><i class="bi bi-person me-1"></i>Datos del Cliente</h6>
+                                    <ul class="small">
+                                        <li>Dirección Completa</li>
+                                        <li>Dirección de Facturación</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Campo Cliente -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingCliente">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCliente" aria-expanded="false" aria-controls="collapseCliente">
-                                    <i class="bi bi-person me-2"></i>
-                                    Cliente *
-                                </button>
-                            </h2>
-                            <div id="collapseCliente" class="accordion-collapse collapse" aria-labelledby="headingCliente" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campo obligatorio.</strong> Cliente al que se emite el presupuesto.
-                                    <br><strong>Nota:</strong> Solo aparecen clientes activos en el sistema
-                                    <br><strong>Importante:</strong> Asegúrese de seleccionar el cliente correcto antes de guardar
+                        <div class="col-md-4">
+                            <div class="card border-warning mb-3">
+                                <div class="card-header bg-warning text-dark">
+                                    <strong><i class="bi bi-2-circle me-2"></i>Columna 2</strong>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="text-warning"><i class="bi bi-chat-square-text me-1"></i>Observaciones</h6>
+                                    <ul class="small">
+                                        <li>Observaciones Cabecera</li>
+                                        <li>Observaciones Pie</li>
+                                        <li>Mostrar Obs. Familias (Sí/No)</li>
+                                        <li>Mostrar Obs. Artículos (Sí/No)</li>
+                                        <li>Observaciones Internas</li>
+                                    </ul>
+
+                                    <h6 class="text-secondary"><i class="bi bi-person-lines-fill me-1"></i>Contacto del Cliente</h6>
+                                    <ul class="small">
+                                        <li>Nombre Completo del Contacto</li>
+                                    </ul>
+
+                                    <h6 class="text-dark"><i class="bi bi-telephone me-1"></i>Método de Contacto</h6>
+                                    <ul class="small">
+                                        <li>ID Método</li>
+                                        <li>Nombre del Método</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Campo Estado -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingEstado">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEstado" aria-expanded="false" aria-controls="collapseEstado">
-                                    <i class="bi bi-toggle-on me-2"></i>
-                                    Estado del Presupuesto *
-                                </button>
-                            </h2>
-                            <div id="collapseEstado" class="accordion-collapse collapse" aria-labelledby="headingEstado" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campo obligatorio.</strong> Estado actual del presupuesto.
-                                    <br><strong>Estados comunes:</strong> Pendiente, Enviado, Aceptado, Rechazado
-                                    <br><strong>Nota:</strong> El estado ayuda a llevar control del proceso comercial
+                        <div class="col-md-4">
+                            <div class="card border-success mb-3">
+                                <div class="card-header bg-success text-white">
+                                    <strong><i class="bi bi-3-circle me-2"></i>Columna 3</strong>
                                 </div>
-                            </div>
-                        </div>
+                                <div class="card-body">
+                                    <h6 class="text-danger"><i class="bi bi-flag me-1"></i>Estado del Presupuesto</h6>
+                                    <ul class="small">
+                                        <li>Nombre del Estado (con color personalizado)</li>
+                                    </ul>
 
-                        <!-- Campo Fecha Presupuesto -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingFecha">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFecha" aria-expanded="false" aria-controls="collapseFecha">
-                                    <i class="bi bi-calendar me-2"></i>
-                                    Fecha de Presupuesto *
-                                </button>
-                            </h2>
-                            <div id="collapseFecha" class="accordion-collapse collapse" aria-labelledby="headingFecha" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campo obligatorio.</strong> Fecha de emisión del presupuesto.
-                                    <br><strong>Formato:</strong> DD/MM/AAAA
-                                    <br><strong>Por defecto:</strong> Se establece la fecha actual al crear un nuevo presupuesto
-                                </div>
-                            </div>
-                        </div>
+                                    <h6 class="text-success"><i class="bi bi-credit-card me-1"></i>Forma de Pago</h6>
+                                    <ul class="small">
+                                        <li>Código de Pago</li>
+                                        <li>Nombre de Pago</li>
+                                        <li>% Anticipo</li>
+                                        <li>Días Anticipo</li>
+                                        <li>% Final</li>
+                                        <li>Días Final</li>
+                                        <li>Descuento</li>
+                                        <li>Tipo de Pago Presupuesto</li>
+                                    </ul>
 
-                        <!-- Campo Fecha Validez -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingValidez">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseValidez" aria-expanded="false" aria-controls="collapseValidez">
-                                    <i class="bi bi-calendar-check me-2"></i>
-                                    Fecha de Validez
-                                </button>
-                            </h2>
-                            <div id="collapseValidez" class="accordion-collapse collapse" aria-labelledby="headingValidez" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campo opcional.</strong> Fecha hasta la que es válido el presupuesto.
-                                    <br><strong>Uso:</strong> Indica al cliente hasta cuándo están vigentes los precios
-                                    <br><strong>Ejemplo:</strong> Presupuesto válido hasta el 31/12/2025
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campo Nombre Evento -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingEvento">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEvento" aria-expanded="false" aria-controls="collapseEvento">
-                                    <i class="bi bi-calendar-event me-2"></i>
-                                    Nombre del Evento
-                                </button>
-                            </h2>
-                            <div id="collapseEvento" class="accordion-collapse collapse" aria-labelledby="headingEvento" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campo opcional.</strong> Nombre del evento o proyecto.
-                                    <br><strong>Ejemplos:</strong> Concierto Anual 2025, Boda María y Juan, Conferencia Tech
-                                    <br><strong>Máximo:</strong> 255 caracteres
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campo Ubicación Evento -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingUbicacion">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUbicacion" aria-expanded="false" aria-controls="collapseUbicacion">
-                                    <i class="bi bi-geo-alt me-2"></i>
-                                    Ubicación del Evento
-                                </button>
-                            </h2>
-                            <div id="collapseUbicacion" class="accordion-collapse collapse" aria-labelledby="headingUbicacion" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campos opcionales.</strong> Ubicación detallada donde se realizará el evento.
-                                    <br><strong>Dirección:</strong> Calle, número, local (máx. 100 caracteres)
-                                    <br><strong>Población:</strong> Ciudad o pueblo (máx. 80 caracteres)
-                                    <br><strong>Código Postal:</strong> CP del evento (máx. 10 caracteres)
-                                    <br><strong>Provincia:</strong> Provincia del evento (máx. 80 caracteres)
-                                    <br><strong>Ejemplos:</strong> Calle Mayor 123, Badajoz, 06006, Badajoz
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campo Fechas Evento -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingFechasEvento">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFechasEvento" aria-expanded="false" aria-controls="collapseFechasEvento">
-                                    <i class="bi bi-calendar-range me-2"></i>
-                                    Fechas de Inicio y Fin del Evento
-                                </button>
-                            </h2>
-                            <div id="collapseFechasEvento" class="accordion-collapse collapse" aria-labelledby="headingFechasEvento" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campos opcionales.</strong> Fechas de inicio y finalización del evento/servicio.
-                                    <br><strong>Uso:</strong> Para calcular la duración del evento y planificar logística
-                                    <br><strong>Nota:</strong> La fecha de fin debe ser igual o posterior a la fecha de inicio
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campo Observaciones -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingObservaciones">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseObservaciones" aria-expanded="false" aria-controls="collapseObservaciones">
-                                    <i class="bi bi-chat-left-text me-2"></i>
-                                    Observaciones
-                                </button>
-                            </h2>
-                            <div id="collapseObservaciones" class="accordion-collapse collapse" aria-labelledby="headingObservaciones" data-bs-parent="#accordionCampos">
-                                <div class="accordion-body">
-                                    <strong>Campos opcionales.</strong> Notas y comentarios sobre el presupuesto.
-                                    <br><strong>Observaciones de cabecera:</strong> Aparecen al inicio del PDF del presupuesto
-                                    <br><strong>Observaciones de pie:</strong> Aparecen al final del PDF del presupuesto
-                                    <br><strong>Observaciones internas:</strong> No se imprimen, solo para uso interno
-                                    <br><strong>Switches:</strong> Controlan si se muestran observaciones de familias y artículos
+                                    <h6 class="text-muted"><i class="bi bi-info-circle me-1"></i>Control</h6>
+                                    <ul class="small">
+                                        <li>Activo (Sí/No)</li>
+                                        <li>Fecha de Creación</li>
+                                        <li>Fecha de Actualización</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sección: Funcionalidades de la Tabla -->
+                <!-- Sección: Filtros -->
                 <div class="help-section mb-4">
                     <h6 class="text-primary d-flex align-items-center">
-                        <i class="bi bi-table me-2"></i>
-                        Funcionalidades de la Tabla de Presupuestos
+                        <i class="bi bi-funnel me-2"></i>
+                        Sistema de Filtros
                     </h6>
-                    
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <i class="bi bi-plus-circle text-success me-2"></i>
-                            <strong>Nuevo Presupuesto:</strong> Crea un nuevo registro de presupuesto
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-pencil text-info me-2"></i>
-                            <strong>Editar:</strong> Modifica los datos de un presupuesto existente
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-trash text-danger me-2"></i>
-                            <strong>Desactivar:</strong> Desactiva el presupuesto (no lo elimina)
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-arrow-clockwise text-success me-2"></i>
-                            <strong>Activar:</strong> Reactiva un presupuesto desactivado
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-search me-2"></i>
-                            <strong>Buscar:</strong> Filtra presupuestos por diferentes criterios
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-eye text-primary me-2"></i>
-                            <strong>Ver detalles:</strong> Haz clic en el botón + para ver información completa
-                        </li>
+                    <ul>
+                        <li><strong>Filtros por columna:</strong> En el pie de la tabla hay campos de búsqueda para filtrar por cualquier columna visible.</li>
+                        <li><strong>Filtro de estado activo:</strong> Selector desplegable para filtrar presupuestos activos o inactivos.</li>
+                        <li><strong>Búsqueda global:</strong> Campo de búsqueda general que busca en todas las columnas simultáneamente.</li>
+                        <li><strong>Alerta de filtros activos:</strong> Cuando se aplican filtros, aparece una alerta amarilla mostrando qué filtros están activos con opción de limpiarlos todos.</li>
                     </ul>
+                </div>
+
+                <!-- Sección: Acciones Disponibles -->
+                <div class="help-section mb-4">
+                    <h6 class="text-primary d-flex align-items-center">
+                        <i class="bi bi-lightning me-2"></i>
+                        Acciones Disponibles
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title text-success">
+                                        <i class="bi bi-plus-circle me-2"></i>Nuevo Presupuesto
+                                    </h6>
+                                    <p class="card-text small">
+                                        Botón verde en la parte superior derecha. Abre el formulario para crear un nuevo presupuesto con todos los campos necesarios.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title text-info">
+                                        <i class="bi bi-pencil me-2"></i>Editar Presupuesto
+                                    </h6>
+                                    <p class="card-text small">
+                                        Botón azul en cada fila. Permite modificar todos los datos del presupuesto seleccionado.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title text-danger">
+                                        <i class="bi bi-trash me-2"></i>Desactivar Presupuesto
+                                    </h6>
+                                    <p class="card-text small">
+                                        Botón rojo que desactiva (oculta) el presupuesto sin eliminarlo de la base de datos. Se puede reactivar posteriormente.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title text-success">
+                                        <i class="bi bi-hand-thumbs-up me-2"></i>Activar Presupuesto
+                                    </h6>
+                                    <p class="card-text small">
+                                        Botón verde que reactiva un presupuesto previamente desactivado, haciéndolo visible y operativo nuevamente.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Leyenda de Colores -->
+                <div class="help-section mb-4">
+                    <h6 class="text-primary d-flex align-items-center">
+                        <i class="bi bi-palette me-2"></i>
+                        Leyenda de Colores e Indicadores
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Elemento</th>
+                                    <th>Color/Icono</th>
+                                    <th>Significado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Días Validez</strong></td>
+                                    <td><span class="badge bg-danger">Rojo</span></td>
+                                    <td>Presupuesto vencido (días negativos)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Días Validez</strong></td>
+                                    <td><span class="badge bg-warning text-dark">Amarillo</span></td>
+                                    <td>Próximo a vencer (≤ 7 días)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Días Validez</strong></td>
+                                    <td><span class="badge bg-success">Verde</span></td>
+                                    <td>Vigente con margen (&gt; 7 días)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Duración Evento</strong></td>
+                                    <td><span class="badge bg-info">Azul</span></td>
+                                    <td>Número de días que durará el evento</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Días Hasta Inicio</strong></td>
+                                    <td><span class="badge bg-secondary">Gris</span></td>
+                                    <td>Evento ya comenzó (días negativos)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Días Hasta Inicio</strong></td>
+                                    <td><span class="badge bg-danger">Rojo</span></td>
+                                    <td>Evento muy próximo (≤ 7 días) ¡Urgente!</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Días Hasta Inicio</strong></td>
+                                    <td><span class="badge bg-primary">Azul</span></td>
+                                    <td>Evento futuro con tiempo (&gt; 7 días)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado Evento</strong></td>
+                                    <td><span class="badge bg-dark">Negro</span></td>
+                                    <td>Evento finalizado</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado Evento</strong></td>
+                                    <td><span class="badge bg-success">Verde</span></td>
+                                    <td>Evento en curso (está sucediendo ahora)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado Evento</strong></td>
+                                    <td><span class="badge bg-danger">Rojo</span></td>
+                                    <td>Evento hoy (comienza hoy)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado Evento</strong></td>
+                                    <td><span class="badge bg-warning text-dark">Amarillo</span></td>
+                                    <td>Evento próximo (≤ 7 días)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado Evento</strong></td>
+                                    <td><span class="badge bg-info">Celeste</span></td>
+                                    <td>Evento futuro (&gt; 7 días)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Presupuesto Activo</strong></td>
+                                    <td><i class="bi bi-check-circle text-success fa-2x"></i></td>
+                                    <td>Presupuesto activo y operativo</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Presupuesto Inactivo</strong></td>
+                                    <td><i class="bi bi-x-circle text-danger fa-2x"></i></td>
+                                    <td>Presupuesto desactivado u oculto</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Sección: Consejos y Buenas Prácticas -->
@@ -237,129 +468,37 @@
                         <i class="bi bi-lightbulb me-2"></i>
                         Consejos y Buenas Prácticas
                     </h6>
-                    
-                    <div class="alert alert-info" role="alert">
+                    <div class="alert alert-info">
                         <ul class="mb-0">
-                            <li>Utilice números de presupuesto secuenciales para facilitar el seguimiento</li>
-                            <li>Incluya siempre las fechas del evento para una mejor planificación</li>
-                            <li>Utilice las observaciones internas para notas que no deben ver los clientes</li>
-                            <li>Revise el estado del presupuesto regularmente para mantener actualizado el proceso</li>
-                            <li>Use la fecha de validez para presupuestos con precios sujetos a cambios</li>
+                            <li><strong>Monitorea los días de validez:</strong> Presupuestos en amarillo o rojo necesitan seguimiento urgente.</li>
+                            <li><strong>Revisa el estado del evento:</strong> Los badges de color te alertan sobre eventos próximos o en curso.</li>
+                            <li><strong>Usa los filtros:</strong> Filtra por estado de evento o días hasta inicio para priorizar acciones.</li>
+                            <li><strong>Vista expandida:</strong> Usa el botón + para ver todos los detalles sin abrir el formulario completo.</li>
+                            <li><strong>Scroll horizontal:</strong> La tabla permite desplazamiento horizontal para ver todas las columnas en pantallas pequeñas.</li>
+                            <li><strong>Actualiza estados:</strong> Mantén actualizado el estado administrativo del presupuesto para mejor seguimiento.</li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Sección: Estados del Presupuesto -->
+                <!-- Sección: Notas Técnicas -->
                 <div class="help-section mb-4">
                     <h6 class="text-primary d-flex align-items-center">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Estados Típicos del Presupuesto
+                        <i class="bi bi-gear me-2"></i>
+                        Notas Técnicas
                     </h6>
-                    
-                    <div class="row g-2">
-                        <div class="col-md-6">
-                            <div class="card border-warning">
-                                <div class="card-body p-2">
-                                    <h6 class="card-title mb-1">
-                                        <i class="bi bi-hourglass-split text-warning me-1"></i>
-                                        Pendiente
-                                    </h6>
-                                    <small class="text-muted">Presupuesto creado pero aún no enviado al cliente</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="card border-info">
-                                <div class="card-body p-2">
-                                    <h6 class="card-title mb-1">
-                                        <i class="bi bi-send text-info me-1"></i>
-                                        Enviado
-                                    </h6>
-                                    <small class="text-muted">Presupuesto enviado al cliente, esperando respuesta</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="card border-success">
-                                <div class="card-body p-2">
-                                    <h6 class="card-title mb-1">
-                                        <i class="bi bi-check-circle text-success me-1"></i>
-                                        Aceptado
-                                    </h6>
-                                    <small class="text-muted">Cliente aceptó el presupuesto</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="card border-danger">
-                                <div class="card-body p-2">
-                                    <h6 class="card-title mb-1">
-                                        <i class="bi bi-x-circle text-danger me-1"></i>
-                                        Rechazado
-                                    </h6>
-                                    <small class="text-muted">Cliente rechazó el presupuesto</small>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="alert alert-secondary">
+                        <ul class="mb-0">
+                            <li>Los cálculos de días son automáticos y se actualizan en tiempo real desde la vista de base de datos.</li>
+                            <li>La columna ID está oculta pero se puede mostrar configurando la tabla.</li>
+                            <li>El botón de expansión está integrado en la columna Número (no ocupa columna adicional).</li>
+                            <li>Las fechas se muestran en formato europeo (dd/mm/yyyy).</li>
+                            <li>El scroll horizontal se activa automáticamente cuando la tabla es más ancha que el contenedor.</li>
+                            <li>Todos los cambios (activar/desactivar) se confirman con ventanas de alerta (SweetAlert2).</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- Sección: Preguntas Frecuentes -->
-                <div class="help-section">
-                    <h6 class="text-primary d-flex align-items-center">
-                        <i class="bi bi-question-octagon me-2"></i>
-                        Preguntas Frecuentes
-                    </h6>
-                    
-                    <div class="accordion" id="accordionFAQ">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingFAQ1">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFAQ1" aria-expanded="false" aria-controls="collapseFAQ1">
-                                    ¿Puedo editar un presupuesto después de enviarlo?
-                                </button>
-                            </h2>
-                            <div id="collapseFAQ1" class="accordion-collapse collapse" aria-labelledby="headingFAQ1" data-bs-parent="#accordionFAQ">
-                                <div class="accordion-body">
-                                    Sí, puede editar un presupuesto en cualquier momento. Sin embargo, es recomendable
-                                    crear un nuevo presupuesto si el original ya fue aceptado o si los cambios son significativos.
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingFAQ2">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFAQ2" aria-expanded="false" aria-controls="collapseFAQ2">
-                                    ¿Qué sucede si desactivo un presupuesto?
-                                </button>
-                            </h2>
-                            <div id="collapseFAQ2" class="accordion-collapse collapse" aria-labelledby="headingFAQ2" data-bs-parent="#accordionFAQ">
-                                <div class="accordion-body">
-                                    Al desactivar un presupuesto, este ya no aparecerá en las búsquedas activas, pero
-                                    puede reactivarlo en cualquier momento. Los datos no se eliminan del sistema.
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingFAQ3">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFAQ3" aria-expanded="false" aria-controls="collapseFAQ3">
-                                    ¿Cómo se calcula la duración del evento?
-                                </button>
-                            </h2>
-                            <div id="collapseFAQ3" class="accordion-collapse collapse" aria-labelledby="headingFAQ3" data-bs-parent="#accordionFAQ">
-                                <div class="accordion-body">
-                                    Si especifica las fechas de inicio y fin del evento, el sistema calcula automáticamente
-                                    la duración en días. Esta información es útil para planificar recursos y logística.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            </div><!-- modal-body -->
 
             <!-- Pie del Modal -->
             <div class="modal-footer">

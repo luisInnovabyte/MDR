@@ -201,7 +201,7 @@
 <!-- ########## END: MAIN PANEL ########## -->
 
 <!-- Modal de ayuda -->
-<?php //include_once('ayudaPresupuestos.php') ?>
+<?php include_once('ayudaPresupuestos.php') ?>
 
 <!-- MainJs.php -->
 <?php include_once('../../config/template/mainJs.php') ?>

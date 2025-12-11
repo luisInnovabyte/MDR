@@ -1,9 +1,9 @@
-.rar
-.zip
-.log
+*.rar
+*.zip
+*.log
 .DS_Store
 Thumbs.db
-.accdb
+*.accdb
 *.bak
 *.old
 *.tmp
