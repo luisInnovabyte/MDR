@@ -157,9 +157,11 @@
                             <th>Días Inicio</th>
                             <th>Estado Evento</th>
                             <th>Estado</th>
+                            <th>Importe (€)</th>
                             <th>Activo</th>
                             <th>Act./Desac.</th>
                             <th>Edit.</th>
+                            <th>Líneas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -196,6 +198,7 @@
                                     <option value="Cancelado">Cancelado</option>
                                 </select>
                             </th>
+                            <th></th>
                             <th>
                                 <select class="form-control form-control-sm" title="Filtrar por estado">
                                     <option value="">Todos los estados</option>
@@ -203,6 +206,7 @@
                                     <option value="0">Inactivo</option>
                                 </select>
                             </th>
+                            <th></th>
                             <th></th>
                             <th></th>
                         </tr>

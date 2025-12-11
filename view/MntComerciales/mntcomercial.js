@@ -153,14 +153,14 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_comercial', data: 'id_comercial', visible: false },
-            { name: 'nombre', data: 'nombre' },
+            { name: 'nombre', data: 'nombre',className: "text-center align-middle" },
             { name: 'apellidos', data: 'apellidos' , visible: false},
             { name: 'movil', data: 'movil', visible: false},
             { name: 'telefono', data: 'telefono', visible: false },
             { name: 'email', data: 'email', visible: false },
             { name: 'activo', data: 'activo'},
-            { name: 'activar', data: null, defaultContent: '', className: "text-center" },   // Columna 7: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center" },   // Columna 8: EDITAR
+            { name: 'activar', data: null, defaultContent: '', className: "text-center align-middle" },   // Columna 7: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" },   // Columna 8: EDITAR
 
         ], // de las columnas
         columnDefs: [

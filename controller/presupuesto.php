@@ -116,7 +116,10 @@ switch ($_GET["op"]) {
                 
                 // Datos del método de contacto
                 "id_metodo" => $row["id_metodo"] ?? null,
-                "nombre" => $row["nombre"] ?? null,
+                "nombre_metodo_contacto" => $row["nombre_metodo_contacto"] ?? null,
+                
+                // Total del presupuesto
+                "total_presupuesto" => $row["total_presupuesto"] ?? 0,
                 
                 // Campos calculados - Fechas
                 "duracion_evento_dias" => $row["duracion_evento_dias"] ?? null,

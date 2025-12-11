@@ -265,7 +265,7 @@ $(document).ready(function () {
                 width: '8%',
                 searchable: true,
                 orderable: true,
-                className: "text-center",
+                className: "text-center  align-middle",
                 render: function (data, type, row) {
                     if (type === "display") {
                         const rutaBase = '../../public/img/metodos/';
@@ -397,7 +397,7 @@ $(document).ready(function () {
             },
             // 13 - desfase
             {
-                targets: 'desfase:name', width: '5%', orderable: true, className: "text-center",
+                targets: 'desfase:name', width: '5%', orderable: true, className: "text-center align-middle",
                 render: function (data, type, row) {
                     // Solo modificar la presentación en los modos display y filter
                     if (type === "display" || type === "filter") {
@@ -438,7 +438,7 @@ $(document).ready(function () {
                 width: '5%',
                 orderable: true,
                 searchable: true,
-                className: "text-center",
+                className: "text-center align-middle",
                 render: function (data, type, row) {
                     if (type === "display") {
                         return data == 1 ?
@@ -450,7 +450,7 @@ $(document).ready(function () {
             },
             // 15 - ACTIVAR/DESACTIVAR
             {
-                targets: 'activar:name', width: '5%', searchable: false, orderable: false, class: "text-center",
+                targets: 'activar:name', width: '5%', searchable: false, orderable: false, class: "text-center align-middle",
                 render: function (data, type, row) {
                     // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
                     if (row.activo_llamada == 1) {
@@ -473,7 +473,7 @@ $(document).ready(function () {
                 width: '5%',
                 searchable: false,
                 orderable: false,
-                className: "text-center",
+                className: "text-center, align-middle",
                 render: function (data, type, row) {
                     let btnClass = 'btn-primary'; // Por defecto
                     console.log(row);

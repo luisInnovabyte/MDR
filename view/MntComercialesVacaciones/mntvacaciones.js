@@ -178,12 +178,12 @@ $(document).ready(function () {
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_vacacion', data: 'id_vacacion', visible: false }, // Columna 1: ID_VACACION
             { name: 'id_comercial', data: 'id_comercial' }, // Columna 2: ID_COMERCIAL
-            { name: 'fecha_inicio', data: 'fecha_inicio' }, // Columna 3: FECHA_INICIO
-            { name: 'fecha_fin', data: 'fecha_fin' }, // Columna 4: FECHA_FIN
+            { name: 'fecha_inicio', data: 'fecha_inicio', className:"text-center align-middle" }, // Columna 3: FECHA_INICIO
+            { name: 'fecha_fin', data: 'fecha_fin', className:"text-center align-middle" }, // Columna 4: FECHA_FIN
             { name: 'descripcion', data: 'descripcion', visible: false }, // Columna 5: DESCRIPCION
-            { name: 'activo_vacacion', data: 'activo_vacacion'}, // Columna 6: ACTIVO_VACACION
-            { name: 'activar', data: null, defaultContent: '', className: 'text-center' },  // Columna //  7: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: 'text-center' },  // Columna 8: EDITAR
+            { name: 'activo_vacacion', data: 'activo_vacacion', className:"text-center align-middle"}, // Columna 6: ACTIVO_VACACION
+            { name: 'activar', data: null, defaultContent: '', className: 'text-center align-middle' },  // Columna //  7: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: 'text-center align-middle' },  // Columna 8: EDITAR
             
         ], // de las columnas
         columnDefs: [

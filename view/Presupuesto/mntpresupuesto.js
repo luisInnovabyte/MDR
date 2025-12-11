@@ -58,9 +58,11 @@ $(document).ready(function () {
             { name: 'dias_hasta_inicio_evento', data: 'dias_hasta_inicio_evento', className: "text-center" }, // Columna 8: DÍAS INICIO
             { name: 'estado_evento_presupuesto', data: 'estado_evento_presupuesto', className: "text-center" }, // Columna 9: ESTADO EVENTO
             { name: 'nombre_estado_ppto', data: 'nombre_estado_ppto', className: "text-center" }, // Columna 10: ESTADO
-            { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center" }, // Columna 11: ACTIVO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 12: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center" }  // Columna 13: EDITAR
+            { name: 'total_presupuesto', data: 'total_presupuesto', className: "text-center" }, // Columna 11: IMPORTE
+            { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center" }, // Columna 12: ACTIVO
+            { name: 'activar', data: null, className: "text-center" }, // Columna 13: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center" }, // Columna 14: EDITAR
+            { name: 'lineas', data: null, defaultContent: '', className: "text-center" }  // Columna 15: LÍNEAS
         ],
         columnDefs: [
             // Columna 0: id_presupuesto
@@ -158,7 +160,18 @@ $(document).ready(function () {
             },
             // Columna 10: nombre_estado_ppto
             { targets: "nombre_estado_ppto:name", width: '8%', searchable: true, orderable: true, className: "text-center" },
-            // Columna 11: activo_presupuesto
+            // Columna 11: total_presupuesto
+            {
+                targets: "total_presupuesto:name", width: '8%', searchable: true, orderable: true, className: "text-center",
+                render: function (data, type, row) {
+                    if (type === "display") {
+                        let importe = parseFloat(row.total_presupuesto) || 0;
+                        return '<span class="fw-bold text-success">' + importe.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €</span>';
+                    }
+                    return row.total_presupuesto;
+                }
+            },
+            // Columna 12: activo_presupuesto
             {
                 targets: "activo_presupuesto:name", width: '5%', orderable: true, searchable: true, className: "text-center",
                 render: function (data, type, row) {
@@ -168,7 +181,7 @@ $(document).ready(function () {
                     return row.activo_presupuesto;
                 }
             },
-            // Columna 12: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
+            // Columna 13: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
             {
                 targets: "activar:name", width: '5%', searchable: false, orderable: false, class: "text-center",
                 render: function (data, type, row) {
@@ -185,13 +198,23 @@ $(document).ready(function () {
                     }
                 }
             },
-            // Columna 13: BOTON PARA EDITAR PRESUPUESTO
+            // Columna 14: BOTON PARA EDITAR PRESUPUESTO
             {
                 targets: "editar:name", width: '5%', searchable: false, orderable: false, class: "text-center",
                 render: function (data, type, row) {
                     return `<button type="button" class="btn btn-info btn-sm editarPresupuesto" data-toggle="tooltip-primary" data-placement="top" title="Editar"  
                              data-id_presupuesto="${row.id_presupuesto}"> 
                              <i class="fa-solid fa-edit"></i>
+                             </button>`;
+                }
+            },
+            // Columna 15: BOTON PARA GESTIONAR LÍNEAS DEL PRESUPUESTO
+            {
+                targets: "lineas:name", width: '5%', searchable: false, orderable: false, class: "text-center",
+                render: function (data, type, row) {
+                    return `<button type="button" class="btn btn-primary btn-sm gestionarLineas" data-toggle="tooltip-primary" data-placement="top" title="Gestionar líneas"  
+                             data-id_presupuesto="${row.id_presupuesto}"> 
+                             <i class="bi bi-list-ul"></i>
                              </button>`;
                 }
             }
@@ -449,6 +472,12 @@ $(document).ready(function () {
     $(document).on('click', '.editarPresupuesto', function () {
         var id_presupuesto = $(this).data('id_presupuesto');
         window.location.href = 'formularioPresupuesto.php?modo=editar&id=' + id_presupuesto;
+    });
+
+    // Gestionar líneas del presupuesto
+    $(document).on('click', '.gestionarLineas', function () {
+        var id_presupuesto = $(this).data('id_presupuesto');
+        window.location.href = './Presupuesto_pies/index.php?id_presupuesto=' + id_presupuesto;
     });
 
     /************************************/
