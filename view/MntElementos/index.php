@@ -1,9 +1,10 @@
-<!-- ---------------------- -->
-<!--   Comprobar permisos     -->
-<!-- ---------------------- -->
-<?php $moduloActual = 'usuarios'; ?>
-<?php require_once('../../config/template/verificarPermiso.php'); ?>
-
+<?php 
+// ----------------------
+//   Comprobar permisos
+// ----------------------
+$moduloActual = 'usuarios';
+require_once('../../config/template/verificarPermiso.php');
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -98,23 +99,42 @@
         
         <!-- Info del artículo -->
         <div class="mt-2 mb-3" id="info-articulo">
-            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
-                <div class="card-body py-4 px-5">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center flex-grow-1">
-                            <div class="me-4" style="color: #6c757d;">
-                                <i class="bi bi-box-seam" style="font-size: 2.2rem;"></i>
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                <div class="card-body py-3 px-4">
+                    <div class="row align-items-center">
+                        <!-- Icono principal -->
+                        <div class="col-auto">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 60px; height: 60px; background-color: rgba(255,255,255,0.15);">
+                                <i class="bi bi-box-seam text-white" style="font-size: 1.8rem;"></i>
                             </div>
-                            <div class="flex-grow-1">
-                                <div class="text-muted mb-2" style="font-size: 0.95rem;">Artículo actual</div>
-                                <h5 class="mb-2 fw-bold" style="color: #495057;">
-                                    <span id="nombre-articulo">Cargando...</span>
-                                </h5>
-                                <p class="mb-0 text-muted">
-                                    Código: <span id="codigo-articulo" class="badge bg-info ms-1">--</span>
-                                    ID: <span id="id-articulo" class="badge bg-secondary ms-1">--</span>
-                                </p>
+                        </div>
+                        
+                        <!-- Información del artículo -->
+                        <div class="col">
+                            <div class="text-white-50 mb-1" style="font-size: 0.85rem; font-weight: 500;">
+                                <i class="bi bi-info-circle me-1"></i>Artículo actual
                             </div>
+                            <h5 class="mb-2 fw-bold text-white" id="nombre-articulo">
+                                Cargando...
+                            </h5>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-white-50" style="font-size: 0.9rem;">
+                                    <i class="bi bi-upc-scan me-1"></i>Código:
+                                    <span id="codigo-articulo" class="badge bg-white text-dark ms-1 fw-semibold">--</span>
+                                </span>
+                                <span class="text-white-50" style="font-size: 0.9rem;">
+                                    <i class="bi bi-hash me-1"></i>ID:
+                                    <span id="id-articulo" class="badge bg-white text-dark ms-1 fw-semibold">--</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de acción (opcional) -->
+                        <div class="col-auto d-none d-md-block">
+                            <a href="../MntArticulos/index.php" class="btn btn-light btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i>Volver
+                            </a>
                         </div>
                     </div>
                 </div>

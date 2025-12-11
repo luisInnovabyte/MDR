@@ -21,6 +21,7 @@ require_once '../config/funciones.php'; // ✅ Se incluye correctamente el archi
 //     cp_facturacion_cliente VARCHAR(10),
 //     poblacion_facturacion_cliente VARCHAR(100),
 //     provincia_facturacion_cliente VARCHAR(100),
+//     id_forma_pago_habitual INT UNSIGNED,
 //     observaciones_cliente TEXT,
 //     activo_cliente BOOLEAN DEFAULT TRUE,
 //     created_at_cliente TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -84,7 +85,7 @@ class Clientes
     public function get_clientes_disponibles()
     {
         try {
-            $sql = "SELECT * FROM cliente WHERE activo_cliente = 1 ORDER BY nombre_cliente ASC";  
+            $sql = "SELECT * FROM contacto_cantidad_cliente WHERE activo_cliente = 1 ORDER BY nombre_cliente ASC";  
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->execute();
 
@@ -112,7 +113,7 @@ class Clientes
     public function get_clientexid($id_cliente)
     {
         try {
-            $sql = "SELECT * FROM cliente where id_cliente=?";
+            $sql = "SELECT * FROM contacto_cantidad_cliente where id_cliente=?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
             $stmt->execute();
@@ -223,7 +224,7 @@ class Clientes
     }
 
 
-    public function insert_cliente($codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $observaciones_cliente)
+    public function insert_cliente($codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $observaciones_cliente)
     {
         try {
             // Establecer zona horaria Madrid antes de la consulta
@@ -231,9 +232,9 @@ class Clientes
             
             $sql = "INSERT INTO cliente (codigo_cliente, nombre_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, 
             nif_cliente, telefono_cliente, fax_cliente, web_cliente, email_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, 
-            cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, 
+            cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual,
             observaciones_cliente, activo_cliente, created_at_cliente, updated_at_cliente) 
-                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -257,7 +258,15 @@ class Clientes
             $stmt->bindValue(14, $cp_facturacion_cliente, PDO::PARAM_STR); 
             $stmt->bindValue(15, $poblacion_facturacion_cliente, PDO::PARAM_STR); 
             $stmt->bindValue(16, $provincia_facturacion_cliente, PDO::PARAM_STR); 
-            $stmt->bindValue(17, $observaciones_cliente, PDO::PARAM_STR); 
+            
+            // Manejar id_forma_pago_habitual que puede ser NULL
+            if (!empty($id_forma_pago_habitual)) {
+                $stmt->bindValue(17, $id_forma_pago_habitual, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue(17, null, PDO::PARAM_NULL);
+            }
+            
+            $stmt->bindValue(18, $observaciones_cliente, PDO::PARAM_STR); 
                               
             $resultado = $stmt->execute();
             
@@ -289,12 +298,12 @@ class Clientes
     }
 
 
-    public function update_cliente($id_cliente, $codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $observaciones_cliente){
+    public function update_cliente($id_cliente, $codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $observaciones_cliente){
         try {
             // Establecer zona horaria Madrid antes de la consulta
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
             
-            $sql = "UPDATE cliente SET codigo_cliente = ?, nombre_cliente = ?, direccion_cliente = ?, cp_cliente = ?, poblacion_cliente = ?, provincia_cliente = ?, nif_cliente = ?, telefono_cliente = ?, fax_cliente = ?, web_cliente = ?, email_cliente = ?, nombre_facturacion_cliente = ?, direccion_facturacion_cliente = ?, cp_facturacion_cliente = ?, poblacion_facturacion_cliente = ?, provincia_facturacion_cliente = ?, observaciones_cliente = ?, updated_at_cliente = NOW() WHERE id_cliente = ?";
+            $sql = "UPDATE cliente SET codigo_cliente = ?, nombre_cliente = ?, direccion_cliente = ?, cp_cliente = ?, poblacion_cliente = ?, provincia_cliente = ?, nif_cliente = ?, telefono_cliente = ?, fax_cliente = ?, web_cliente = ?, email_cliente = ?, nombre_facturacion_cliente = ?, direccion_facturacion_cliente = ?, cp_facturacion_cliente = ?, poblacion_facturacion_cliente = ?, provincia_facturacion_cliente = ?, id_forma_pago_habitual = ?, observaciones_cliente = ?, updated_at_cliente = NOW() WHERE id_cliente = ?";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -318,8 +327,16 @@ class Clientes
             $stmt->bindValue(14, $cp_facturacion_cliente, PDO::PARAM_STR);
             $stmt->bindValue(15, $poblacion_facturacion_cliente, PDO::PARAM_STR);
             $stmt->bindValue(16, $provincia_facturacion_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(17, $observaciones_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(18, $id_cliente, PDO::PARAM_INT); 
+            
+            // Manejar id_forma_pago_habitual que puede ser NULL
+            if (!empty($id_forma_pago_habitual)) {
+                $stmt->bindValue(17, $id_forma_pago_habitual, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue(17, null, PDO::PARAM_NULL);
+            }
+            
+            $stmt->bindValue(18, $observaciones_cliente, PDO::PARAM_STR);
+            $stmt->bindValue(19, $id_cliente, PDO::PARAM_INT); 
 
             $resultado = $stmt->execute();
             

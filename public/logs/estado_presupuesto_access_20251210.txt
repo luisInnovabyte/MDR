@@ -1,0 +1,10 @@
+[2025-12-10 17:56:20] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 17:59:56] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 17:59:59] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 18:01:24] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 18:10:07] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 18:13:17] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 19:12:22] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 19:17:24] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 19:38:49] estado_presupuesto.php ejecutado - IP: 192.168.31.3
+[2025-12-10 19:41:14] estado_presupuesto.php ejecutado - IP: 192.168.31.3

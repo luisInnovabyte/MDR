@@ -151,7 +151,7 @@
                             <th class="d-none"><input type="text" placeholder="Buscar ID" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar código" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar nombre" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Buscar color" class="form-control form-control-sm" /></th>
+                            <th></th>
                             <th><input type="text" placeholder="Buscar orden" class="form-control form-control-sm" /></th>
                             <!-- <th><input type="text" placeholder="Buscar observaciones" class="form-control form-control-sm" /></th> -->
                             <th>

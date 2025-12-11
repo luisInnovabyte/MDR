@@ -3,6 +3,49 @@
 <!-- ---------------------- -->
 <?php $moduloActual = 'usuarios'; ?>
 <?php require_once('../../config/template/verificarPermiso.php'); ?>
+<?php 
+// Cargar formas de pago disponibles
+$listaFormasPago = [];
+try {
+    require_once('../../config/conexion.php');
+    require_once('../../config/funciones.php');
+    
+    // Consulta directa para obtener formas de pago
+    $conexionObj = new Conexion();
+    $conn = $conexionObj->getConexion();
+    
+    $sql = "SELECT 
+                fp.id_pago,
+                fp.codigo_pago,
+                fp.nombre_pago,
+                fp.id_metodo_pago,
+                mp.nombre_metodo_pago,
+                fp.porcentaje_anticipo_pago,
+                fp.dias_anticipo_pago,
+                fp.porcentaje_final_pago,
+                fp.dias_final_pago,
+                fp.descuento_pago,
+                CASE 
+                    WHEN fp.porcentaje_anticipo_pago = 100.00 THEN 'Pago único'
+                    ELSE 'Pago fraccionado'
+                END as tipo_pago,
+                fp.observaciones_pago,
+                fp.activo_pago
+            FROM forma_pago fp
+            INNER JOIN metodo_pago mp ON fp.id_metodo_pago = mp.id_metodo_pago
+            WHERE fp.activo_pago = 1
+            ORDER BY 
+                CASE WHEN fp.porcentaje_anticipo_pago = 100.00 THEN 1 ELSE 2 END,
+                fp.nombre_pago";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $listaFormasPago = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    // Si hay error, continuar sin formas de pago
+    error_log("Error al cargar formas de pago: " . $e->getMessage());
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -256,6 +299,58 @@
                                 <div class="col-12 col-md-4">
                                     <label for="email_sat_proveedor" class="form-label">Email SAT:</label>
                                     <input type="email" class="form-control" name="email_sat_proveedor" id="email_sat_proveedor" maxlength="255" placeholder="sat@proveedor.com">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: Forma de Pago Habitual -->
+                    <div class="card mb-4 border-success">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0 tx-bold">
+                                <i class="fas fa-credit-card me-2"></i>Forma de Pago Habitual
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="id_forma_pago_habitual" class="form-label">Forma de Pago:</label>
+                                    <select class="form-control" name="id_forma_pago_habitual" id="id_forma_pago_habitual">
+                                        <option value="">-- Seleccione una forma de pago --</option>
+                                        <?php if (!empty($listaFormasPago)): ?>
+                                            <?php foreach ($listaFormasPago as $formaPago): ?>
+                                                <option value="<?php echo htmlspecialchars($formaPago['id_pago']); ?>" 
+                                                        data-metodo="<?php echo htmlspecialchars($formaPago['nombre_metodo_pago']); ?>"
+                                                        data-tipo="<?php echo htmlspecialchars($formaPago['tipo_pago']); ?>"
+                                                        data-descuento="<?php echo htmlspecialchars($formaPago['descuento_pago']); ?>"
+                                                        data-anticipo="<?php echo htmlspecialchars($formaPago['porcentaje_anticipo_pago']); ?>">
+                                                    <?php echo htmlspecialchars($formaPago['codigo_pago']); ?> - 
+                                                    <?php echo htmlspecialchars($formaPago['nombre_pago']); ?> 
+                                                    (<?php echo htmlspecialchars($formaPago['tipo_pago']); ?> - 
+                                                    <?php echo htmlspecialchars($formaPago['nombre_metodo_pago']); ?>)
+                                                    <?php if ($formaPago['descuento_pago'] > 0): ?>
+                                                        - Dto: <?php echo htmlspecialchars($formaPago['descuento_pago']); ?>%
+                                                    <?php endif; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Seleccione la forma de pago habitual del proveedor. Este campo es opcional y puede dejarse sin seleccionar.
+                                    </small>
+                                    
+                                    <!-- Información de la forma de pago seleccionada -->
+                                    <div id="info-forma-pago" class="mt-3" style="display: none;">
+                                        <div class="alert alert-info">
+                                            <h6 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Detalles de la Forma de Pago</h6>
+                                            <hr>
+                                            <p class="mb-1"><strong>Método:</strong> <span id="info-metodo"></span></p>
+                                            <p class="mb-1"><strong>Tipo:</strong> <span id="info-tipo"></span></p>
+                                            <p class="mb-1"><strong>Anticipo:</strong> <span id="info-anticipo"></span>%</p>
+                                            <p class="mb-0"><strong>Descuento:</strong> <span id="info-descuento"></span>%</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

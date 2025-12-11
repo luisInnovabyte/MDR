@@ -1,0 +1,6 @@
+[2025-12-11 05:23:15] estado_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-11 05:23:16] GET: {"op":"listar"} | POST: []
+[2025-12-11 05:23:26] estado_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-11 05:23:26] GET: {"op":"listar"} | POST: []
+[2025-12-11 09:22:06] estado_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-11 09:22:06] GET: {"op":"listar"} | POST: []

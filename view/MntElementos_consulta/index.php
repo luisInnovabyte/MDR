@@ -13,6 +13,8 @@
 
 <head>
     <?php include_once('../../config/template/mainHead.php') ?>
+    <link href="https://cdn.datatables.net/responsive/3.0.7/css/responsive.bootstrap4.min.css" rel="stylesheet"> 
+    <link href="https://cdn.datatables.net/responsive/3.0.7/css/responsive.dataTables.min.css" rel="stylesheet">
 </head>
 
 <!-- ---------------------- -->
@@ -114,7 +116,7 @@
 
                 <!-- Tabla de elementos -->
                 <div class="table-wrapper">
-                    <table id="elementos_data" class="table display responsive nowrap">
+                    <table id="elementos_data" class="table display responsive ">
                         <thead>
                             <tr>
                                 <th></th>
@@ -127,6 +129,8 @@
                                 <th>N° Serie</th>
                                 <th>Estado</th>
                                 <th>Ubicación</th>
+                                <th>Documentos</th>
+                                <th>Fotos</th>
                                 <th>Activo</th>
                             </tr>
                         </thead>
@@ -149,6 +153,8 @@
                                     </select>
                                 </th>
                                 <th><input type="text" placeholder="Buscar ubicación" class="form-control form-control-sm" /></th>
+                                <th></th>
+                                <th></th>
                                 <th>
                                     <select class="form-control form-control-sm" title="Filtrar por activo">
                                         <option value="">Todos los estados</option>
@@ -186,6 +192,8 @@
 
     <script src="../../public/js/tooltip-colored.js"></script>
     <script src="../../public/js/popover-colored.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.7/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.7/js/responsive.bootstrap4.js"></script>
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->

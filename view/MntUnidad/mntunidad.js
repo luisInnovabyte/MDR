@@ -51,7 +51,7 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_unidad', data: 'id_unidad', visible: false, className: "text-center" }, // Columna 1: ID_UNIDAD
-            { name: 'nombre_unidad', data: 'nombre_unidad', className: "text-center" }, // Columna 2: NOMBRE_UNIDAD
+            { name: 'nombre_unidad', data: 'nombre_unidad', className: "text-center align-center" }, // Columna 2: NOMBRE_UNIDAD
             { name: 'name_unidad', data: 'name_unidad', className: "text-center" }, // Columna 3: NAME_UNIDAD (inglés)
             { name: 'simbolo_unidad', data: 'simbolo_unidad', className: "text-center" }, // Columna 4: SIMBOLO_UNIDAD
             

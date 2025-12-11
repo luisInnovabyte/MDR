@@ -563,57 +563,46 @@ $(document).ready(function () {
   //////////////////////////////////////////
 
   // Función para cargar información del elemento
-  function cargarInfoElemento(id_elemento) {
+function cargarInfoElemento(id_elemento) {
     $.post("../../controller/elemento.php?op=mostrar", { id_elemento: id_elemento }, function (data) {
-      if (data) {
-        // Crear card de información del elemento
-        const infoHtml = `
-          <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
-            <div class="d-flex align-items-center">
-              <div class="me-3">
-                <i class="bi bi-box-seam" style="font-size: 2rem;"></i>
-              </div>
-              <div class="flex-grow-1">
-                <h6 class="alert-heading mb-1">Filtrando por elemento:</h6>
-                <p class="mb-0">
-                  <strong>${data.descripcion_elemento || 'Sin descripción'}</strong> 
-                  <span class="badge bg-info ms-2">${data.codigo_elemento || '--'}</span>
-                </p>
-                <small class="text-muted">ID Elemento: ${id_elemento}</small>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        // Insertar antes de la tabla
-        $('.br-section-wrapper').prepend(infoHtml);
-        
-        // Ajustar el botón de nuevo documento para incluir el id_elemento
-        const btnNuevo = $('#btnNuevoDocumento');
-        if (btnNuevo.length) {
-          const href = btnNuevo.attr('href');
-          if (href && href.indexOf('id_elemento=') === -1) {
-            btnNuevo.attr('href', `${href}&id_elemento=${id_elemento}`);
-          }
-        }
-        
-        // Ajustar el botón de volver para incluir el id_articulo del elemento
-        if (data.id_articulo) {
-          const btnVolver = $('#btnVolverElementos');
-          if (btnVolver.length) {
-            const hrefVolver = btnVolver.attr('href');
-            if (hrefVolver && hrefVolver.indexOf('id_articulo=') === -1) {
-              btnVolver.attr('href', `${hrefVolver}?id_articulo=${data.id_articulo}`);
-            }
-          }
-        }
-      }
-    }, 'json').fail(function() {
-      console.error('Error al cargar información del elemento');
-    });
-  }
+        if (data) {
+            $('#descripcion-elemento').text(data.descripcion_elemento || 'Sin descripción');
+            $('#codigo-elemento').text(data.codigo_elemento || '--');
+            $('#id-elemento').text(id_elemento);
+            $('#info-elemento').show();
 
-}); // de document.ready
+           
+        }
+    }, 'json').fail(function() {
+        console.error('Error al cargar información del elemento');
+        $('#info-elemento').hide();
+    });
+}
+
+$('#btnVolverElementos').on('click', function(e) {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    const idElemento = urlParams.get('id_elemento');
+    const origen = urlParams.get('origen');
+
+    if (origen === 'consulta') {
+        window.location.href = '../MntElementos_consulta/index.php';
+    } else {
+        window.location.href = '../MntElementos/index.php' + (idElemento ? '?id_elemento=' + idElemento : '');
+    }
+});
+
+
+
+
+  ////////////////////////////////////////////
+  //   FIN FUNCIONES DE APOYO ADICIONALES  //
+  //////////////////////////////////////////
+});
+
+
+
+
 
 
 // Función global para formatear fecha al formato europeo

@@ -72,6 +72,14 @@ $(document).ready(function () {
                     
                     $('#observaciones_cliente').val(data.observaciones_cliente);
                     
+                    // Forma de pago habitual
+                    $('#id_forma_pago_habitual').val(data.id_forma_pago_habitual || '');
+                    
+                    // Si hay forma de pago seleccionada, mostrar su información
+                    if (data.id_forma_pago_habitual) {
+                        $('#id_forma_pago_habitual').trigger('change');
+                    }
+                    
                     // Configurar el campo activo_cliente (solo lectura en formulario)
                     // Campo oculto con el valor real para envío
                     $('#activo_cliente_hidden').val(data.activo_cliente);
@@ -170,6 +178,9 @@ $(document).ready(function () {
         
         var observaciones_clienteR = $('#observaciones_cliente').val().trim();
         
+        // Forma de pago habitual
+        var id_forma_pago_habitualR = $('#id_forma_pago_habitual').val();
+        
         // Obtener el estado del cliente
         var activo_clienteR;
         if (id_clienteR) {
@@ -187,10 +198,10 @@ $(document).ready(function () {
         }
         
         // Verificar cliente primero
-        verificarClienteExistente(id_clienteR, codigo_clienteR, nombre_clienteR, nif_clienteR, direccion_clienteR, cp_clienteR, poblacion_clienteR, provincia_clienteR, telefono_clienteR, email_clienteR, web_clienteR, fax_clienteR, nombre_facturacion_clienteR, direccion_facturacion_clienteR, cp_facturacion_clienteR, poblacion_facturacion_clienteR, provincia_facturacion_clienteR, observaciones_clienteR, activo_clienteR);
+        verificarClienteExistente(id_clienteR, codigo_clienteR, nombre_clienteR, nif_clienteR, direccion_clienteR, cp_clienteR, poblacion_clienteR, provincia_clienteR, telefono_clienteR, email_clienteR, web_clienteR, fax_clienteR, nombre_facturacion_clienteR, direccion_facturacion_clienteR, cp_facturacion_clienteR, poblacion_facturacion_clienteR, provincia_facturacion_clienteR, id_forma_pago_habitualR, observaciones_clienteR, activo_clienteR);
     });
 
-    function verificarClienteExistente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, observaciones_cliente, activo_cliente) {
+    function verificarClienteExistente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, observaciones_cliente, activo_cliente) {
         console.log('🔍 Verificando cliente:', { codigo: codigo_cliente, nombre: nombre_cliente, nif: nif_cliente, id: id_cliente });
         
         $.ajax({
@@ -210,7 +221,7 @@ $(document).ready(function () {
                 if (response.existe === false) {
                     // No existe, podemos guardar
                     console.log('✅ Cliente no existe, procediendo a guardar');
-                    guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, observaciones_cliente, activo_cliente);
+                    guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, observaciones_cliente, activo_cliente);
                 } else {
                     // Ya existe
                     console.log('❌ Cliente ya existe');
@@ -235,39 +246,42 @@ $(document).ready(function () {
         });
     }
 
-    function guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, observaciones_cliente, activo_cliente) {
+    function guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, observaciones_cliente, activo_cliente) {
         // Mostrar indicador de carga
         $('#btnSalvarCliente').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
         
-        // Preparar los datos para enviar
-        const datosEnvio = {
-            id_cliente: id_cliente,
-            codigo_cliente: codigo_cliente,
-            nombre_cliente: nombre_cliente,
-            nif_cliente: nif_cliente,
-            direccion_cliente: direccion_cliente,
-            cp_cliente: cp_cliente,
-            poblacion_cliente: poblacion_cliente,
-            provincia_cliente: provincia_cliente,
-            telefono_cliente: telefono_cliente,
-            email_cliente: email_cliente,
-            web_cliente: web_cliente,
-            fax_cliente: fax_cliente,
-            nombre_facturacion_cliente: nombre_facturacion_cliente,
-            direccion_facturacion_cliente: direccion_facturacion_cliente,
-            cp_facturacion_cliente: cp_facturacion_cliente,
-            poblacion_facturacion_cliente: poblacion_facturacion_cliente,
-            provincia_facturacion_cliente: provincia_facturacion_cliente,
-            observaciones_cliente: observaciones_cliente,
-            activo_cliente: activo_cliente
-        };
+        // Preparar los datos para enviar - IMPORTANTE: Usar FormData para enviar todos los campos
+        const formData = new FormData();
+        formData.append('id_cliente', id_cliente);
+        formData.append('codigo_cliente', codigo_cliente);
+        formData.append('nombre_cliente', nombre_cliente);
+        formData.append('nif_cliente', nif_cliente);
+        formData.append('direccion_cliente', direccion_cliente);
+        formData.append('cp_cliente', cp_cliente);
+        formData.append('poblacion_cliente', poblacion_cliente);
+        formData.append('provincia_cliente', provincia_cliente);
+        formData.append('telefono_cliente', telefono_cliente);
+        formData.append('email_cliente', email_cliente);
+        formData.append('web_cliente', web_cliente);
+        formData.append('fax_cliente', fax_cliente);
+        formData.append('nombre_facturacion_cliente', nombre_facturacion_cliente);
+        formData.append('direccion_facturacion_cliente', direccion_facturacion_cliente);
+        formData.append('cp_facturacion_cliente', cp_facturacion_cliente);
+        formData.append('poblacion_facturacion_cliente', poblacion_facturacion_cliente);
+        formData.append('provincia_facturacion_cliente', provincia_facturacion_cliente);
+        formData.append('id_forma_pago_habitual', id_forma_pago_habitual || '');
+        formData.append('observaciones_cliente', observaciones_cliente);
+        formData.append('activo_cliente', activo_cliente);
         
-        console.log('💾 Datos a guardar:', datosEnvio);
+        console.log('💾 Enviando con FormData');
+        console.log('🔍 id_forma_pago_habitual:', id_forma_pago_habitual, 'Tipo:', typeof id_forma_pago_habitual);
         
         $.ajax({
             url: "../../controller/cliente.php?op=guardaryeditar",
             type: "POST",
-            data: datosEnvio,
+            data: formData,
+            processData: false,
+            contentType: false,
             dataType: "json",
             success: function(res) {
                 console.log('📋 Respuesta del guardado:', res);
@@ -340,6 +354,7 @@ $(document).ready(function () {
             cp_facturacion_cliente: $('#cp_facturacion_cliente').val(),
             poblacion_facturacion_cliente: $('#poblacion_facturacion_cliente').val(),
             provincia_facturacion_cliente: $('#provincia_facturacion_cliente').val(),
+            id_forma_pago_habitual: $('#id_forma_pago_habitual').val(),
             observaciones_cliente: $('#observaciones_cliente').val(),
             activo_cliente: $('#activo_cliente_hidden').val()
         };
@@ -364,6 +379,7 @@ $(document).ready(function () {
             $('#cp_facturacion_cliente').val() !== formOriginalValues.cp_facturacion_cliente ||
             $('#poblacion_facturacion_cliente').val() !== formOriginalValues.poblacion_facturacion_cliente ||
             $('#provincia_facturacion_cliente').val() !== formOriginalValues.provincia_facturacion_cliente ||
+            $('#id_forma_pago_habitual').val() !== formOriginalValues.id_forma_pago_habitual ||
             $('#observaciones_cliente').val() !== formOriginalValues.observaciones_cliente ||
             $('#activo_cliente_hidden').val() !== formOriginalValues.activo_cliente
         );
@@ -407,6 +423,29 @@ $(document).ready(function () {
             $('#obs-char-count').parent().removeClass('text-muted').addClass('text-warning');
         } else {
             $('#obs-char-count').parent().removeClass('text-warning').addClass('text-muted');
+        }
+    });
+
+    // Mostrar información de la forma de pago seleccionada
+    $('#id_forma_pago_habitual').on('change', function() {
+        const selectedOption = $(this).find('option:selected');
+        
+        if ($(this).val() === '') {
+            // No hay forma de pago seleccionada
+            $('#info-forma-pago').hide();
+        } else {
+            // Mostrar información de la forma de pago
+            const metodo = selectedOption.data('metodo') || 'Sin información';
+            const tipo = selectedOption.data('tipo') || 'Sin información';
+            const anticipo = selectedOption.data('anticipo') || '0';
+            const descuento = selectedOption.data('descuento') || '0';
+            
+            $('#info-metodo').text(metodo);
+            $('#info-tipo').text(tipo);
+            $('#info-anticipo').text(anticipo);
+            $('#info-descuento').text(descuento);
+            
+            $('#info-forma-pago').slideDown();
         }
     });
 

@@ -24,6 +24,11 @@ require_once '../config/funciones.php'; // ✅ Se incluye correctamente el archi
 //     telefono_sat_proveedor VARCHAR(255),
 //     fax_sat_proveedor VARCHAR(50),
 //     email_sat_proveedor VARCHAR(255),
+//        -- =====================================================
+//        -- FORMA DE PAGO HABITUAL DEL PROVEEDOR
+//        -- =====================================================
+//        id_forma_pago_habitual INT UNSIGNED 
+//        COMMENT 'Forma de pago habitual del proveedor. Se usará por defecto en nuevas órdenes de compra',
 //     observaciones_proveedor TEXT,
 //     activo_proveedor BOOLEAN DEFAULT TRUE,
 //     created_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -118,7 +123,7 @@ class Proveedores
     public function get_proveedorxid($id_proveedor)
     {
         try {
-            $sql = "SELECT * FROM proveedor where id_proveedor=?";
+            $sql = "SELECT * FROM contacto_cantidad_proveedor where id_proveedor=?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $id_proveedor, PDO::PARAM_INT);
             $stmt->execute();
@@ -229,7 +234,7 @@ class Proveedores
     }
 
 
-    public function insert_proveedor($codigo_proveedor, $nombre_proveedor, $direccion_proveedor, $cp_proveedor, $poblacion_proveedor, $provincia_proveedor, $nif_proveedor, $telefono_proveedor, $fax_proveedor, $web_proveedor, $email_proveedor, $persona_contacto_proveedor, $direccion_sat_proveedor, $cp_sat_proveedor, $poblacion_sat_proveedor, $provincia_sat_proveedor, $telefono_sat_proveedor, $fax_sat_proveedor, $email_sat_proveedor, $observaciones_proveedor)
+    public function insert_proveedor($codigo_proveedor, $nombre_proveedor, $direccion_proveedor, $cp_proveedor, $poblacion_proveedor, $provincia_proveedor, $nif_proveedor, $telefono_proveedor, $fax_proveedor, $web_proveedor, $email_proveedor, $persona_contacto_proveedor, $direccion_sat_proveedor, $cp_sat_proveedor, $poblacion_sat_proveedor, $provincia_sat_proveedor, $telefono_sat_proveedor, $fax_sat_proveedor, $email_sat_proveedor, $id_forma_pago_habitual, $observaciones_proveedor)
     {
         try {
             // Configurar zona horaria para esta operación
@@ -238,8 +243,8 @@ class Proveedores
             $sql = "INSERT INTO proveedor (codigo_proveedor, nombre_proveedor, direccion_proveedor, cp_proveedor, poblacion_proveedor, provincia_proveedor, 
             nif_proveedor, telefono_proveedor, fax_proveedor, web_proveedor, email_proveedor, persona_contacto_proveedor, direccion_sat_proveedor, 
             cp_sat_proveedor, poblacion_sat_proveedor, provincia_sat_proveedor, telefono_sat_proveedor, fax_sat_proveedor, email_sat_proveedor, 
-            observaciones_proveedor, activo_proveedor, created_at_proveedor, updated_at_proveedor) 
-                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+            id_forma_pago_habitual, observaciones_proveedor, activo_proveedor, created_at_proveedor, updated_at_proveedor) 
+                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -266,7 +271,8 @@ class Proveedores
             $stmt->bindValue(17, $telefono_sat_proveedor, PDO::PARAM_STR); 
             $stmt->bindValue(18, $fax_sat_proveedor, PDO::PARAM_STR); 
             $stmt->bindValue(19, $email_sat_proveedor, PDO::PARAM_STR); 
-            $stmt->bindValue(20, $observaciones_proveedor, PDO::PARAM_STR); 
+            $stmt->bindValue(20, $id_forma_pago_habitual, PDO::PARAM_INT); 
+            $stmt->bindValue(21, $observaciones_proveedor, PDO::PARAM_STR); 
                               
             $resultado = $stmt->execute();
             
@@ -298,12 +304,12 @@ class Proveedores
     }
 
 
-    public function update_proveedor($id_proveedor, $codigo_proveedor, $nombre_proveedor, $direccion_proveedor, $cp_proveedor, $poblacion_proveedor, $provincia_proveedor, $nif_proveedor, $telefono_proveedor, $fax_proveedor, $web_proveedor, $email_proveedor, $persona_contacto_proveedor, $direccion_sat_proveedor, $cp_sat_proveedor, $poblacion_sat_proveedor, $provincia_sat_proveedor, $telefono_sat_proveedor, $fax_sat_proveedor, $email_sat_proveedor, $observaciones_proveedor){
+    public function update_proveedor($id_proveedor, $codigo_proveedor, $nombre_proveedor, $direccion_proveedor, $cp_proveedor, $poblacion_proveedor, $provincia_proveedor, $nif_proveedor, $telefono_proveedor, $fax_proveedor, $web_proveedor, $email_proveedor, $persona_contacto_proveedor, $direccion_sat_proveedor, $cp_sat_proveedor, $poblacion_sat_proveedor, $provincia_sat_proveedor, $telefono_sat_proveedor, $fax_sat_proveedor, $email_sat_proveedor, $id_forma_pago_habitual, $observaciones_proveedor){
         try {
             // Configurar zona horaria para esta operación
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
             
-            $sql = "UPDATE proveedor SET codigo_proveedor = ?, nombre_proveedor = ?, direccion_proveedor = ?, cp_proveedor = ?, poblacion_proveedor = ?, provincia_proveedor = ?, nif_proveedor = ?, telefono_proveedor = ?, fax_proveedor = ?, web_proveedor = ?, email_proveedor = ?, persona_contacto_proveedor = ?, direccion_sat_proveedor = ?, cp_sat_proveedor = ?, poblacion_sat_proveedor = ?, provincia_sat_proveedor = ?, telefono_sat_proveedor = ?, fax_sat_proveedor = ?, email_sat_proveedor = ?, observaciones_proveedor = ?, updated_at_proveedor = NOW() WHERE id_proveedor = ?";
+            $sql = "UPDATE proveedor SET codigo_proveedor = ?, nombre_proveedor = ?, direccion_proveedor = ?, cp_proveedor = ?, poblacion_proveedor = ?, provincia_proveedor = ?, nif_proveedor = ?, telefono_proveedor = ?, fax_proveedor = ?, web_proveedor = ?, email_proveedor = ?, persona_contacto_proveedor = ?, direccion_sat_proveedor = ?, cp_sat_proveedor = ?, poblacion_sat_proveedor = ?, provincia_sat_proveedor = ?, telefono_sat_proveedor = ?, fax_sat_proveedor = ?, email_sat_proveedor = ?, id_forma_pago_habitual = ?, observaciones_proveedor = ?, updated_at_proveedor = NOW() WHERE id_proveedor = ?";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -330,8 +336,9 @@ class Proveedores
             $stmt->bindValue(17, $telefono_sat_proveedor, PDO::PARAM_STR);
             $stmt->bindValue(18, $fax_sat_proveedor, PDO::PARAM_STR);
             $stmt->bindValue(19, $email_sat_proveedor, PDO::PARAM_STR);
-            $stmt->bindValue(20, $observaciones_proveedor, PDO::PARAM_STR);
-            $stmt->bindValue(21, $id_proveedor, PDO::PARAM_INT); 
+            $stmt->bindValue(20, $id_forma_pago_habitual, PDO::PARAM_INT);
+            $stmt->bindValue(21, $observaciones_proveedor, PDO::PARAM_STR);
+            $stmt->bindValue(22, $id_proveedor, PDO::PARAM_INT); 
 
             $resultado = $stmt->execute();
             

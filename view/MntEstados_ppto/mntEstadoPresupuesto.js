@@ -131,7 +131,7 @@ $(document).ready(function () {
       {
         targets: "color_estado_ppto:name",
         width: "15%",
-        searchable: true,
+        searchable: false,
         orderable: true,
         className: "text-center",
         render: function (data, type, row) {

@@ -86,17 +86,59 @@
     </div><!-- br-pageheader -->
     
     <div class="br-pagetitle">
-        <div class="d-flex align-items-center">
-            <h4 class="mb-0 me-2">Gestión de Fotos de Elementos</h4>
-            <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaFotos" title="Ayuda sobre el módulo">
-                <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
-            </button>
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center">
+                <h4 class="mb-0 me-2">Gestión de Fotos de Elementos</h4>
+                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaFotos" title="Ayuda sobre el módulo">
+                    <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
+                </button>
+            </div>
         </div>
-        <br>
-        <!-- <div class="mt-2">
-            <p class="mg-b-0">Gestión de fotos asociadas a elementos</p>
-        </div> -->
-    </div><!-- d-flex -->
+        
+        <!-- Info del elemento -->
+        <div class="mt-2 mb-3" id="info-elemento">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #134e4a 0%, #0f766e 100%);">
+                <div class="card-body py-3 px-4">
+                    <div class="row align-items-center">
+                        <!-- Icono principal -->
+                        <div class="col-auto">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 60px; height: 60px; background-color: rgba(255,255,255,0.15);">
+                                <i class="bi bi-camera text-white" style="font-size: 1.8rem;"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Información del elemento -->
+                        <div class="col">
+                            <div class="text-white-50 mb-1" style="font-size: 0.85rem; font-weight: 500;">
+                                <i class="bi bi-info-circle me-1"></i>Filtrando por elemento
+                            </div>
+                            <h5 class="mb-2 fw-bold text-white" id="nombre-elemento">
+                                <span id="descripcion-elemento">Cargando...</span>
+                            </h5>
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <span class="text-white-50" style="font-size: 0.9rem;">
+                                    <i class="bi bi-upc-scan me-1"></i>Código:
+                                    <span id="codigo-elemento" class="badge bg-white text-dark ms-1 fw-semibold">--</span>
+                                </span>
+                                <span class="text-white-50" style="font-size: 0.9rem;">
+                                    <i class="bi bi-hash me-1"></i>ID Elemento:
+                                    <span id="id-elemento" class="badge bg-white text-dark ms-1 fw-semibold">--</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de acción -->
+                        <div class="col-auto d-none d-md-block">
+                            <a href="../MntElementos/index.php" class="btn btn-light btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i>Volver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- br-pagetitle -->
 
     <div class="br-pagebody">
         <div class="br-section-wrapper">
@@ -124,7 +166,7 @@
                     <a href="formularioFoto.php?modo=nuevo" class="btn btn-oblong btn-outline-primary" id="btnNuevaFoto">
                         <i class="fas fa-plus-circle me-2"></i>Nueva Foto
                     </a>
-                    <a href="../MntElementos/index.php" class="btn btn-oblong btn-outline-secondary" id="btnVolverElementos">
+                    <a href="javascript:void(0)" class="btn btn-oblong btn-outline-secondary" id="btnVolverElementos">
                         <i class="fas fa-arrow-left me-2"></i>Volver a Elementos
                     </a>
                 </div>

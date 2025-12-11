@@ -1,0 +1,474 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:11:03"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:11:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:12:19"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:12:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:12:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:27:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:28:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:29:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:29:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:29:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:29:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:29:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Foto_elemento",
+        "actividad": "Insertar",
+        "mensaje": "Se insertó la foto de elemento con ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:42:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "foto_elemento.php",
+        "actividad": "Guardar foto de elemento",
+        "mensaje": "Foto de elemento guardada exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:42:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:44:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:44:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:46:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 12:46:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:09:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:19:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:19:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Proveedores",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el proveedor con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:19:51"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Actualizar el proveedor",
+        "mensaje": "Proveedor actualizado exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:19:51"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:19:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:21:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:21:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:21:44"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Proveedores",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el proveedor con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:21:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Actualizar el proveedor",
+        "mensaje": "Proveedor actualizado exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:21:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:22:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:22:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "formaspago.php",
+        "actividad": "Obtener forma de pago seleccionada",
+        "mensaje": "Forma de pago obtenida exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:23:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "FormasPago",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó la forma de pago con ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:23:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "formaspago.php",
+        "actividad": "Actualizar forma de pago",
+        "mensaje": "Forma de pago actualizada exitosamente ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:23:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:24:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:26:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:26:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:27:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:27:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:31:33"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:31:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:31:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:31:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:31:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:31:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Proveedores",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el proveedor con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:32:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Actualizar el proveedor",
+        "mensaje": "Proveedor actualizado exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:32:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:32:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "proveedor.php",
+        "actividad": "Obtener proveedor seleccionado",
+        "mensaje": "Proveedor obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:32:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa seleccionada",
+        "mensaje": "Empresa obtenida exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:34:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa seleccionada",
+        "mensaje": "Empresa obtenida exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 13:34:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 14:11:27"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Contraseña incorrecta",
+        "tipo": "error",
+        "fecha_hora": "2025-12-09 16:10:19"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 16:10:31"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 16:10:31"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 17:41:07"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 17:41:07"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 18:05:40"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-09 18:05:40"
+    }
+]

@@ -25,28 +25,66 @@ switch ($_GET["op"]) {
         $data = array();
         foreach ($datos as $row) {
             $data[] = array(
+                // Datos básicos del cliente
                 "id_cliente" => $row["id_cliente"],
                 "codigo_cliente" => $row["codigo_cliente"],
                 "nombre_cliente" => $row["nombre_cliente"],
+                
+                // Dirección principal
                 "direccion_cliente" => $row["direccion_cliente"],
                 "cp_cliente" => $row["cp_cliente"],
                 "poblacion_cliente" => $row["poblacion_cliente"],
                 "provincia_cliente" => $row["provincia_cliente"],
+                
+                // Datos fiscales y contacto
                 "nif_cliente" => $row["nif_cliente"],
                 "telefono_cliente" => $row["telefono_cliente"],
                 "fax_cliente" => $row["fax_cliente"],
                 "web_cliente" => $row["web_cliente"],
                 "email_cliente" => $row["email_cliente"],
+                
+                // Dirección de facturación
                 "nombre_facturacion_cliente" => $row["nombre_facturacion_cliente"],
                 "direccion_facturacion_cliente" => $row["direccion_facturacion_cliente"],
                 "cp_facturacion_cliente" => $row["cp_facturacion_cliente"],
                 "poblacion_facturacion_cliente" => $row["poblacion_facturacion_cliente"],
                 "provincia_facturacion_cliente" => $row["provincia_facturacion_cliente"],
-                "cantidad_contactos" => isset($row["cantidad_contactos_cliente"]) ? intval($row["cantidad_contactos_cliente"]) : 0,
+                
+                // Observaciones y estado
                 "observaciones_cliente" => $row["observaciones_cliente"],
                 "activo_cliente" => $row["activo_cliente"],
                 "created_at_cliente" => $row["created_at_cliente"],
-                "updated_at_cliente" => $row["updated_at_cliente"]
+                "updated_at_cliente" => $row["updated_at_cliente"],
+                
+                // Datos de la forma de pago habitual
+                "id_forma_pago_habitual" => $row["id_forma_pago_habitual"],
+                "codigo_pago" => $row["codigo_pago"] ?? null,
+                "nombre_pago" => $row["nombre_pago"] ?? null,
+                "descuento_pago" => $row["descuento_pago"] ?? null,
+                "porcentaje_anticipo_pago" => $row["porcentaje_anticipo_pago"] ?? null,
+                "dias_anticipo_pago" => $row["dias_anticipo_pago"] ?? null,
+                "porcentaje_final_pago" => $row["porcentaje_final_pago"] ?? null,
+                "dias_final_pago" => $row["dias_final_pago"] ?? null,
+                "observaciones_pago" => $row["observaciones_pago"] ?? null,
+                "activo_pago" => $row["activo_pago"] ?? null,
+                
+                // Datos del método de pago
+                "id_metodo_pago" => $row["id_metodo_pago"] ?? null,
+                "codigo_metodo_pago" => $row["codigo_metodo_pago"] ?? null,
+                "nombre_metodo_pago" => $row["nombre_metodo_pago"] ?? null,
+                "observaciones_metodo_pago" => $row["observaciones_metodo_pago"] ?? null,
+                "activo_metodo_pago" => $row["activo_metodo_pago"] ?? null,
+                
+                // Cantidad de contactos (manteniendo nombre original)
+                "cantidad_contactos" => isset($row["cantidad_contactos_cliente"]) ? intval($row["cantidad_contactos_cliente"]) : 0,
+                
+                // Campos calculados
+                "tipo_pago_cliente" => $row["tipo_pago_cliente"] ?? null,
+                "descripcion_forma_pago_cliente" => $row["descripcion_forma_pago_cliente"] ?? null,
+                "direccion_completa_cliente" => $row["direccion_completa_cliente"] ?? null,
+                "direccion_facturacion_completa_cliente" => $row["direccion_facturacion_completa_cliente"] ?? null,
+                "tiene_direccion_facturacion_diferente" => isset($row["tiene_direccion_facturacion_diferente"]) ? (bool)$row["tiene_direccion_facturacion_diferente"] : false,
+                "estado_forma_pago_cliente" => $row["estado_forma_pago_cliente"] ?? null
             );
         }
 
@@ -63,7 +101,26 @@ switch ($_GET["op"]) {
 
     case "guardaryeditar":
         try {
+            // DEBUG: Log para ver qué se está recibiendo
+            writeToLog([
+                'action' => 'guardaryeditar',
+                'id_forma_pago_habitual_raw' => $_POST["id_forma_pago_habitual"] ?? 'NO_EXISTE',
+                'id_forma_pago_habitual_empty' => empty($_POST["id_forma_pago_habitual"]) ? 'SI' : 'NO',
+                'POST_completo' => $_POST
+            ]);
+            
             if (empty($_POST["id_cliente"])) {
+                // Procesar id_forma_pago_habitual
+                $id_forma_pago = null;
+                if (isset($_POST["id_forma_pago_habitual"]) && $_POST["id_forma_pago_habitual"] !== '' && $_POST["id_forma_pago_habitual"] !== 'null') {
+                    $id_forma_pago = intval($_POST["id_forma_pago_habitual"]);
+                }
+                
+                writeToLog([
+                    'id_forma_pago_procesado' => $id_forma_pago,
+                    'tipo' => gettype($id_forma_pago)
+                ]);
+                
                 $resultado = $cliente->insert_cliente(
                     $_POST["codigo_cliente"], 
                     $_POST["nombre_cliente"], 
@@ -80,7 +137,8 @@ switch ($_GET["op"]) {
                     $_POST["direccion_facturacion_cliente"], 
                     $_POST["cp_facturacion_cliente"], 
                     $_POST["poblacion_facturacion_cliente"], 
-                    $_POST["provincia_facturacion_cliente"], 
+                    $_POST["provincia_facturacion_cliente"],
+                    $id_forma_pago,
                     $_POST["observaciones_cliente"]
                 );
                 
@@ -108,6 +166,12 @@ switch ($_GET["op"]) {
                 }
                 
             } else {
+                // Procesar id_forma_pago_habitual para update
+                $id_forma_pago = null;
+                if (isset($_POST["id_forma_pago_habitual"]) && $_POST["id_forma_pago_habitual"] !== '' && $_POST["id_forma_pago_habitual"] !== 'null') {
+                    $id_forma_pago = intval($_POST["id_forma_pago_habitual"]);
+                }
+                
                 $resultado = $cliente->update_cliente(
                     $_POST["id_cliente"],
                     $_POST["codigo_cliente"], 
@@ -125,7 +189,8 @@ switch ($_GET["op"]) {
                     $_POST["direccion_facturacion_cliente"], 
                     $_POST["cp_facturacion_cliente"], 
                     $_POST["poblacion_facturacion_cliente"], 
-                    $_POST["provincia_facturacion_cliente"], 
+                    $_POST["provincia_facturacion_cliente"],
+                    $id_forma_pago,
                     $_POST["observaciones_cliente"]
                 );
                 

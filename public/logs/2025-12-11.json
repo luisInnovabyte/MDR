@@ -1,0 +1,74 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 06:22:54"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 06:22:54"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 10:19:26"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 10:19:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa seleccionada",
+        "mensaje": "Empresa obtenida exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 10:20:45"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa seleccionada",
+        "mensaje": "Empresa obtenida exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 10:20:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 10:36:35"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 12:15:01"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-11 12:15:01"
+    }
+]

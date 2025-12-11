@@ -130,7 +130,15 @@ function puedeVerMenu($idRol, $modulo) {
         </ul>
     </li>
 
-  
+   <li class="br-menu-item">
+        <a href="#" class="br-menu-link with-sub">
+            <i class="menu-item-icon icon ion-ios-people tx-24"></i>
+            <span class="menu-item-label">Presupuestos</span>
+        </a>
+        <ul class="br-menu-sub">
+            <li class="sub-item"><a href="../Presupuesto/index.php" class="sub-link">Mto. Presupuestos</a></li>
+        </ul>
+    </li>
 
    
 
@@ -160,7 +168,8 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendarios Garantías</a></li>
             <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendarios Mantenimientos</a></li>
-            <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantias</a></li>
+            <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantías</a></li>
+            <li class="sub-item"><a href="../Consulta_Mantenimientos/index.php" class="sub-link">Consulta Mantenimientos</a></li>
             
         </ul>
         <!-- assets/Reunion/sistema-gestion-explicacion.html -->

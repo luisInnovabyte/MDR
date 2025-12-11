@@ -1,0 +1,522 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 05:24:16"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 05:24:16"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 05:24:18"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 05:24:18"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 07:31:48"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 07:31:48"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 13:27:15"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 13:27:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa seleccionada",
+        "mensaje": "Empresa obtenida exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 13:27:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa seleccionada",
+        "mensaje": "Empresa obtenida exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 13:27:33"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 14:16:26"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 14:16:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 14:16:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 14:16:36"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 15:55:13"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 15:55:13"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 16:43:06"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 16:43:06"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:13:47"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:13:47"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:13:49"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:13:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:14:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:14:17"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:41:12"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:41:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:41:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 17:41:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Clientes",
+        "actividad": "Activar",
+        "mensaje": "Se activo el cliente con ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:10:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Activar cliente seleccionado",
+        "mensaje": "Cliente activado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:10:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Clientes",
+        "actividad": "Desactivar",
+        "mensaje": "Se desactivó el cliente con ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:10:20"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Eliminar cliente seleccionado",
+        "mensaje": "Cliente eliminado exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:10:20"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:10:26"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:11:01"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:11:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:11:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:11:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:15:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:15:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Clientes",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el cliente con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:15:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Actualizar el cliente",
+        "mensaje": "Cliente actualizado exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:15:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:25:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:25:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Clientes",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el cliente con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:25:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Actualizar el cliente",
+        "mensaje": "Cliente actualizado exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:25:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:28:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:28:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Clientes",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el cliente con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:29:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Actualizar el cliente",
+        "mensaje": "Cliente actualizado exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:29:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:29:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:29:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:31:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:31:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Clientes",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el cliente con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:31:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Actualizar el cliente",
+        "mensaje": "Cliente actualizado exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:31:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Clientes",
+        "actividad": "Insertar",
+        "mensaje": "Se insertó el cliente con ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:35:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Guardar el cliente",
+        "mensaje": "Cliente guardado exitosamente con ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:35:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 18:35:17"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 19:10:23"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 19:10:23"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 19:17:05"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 19:17:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 19:18:52"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 20:23:28"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-03 20:23:28"
+    }
+]

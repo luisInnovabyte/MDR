@@ -1,0 +1,4 @@
+[2025-12-09 11:40:49] documento_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-09 15:13:12] documento_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-09 15:13:33] documento_elemento.php ejecutado - IP: 192.168.31.3
+[2025-12-09 15:13:38] documento_elemento.php ejecutado - IP: 192.168.31.3

@@ -300,7 +300,6 @@
             </div>
 
             <!-- Pie del Modal -->
-                <!-- Pie del Modal -->
             <div class="modal-footer bg-light">
                 <div class="text-left flex-grow-1">
                     <small class="text-muted">
@@ -308,7 +307,7 @@
                         Versión del sistema: SMM v1.0 - Última actualización: 24-11-2025
                     </small>
                 </div>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
                     <i class="bi bi-check-lg mr-2"></i>Entendido
                 </button>
             </div>

@@ -1,0 +1,11 @@
+[2025-12-09 11:42:31] {"action":"guardaryeditar_iniciado","timestamp":"2025-12-09 11:42:31"}
+[2025-12-09 11:42:31] {"action":"guardaryeditar_inicio","files_info":{"archivo_foto":{"name":"img20.jpg","full_path":"img20.jpg","type":"image\/jpeg","tmp_name":"\/tmp\/phpp68he8qoj1ql0lwj7nW","error":0,"size":17107}},"post_info":{"id_elemento":"3","descripcion_foto_elemento":"Microfono","privado_foto":"0","observaciones_foto":"","activo_foto_elemento":"1"}}
+[2025-12-09 11:42:31] {"action":"procesando_foto_nueva"}
+[2025-12-09 11:42:31] {"action":"procesarFotoElemento_inicio","archivo_info":{"name":"img20.jpg","type":"image\/jpeg","size":17107,"error":0,"tmp_name":"\/tmp\/phpp68he8qoj1ql0lwj7nW"}}
+[2025-12-09 11:42:31] {"action":"directorio_calculado","path":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/fotos_elementos\/","realpath":"\/var\/www\/html\/MDR\/public\/img"}
+[2025-12-09 11:42:31] {"info":"Validación de tipos","tipo_reportado":"image\/jpeg","tipo_real":"image\/jpeg"}
+[2025-12-09 11:42:31] {"action":"moviendo_archivo","desde":"\/tmp\/phpp68he8qoj1ql0lwj7nW","hacia":"\/var\/www\/html\/MDR\/controller\/..\/public\/img\/fotos_elementos\/foto_elemento_69380b27261c8.jpg","nombre_final":"foto_elemento_69380b27261c8.jpg"}
+[2025-12-09 11:42:31] {"success":"Archivo movido exitosamente","archivo":"foto_elemento_69380b27261c8.jpg"}
+[2025-12-09 11:42:31] {"success":"Foto procesada correctamente","nombre_archivo":"foto_elemento_69380b27261c8.jpg"}
+[2025-12-09 11:42:31] {"action":"antes_de_insertar","id_elemento":"3","archivo_foto":"foto_elemento_69380b27261c8.jpg","descripcion_foto_elemento":"Microfono","privado_foto":false,"observaciones_foto":null}
+[2025-12-09 12:42:31] {"action":"resultado_insert","resultado":"2"}

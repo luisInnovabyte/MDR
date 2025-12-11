@@ -80,7 +80,7 @@
         <div class="br-pagetitle">
             <div class="d-flex align-items-center">
                 <h4 class="mb-0 me-2">Consulta de Garantias</h4>
-                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaElementos" title="Ayuda sobre el módulo">
+                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaGarantias" title="Ayuda sobre el módulo">
                     <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
                 </button>
             </div>
@@ -179,7 +179,7 @@
     <!-- MODAL DE AYUDA                       -->
     <!-- #################################### -->
 
-    <?php include_once('ayudaConsultaElemento.php') ?>
+    <?php include_once('ayudaConsultaGarantias.php') ?>
 
     <!-- #################################### -->
     <!-- FIN MODAL DE AYUDA                   -->
@@ -197,6 +197,15 @@
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
     <script type="text/javascript" src="consulta_garantia.js"></script>
+
+  <script>
+        // Colapsar el sidebar al cargar la página
+        $(document).ready(function() {
+            $('body').addClass('collapsed-menu');
+            $('.br-sideleft').addClass('collapsed');
+        });
+    </script>
+
 
 </body>
 

@@ -58,8 +58,8 @@ $(document).ready(function () {
             // Son los botones para más
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
-            { name: 'id_familia', data: 'id_familia', visible: false, className: "text-center" }, // Columna 1: ID_FAMILIA
-            { name: 'codigo_familia', data: 'codigo_familia', className: "text-center" }, // Columna 2: CODIGO_FAMILIA
+            { name: 'id_familia', data: 'id_familia', visible: false, className: "text-center " }, // Columna 1: ID_FAMILIA
+            { name: 'codigo_familia', data: 'codigo_familia', className: "text-center align-middle" }, // Columna 2: CODIGO_FAMILIA
             { name: 'nombre_familia', data: 'nombre_familia', className: "text-center" }, // Columna 3: NOMBRE_FAMILIA
             
             { name: 'activo_familia', data: 'activo_familia', className: "text-center" }, // Columna 5: ESTADO
@@ -73,7 +73,7 @@ $(document).ready(function () {
             // Columna 0: BOTÓN MÁS 
             { targets: "control:name", width: '5%', searchable: false, orderable: false, className: "text-center"},
             // Columna 1: id_familia 
-            { targets: "id_familia:name", width: '5%', searchable: false, orderable: false, className: "text-center" },
+            { targets: "id_familia:name", width: '5%', searchable: false, orderable: false, className: "text-center, align-middle" },
             // Columna 2: codigo_familia
             { targets: "codigo_familia:name", width: '15%', searchable: true, orderable: true, className: "text-center" },
             // Columna 3: nombre_familia

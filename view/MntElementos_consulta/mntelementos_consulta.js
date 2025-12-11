@@ -34,6 +34,11 @@ $(document).ready(function () {
     ///////////////////////////////////
     var datatable_elementosConfig = {
         processing: true,
+        responsive: {
+        details: {
+            type: 'none' // <- Esto evita que Responsive cree su propio "+" y child row
+        }
+    },
         layout: {
             bottomEnd: {
                 paging: {
@@ -63,7 +68,7 @@ $(document).ready(function () {
         columns: [
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_elemento', data: 'id_elemento', visible: false, className: "text-center" }, // Columna 1: ID
-            { name: 'nombre_articulo', data: 'nombre_articulo', className: "text-center" }, // Columna 2: ARTÍCULO
+            { name: 'nombre_articulo', data: 'nombre_articulo', visible:false, className: "text-center" }, // Columna 2: ARTÍCULO
             { name: 'codigo_elemento', data: 'codigo_elemento', className: "text-center" }, // Columna 3: CODIGO
             { name: 'descripcion_elemento', data: 'descripcion_elemento', className: "text-center" }, // Columna 4: DESCRIPCION
             { name: 'nombre_marca', data: 'nombre_marca', className: "text-center" }, // Columna 5: MARCA
@@ -85,7 +90,9 @@ $(document).ready(function () {
                     return data;
                 }
             }, // Columna 9: UBICACION
-            { name: 'activo_elemento', data: 'activo_elemento', className: "text-center" } // Columna 10: ACTIVO
+            { name: 'documentos', data: null, className: "text-center" }, // Columna 10: DOCUMENTOS
+            { name: 'fotos', data: null, className: "text-center" }, // Columna 11: FOTOS
+            { name: 'activo_elemento', data: 'activo_elemento', className: "text-center" } // Columna 12: ACTIVO
         ],
         columnDefs: [
             // Columna 0: BOTÓN MÁS 
@@ -117,7 +124,27 @@ $(document).ready(function () {
             },
             // Columna 9: ubicacion (3 campos concatenados)
             { targets: "ubicacion:name", width: '12%', searchable: true, orderable: true, className: "text-center" },
-            // Columna 10: activo_elemento
+             // Columna 10: BOTON PARA VER DOCUMENTOS
+            {
+                targets: "documentos:name", width: '5%', searchable: false, orderable: false, className: "text-center",
+                render: function (data, type, row) {
+                    return `<button type="button" class="btn btn-warning btn-sm verDocumentos" data-bs-toggle="tooltip" data-placement="top" title="Ver documentos" 
+                             data-id_elemento="${row.id_elemento}" data-codigo_elemento="${row.codigo_elemento}">
+                             <i class="bi bi-file-earmark-text"></i>
+                                </button>`;
+                }
+            },
+            // Columna 11: BOTON PARA VER FOTOS
+            {
+                targets: "fotos:name", width: '5%', searchable: false, orderable: false, className: "text-center",
+                render: function (data, type, row) {
+                    return `<button type="button" class="btn btn-primary btn-sm verFotos" data-bs-toggle="tooltip" data-placement="top" title="Ver fotos" 
+                             data-id_elemento="${row.id_elemento}" data-codigo_elemento="${row.codigo_elemento}">
+                             <i class="bi bi-camera"></i>
+                             </button>`;
+                }
+            },
+            // Columna 12: activo_elemento
             {
                 targets: "activo_elemento:name", width: '8%', orderable: true, searchable: true, className: "text-center",
                 render: function (data, type, row) {
@@ -164,7 +191,7 @@ $(document).ready(function () {
                 
                 return $('<tr/>')
                     .addClass('group-row bg-light')
-                    .append('<td colspan="11" class="text-start fw-bold text-primary">' +
+                    .append('<td colspan="13" class="text-start fw-bold text-primary">' +
                         '<i class="bi bi-box-seam me-2"></i>' +
                         '<span class="badge bg-primary me-2">' + codigoArticulo + '</span>' +
                         nombreArticulo + 
@@ -441,6 +468,81 @@ $(document).ready(function () {
             }
         });
     }
+
+
+        ///////////////////////////////////////
+    //   INICIO ZONA VER DOCUMENTOS      //
+    //    BOTON DE VER DOCUMENTOS       //
+    /////////////////////////////////////
+ 
+// Capturar click en botón “Ver Documentos” ya existente
+$(document).on('click', '.verDocumentos', function (event) {
+    event.preventDefault();
+    let id_elemento = $(this).data('id_elemento');
+    let origen = '';
+    const path = window.location.pathname.toLowerCase();
+
+    if (path.includes('mntelementos_consulta')) {
+        origen = 'consulta';
+    } else if (path.includes('mntelementos')) {
+        origen = 'elementos';
+    } else {
+        origen = 'elementos';
+    }
+
+    window.location.href = `../MntDocumento_elemento/index.php?id_elemento=${id_elemento}&origen=${origen}`;
+});
+// Botón Volver
+$('#btnVolverElementos').on('click', function(e) {
+    e.preventDefault(); // evitar refresh
+    const urlParams = new URLSearchParams(window.location.search);
+    const idElemento = urlParams.get('id_elemento');
+    const origen = urlParams.get('origen'); // 'elementos' o 'consulta'
+
+    if (origen === 'consulta') {
+        window.location.href = '../MntElementos_consulta/index.php';
+    } else {
+        window.location.href = '../MntElementos/index.php' + (idElemento ? '?id_elemento=' + idElemento : '');
+    }
+});
+
+
+    ///////////////////////////////////////
+    //     FIN ZONA VER DOCUMENTOS      //
+    /////////////////////////////////////
+
+    ///////////////////////////////////////
+    //   INICIO ZONA VER FOTOS          //
+    //    BOTON DE VER FOTOS            //
+    /////////////////////////////////////
+    // CAPTURAR EL CLICK EN EL BOTÓN DE VER FOTOS
+    $(document).on('click', '.verFotos', function (event) {
+    event.preventDefault();
+
+    let id_elemento = $(this).data('id_elemento');
+    // detectar origen por la ruta actual (robusto y sin tocar backend)
+    let origen = '';
+    const path = window.location.pathname.toLowerCase();
+
+    if (path.includes('mntelementos_consulta')) {
+        origen = 'consulta';
+    } else if (path.includes('mntelementos')) {
+        origen = 'elementos';
+    } else {
+        // fallback opcional si no encuentra nada
+        origen = 'elementos';
+    }
+
+    // Redirigir a la pantalla de documentos/fotos con el parámetro origen
+    // Ajusta la ruta según corresponda: aquí usamos documentos como ejemplo
+    window.location.href = `../MntFoto_elemento/index.php?id_elemento=${id_elemento}&origen=${origen}`;
+});
+
+    ///////////////////////////////////////
+    //     FIN ZONA VER FOTOS           //
+    /////////////////////////////////////
+
+
 
     /////////////////////////////////////
     //  INICIO ZONA FILTROS PIES y SEARCH     //

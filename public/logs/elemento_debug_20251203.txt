@@ -1,0 +1,2 @@
+[2025-12-03 19:25:19] {"action":"getWarrantyEvents","month":12,"year":2025}
+[2025-12-03 19:25:19] {"action":"getWarrantyEvents","result":"success","count":1}

@@ -1,0 +1,552 @@
+$(document).ready(function () {
+
+    /////////////////////////////////////
+    //     FORMATEO DE CAMPOS          //
+    ///////////////////////////////////
+
+    var formValidator = new FormValidator('formPresupuesto', {
+        numero_presupuesto: {
+            required: true
+        },
+        fecha_presupuesto: {
+            required: true
+        },
+        id_cliente: {
+            required: true
+        },
+        id_estado_ppto: {
+            required: true
+        }
+    });
+
+    /////////////////////////////////////////
+    //     FIN FORMATEO DE CAMPOS          //
+    ////////////////////////////////////////
+
+    /////////////////////////////////////////
+    //   FUNCIONES DE INICIALIZACIÓN      //
+    ///////////////////////////////////////
+
+    // Cargar opciones de selects
+    cargarClientes();
+    cargarEstadosPresupuesto();
+
+    // Función para obtener parámetros de la URL
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    // Función para cargar clientes
+    function cargarClientes() {
+        $.ajax({
+            url: "../../controller/cliente.php?op=listar",
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                var select = $('#id_cliente');
+                select.empty();
+                select.append('<option value="">Seleccione un cliente</option>');
+                
+                if (data.data && Array.isArray(data.data)) {
+                    $.each(data.data, function(index, cliente) {
+                        if (cliente.activo_cliente == 1) {
+                            select.append('<option value="' + cliente.id_cliente + '">' + cliente.nombre_cliente + '</option>');
+                        }
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar clientes:', error);
+                toastr.error('Error al cargar la lista de clientes');
+            }
+        });
+    }
+
+    // Función para cargar estados de presupuesto
+    function cargarEstadosPresupuesto() {
+        $.ajax({
+            url: "../../controller/estado_presupuesto.php?op=listar",
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                var select = $('#id_estado_ppto');
+                select.empty();
+                select.append('<option value="">Seleccione un estado</option>');
+                
+                if (data.data && Array.isArray(data.data)) {
+                    $.each(data.data, function(index, estado) {
+                        if (estado.activo_estado_ppto == 1) {
+                            select.append('<option value="' + estado.id_estado_ppto + '">' + estado.nombre_estado_ppto + '</option>');
+                        }
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar estados:', error);
+                toastr.error('Error al cargar la lista de estados');
+            }
+        });
+    }
+
+    // Función para cargar contactos del cliente seleccionado
+    function cargarContactosCliente(idCliente, idContactoSeleccionado = null) {
+        var select = $('#id_contacto_cliente');
+        select.empty();
+        
+        if (!idCliente) {
+            select.append('<option value="">Seleccione primero un cliente</option>');
+            select.prop('disabled', true);
+            return;
+        }
+        
+        select.prop('disabled', true);
+        select.append('<option value="">Cargando contactos...</option>');
+        
+        $.ajax({
+            url: "../../controller/clientes_contacto.php?op=selectByCliente",
+            type: "POST",
+            data: { id_cliente: idCliente },
+            dataType: "json",
+            success: function(data) {
+                select.empty();
+                select.append('<option value="">Sin contacto específico</option>');
+                
+                if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                    data.data.forEach(function(contacto) {
+                        var nombreCompleto = contacto.nombre_contacto_cliente;
+                        if (contacto.apellidos_contacto_cliente) {
+                            nombreCompleto += ' ' + contacto.apellidos_contacto_cliente;
+                        }
+                        if (contacto.cargo_contacto_cliente) {
+                            nombreCompleto += ' (' + contacto.cargo_contacto_cliente + ')';
+                        }
+                        
+                        var option = $('<option></option>')
+                            .val(contacto.id_contacto_cliente)
+                            .text(nombreCompleto);
+                        
+                        // Marcar como seleccionado si es el contacto principal o el especificado
+                        if (idContactoSeleccionado && contacto.id_contacto_cliente == idContactoSeleccionado) {
+                            option.prop('selected', true);
+                        } else if (!idContactoSeleccionado && contacto.principal_contacto_cliente == 1) {
+                            option.prop('selected', true);
+                        }
+                        
+                        select.append(option);
+                    });
+                    select.prop('disabled', false);
+                } else {
+                    select.append('<option value="">No hay contactos disponibles</option>');
+                    select.prop('disabled', true);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar contactos:', error);
+                select.empty();
+                select.append('<option value="">Error al cargar contactos</option>');
+                select.prop('disabled', true);
+                toastr.warning('No se pudieron cargar los contactos del cliente');
+            }
+        });
+    }
+
+    // Event listener para cambio de cliente
+    $('#id_cliente').on('change', function() {
+        var idCliente = $(this).val();
+        cargarContactosCliente(idCliente);
+    });
+
+    // Función para cargar datos de presupuesto para edición
+    function cargarDatosPresupuesto(idPresupuesto) {
+        console.log('Cargando datos de presupuesto ID:', idPresupuesto);
+        
+        $.ajax({
+            url: "../../controller/presupuesto.php?op=mostrar",
+            type: "POST",
+            data: { id_presupuesto: idPresupuesto },
+            dataType: "json",
+            success: function(data) {
+                try {
+                    if (!data || typeof data !== 'object') {
+                        throw new Error('Respuesta del servidor no válida');
+                    }
+
+                    console.log('Datos recibidos:', data);
+
+                    // Llenar los campos del formulario
+                    $('#id_presupuesto').val(data.id_presupuesto);
+                    $('#numero_presupuesto').val(data.numero_presupuesto);
+                    $('#fecha_presupuesto').val(data.fecha_presupuesto);
+                    $('#fecha_validez_presupuesto').val(data.fecha_validez_presupuesto);
+                    $('#fecha_inicio_evento_presupuesto').val(data.fecha_inicio_evento_presupuesto);
+                    $('#fecha_fin_evento_presupuesto').val(data.fecha_fin_evento_presupuesto);
+                    $('#numero_pedido_cliente_presupuesto').val(data.numero_pedido_cliente_presupuesto);
+                    $('#nombre_evento_presupuesto').val(data.nombre_evento_presupuesto);
+                    $('#direccion_evento_presupuesto').val(data.direccion_evento_presupuesto);
+                    $('#poblacion_evento_presupuesto').val(data.poblacion_evento_presupuesto);
+                    $('#cp_evento_presupuesto').val(data.cp_evento_presupuesto);
+                    $('#provincia_evento_presupuesto').val(data.provincia_evento_presupuesto);
+                    $('#observaciones_cabecera_presupuesto').val(data.observaciones_cabecera_presupuesto);
+                    $('#observaciones_pie_presupuesto').val(data.observaciones_pie_presupuesto);
+                    $('#observaciones_internas_presupuesto').val(data.observaciones_internas_presupuesto);
+                    
+                    // Checkboxes
+                    $('#mostrar_obs_familias_presupuesto').prop('checked', data.mostrar_obs_familias_presupuesto == 1);
+                    $('#mostrar_obs_articulos_presupuesto').prop('checked', data.mostrar_obs_articulos_presupuesto == 1);
+                    $('#activo_presupuesto').prop('checked', data.activo_presupuesto == 1);
+                    
+                    // Selects - esperar a que se carguen primero
+                    setTimeout(function() {
+                        $('#id_cliente').val(data.id_cliente);
+                        $('#id_estado_ppto').val(data.id_estado_ppto);
+                        
+                        // Cargar contactos del cliente y seleccionar el contacto si existe
+                        if (data.id_cliente) {
+                            cargarContactosCliente(data.id_cliente, data.id_contacto_cliente);
+                        }
+                    }, 500);
+                    
+                    // Actualizar texto del estado
+                    if (data.activo_presupuesto == 1) {
+                        $('#estado-text').text('Presupuesto Activo').removeClass('text-danger').addClass('text-success');
+                    } else {
+                        $('#estado-text').text('Presupuesto Inactivo').removeClass('text-success').addClass('text-danger');
+                    }
+                    
+                    // Capturar valores originales después de cargar datos
+                    setTimeout(function() {
+                        captureOriginalValues();
+                    }, 600);
+                    
+                    // Enfocar el primer campo
+                    $('#numero_presupuesto').focus();
+                    
+                } catch (e) {
+                    console.error('Error al procesar datos:', e);
+                    toastr.error('Error al cargar datos para edición');
+                    setTimeout(() => {
+                        window.location.href = 'index.php';
+                    }, 2000);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la solicitud AJAX:', status, error);
+                console.error('Respuesta del servidor:', xhr.responseText);
+                toastr.error('Error al obtener datos del presupuesto');
+                setTimeout(() => {
+                    window.location.href = 'index.php';
+                }, 2000);
+            }
+        });
+    }
+
+    // Verificar si estamos en modo edición
+    const idPresupuesto = getUrlParameter('id');
+    const modo = getUrlParameter('modo') || 'nuevo';
+    
+    if (modo === 'editar' && idPresupuesto) {
+        // Actualizar títulos
+        $('#page-title').text('Editar Presupuesto');
+        $('#breadcrumb-title').text('Editar Presupuesto');
+        $('#btnSalvarPresupuesto').html('<i class="fas fa-save me-2"></i>Actualizar Presupuesto');
+        
+        cargarDatosPresupuesto(idPresupuesto);
+    } else {
+        // En modo nuevo, establecer fecha actual
+        var hoy = new Date().toISOString().split('T')[0];
+        $('#fecha_presupuesto').val(hoy);
+        
+        $('#numero_presupuesto').focus();
+        setTimeout(function() {
+            captureOriginalValues();
+        }, 100);
+    }
+
+    /////////////////////////////////////////
+    //   FIN FUNCIONES DE INICIALIZACIÓN  //
+    ///////////////////////////////////////
+
+    //*****************************************************/
+    //   CAPTURAR EL CLICK EN EL BOTÓN DE SALVAR PRESUPUESTO
+    //*****************************************************/
+
+    $(document).on('click', '#btnSalvarPresupuesto', function (event) {
+        event.preventDefault();
+
+        // Obtener valores del formulario
+        var id_presupuestoR = $('#id_presupuesto').val().trim();
+        var numero_presupuestoR = $('#numero_presupuesto').val().trim();
+        var id_clienteR = $('#id_cliente').val();
+        var id_contacto_clienteR = $('#id_contacto_cliente').val() || null;
+        var id_estado_pptoR = $('#id_estado_ppto').val();
+        var id_forma_pagoR = $('#id_forma_pago').val() || null;
+        var id_metodoR = $('#id_metodo').val() || null;
+        var fecha_presupuestoR = $('#fecha_presupuesto').val();
+        var fecha_validez_presupuestoR = $('#fecha_validez_presupuesto').val() || null;
+        var fecha_inicio_evento_presupuestoR = $('#fecha_inicio_evento_presupuesto').val() || null;
+        var fecha_fin_evento_presupuestoR = $('#fecha_fin_evento_presupuesto').val() || null;
+        var numero_pedido_cliente_presupuestoR = $('#numero_pedido_cliente_presupuesto').val() || '';
+        var nombre_evento_presupuestoR = $('#nombre_evento_presupuesto').val() || '';
+        var direccion_evento_presupuestoR = $('#direccion_evento_presupuesto').val() || '';
+        var poblacion_evento_presupuestoR = $('#poblacion_evento_presupuesto').val() || '';
+        var cp_evento_presupuestoR = $('#cp_evento_presupuesto').val() || '';
+        var provincia_evento_presupuestoR = $('#provincia_evento_presupuesto').val() || '';
+        var observaciones_cabecera_presupuestoR = $('#observaciones_cabecera_presupuesto').val() || '';
+        var observaciones_pie_presupuestoR = $('#observaciones_pie_presupuesto').val() || '';
+        var mostrar_obs_familias_presupuestoR = $('#mostrar_obs_familias_presupuesto').is(':checked') ? 1 : 0;
+        var mostrar_obs_articulos_presupuestoR = $('#mostrar_obs_articulos_presupuesto').is(':checked') ? 1 : 0;
+        var observaciones_internas_presupuestoR = $('#observaciones_internas_presupuesto').val() || '';
+        
+        var activo_presupuestoR;
+        if (id_presupuestoR) {
+            activo_presupuestoR = $('#activo_presupuesto').is(':checked') ? 1 : 0;
+        } else {
+            activo_presupuestoR = 1;
+        }
+
+        // Validar el formulario
+        if (!formValidator.validateForm(event)) {
+            toastr.error('Por favor, corrija los errores en el formulario.', 'Error de Validación');
+            return;
+        }
+        
+        // Verificar presupuesto primero
+        verificarPresupuestoExistente(
+            id_presupuestoR,
+            numero_presupuestoR,
+            id_clienteR,
+            id_contacto_clienteR,
+            id_estado_pptoR,
+            id_forma_pagoR,
+            id_metodoR,
+            fecha_presupuestoR,
+            fecha_validez_presupuestoR,
+            fecha_inicio_evento_presupuestoR,
+            fecha_fin_evento_presupuestoR,
+            numero_pedido_cliente_presupuestoR,
+            nombre_evento_presupuestoR,
+            direccion_evento_presupuestoR,
+            poblacion_evento_presupuestoR,
+            cp_evento_presupuestoR,
+            provincia_evento_presupuestoR,
+            observaciones_cabecera_presupuestoR,
+            observaciones_pie_presupuestoR,
+            mostrar_obs_familias_presupuestoR,
+            mostrar_obs_articulos_presupuestoR,
+            observaciones_internas_presupuestoR,
+            activo_presupuestoR
+        );
+    });
+
+    function verificarPresupuestoExistente(
+        id_presupuesto,
+        numero_presupuesto,
+        id_cliente,
+        id_contacto_cliente,
+        id_estado_ppto,
+        id_forma_pago,
+        id_metodo,
+        fecha_presupuesto,
+        fecha_validez_presupuesto,
+        fecha_inicio_evento_presupuesto,
+        fecha_fin_evento_presupuesto,
+        numero_pedido_cliente_presupuesto,
+        nombre_evento_presupuesto,
+        direccion_evento_presupuesto,
+        poblacion_evento_presupuesto,
+        cp_evento_presupuesto,
+        provincia_evento_presupuesto,
+        observaciones_cabecera_presupuesto,
+        observaciones_pie_presupuesto,
+        mostrar_obs_familias_presupuesto,
+        mostrar_obs_articulos_presupuesto,
+        observaciones_internas_presupuesto,
+        activo_presupuesto
+    ) {
+        $.ajax({
+            url: "../../controller/presupuesto.php?op=verificar",
+            type: "POST",
+            data: { 
+                numero_presupuesto: numero_presupuesto,
+                id_presupuesto: id_presupuesto 
+            },
+            dataType: "json",
+            success: function(response) {
+                console.log('Respuesta verificación:', response);
+                
+                if (response.existe) {
+                    mostrarErrorPresupuestoExistente(numero_presupuesto);
+                } else {
+                    guardarPresupuesto(
+                        id_presupuesto,
+                        numero_presupuesto,
+                        id_cliente,
+                        id_contacto_cliente,
+                        id_estado_ppto,
+                        id_forma_pago,
+                        id_metodo,
+                        fecha_presupuesto,
+                        fecha_validez_presupuesto,
+                        fecha_inicio_evento_presupuesto,
+                        fecha_fin_evento_presupuesto,
+                        numero_pedido_cliente_presupuesto,
+                        nombre_evento_presupuesto,
+                        direccion_evento_presupuesto,
+                        poblacion_evento_presupuesto,
+                        cp_evento_presupuesto,
+                        provincia_evento_presupuesto,
+                        observaciones_cabecera_presupuesto,
+                        observaciones_pie_presupuesto,
+                        mostrar_obs_familias_presupuesto,
+                        mostrar_obs_articulos_presupuesto,
+                        observaciones_internas_presupuesto,
+                        activo_presupuesto
+                    );
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en verificación:', error);
+                toastr.error('Error al verificar el presupuesto. Intente nuevamente.', 'Error');
+            }
+        });
+    }
+
+    function mostrarErrorPresupuestoExistente(numero_presupuesto) {
+        console.log("Presupuesto duplicado detectado:", numero_presupuesto);
+        Swal.fire({
+            title: 'Número de presupuesto duplicado',
+            text: 'El presupuesto "' + numero_presupuesto + '" ya existe. Por favor, elija otro número.',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+        });
+    }
+
+    function guardarPresupuesto(
+        id_presupuesto,
+        numero_presupuesto,
+        id_cliente,
+        id_contacto_cliente,
+        id_estado_ppto,
+        id_forma_pago,
+        id_metodo,
+        fecha_presupuesto,
+        fecha_validez_presupuesto,
+        fecha_inicio_evento_presupuesto,
+        fecha_fin_evento_presupuesto,
+        numero_pedido_cliente_presupuesto,
+        nombre_evento_presupuesto,
+        direccion_evento_presupuesto,
+        poblacion_evento_presupuesto,
+        cp_evento_presupuesto,
+        provincia_evento_presupuesto,
+        observaciones_cabecera_presupuesto,
+        observaciones_pie_presupuesto,
+        mostrar_obs_familias_presupuesto,
+        mostrar_obs_articulos_presupuesto,
+        observaciones_internas_presupuesto,
+        activo_presupuesto
+    ) {
+        // Mostrar indicador de carga
+        $('#btnSalvarPresupuesto').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
+        
+        // Crear datos para enviar
+        var formData = {
+            'numero_presupuesto': numero_presupuesto,
+            'id_cliente': id_cliente,
+            'id_contacto_cliente': id_contacto_cliente,
+            'id_estado_ppto': id_estado_ppto,
+            'id_forma_pago': id_forma_pago,
+            'id_metodo': id_metodo,
+            'fecha_presupuesto': fecha_presupuesto,
+            'fecha_validez_presupuesto': fecha_validez_presupuesto,
+            'fecha_inicio_evento_presupuesto': fecha_inicio_evento_presupuesto,
+            'fecha_fin_evento_presupuesto': fecha_fin_evento_presupuesto,
+            'numero_pedido_cliente_presupuesto': numero_pedido_cliente_presupuesto,
+            'nombre_evento_presupuesto': nombre_evento_presupuesto,
+            'direccion_evento_presupuesto': direccion_evento_presupuesto,
+            'poblacion_evento_presupuesto': poblacion_evento_presupuesto,
+            'cp_evento_presupuesto': cp_evento_presupuesto,
+            'provincia_evento_presupuesto': provincia_evento_presupuesto,
+            'observaciones_cabecera_presupuesto': observaciones_cabecera_presupuesto,
+            'observaciones_pie_presupuesto': observaciones_pie_presupuesto,
+            'mostrar_obs_familias_presupuesto': mostrar_obs_familias_presupuesto,
+            'mostrar_obs_articulos_presupuesto': mostrar_obs_articulos_presupuesto,
+            'observaciones_internas_presupuesto': observaciones_internas_presupuesto,
+            'activo_presupuesto': activo_presupuesto
+        };
+        
+        if (id_presupuesto) {
+            formData['id_presupuesto'] = id_presupuesto;
+        }
+
+        $.ajax({
+            url: "../../controller/presupuesto.php?op=guardaryeditar",
+            type: "POST",
+            data: formData,
+            dataType: "json",
+            success: function(res) {
+                if (res.success) {
+                    formSaved = true;
+                    
+                    toastr.success(res.message || "Presupuesto guardado correctamente");
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.php';
+                    }, 1500);
+                } else {
+                    toastr.error(res.message || "Error al guardar el presupuesto");
+                    $('#btnSalvarPresupuesto').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Guardar Presupuesto');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error en guardado:", error);
+                Swal.fire('Error', 'No se pudo guardar el presupuesto. Error: ' + error, 'error');
+                $('#btnSalvarPresupuesto').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Guardar Presupuesto');
+            }
+        });
+    }
+
+    /////////////////////////////////////////
+    //   FUNCIONES DE UTILIDAD            //
+    ///////////////////////////////////////
+
+    var formOriginalValues = {};
+    var formSaved = false;
+    
+    function captureOriginalValues() {
+        formOriginalValues = {
+            numero_presupuesto: $('#numero_presupuesto').val(),
+            id_cliente: $('#id_cliente').val(),
+            fecha_presupuesto: $('#fecha_presupuesto').val(),
+            nombre_evento_presupuesto: $('#nombre_evento_presupuesto').val()
+        };
+    }
+    
+    function hasFormChanged() {
+        return (
+            $('#numero_presupuesto').val() !== formOriginalValues.numero_presupuesto ||
+            $('#id_cliente').val() !== formOriginalValues.id_cliente ||
+            $('#fecha_presupuesto').val() !== formOriginalValues.fecha_presupuesto ||
+            $('#nombre_evento_presupuesto').val() !== formOriginalValues.nombre_evento_presupuesto
+        );
+    }
+    
+    window.addEventListener('beforeunload', function (e) {
+        if (!formSaved && hasFormChanged()) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    function markFormAsSaved() {
+        formSaved = true;
+    }
+
+    /////////////////////////////////////////
+    //   FIN FUNCIONES DE UTILIDAD        //
+    ///////////////////////////////////////
+
+}); // de document.ready

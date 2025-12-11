@@ -63,8 +63,8 @@ $(document).ready(function () {
         columns: [
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_elemento', data: 'id_elemento', visible: false, className: "text-center" }, // Columna 1: ID
-            { name: 'nombre_articulo', data: 'nombre_articulo', className: "text-center" }, // Columna 2: ARTÍCULO
-            { name: 'codigo_elemento', data: 'codigo_elemento', className: "text-center" }, // Columna 3: CODIGO
+            { name: 'nombre_articulo', data: 'nombre_articulo', visible:false, className: "text-center" }, // Columna 2: ARTÍCULO
+            { name: 'codigo_elemento', data: 'codigo_elemento', visible:false, className: "text-center" }, // Columna 3: CODIGO
             { name: 'descripcion_elemento', data: 'descripcion_elemento', className: "text-center" }, // Columna 4: DESCRIPCION
             { name: 'nombre_marca', data: 'nombre_marca', className: "text-center" }, // Columna 5: MARCA
             { name: 'modelo_elemento', data: 'modelo_elemento', className: "text-center" }, // Columna 6: MODELO

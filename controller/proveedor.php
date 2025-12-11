@@ -25,19 +25,26 @@ switch ($_GET["op"]) {
         $data = array();
         foreach ($datos as $row) {
             $data[] = array(
+                // Datos básicos del proveedor
                 "id_proveedor" => $row["id_proveedor"],
                 "codigo_proveedor" => $row["codigo_proveedor"],
                 "nombre_proveedor" => $row["nombre_proveedor"],
+                
+                // Dirección principal
                 "direccion_proveedor" => $row["direccion_proveedor"],
                 "cp_proveedor" => $row["cp_proveedor"],
                 "poblacion_proveedor" => $row["poblacion_proveedor"],
                 "provincia_proveedor" => $row["provincia_proveedor"],
+                
+                // Datos fiscales y contacto
                 "nif_proveedor" => $row["nif_proveedor"],
                 "telefono_proveedor" => $row["telefono_proveedor"],
                 "fax_proveedor" => $row["fax_proveedor"],
                 "web_proveedor" => $row["web_proveedor"],
                 "email_proveedor" => $row["email_proveedor"],
                 "persona_contacto_proveedor" => $row["persona_contacto_proveedor"],
+                
+                // Dirección de SAT (Servicio de Atención Técnica)
                 "direccion_sat_proveedor" => $row["direccion_sat_proveedor"],
                 "cp_sat_proveedor" => $row["cp_sat_proveedor"],
                 "poblacion_sat_proveedor" => $row["poblacion_sat_proveedor"],
@@ -45,11 +52,39 @@ switch ($_GET["op"]) {
                 "telefono_sat_proveedor" => $row["telefono_sat_proveedor"],
                 "fax_sat_proveedor" => $row["fax_sat_proveedor"],
                 "email_sat_proveedor" => $row["email_sat_proveedor"],
+                
+                // Observaciones y estado
                 "observaciones_proveedor" => $row["observaciones_proveedor"],
-                "cantidad_contactos" => isset($row["cantidad_contacto_proveedor"]) ? intval($row["cantidad_contacto_proveedor"]) : 0,
                 "activo_proveedor" => $row["activo_proveedor"],
                 "created_at_proveedor" => $row["created_at_proveedor"],
-                "updated_at_proveedor" => $row["updated_at_proveedor"]
+                "updated_at_proveedor" => $row["updated_at_proveedor"],
+                
+                // Datos de la forma de pago habitual
+                "id_forma_pago_habitual" => $row["id_forma_pago_habitual"],
+                "codigo_pago" => $row["codigo_pago"] ?? null,
+                "nombre_pago" => $row["nombre_pago"] ?? null,
+                "descuento_pago" => $row["descuento_pago"] ?? null,
+                "porcentaje_anticipo_pago" => $row["porcentaje_anticipo_pago"] ?? null,
+                "dias_anticipo_pago" => $row["dias_anticipo_pago"] ?? null,
+                "porcentaje_final_pago" => $row["porcentaje_final_pago"] ?? null,
+                "dias_final_pago" => $row["dias_final_pago"] ?? null,
+                "observaciones_pago" => $row["observaciones_pago"] ?? null,
+                "activo_pago" => $row["activo_pago"] ?? null,
+                
+                // Datos del método de pago
+                "id_metodo_pago" => $row["id_metodo_pago"] ?? null,
+                "codigo_metodo_pago" => $row["codigo_metodo_pago"] ?? null,
+                "nombre_metodo_pago" => $row["nombre_metodo_pago"] ?? null,
+                "observaciones_metodo_pago" => $row["observaciones_metodo_pago"] ?? null,
+                "activo_metodo_pago" => $row["activo_metodo_pago"] ?? null,
+                
+                // Cantidad de contactos
+                "cantidad_contactos" => isset($row["cantidad_contacto_proveedor"]) ? intval($row["cantidad_contacto_proveedor"]) : 0,
+                
+                // Campos calculados
+                "tipo_pago_proveedor" => $row["tipo_pago_proveedor"] ?? null,
+                "descripcion_forma_pago_proveedor" => $row["descripcion_forma_pago_proveedor"] ?? null,
+                "estado_forma_pago_proveedor" => $row["estado_forma_pago_proveedor"] ?? null
             );
         }
 
@@ -109,6 +144,7 @@ switch ($_GET["op"]) {
                     $_POST["telefono_sat_proveedor"], 
                     $_POST["fax_sat_proveedor"], 
                     $_POST["email_sat_proveedor"], 
+                    !empty($_POST["id_forma_pago_habitual"]) ? $_POST["id_forma_pago_habitual"] : null,
                     $_POST["observaciones_proveedor"]
                 );
                 
@@ -157,6 +193,7 @@ switch ($_GET["op"]) {
                     $_POST["telefono_sat_proveedor"], 
                     $_POST["fax_sat_proveedor"], 
                     $_POST["email_sat_proveedor"], 
+                    !empty($_POST["id_forma_pago_habitual"]) ? $_POST["id_forma_pago_habitual"] : null,
                     $_POST["observaciones_proveedor"]
                 );
                 

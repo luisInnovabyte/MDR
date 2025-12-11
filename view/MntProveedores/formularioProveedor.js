@@ -69,6 +69,13 @@ $(document).ready(function () {
                     $('#email_sat_proveedor').val(data.email_sat_proveedor);
                     $('#observaciones_proveedor').val(data.observaciones_proveedor);
                     
+                    // Forma de pago habitual
+                    if (data.id_forma_pago_habitual) {
+                        $('#id_forma_pago_habitual').val(data.id_forma_pago_habitual);
+                        // Trigger change para mostrar info
+                        $('#id_forma_pago_habitual').trigger('change');
+                    }
+                    
                     // Configurar el campo activo_proveedor (solo lectura en formulario)
                     // Campo oculto con el valor real para envío
                     $('#activo_proveedor_hidden').val(data.activo_proveedor);
@@ -167,6 +174,9 @@ $(document).ready(function () {
         var email_sat_proveedorR = $('#email_sat_proveedor').val().trim();
         var observaciones_proveedorR = $('#observaciones_proveedor').val().trim();
         
+        // Forma de pago habitual
+        var id_forma_pago_habitualR = $('#id_forma_pago_habitual').val();
+        
         // Obtener el estado del proveedor
         var activo_proveedorR;
         if (id_proveedorR) {
@@ -184,10 +194,10 @@ $(document).ready(function () {
         }
         
         // Verificar proveedor primero
-        verificarProveedorExistente(id_proveedorR, codigo_proveedorR, nombre_proveedorR, direccion_proveedorR, cp_proveedorR, poblacion_proveedorR, provincia_proveedorR, nif_proveedorR, telefono_proveedorR, fax_proveedorR, web_proveedorR, email_proveedorR, persona_contacto_proveedorR, direccion_sat_proveedorR, cp_sat_proveedorR, poblacion_sat_proveedorR, provincia_sat_proveedorR, telefono_sat_proveedorR, fax_sat_proveedorR, email_sat_proveedorR, observaciones_proveedorR, activo_proveedorR);
+        verificarProveedorExistente(id_proveedorR, codigo_proveedorR, nombre_proveedorR, direccion_proveedorR, cp_proveedorR, poblacion_proveedorR, provincia_proveedorR, nif_proveedorR, telefono_proveedorR, fax_proveedorR, web_proveedorR, email_proveedorR, persona_contacto_proveedorR, direccion_sat_proveedorR, cp_sat_proveedorR, poblacion_sat_proveedorR, provincia_sat_proveedorR, telefono_sat_proveedorR, fax_sat_proveedorR, email_sat_proveedorR, id_forma_pago_habitualR, observaciones_proveedorR, activo_proveedorR);
     });
 
-    function verificarProveedorExistente(id_proveedor, codigo_proveedor, nombre_proveedor, direccion_proveedor, cp_proveedor, poblacion_proveedor, provincia_proveedor, nif_proveedor, telefono_proveedor, fax_proveedor, web_proveedor, email_proveedor, persona_contacto_proveedor, direccion_sat_proveedor, cp_sat_proveedor, poblacion_sat_proveedor, provincia_sat_proveedor, telefono_sat_proveedor, fax_sat_proveedor, email_sat_proveedor, observaciones_proveedor, activo_proveedor) {
+    function verificarProveedorExistente(id_proveedor, codigo_proveedor, nombre_proveedor, direccion_proveedor, cp_proveedor, poblacion_proveedor, provincia_proveedor, nif_proveedor, telefono_proveedor, fax_proveedor, web_proveedor, email_proveedor, persona_contacto_proveedor, direccion_sat_proveedor, cp_sat_proveedor, poblacion_sat_proveedor, provincia_sat_proveedor, telefono_sat_proveedor, fax_sat_proveedor, email_sat_proveedor, id_forma_pago_habitual, observaciones_proveedor, activo_proveedor) {
         console.log('🔍 Verificando proveedor:', { codigo: codigo_proveedor, nombre: nombre_proveedor, id: id_proveedor });
         
         $.ajax({
@@ -206,7 +216,7 @@ $(document).ready(function () {
                 if (response.existe === false) {
                     // No existe, podemos guardar
                     console.log('✅ Proveedor no existe, procediendo a guardar');
-                    guardarProveedor(id_proveedor, codigo_proveedor, nombre_proveedor, direccion_proveedor, cp_proveedor, poblacion_proveedor, provincia_proveedor, nif_proveedor, telefono_proveedor, fax_proveedor, web_proveedor, email_proveedor, persona_contacto_proveedor, direccion_sat_proveedor, cp_sat_proveedor, poblacion_sat_proveedor, provincia_sat_proveedor, telefono_sat_proveedor, fax_sat_proveedor, email_sat_proveedor, observaciones_proveedor, activo_proveedor);
+                    guardarProveedor(id_proveedor, codigo_proveedor, nombre_proveedor, direccion_proveedor, cp_proveedor, poblacion_proveedor, provincia_proveedor, nif_proveedor, telefono_proveedor, fax_proveedor, web_proveedor, email_proveedor, persona_contacto_proveedor, direccion_sat_proveedor, cp_sat_proveedor, poblacion_sat_proveedor, provincia_sat_proveedor, telefono_sat_proveedor, fax_sat_proveedor, email_sat_proveedor, id_forma_pago_habitual, observaciones_proveedor, activo_proveedor);
                 } else {
                     // Ya existe
                     console.log('❌ Proveedor ya existe');
@@ -231,7 +241,7 @@ $(document).ready(function () {
         });
     }
 
-    function guardarProveedor(id_proveedor, codigo_proveedor, nombre_proveedor, direccion_proveedor, cp_proveedor, poblacion_proveedor, provincia_proveedor, nif_proveedor, telefono_proveedor, fax_proveedor, web_proveedor, email_proveedor, persona_contacto_proveedor, direccion_sat_proveedor, cp_sat_proveedor, poblacion_sat_proveedor, provincia_sat_proveedor, telefono_sat_proveedor, fax_sat_proveedor, email_sat_proveedor, observaciones_proveedor, activo_proveedor) {
+    function guardarProveedor(id_proveedor, codigo_proveedor, nombre_proveedor, direccion_proveedor, cp_proveedor, poblacion_proveedor, provincia_proveedor, nif_proveedor, telefono_proveedor, fax_proveedor, web_proveedor, email_proveedor, persona_contacto_proveedor, direccion_sat_proveedor, cp_sat_proveedor, poblacion_sat_proveedor, provincia_sat_proveedor, telefono_sat_proveedor, fax_sat_proveedor, email_sat_proveedor, id_forma_pago_habitual, observaciones_proveedor, activo_proveedor) {
         // Mostrar indicador de carga
         $('#btnSalvarProveedor').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
         
@@ -257,6 +267,7 @@ $(document).ready(function () {
             telefono_sat_proveedor: telefono_sat_proveedor,
             fax_sat_proveedor: fax_sat_proveedor,
             email_sat_proveedor: email_sat_proveedor,
+            id_forma_pago_habitual: id_forma_pago_habitual,
             observaciones_proveedor: observaciones_proveedor,
             activo_proveedor: activo_proveedor
         };
@@ -342,6 +353,7 @@ $(document).ready(function () {
             telefono_sat_proveedor: $('#telefono_sat_proveedor').val(),
             fax_sat_proveedor: $('#fax_sat_proveedor').val(),
             email_sat_proveedor: $('#email_sat_proveedor').val(),
+            id_forma_pago_habitual: $('#id_forma_pago_habitual').val(),
             observaciones_proveedor: $('#observaciones_proveedor').val(),
             activo_proveedor: $('#activo_proveedor_hidden').val()
         };
@@ -369,6 +381,7 @@ $(document).ready(function () {
             $('#telefono_sat_proveedor').val() !== formOriginalValues.telefono_sat_proveedor ||
             $('#fax_sat_proveedor').val() !== formOriginalValues.fax_sat_proveedor ||
             $('#email_sat_proveedor').val() !== formOriginalValues.email_sat_proveedor ||
+            $('#id_forma_pago_habitual').val() !== formOriginalValues.id_forma_pago_habitual ||
             $('#observaciones_proveedor').val() !== formOriginalValues.observaciones_proveedor ||
             $('#activo_proveedor_hidden').val() !== formOriginalValues.activo_proveedor
         );
@@ -399,6 +412,30 @@ $(document).ready(function () {
 
     $('#cp_proveedor, #cp_sat_proveedor').on('input', function() {
         this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+    });
+
+    // Mostrar información de la forma de pago seleccionada
+    $('#id_forma_pago_habitual').on('change', function() {
+        const selectedOption = $(this).find('option:selected');
+        const infoContainer = $('#info-forma-pago');
+        
+        if ($(this).val() === '') {
+            // No hay forma de pago seleccionada
+            infoContainer.hide();
+        } else {
+            // Mostrar información de la forma de pago
+            const metodo = selectedOption.data('metodo') || 'Sin información';
+            const tipo = selectedOption.data('tipo') || 'Sin información';
+            const descuento = selectedOption.data('descuento') || '0';
+            const anticipo = selectedOption.data('anticipo') || '0';
+            
+            $('#info-metodo').text(metodo);
+            $('#info-tipo').text(tipo);
+            $('#info-anticipo').text(anticipo);
+            $('#info-descuento').text(descuento);
+            
+            infoContainer.slideDown();
+        }
     });
 
     // Contador de caracteres para observaciones

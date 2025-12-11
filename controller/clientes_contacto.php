@@ -288,4 +288,57 @@ switch ($_GET["op"]) {
             "existe" => $resultado['existe']
         ]);
         break;
+
+    case "selectByCliente":
+        $idCliente = isset($_POST["id_cliente"]) ? trim($_POST["id_cliente"]) : 
+                    (isset($_GET["id_cliente"]) ? trim($_GET["id_cliente"]) : '');
+
+        writeToLog([
+            'action' => 'selectByCliente',
+            'id_cliente' => $idCliente,
+            'method' => $_SERVER['REQUEST_METHOD']
+        ]);
+
+        if (empty($idCliente)) {
+            echo json_encode([
+                "success" => false,
+                "message" => "El ID del cliente es obligatorio.",
+                "data" => []
+            ]);
+            break;
+        }
+
+        $contactos = $clientes_contacto->get_contactos_by_cliente($idCliente);
+        
+        $data = array();
+        foreach ($contactos as $row) {
+            // Solo devolver contactos activos
+            if ($row["activo_contacto_cliente"] == 1) {
+                $data[] = array(
+                    "id_contacto_cliente" => $row["id_contacto_cliente"],
+                    "nombre_contacto_cliente" => $row["nombre_contacto_cliente"],
+                    "apellidos_contacto_cliente" => $row["apellidos_contacto_cliente"] ?? '',
+                    "cargo_contacto_cliente" => $row["cargo_contacto_cliente"] ?? '',
+                    "departamento_contacto_cliente" => $row["departamento_contacto_cliente"] ?? '',
+                    "telefono_contacto_cliente" => $row["telefono_contacto_cliente"] ?? '',
+                    "movil_contacto_cliente" => $row["movil_contacto_cliente"] ?? '',
+                    "email_contacto_cliente" => $row["email_contacto_cliente"] ?? '',
+                    "principal_contacto_cliente" => $row["principal_contacto_cliente"]
+                );
+            }
+        }
+
+        $registro->registrarActividad(
+            'admin',
+            'clientes_contacto.php',
+            'Listar contactos por cliente',
+            'Se listaron ' . count($data) . ' contactos del cliente ID: ' . $idCliente,
+            'info'
+        );
+
+        echo json_encode([
+            "success" => true,
+            "data" => $data
+        ]);
+        break;
 }

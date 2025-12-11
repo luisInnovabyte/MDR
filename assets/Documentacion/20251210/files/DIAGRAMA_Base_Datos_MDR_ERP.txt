@@ -1,0 +1,387 @@
+# DIAGRAMA ENTIDAD-RELACIÓN - MDR ERP MANAGER
+
+## 📊 JERARQUÍA PRINCIPAL DE PRODUCTOS
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    GRUPO_ARTICULO (Nivel 1)                     │
+│  ┌──────────┬──────────┬──────────┬──────────┬──────────────┐  │
+│  │  AUDIO   │  VIDEO   │  ILUM.   │  ESTRUC. │  ACCESORIOS  │  │
+│  └────┬─────┴──────────┴──────────┴──────────┴──────────────┘  │
+│       │                                                          │
+│       └──> FAMILIA (Nivel 2)                                    │
+│            ├─ Microfonía                                        │
+│            ├─ Altavoces                                         │
+│            ├─ Consolas                                          │
+│            │                                                     │
+│            └──> ARTICULO (Nivel 3)                              │
+│                 ├─ Micrófono inalámbrico SM58                   │
+│                 ├─ TV-40"                                       │
+│                 ├─ Proyector 5000 lúmenes                       │
+│                 │                                               │
+│                 └──> ELEMENTO (Nivel 4)                         │
+│                      ├─ SM58-001 (SN: 12345)                   │
+│                      ├─ SM58-002 (SN: 12346)                   │
+│                      ├─ TV-40-001 (SN: TV98765)                │
+│                      └─ TV-40-002 (SN: TV98766)                │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 🔗 RELACIONES ENTRE ENTIDADES PRINCIPALES
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                     EMPRESA (Emisora)                            │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  FICTICIA (principal)        REAL (MDR01)   REAL (MDR02)   │ │
+│  │  Solo presupuestos           Factura        Factura        │ │
+│  └───────┬──────────────────────────┬──────────────┬──────────┘ │
+└──────────┼──────────────────────────┼──────────────┼────────────┘
+           │                          │              │
+           ▼                          ▼              ▼
+    ┌──────────────┐          ┌─────────────┐ ┌──────────┐
+    │ PRESUPUESTO  │──────────│  FACTURA    │ │  ABONO   │
+    │              │  acepta  │             │ │          │
+    │ P2025-0001   │ ──────>  │ F2025/0001  │ │ R2025/001│
+    └──────┬───────┘          └─────────────┘ └──────────┘
+           │
+           │ pertenece
+           │
+           ▼
+    ┌─────────────────┐
+    │    CLIENTE      │◄────── tiene ──────┐
+    │                 │                     │
+    │ • Datos fiscales│                     │
+    │ • Direcciones   │                     │
+    │ • Forma pago    │                     │
+    └─────────┬───────┘                     │
+              │                             │
+              │ tiene                       │
+              ▼                      ┌──────┴────────┐
+    ┌──────────────────┐             │ FORMA_PAGO    │
+    │ CONTACTO_CLIENTE │             │               │
+    │                  │             │ • Anticipo %  │
+    │ • Nombre         │             │ • Final %     │
+    │ • Email          │             │ • Días pago   │
+    │ • Teléfono       │             │ • Descuento   │
+    └──────────────────┘             └───────┬───────┘
+                                             │
+                                             │ usa
+                                             ▼
+                                      ┌──────────────┐
+                                      │ METODO_PAGO  │
+                                      │              │
+                                      │ Transferencia│
+                                      │ Tarjeta      │
+                                      │ Efectivo     │
+                                      └──────────────┘
+```
+
+## 🛠️ INVENTARIO Y OPERATIVA
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                      ELEMENTO (Unidad física)                  │
+│                                                                │
+│  Código: TV-40-001                                            │
+│  Número serie: TV-2024-XYZ-12345                             │
+│  Estado: DISPONIBLE ◄────┐                                   │
+│                           │                                   │
+│  UBICACIÓN:               │                                   │
+│  ┌────────────────────┐   │                                   │
+│  │ Nave: Nave 1       │   │                                   │
+│  │ Pasillo: A-5       │   │                                   │
+│  │ Altura: Planta 2   │   │                                   │
+│  └────────────────────┘   │                                   │
+│                           │ cambia estado                     │
+│  DOCUMENTOS:              │                                   │
+│  ├─ Manual.pdf            │                                   │
+│  ├─ Garantía.pdf          │                                   │
+│  └─ Certificado.pdf       │                                   │
+│                           │                                   │
+│  FOTOS:                   │                                   │
+│  ├─ foto1.jpg             │                                   │
+│  ├─ foto2.jpg             │                                   │
+│  └─ foto3.jpg             │                                   │
+│                           │                                   │
+└───────────────────────────┼────────────────────────────────────┘
+                            │
+                            │
+                            ▼
+            ┌───────────────────────────────┐
+            │    ESTADO_ELEMENTO            │
+            ├───────────────────────────────┤
+            │ • DISPONIBLE (verde)          │
+            │ • ALQUILADO (azul)            │
+            │ • REPARACION (naranja)        │
+            │ • MANTENIMIENTO (amarillo)    │
+            │ • BAJA (rojo)                 │
+            │ • TERCEROS (morado)           │
+            └───────────────────────────────┘
+```
+
+## 📋 FLUJO DE TRABAJO COMPLETO
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    1. CREACIÓN DE CATÁLOGO                      │
+│                                                                 │
+│  ADMIN:  Grupo → Familia → Artículo (genérico)                │
+│  TÉCNICO: Registra Elementos físicos (con NFC)                │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    2. SOLICITUD CLIENTE                         │
+│                                                                 │
+│  Cliente pide presupuesto para evento                          │
+│  Fecha evento: 15/03/2025                                      │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    3. CREACIÓN PRESUPUESTO                      │
+│                                                                 │
+│  ADMIN crea presupuesto:                                       │
+│  ├─ Empresa: FICTICIA                                          │
+│  ├─ Número: P2025-0001                                         │
+│  ├─ Artículos: TV-40" (x5), Proyector (x2)                    │
+│  ├─ Jornadas: 3 días                                           │
+│  ├─ Coeficiente: Día 1=100%, Día 2=80%, Día 3=70%            │
+│  ├─ Observaciones: Multinivel (General+Familia+Artículo)      │
+│  └─ Estado: ENVIADO                                            │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    4. CLIENTE ACEPTA                            │
+│                                                                 │
+│  Cliente firma presupuesto                                     │
+│  Selecciona: Facturar por MDR AUDIOVISUALES S.L. (MDR01)      │
+│  Estado: ACEPTADO                                              │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    5. ASIGNACIÓN TÉCNICA                        │
+│                                                                 │
+│  TÉCNICO asigna elementos específicos:                         │
+│  ├─ TV-40-001 → Cliente ABC (Evento 15/03)                    │
+│  ├─ TV-40-002 → Cliente ABC (Evento 15/03)                    │
+│  ├─ TV-40-005 → Cliente ABC (Evento 15/03)                    │
+│  └─ TV-40-007 → Cliente ABC (Evento 15/03)                    │
+│                                                                 │
+│  Elementos cambian estado: DISPONIBLE → ALQUILADO             │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    6. PREPARACIÓN Y ENTREGA                     │
+│                                                                 │
+│  TÉCNICO usa NFC para:                                         │
+│  ├─ Escanear elementos en almacén                             │
+│  ├─ Verificar funcionamiento                                   │
+│  ├─ Cargar en vehículo                                         │
+│  └─ Entregar en evento                                         │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    7. DESARROLLO DEL EVENTO                     │
+│                                                                 │
+│  Equipos en uso durante 3 días (15, 16 y 17 de marzo)        │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    8. RECOGIDA Y DEVOLUCIÓN                     │
+│                                                                 │
+│  TÉCNICO recoge equipos:                                       │
+│  ├─ Escanea NFC al recoger                                    │
+│  ├─ Verifica estado                                            │
+│  └─ Registra incidencias si hay                               │
+│                                                                 │
+│  Elementos vuelven a almacén:                                  │
+│  Estado: ALQUILADO → DISPONIBLE (o MANTENIMIENTO si necesario)│
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    9. FACTURACIÓN                               │
+│                                                                 │
+│  ADMIN genera factura:                                         │
+│  ├─ Empresa: MDR AUDIOVISUALES S.L. (MDR01)                   │
+│  ├─ Número: F2025/0001                                         │
+│  ├─ Basada en: Presupuesto P2025-0001                         │
+│  ├─ Forma de pago: 40% anticipo + 60% al finalizar           │
+│  ├─ VeriFact: Envío a AEAT automático                        │
+│  └─ Estado factura: EMITIDA                                    │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    10. COBRO                                    │
+│                                                                 │
+│  Primer pago (40%): Al firmar presupuesto                      │
+│  Segundo pago (60%): Al finalizar evento                       │
+│  Estado: COBRADO                                               │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 💡 OBSERVACIONES MULTINIVEL
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                   PRESUPUESTO P2025-0001                        │
+│                                                                 │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ OBSERVACIONES GENERALES (orden: 1-99)                   │  │
+│  │ ─────────────────────────────────────────               │  │
+│  │ • Condiciones de pago                                   │  │
+│  │ • Validez del presupuesto                               │  │
+│  │ • Responsabilidades y seguros                           │  │
+│  └──────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ OBSERVACIONES DE FAMILIAS (orden: 100-199)              │  │
+│  │ ─────────────────────────────────────────               │  │
+│  │ • Microfonía: "Requiere prueba de sonido 2h antes"     │  │
+│  │ • Iluminación: "Necesita acceso a cuadro eléctrico"    │  │
+│  └──────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ OBSERVACIONES DE ARTÍCULOS (orden: 200-299)             │  │
+│  │ ─────────────────────────────────────────────           │  │
+│  │ • TV-40": "Incluye soporte y cables HDMI"              │  │
+│  │ • Proyector: "Requiere corriente trifásica"            │  │
+│  └──────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ OBSERVACIONES ESPECÍFICAS DEL PRESUPUESTO (orden: 9999) │  │
+│  │ ─────────────────────────────────────────────           │  │
+│  │ • "Transporte incluido por ubicación remota"           │  │
+│  │ • "Horarios especiales acordados con cliente"          │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 🔐 SISTEMA DE EMPRESAS Y NUMERACIÓN
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      EMPRESAS DEL GRUPO                         │
+│                                                                 │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │  EMPRESA FICTICIA (Principal)                          │    │
+│  │  ────────────────────────────                          │    │
+│  │  Código: FICTICIA                                      │    │
+│  │  Nombre: MDR Audiovisuales Group                       │    │
+│  │  NIF: B00000000 (ficticio)                            │    │
+│  │  Uso: SOLO PRESUPUESTOS                               │    │
+│  │  Serie presupuestos: P                                 │    │
+│  │  VeriFact: NO aplica                                   │    │
+│  │                                                        │    │
+│  │  Formato: P2025-0001, P2025-0002, P2025-0003...      │    │
+│  └────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │  EMPRESA REAL 1                                        │    │
+│  │  ──────────────                                        │    │
+│  │  Código: MDR01                                         │    │
+│  │  Nombre: MDR AUDIOVISUALES S.L.                       │    │
+│  │  NIF: B06123456 (real)                                │    │
+│  │  Uso: FACTURAS + PRESUPUESTOS                         │    │
+│  │  Serie facturas: F                                     │    │
+│  │  Serie abonos: R                                       │    │
+│  │  VeriFact: SÍ aplica                                   │    │
+│  │                                                        │    │
+│  │  Formato facturas: F2025/0001, F2025/0002...         │    │
+│  │  Formato abonos: R2025/0001, R2025/0002...           │    │
+│  └────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │  EMPRESA REAL 2                                        │    │
+│  │  ──────────────                                        │    │
+│  │  Código: MDR02                                         │    │
+│  │  Nombre: MDR EVENTOS Y PRODUCCIONES S.L.              │    │
+│  │  NIF: B06654321 (real)                                │    │
+│  │  Uso: FACTURAS + PRESUPUESTOS                         │    │
+│  │  Serie facturas: FE                                    │    │
+│  │  Serie abonos: RE                                      │    │
+│  │  VeriFact: SÍ aplica                                   │    │
+│  │                                                        │    │
+│  │  Formato facturas: FE2025/0001, FE2025/0002...       │    │
+│  │  Formato abonos: RE2025/0001, RE2025/0002...         │    │
+│  └────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+
+FLUJO:
+  1. Presupuesto → Emite EMPRESA FICTICIA → P2025-0001
+  2. Cliente acepta → Elige empresa real → MDR01 o MDR02
+  3. Factura → Emite EMPRESA REAL elegida → F2025/0001 o FE2025/0001
+```
+
+## 💰 SISTEMA DE PAGOS FRACCIONADOS
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    EJEMPLOS DE FORMAS DE PAGO                   │
+│                                                                 │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │  PAGO ÚNICO (Anticipo = 100%)                          │    │
+│  │  ────────────────────────────                          │    │
+│  │  Código: CONT_TRANS                                    │    │
+│  │  Nombre: Contado transferencia                         │    │
+│  │  Método: Transferencia                                 │    │
+│  │  Descuento: 2%                                         │    │
+│  │                                                        │    │
+│  │  Anticipo: 100% (al firmar)                           │    │
+│  │  Final: 0%                                            │    │
+│  │                                                        │    │
+│  │  Presupuesto: 10.000€                                 │    │
+│  │  Descuento 2%: -200€                                  │    │
+│  │  Total a pagar: 9.800€ (1 pago)                      │    │
+│  └────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │  PAGO FRACCIONADO (Anticipo + Final)                   │    │
+│  │  ────────────────────────────────────                  │    │
+│  │  Código: FRAC40_60                                     │    │
+│  │  Nombre: 40% anticipo + 60% al finalizar              │    │
+│  │  Método: Transferencia                                 │    │
+│  │  Descuento: 0%                                         │    │
+│  │                                                        │    │
+│  │  Anticipo: 40% (0 días = al firmar)                  │    │
+│  │  Final: 60% (0 días = al finalizar evento)           │    │
+│  │                                                        │    │
+│  │  Presupuesto: 10.000€                                 │    │
+│  │  Primer pago (40%): 4.000€ (01/02/2025)              │    │
+│  │  Segundo pago (60%): 6.000€ (15/03/2025)             │    │
+│  │  Total a pagar: 10.000€ (2 pagos)                    │    │
+│  └────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │  PAGO FRACCIONADO (Anticipo + Antes del evento)        │    │
+│  │  ────────────────────────────────────────────          │    │
+│  │  Código: FRAC30_7                                      │    │
+│  │  Nombre: 30% anticipo + 70% (7 días antes)           │    │
+│  │  Método: Transferencia                                 │    │
+│  │  Descuento: 0%                                         │    │
+│  │                                                        │    │
+│  │  Anticipo: 30% (0 días = al firmar)                  │    │
+│  │  Final: 70% (-7 días = 7 días antes del evento)      │    │
+│  │                                                        │    │
+│  │  Presupuesto: 10.000€                                 │    │
+│  │  Evento: 15/03/2025                                   │    │
+│  │  Primer pago (30%): 3.000€ (01/02/2025 - al firmar)  │    │
+│  │  Segundo pago (70%): 7.000€ (08/03/2025 - 7 días antes)│   │
+│  │  Total a pagar: 10.000€ (2 pagos)                    │    │
+│  └────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+**Generado por:** MDR ERP Manager v2.0  
+**Fecha:** 10 de diciembre de 2025  
+**Propósito:** Documentación visual de la estructura de base de datos

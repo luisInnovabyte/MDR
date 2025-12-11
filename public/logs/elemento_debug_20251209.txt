@@ -1,0 +1,8 @@
+[2025-12-09 11:27:39] {"action":"getWarrantyEvents","month":12,"year":2025}
+[2025-12-09 11:27:39] {"action":"getWarrantyEvents","result":"success","count":1}
+[2025-12-09 11:30:02] {"action":"getWarrantyEvents","month":12,"year":2025}
+[2025-12-09 11:30:02] {"action":"getWarrantyEvents","result":"success","count":1}
+[2025-12-09 11:30:14] {"action":"getMaintenanceEvents","month":12,"year":2025}
+[2025-12-09 11:30:14] {"action":"getMaintenanceEvents","result":"success","count":2}
+[2025-12-09 12:33:40] {"action":"getWarrantyEvents","month":12,"year":2025}
+[2025-12-09 12:33:40] {"action":"getWarrantyEvents","result":"success","count":1}

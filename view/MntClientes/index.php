@@ -232,6 +232,17 @@
     <!-- ------------------------- -->
     <script type="text/javascript" src="mntclientes.js"></script>
 
+  <script>
+        // Colapsar el sidebar al cargar la página
+        $(document).ready(function() {
+            $('body').addClass('collapsed-menu');
+            $('.br-sideleft').addClass('collapsed');
+        });
+    </script>
+
+
+
+
 </body>
 
 </html>

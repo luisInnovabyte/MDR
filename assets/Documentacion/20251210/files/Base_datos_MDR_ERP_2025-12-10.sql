@@ -1,0 +1,3761 @@
+-- ========================================================
+-- MDR ERP MANAGER - ESTRUCTURA DE BASE DE DATOS
+-- ========================================================
+-- Versión: 2.0
+-- Última actualización: 2025-12-10
+-- 
+-- DESCRIPCIÓN:
+-- Sistema ERP completo para gestión de alquiler de equipos audiovisuales
+-- Incluye gestión de inventario, presupuestos, facturación, clientes,
+-- proveedores, documentos y cumplimiento VeriFact
+--
+-- CARACTERÍSTICAS PRINCIPALES:
+-- - Jerarquía de productos: Grupo > Familia > Artículo > Elemento
+-- - Gestión dual: Artículos genéricos (admin) + Elementos específicos (técnicos)
+-- - Sistema de pagos flexible con fraccionamiento
+-- - Coeficientes reductores para alquileres multi-día
+-- - Control de ubicación detallada de elementos (Nave/Pasillo/Altura)
+-- - Gestión documental por elemento (manuales, garantías, fotos)
+-- - Sistema de observaciones multinivel para presupuestos
+-- - Soporte multi-empresa con cumplimiento VeriFact
+-- - Bilingüe: Español/Inglés
+-- ========================================================
+
+-- ===========================================================
+-- Ya ESTA  -- TABLA DE TIPOS DE IVA
+-- ===========================================================
+
+CREATE TABLE tipo_iva (
+    id_iva INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_iva VARCHAR(20) NOT NULL UNIQUE,
+    nombre_iva VARCHAR(100) NOT NULL,
+    porcentaje_iva DECIMAL(5,2) NOT NULL,
+    porcentaje_req_iva DECIMAL(5,2) DEFAULT 0.00,
+    observaciones_iva TEXT,
+    activo_iva BOOLEAN DEFAULT TRUE,
+    created_at_iva TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_iva TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ========================================================
+-- YA ESTA - TABLA DE FORMAS DE PAGO
+--                    ANULADO 
+-- ========================================================
+
+CREATE TABLE forma_pago (
+    id_pago INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_pago VARCHAR(20) NOT NULL UNIQUE,
+    nombre_pago VARCHAR(100) NOT NULL,
+    dias_pago INT DEFAULT 0,
+    descuento_pago DECIMAL(5,2) DEFAULT 0.00,
+    observaciones_pago TEXT,
+    activo_pago BOOLEAN DEFAULT TRUE,
+    created_at_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ======================================================================================================
+-- Campos:
+-- 
+-- codigo_pago y nombre_pago: Identifican el tipo de pago
+-- Ejemplos: "CONT", "TRANS30", "TARJ", "CHEQUE"
+-- 
+-- 
+-- dias_pago: Plazo de pago en días
+-- Contado = 0 días
+-- Transferencia 30 días = 30
+-- Transferencia 60 días = 60
+-- 
+-- 
+-- descuento_pago: Descuento por pronto pago (%)
+-- Si pagas al contado → 2% descuento
+-- Si pagas en 7 días → 1% descuento
+-- 
+-- 
+-- Ejemplos de registros:
+-- | codigo | nombre                    | dias | descuento |
+-- |--------|---------------------------|------|-----------|
+-- | CONT   | Contado                   | 0    | 2.00      |
+-- | TRANS7 | Transferencia 7 días      | 7    | 1.00      |
+-- | TRANS30| Transferencia 30 días     | 30   | 0.00      |
+-- | TRANS60| Transferencia 60 días     | 60   | 0.00      |
+-- | TARJ   | Tarjeta crédito           | 0    | 0.00      |
+-- | CHEQ30 | Cheque 30 días            | 30   | 0.00      |
+-- Uso:
+-- 
+-- Al crear un presupuesto/factura, seleccionas la forma de pago
+-- El sistema calcula automáticamente:
+-- 
+-- Fecha de vencimiento (fecha_factura + dias_pago)
+-- Descuento si aplica
+-- 
+-- 
+-- Permite tener control de cobros y vencimientos
+
+--  ============================================================================================== 
+
+
+
+
+
+
+-- ========================================================
+-- TABLA DE MÉTODOS DE PAGO
+-- ========================================================
+
+CREATE TABLE metodo_pago (
+    id_metodo_pago INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_metodo_pago VARCHAR(20) NOT NULL UNIQUE,
+    nombre_metodo_pago VARCHAR(100) NOT NULL,
+    descripcion_metodo_pago VARCHAR(255),
+    requiere_datos_bancarios BOOLEAN DEFAULT FALSE COMMENT 'Si TRUE, requiere IBAN/cuenta bancaria',
+    permite_fraccionado BOOLEAN DEFAULT TRUE COMMENT 'Si TRUE, permite pagos fraccionados',
+    comision_metodo_pago DECIMAL(5,2) DEFAULT 0.00 COMMENT 'Comisión aplicable (%)',
+    observaciones_metodo_pago TEXT,
+    activo_metodo_pago BOOLEAN DEFAULT TRUE,
+    created_at_metodo_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_metodo_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_codigo_metodo_pago (codigo_metodo_pago)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ========================================================
+-- NO ESTA - DATOS INICIALES DE MÉTODOS DE PAGO
+-- ========================================================
+
+
+
+-- ========================================================
+-- HAY QUE CAMBIARLA - TABLA DE FORMAS DE PAGO (MEJORADA CON FK A METODO_PAGO)
+-- ========================================================
+
+-- ========================================================
+-- YA ESTA - TABLA DE MÉTODOS DE PAGO
+-- ========================================================
+
+CREATE TABLE metodo_pago (
+    id_metodo_pago INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_metodo_pago VARCHAR(20) NOT NULL UNIQUE,
+    nombre_metodo_pago VARCHAR(100) NOT NULL,
+    observaciones_metodo_pago TEXT,
+    activo_metodo_pago BOOLEAN DEFAULT TRUE,
+    created_at_metodo_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_metodo_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_codigo_metodo_pago (codigo_metodo_pago)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Datos iniciales sugeridos
+INSERT INTO metodo_pago (codigo_metodo_pago, nombre_metodo_pago) VALUES
+('TRANS', 'Transferencia bancaria'),
+('TARJ', 'Tarjeta de crédito/débito'),
+('EFEC', 'Efectivo'),
+('CHEQ', 'Cheque'),
+('BIZUM', 'Bizum'),
+('PAYPAL', 'PayPal'),
+('DOMICIL', 'Domiciliación bancaria');
+
+
+-- ========================================================
+-- YA ESTA - TABLA DE FORMAS DE PAGO (VERSIÓN OPTIMIZADA)
+-- ========================================================
+
+CREATE TABLE forma_pago (
+    id_pago INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    -- Identificación
+    codigo_pago VARCHAR(20) NOT NULL UNIQUE COMMENT 'Código único identificador (ej: CONT_TRANS, FRAC40_60)',
+    nombre_pago VARCHAR(100) NOT NULL COMMENT 'Nombre descriptivo de la forma de pago',
+    
+    -- Método de pago (FK a tabla metodo_pago)
+    id_metodo_pago INT UNSIGNED NOT NULL 
+        COMMENT 'Método de pago a utilizar (transferencia, tarjeta, efectivo...)',
+    
+    -- =====================================================
+    -- CAMPOS PARA DESCUENTOS (solo aplica si pago = 100%)
+    -- =====================================================
+    descuento_pago DECIMAL(5,2) DEFAULT 0.00 
+        COMMENT 'Descuento por pronto pago en porcentaje (ej: 2.00 = 2%). Solo aplica si porcentaje_anticipo_pago = 100',
+    
+    -- =====================================================
+    -- ESTRUCTURA DE PAGO (anticipo + final)
+    -- =====================================================
+    
+    -- ANTICIPO (primer pago)
+    porcentaje_anticipo_pago DECIMAL(5,2) DEFAULT 100.00 
+        COMMENT 'Porcentaje del total a pagar como anticipo (ej: 40.00 = 40%). Si es 100.00 = pago único',
+    
+    dias_anticipo_pago INT DEFAULT 0 
+        COMMENT 'Días para pagar el anticipo desde la firma del presupuesto. 0=al firmar, 7=a los 7 días, 30=a los 30 días',
+    
+    -- PAGO FINAL (segundo pago, solo si anticipo < 100%)
+    porcentaje_final_pago DECIMAL(5,2) DEFAULT 0.00 
+        COMMENT 'Porcentaje restante del total (ej: 60.00 = 60%). Debe sumar 100% con el anticipo. Si es 0 = pago único',
+    
+    dias_final_pago INT DEFAULT 0 
+        COMMENT 'Días para el pago final. Positivo=días desde firma (30=a 30 días), Negativo=días antes del evento (-7=7 días antes), 0=al finalizar evento',
+    
+    -- Campos adicionales
+    observaciones_pago TEXT 
+        COMMENT 'Observaciones internas sobre esta forma de pago',
+    
+    activo_pago BOOLEAN DEFAULT TRUE 
+        COMMENT 'Si FALSE, la forma de pago no estará disponible para nuevos presupuestos',
+    
+    created_at_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Restricciones
+    CONSTRAINT fk_forma_pago_metodo FOREIGN KEY (id_metodo_pago) 
+        REFERENCES metodo_pago(id_metodo_pago) 
+        ON DELETE RESTRICT 
+        ON UPDATE CASCADE,
+    
+    -- Índices
+    INDEX idx_id_metodo_pago (id_metodo_pago),
+    INDEX idx_activo_pago (activo_pago)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ========================================================
+-- DATOS INICIALES SUGERIDOS
+-- ========================================================
+
+-- PAGOS ÚNICOS (porcentaje_anticipo_pago = 100%)
+INSERT INTO forma_pago (
+    codigo_pago, 
+    nombre_pago, 
+    id_metodo_pago,
+    descuento_pago,
+    porcentaje_anticipo_pago,
+    dias_anticipo_pago,
+    porcentaje_final_pago,
+    dias_final_pago
+) VALUES
+-- Contado al firmar (con descuento)
+('CONT_TRANS', 'Contado transferencia', 1, 2.00, 100.00, 0, 0.00, 0),
+('CONT_EFEC', 'Contado efectivo', 3, 2.00, 100.00, 0, 0.00, 0),
+('CONT_TARJ', 'Contado tarjeta', 2, 0.00, 100.00, 0, 0.00, 0),
+
+-- Pago único diferido (sin descuento)
+('TRANS7', 'Transferencia 7 días', 1, 1.00, 100.00, 7, 0.00, 0),
+('TRANS30', 'Transferencia 30 días', 1, 0.00, 100.00, 30, 0.00, 0),
+('TRANS60', 'Transferencia 60 días', 1, 0.00, 100.00, 60, 0.00, 0),
+('TRANS90', 'Transferencia 90 días', 1, 0.00, 100.00, 90, 0.00, 0);
+
+-- PAGOS FRACCIONADOS (porcentaje_anticipo_pago < 100%)
+INSERT INTO forma_pago (
+    codigo_pago, 
+    nombre_pago, 
+    id_metodo_pago,
+    porcentaje_anticipo_pago, 
+    dias_anticipo_pago,
+    porcentaje_final_pago, 
+    dias_final_pago,
+    observaciones_pago
+) VALUES
+-- Fraccionados al firmar + al finalizar evento
+('FRAC40_60', '40% anticipo + 60% al finalizar', 1, 
+    40.00, 0, 60.00, 0, 
+    'Anticipo al firmar presupuesto, resto al finalizar evento'),
+
+('FRAC50_50', '50% anticipo + 50% al finalizar', 1, 
+    50.00, 0, 50.00, 0, 
+    'Pago dividido en dos partes iguales'),
+
+-- Fraccionados con plazo desde firma
+('FRAC50_30', '50% anticipo + 50% a 30 días', 1, 
+    50.00, 0, 50.00, 30, 
+    'Anticipo al firmar, resto a 30 días desde firma'),
+
+('FRAC30_60', '30% anticipo + 70% a 60 días', 1, 
+    30.00, 0, 70.00, 60, 
+    'Anticipo al firmar, resto a 60 días desde firma'),
+
+-- Fraccionados con plazo antes del evento
+('FRAC30_7', '30% anticipo + 70% (7 días antes)', 1, 
+    30.00, 0, 70.00, -7, 
+    'Anticipo al firmar, resto 7 días antes del evento'),
+
+('FRAC40_15', '40% anticipo + 60% (15 días antes)', 1, 
+    40.00, 0, 60.00, -15, 
+    'Anticipo al firmar, resto 15 días antes del evento'),
+
+-- Fraccionado con anticipo diferido
+('FRAC50_7_30', '50% a 7 días + 50% a 30 días', 1, 
+    50.00, 7, 50.00, 30, 
+    'Primer pago a los 7 días de firmar, segundo a los 30 días de firmar');
+
+-- ========================================================
+-- EJEMPLOS DE USO Y CÁLCULOS
+-- ========================================================
+
+/*
+EJEMPLO 1: PAGO ÚNICO AL CONTADO CON DESCUENTO
+Presupuesto: 10.000€
+Forma de pago: 'CONT_TRANS'
+- porcentaje_anticipo_pago: 100.00%
+- dias_anticipo_pago: 0
+- descuento_pago: 2.00%
+- porcentaje_final_pago: 0.00%
+
+CÁLCULO:
+- Importe original: 10.000€
+- Descuento (2%): -200€
+- Total a pagar: 9.800€
+- Fecha vencimiento: Fecha de firma (días = 0)
+- Número de pagos: 1
+
+
+EJEMPLO 2: PAGO ÚNICO DIFERIDO (SIN DESCUENTO)
+Presupuesto: 10.000€
+Forma de pago: 'TRANS30'
+- porcentaje_anticipo_pago: 100.00%
+- dias_anticipo_pago: 30
+- descuento_pago: 0.00%
+- porcentaje_final_pago: 0.00%
+
+CÁLCULO:
+- Importe original: 10.000€
+- Total a pagar: 10.000€
+- Fecha vencimiento: Fecha de firma + 30 días
+- Número de pagos: 1
+
+
+EJEMPLO 3: PAGO FRACCIONADO (AL FIRMAR + AL FINALIZAR)
+Presupuesto: 10.000€
+Forma de pago: 'FRAC40_60'
+- porcentaje_anticipo_pago: 40.00%
+- dias_anticipo_pago: 0
+- porcentaje_final_pago: 60.00%
+- dias_final_pago: 0
+
+CÁLCULO:
+- Importe original: 10.000€
+- Primer pago (40%): 4.000€ → Vencimiento: Al firmar
+- Segundo pago (60%): 6.000€ → Vencimiento: Al finalizar evento
+- Número de pagos: 2
+
+
+EJEMPLO 4: PAGO FRACCIONADO (AL FIRMAR + ANTES DEL EVENTO)
+Presupuesto: 10.000€
+Forma de pago: 'FRAC30_7'
+Fecha firma: 01/11/2024
+Fecha evento: 15/12/2024
+- porcentaje_anticipo_pago: 30.00%
+- dias_anticipo_pago: 0
+- porcentaje_final_pago: 70.00%
+- dias_final_pago: -7
+
+CÁLCULO:
+- Importe original: 10.000€
+- Primer pago (30%): 3.000€ → Vencimiento: 01/11/2024 (al firmar)
+- Segundo pago (70%): 7.000€ → Vencimiento: 08/12/2024 (7 días antes del evento)
+- Número de pagos: 2
+
+
+EJEMPLO 5: PAGO FRACCIONADO (AMBOS DIFERIDOS)
+Presupuesto: 10.000€
+Forma de pago: 'FRAC50_7_30'
+Fecha firma: 01/11/2024
+- porcentaje_anticipo_pago: 50.00%
+- dias_anticipo_pago: 7
+- porcentaje_final_pago: 50.00%
+- dias_final_pago: 30
+
+CÁLCULO:
+- Importe original: 10.000€
+- Primer pago (50%): 5.000€ → Vencimiento: 08/11/2024 (firma + 7 días)
+- Segundo pago (50%): 5.000€ → Vencimiento: 01/12/2024 (firma + 30 días)
+- Número de pagos: 2
+*/
+
+-- ========================================================
+-- CONSULTAS ÚTILES
+-- ========================================================
+
+-- 1. Ver todas las formas de pago activas con su método
+SELECT 
+    fp.codigo_pago,
+    fp.nombre_pago,
+    mp.nombre_metodo_pago,
+    fp.porcentaje_anticipo_pago,
+    fp.dias_anticipo_pago,
+    fp.porcentaje_final_pago,
+    fp.dias_final_pago,
+    fp.descuento_pago,
+    CASE 
+        WHEN fp.porcentaje_anticipo_pago = 100.00 THEN 'Pago único'
+        ELSE 'Pago fraccionado'
+    END as tipo_pago
+FROM forma_pago fp
+INNER JOIN metodo_pago mp ON fp.id_metodo_pago = mp.id_metodo_pago
+WHERE fp.activo_pago = TRUE
+ORDER BY 
+    CASE WHEN fp.porcentaje_anticipo_pago = 100.00 THEN 1 ELSE 2 END,
+    fp.nombre_pago;
+
+-- 2. Validar integridad de porcentajes (deben sumar 100%)
+SELECT 
+    codigo_pago,
+    nombre_pago,
+    porcentaje_anticipo_pago,
+    porcentaje_final_pago,
+    (porcentaje_anticipo_pago + porcentaje_final_pago) as suma_porcentajes,
+    CASE 
+        WHEN (porcentaje_anticipo_pago + porcentaje_final_pago) != 100.00 
+        THEN '❌ ERROR: No suma 100%'
+        ELSE '✅ OK'
+    END as validacion
+FROM forma_pago
+WHERE activo_pago = TRUE
+ORDER BY validacion DESC, codigo_pago;
+
+-- 3. Ver formas de pago con descuento
+SELECT 
+    codigo_pago,
+    nombre_pago,
+    descuento_pago,
+    porcentaje_anticipo_pago
+FROM forma_pago
+WHERE descuento_pago > 0
+AND activo_pago = TRUE;
+
+
+
+-- ========================================================
+-- YA ESTA - TABLA DE ESTADOS DE PRESUPUESTO
+-- ========================================================
+
+CREATE TABLE estado_presupuesto (
+    id_estado_ppto INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_estado_ppto VARCHAR(20) NOT NULL UNIQUE,
+    nombre_estado_ppto VARCHAR(100) NOT NULL,
+    color_estado_ppto VARCHAR(7),
+    orden_estado_ppto INT DEFAULT 0,
+    observaciones_estado_ppto TEXT,
+    activo_estado_ppto BOOLEAN DEFAULT TRUE,
+    created_at_estado_ppto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_estado_ppto TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- La tabla estado_presupuesto sirve para gestionar el ciclo de vida de un presupuesto, desde que se crea hasta que se convierte en factura o se rechaza. Te explico:
+-- TABLA ESTADO_PRESUPUESTO
+-- Campos:
+-- 
+-- codigo_estado_ppto y nombre_estado_ppto: Identifican el estado
+-- 
+-- Ejemplos: "PEND", "ENV", "ACEP", "RECH", "FACT"
+-- 
+-- 
+-- color_estado_ppto: Color hexadecimal para visualización en interfaz
+-- 
+-- Pendiente → #FFA500 (naranja)
+-- Enviado → #2196F3 (azul)
+-- Aceptado → #4CAF50 (verde)
+-- Rechazado → #F44336 (rojo)
+-- Facturado → #9C27B0 (morado)
+-- 
+-- 
+-- orden_estado_ppto: Orden de visualización/progresión
+-- 
+-- Permite ordenar estados lógicamente: 1, 2, 3, 4...
+-- 
+-- 
+-- 
+-- Ejemplos de registros:
+-- | codigo | nombre           | color   | orden |
+-- |--------|------------------|---------|-------|
+-- | BORR   | Borrador         | #9E9E9E | 1     |
+-- | PEND   | Pendiente envío  | #FFA500 | 2     |
+-- | ENV    | Enviado          | #2196F3 | 3     |
+-- | REV    | En revisión      | #FF9800 | 4     |
+-- | ACEP   | Aceptado         | #4CAF50 | 5     |
+-- | RECH   | Rechazado        | #F44336 | 6     |
+-- | CADUC  | Caducado         | #757575 | 7     |
+-- | FACT   | Facturado        | #9C27B0 | 8     |
+-- Uso:
+-- Flujo típico de un presupuesto:
+-- 
+-- BORR → Administración está creando el presupuesto
+-- PEND → Presupuesto terminado, pendiente de enviar al cliente
+-- ENV → Ya se envió al cliente (por email/WhatsApp/etc)
+-- REV → Cliente está revisándolo
+-- ACEP → Cliente lo aceptó → Se genera pedido/factura
+-- RECH → Cliente lo rechazó → Se archiva
+-- CADUC → Pasó el tiempo de validez sin respuesta
+-- FACT → Ya se facturó (estado final)
+-- 
+-- Ventajas:
+-- ✅ Control visual: Los colores permiten ver rápidamente el estado en listados
+-- ✅ Trazabilidad: Sabes en qué punto está cada presupuesto
+-- ✅ Reportes: Puedes filtrar presupuestos por estado
+-- ✅ Workflow: Define el flujo de trabajo de la empresa
+-- ✅ Flexible: MDR puede definir sus propios estados según su proceso
+
+
+
+
+
+
+-- ========================================================
+-- YA ESTA  - TABLA DE UNIDADES DE MEDIDA
+-- ========================================================
+
+CREATE TABLE unidad_medida (
+    id_unidad INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre_unidad VARCHAR(100) NOT NULL,
+    descr_unidad VARCHAR(255), 
+    simbolo_unidad VARCHAR(10),
+    activo_unidad BOOLEAN DEFAULT TRUE,
+    created_at_unidad TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_unidad TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ========================================================
+-- YA ESTA - TABLA DE COEFICIENTES REDUCTORES
+-- ========================================================
+
+CREATE TABLE coeficiente (
+    id_coeficiente INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    jornadas_coeficiente INT NOT NULL UNIQUE,
+    valor_coeficiente DECIMAL(10,2) NOT NULL,
+    observaciones_coeficiente TEXT,
+    activo_coeficiente BOOLEAN DEFAULT TRUE,
+    created_at_coeficiente TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_coeficiente TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ========================================================
+-- YA ESTA - TABLA DE CLIENTES
+-- ========================================================
+-- ========================================================
+-- TABLA DE CLIENTES (CON FORMA DE PAGO HABITUAL)
+-- ========================================================
+
+CREATE TABLE cliente (
+    id_cliente INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_cliente VARCHAR(20) NOT NULL UNIQUE,
+    nombre_cliente VARCHAR(255) NOT NULL,
+    
+    -- Dirección principal
+    direccion_cliente VARCHAR(255),
+    cp_cliente VARCHAR(10),
+    poblacion_cliente VARCHAR(100),
+    provincia_cliente VARCHAR(100),
+    
+    -- Datos fiscales y contacto
+    nif_cliente VARCHAR(20),
+    telefono_cliente VARCHAR(255),
+    fax_cliente VARCHAR(50),
+    web_cliente VARCHAR(255),
+    email_cliente VARCHAR(255),
+    
+    -- Dirección de facturación (si es diferente)
+    nombre_facturacion_cliente VARCHAR(255),
+    direccion_facturacion_cliente VARCHAR(255),
+    cp_facturacion_cliente VARCHAR(10),
+    poblacion_facturacion_cliente VARCHAR(100),
+    provincia_facturacion_cliente VARCHAR(100),
+    
+    -- =====================================================
+    -- FORMA DE PAGO HABITUAL DEL CLIENTE
+    -- =====================================================
+    id_forma_pago_habitual INT UNSIGNED 
+        COMMENT 'Forma de pago habitual del cliente. Se usará por defecto en nuevos presupuestos',
+    
+    -- Campos adicionales
+    observaciones_cliente TEXT,
+    activo_cliente BOOLEAN DEFAULT TRUE,
+    created_at_cliente TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_cliente TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- =====================================================
+    -- RESTRICCIONES DE CLAVE FORÁNEA
+    -- =====================================================
+    CONSTRAINT fk_cliente_forma_pago_habitual FOREIGN KEY (id_forma_pago_habitual) 
+        REFERENCES forma_pago(id_pago) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    
+    -- =====================================================
+    -- ÍNDICES
+    -- =====================================================
+    INDEX idx_codigo_cliente (codigo_cliente),
+    INDEX idx_nombre_cliente (nombre_cliente),
+    INDEX idx_nif_cliente (nif_cliente),
+    INDEX idx_id_forma_pago_habitual (id_forma_pago_habitual)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- ========================================================
+-- MODIFICAR TABLA CLIENTE EXISTENTE
+-- ========================================================
+
+ALTER TABLE cliente
+ADD COLUMN id_forma_pago_habitual INT UNSIGNED 
+    COMMENT 'Forma de pago habitual del cliente. Se usará por defecto en nuevos presupuestos'
+    AFTER provincia_facturacion_cliente,
+
+ADD CONSTRAINT fk_cliente_forma_pago_habitual FOREIGN KEY (id_forma_pago_habitual) 
+    REFERENCES forma_pago(id_pago) 
+    ON DELETE SET NULL 
+    ON UPDATE CASCADE,
+
+ADD INDEX idx_id_forma_pago_habitual (id_forma_pago_habitual);
+
+
+-- ========================================================
+-- LA PRIMERA VISTA DE CLIENTES - CANTIDAD DE CONTACTOS. - 
+-- DESFASADA HAY UNA NUEVA DEFINICION CON FORMAS DE PAGO
+-- ========================================================
+
+
+
+
+
+
+-- ========================================================
+-- VISTA CONTACTO_CANTIDAD_CLIENTE
+-- (Clientes con forma de pago, método de pago y cantidad de contactos)
+-- ========================================================
+
+DROP VIEW IF EXISTS contacto_cantidad_cliente;
+
+CREATE VIEW contacto_cantidad_cliente AS
+SELECT 
+    -- =====================================================
+    -- DATOS DEL CLIENTE
+    -- =====================================================
+    c.id_cliente,
+    c.codigo_cliente,
+    c.nombre_cliente,
+    
+    -- Dirección principal
+    c.direccion_cliente,
+    c.cp_cliente,
+    c.poblacion_cliente,
+    c.provincia_cliente,
+    
+    -- Datos fiscales y contacto
+    c.nif_cliente,
+    c.telefono_cliente,
+    c.fax_cliente,
+    c.web_cliente,
+    c.email_cliente,
+    
+    -- Dirección de facturación
+    c.nombre_facturacion_cliente,
+    c.direccion_facturacion_cliente,
+    c.cp_facturacion_cliente,
+    c.poblacion_facturacion_cliente,
+    c.provincia_facturacion_cliente,
+    
+    -- Observaciones y estado
+    c.observaciones_cliente,
+    c.activo_cliente,
+    c.created_at_cliente,
+    c.updated_at_cliente,
+    
+    -- =====================================================
+    -- DATOS DE LA FORMA DE PAGO HABITUAL
+    -- =====================================================
+    c.id_forma_pago_habitual,
+    fp.codigo_pago,
+    fp.nombre_pago,
+    fp.descuento_pago,
+    fp.porcentaje_anticipo_pago,
+    fp.dias_anticipo_pago,
+    fp.porcentaje_final_pago,
+    fp.dias_final_pago,
+    fp.observaciones_pago,
+    fp.activo_pago,
+    
+    -- =====================================================
+    -- DATOS DEL MÉTODO DE PAGO
+    -- =====================================================
+    mp.id_metodo_pago,
+    mp.codigo_metodo_pago,
+    mp.nombre_metodo_pago,
+    mp.observaciones_metodo_pago,
+    mp.activo_metodo_pago,
+    
+    -- =====================================================
+    -- CANTIDAD DE CONTACTOS (NUEVO CAMPO)
+    -- =====================================================
+    (SELECT COUNT(cc.id_contacto_cliente)
+     FROM contacto_cliente cc
+     WHERE cc.id_cliente = c.id_cliente
+    ) AS cantidad_contactos_cliente,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS
+    -- =====================================================
+    
+    -- Tipo de pago
+    CASE 
+        WHEN fp.porcentaje_anticipo_pago = 100.00 THEN 'Pago único'
+        WHEN fp.porcentaje_anticipo_pago < 100.00 THEN 'Pago fraccionado'
+        ELSE 'Sin forma de pago'
+    END AS tipo_pago_cliente,
+    
+    -- Descripción completa de la forma de pago
+    CASE 
+        WHEN fp.id_pago IS NULL THEN 'Sin forma de pago asignada'
+        WHEN fp.porcentaje_anticipo_pago = 100.00 THEN 
+            CONCAT(
+                mp.nombre_metodo_pago,
+                ' - ',
+                fp.nombre_pago,
+                CASE 
+                    WHEN fp.descuento_pago > 0 THEN CONCAT(' (Dto: ', fp.descuento_pago, '%)')
+                    ELSE ''
+                END
+            )
+        ELSE 
+            CONCAT(
+                mp.nombre_metodo_pago,
+                ' - ',
+                fp.porcentaje_anticipo_pago, '% + ',
+                fp.porcentaje_final_pago, '%'
+            )
+    END AS descripcion_forma_pago_cliente,
+    
+    -- Dirección completa principal
+    CONCAT_WS(', ',
+        c.direccion_cliente,
+        CONCAT(c.cp_cliente, ' ', c.poblacion_cliente),
+        c.provincia_cliente
+    ) AS direccion_completa_cliente,
+    
+    -- Dirección completa de facturación
+    CASE 
+        WHEN c.direccion_facturacion_cliente IS NOT NULL THEN
+            CONCAT_WS(', ',
+                c.direccion_facturacion_cliente,
+                CONCAT(c.cp_facturacion_cliente, ' ', c.poblacion_facturacion_cliente),
+                c.provincia_facturacion_cliente
+            )
+        ELSE NULL
+    END AS direccion_facturacion_completa_cliente,
+    
+    -- Indicador de dirección de facturación diferente
+    CASE 
+        WHEN c.direccion_facturacion_cliente IS NOT NULL THEN TRUE
+        ELSE FALSE
+    END AS tiene_direccion_facturacion_diferente,
+    
+    -- Estado de configuración de forma de pago
+    CASE 
+        WHEN c.id_forma_pago_habitual IS NULL THEN 'Sin configurar'
+        WHEN fp.activo_pago = FALSE THEN 'Forma de pago inactiva'
+        WHEN mp.activo_metodo_pago = FALSE THEN 'Método de pago inactivo'
+        ELSE 'Configurado'
+    END AS estado_forma_pago_cliente
+
+FROM cliente c
+LEFT JOIN forma_pago fp ON c.id_forma_pago_habitual = fp.id_pago
+LEFT JOIN metodo_pago mp ON fp.id_metodo_pago = mp.id_metodo_pago;
+
+
+
+-- ========================================================
+-- YA ESTA - TABLA DE CONTACTOS DE CLIENTES
+-- ========================================================
+
+CREATE TABLE contacto_cliente (
+    id_contacto_cliente INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT UNSIGNED NOT NULL,
+    nombre_contacto_cliente VARCHAR(100) NOT NULL,
+    apellidos_contacto_cliente VARCHAR(150),
+    cargo_contacto_cliente VARCHAR(100),
+    departamento_contacto_cliente VARCHAR(100),
+    telefono_contacto_cliente VARCHAR(50),
+    movil_contacto_cliente VARCHAR(50),
+    email_contacto_cliente VARCHAR(255),
+    extension_contacto_cliente VARCHAR(10),
+    principal_contacto_cliente BOOLEAN DEFAULT FALSE,
+    observaciones_contacto_cliente TEXT,
+    activo_contacto_cliente BOOLEAN DEFAULT TRUE,
+    created_at_contacto_cliente TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_contacto_cliente TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_contacto_cliente FOREIGN KEY (id_cliente) 
+        REFERENCES cliente(id_cliente) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    INDEX idx_id_cliente_contacto (id_cliente),
+    INDEX idx_nombre_contacto_cliente (nombre_contacto_cliente)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ========================================================
+-- YA ESTA - TABLA DE PROVEEDORES
+-- ========================================================
+
+CREATE TABLE proveedor (
+    id_proveedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_proveedor VARCHAR(20) NOT NULL UNIQUE,
+    nombre_proveedor VARCHAR(255) NOT NULL,
+    direccion_proveedor VARCHAR(255),
+    cp_proveedor VARCHAR(10),
+    poblacion_proveedor VARCHAR(100),
+    provincia_proveedor VARCHAR(100),
+    nif_proveedor VARCHAR(20),
+    telefono_proveedor VARCHAR(255),
+    fax_proveedor VARCHAR(50),
+    web_proveedor VARCHAR(255),
+    email_proveedor VARCHAR(255),
+    persona_contacto_proveedor VARCHAR(255),
+    direccion_sat_proveedor VARCHAR(255),
+    cp_sat_proveedor VARCHAR(10),
+    poblacion_sat_proveedor VARCHAR(100),
+    provincia_sat_proveedor VARCHAR(100),
+    telefono_sat_proveedor VARCHAR(255),
+    fax_sat_proveedor VARCHAR(50),
+    email_sat_proveedor VARCHAR(255),
+    observaciones_proveedor TEXT,
+    activo_proveedor BOOLEAN DEFAULT TRUE,
+    created_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_codigo_proveedor (codigo_proveedor),
+    INDEX idx_nombre_proveedor (nombre_proveedor),
+    INDEX idx_nif_proveedor (nif_proveedor)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ========================================================
+-- YA ESTA - TABLA DE CONTACTOS DE PROVEEDORES
+-- ========================================================
+
+CREATE TABLE contacto_proveedor (
+    id_contacto_proveedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_proveedor INT UNSIGNED NOT NULL,
+    nombre_contacto_proveedor VARCHAR(100) NOT NULL,
+    apellidos_contacto_proveedor VARCHAR(150),
+    cargo_contacto_proveedor VARCHAR(100),
+    departamento_contacto_proveedor VARCHAR(100),
+    telefono_contacto_proveedor VARCHAR(50),
+    movil_contacto_proveedor VARCHAR(50),
+    email_contacto_proveedor VARCHAR(255),
+    extension_contacto_proveedor VARCHAR(10),
+    principal_contacto_proveedor BOOLEAN DEFAULT FALSE,
+    observaciones_contacto_proveedor TEXT,
+    activo_contacto_proveedor BOOLEAN DEFAULT TRUE,
+    created_at_contacto_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_contacto_proveedor TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_contacto_proveedor FOREIGN KEY (id_proveedor) 
+        REFERENCES proveedor(id_proveedor) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    INDEX idx_id_proveedor_contacto (id_proveedor),
+    INDEX idx_nombre_contacto_proveedor (nombre_contacto_proveedor)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- ========================================================
+-- - VISTA DE PROVEEDORES con cantidad de contactos
+-- - contacto_cantidad_proveedor
+--  
+-- ========================================================
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`%` 
+    SQL SECURITY DEFINER
+VIEW `contacto_cantidad_proveedor` AS
+    SELECT 
+        `proveedor`.`id_proveedor` AS `id_proveedor`,
+        `proveedor`.`codigo_proveedor` AS `codigo_proveedor`,
+        `proveedor`.`nombre_proveedor` AS `nombre_proveedor`,
+        `proveedor`.`direccion_proveedor` AS `direccion_proveedor`,
+        `proveedor`.`cp_proveedor` AS `cp_proveedor`,
+        `proveedor`.`poblacion_proveedor` AS `poblacion_proveedor`,
+        `proveedor`.`provincia_proveedor` AS `provincia_proveedor`,
+        `proveedor`.`nif_proveedor` AS `nif_proveedor`,
+        `proveedor`.`telefono_proveedor` AS `telefono_proveedor`,
+        `proveedor`.`fax_proveedor` AS `fax_proveedor`,
+        `proveedor`.`web_proveedor` AS `web_proveedor`,
+        `proveedor`.`email_proveedor` AS `email_proveedor`,
+        `proveedor`.`persona_contacto_proveedor` AS `persona_contacto_proveedor`,
+        `proveedor`.`direccion_sat_proveedor` AS `direccion_sat_proveedor`,
+        `proveedor`.`cp_sat_proveedor` AS `cp_sat_proveedor`,
+        `proveedor`.`poblacion_sat_proveedor` AS `poblacion_sat_proveedor`,
+        `proveedor`.`provincia_sat_proveedor` AS `provincia_sat_proveedor`,
+        `proveedor`.`telefono_sat_proveedor` AS `telefono_sat_proveedor`,
+        `proveedor`.`fax_sat_proveedor` AS `fax_sat_proveedor`,
+        `proveedor`.`email_sat_proveedor` AS `email_sat_proveedor`,
+        `proveedor`.`observaciones_proveedor` AS `observaciones_proveedor`,
+        `proveedor`.`activo_proveedor` AS `activo_proveedor`,
+        `proveedor`.`created_at_proveedor` AS `created_at_proveedor`,
+        `proveedor`.`updated_at_proveedor` AS `updated_at_proveedor`,
+        (SELECT 
+                COUNT(`contacto_proveedor`.`id_contacto_proveedor`)
+            FROM
+                `contacto_proveedor`
+            WHERE
+                (`contacto_proveedor`.`id_proveedor` = `proveedor`.`id_proveedor`)) AS `cantidad_contacto_proveedor`
+    FROM
+        `proveedor`
+
+
+-- ========================================================
+-- Ya ESTA - TABLA DE GRUPOS DE ARTÍCULOS
+-- ========================================================
+
+CREATE TABLE grupo_articulo (
+    id_grupo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_grupo VARCHAR(20) NOT NULL UNIQUE,
+    nombre_grupo VARCHAR(100) NOT NULL,
+    descripcion_grupo VARCHAR(255),
+    observaciones_grupo TEXT,
+    activo_grupo BOOLEAN DEFAULT TRUE,
+    created_at_grupo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_grupo TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Claro, te explico en detalle la tabla `grupo_articulo`:
+-- 
+-- ## TABLA GRUPO_ARTICULO
+-- 
+-- ### ¿Qué es y para qué sirve?
+-- 
+-- Es una tabla de **categorización de primer nivel** que permite organizar tus artículos en grandes grupos o categorías principales. Es el nivel más alto de clasificación en tu jerarquía de productos.
+-- 
+-- ### Jerarquía de clasificación en tu sistema:
+-- 
+-- 
+-- GRUPO (nivel 1 - macro categoría)
+--   └── FAMILIA (nivel 2 - categoría específica)
+--       └── ARTÍCULO (nivel 3 - producto)
+--           └── ELEMENTO (nivel 4 - unidad física específica)
+-- 
+-- 
+-- ### Ejemplo práctico para MDR (alquiler de equipos audiovisuales):
+-- 
+-- 
+-- GRUPO: "AUDIO"
+--   ├── FAMILIA: "Micrófonos"
+--   │     ├── ARTÍCULO: "Micrófono inalámbrico de mano"
+--   │     └── ARTÍCULO: "Micrófono de solapa"
+--   ├── FAMILIA: "Altavoces"
+--   │     ├── ARTÍCULO: "Line Array 12 pulgadas"
+--   │     └── ARTÍCULO: "Subwoofer 18 pulgadas"
+--   └── FAMILIA: "Consolas de mezcla"
+--         └── ARTÍCULO: "Consola digital 32 canales"
+-- 
+-- GRUPO: "ILUMINACIÓN"
+--   ├── FAMILIA: "Iluminación móvil"
+--   │     ├── ARTÍCULO: "Moving Head LED"
+--   │     └── ARTÍCULO: "Scanner"
+--   └── FAMILIA: "Iluminación estática"
+--         ├── ARTÍCULO: "PAR LED 64"
+--         └── ARTÍCULO: "Foco seguidor"
+-- 
+-- GRUPO: "VIDEO"
+--   ├── FAMILIA: "Proyección"
+--   ├── FAMILIA: "Pantallas LED"
+--   └── FAMILIA: "Cámaras"
+-- 
+-- GRUPO: "ESTRUCTURAS"
+--   ├── FAMILIA: "Truss"
+--   ├── FAMILIA: "Torres de elevación"
+--   └── FAMILIA: "Escenarios"
+-- 
+-- 
+-- ### Campos explicados:
+-- 
+-- | Campo | Tipo | Descripción |
+-- |-------|------|-------------|
+-- | **id_grupo** | INT UNSIGNED PK | Identificador único autoincrementable |
+-- | **codigo_grupo** | VARCHAR(20) UNIQUE | Código corto para identificar rápidamente el grupo. Ej: "AUD", "ILU", "VID", "EST" |
+-- | **nombre_grupo** | VARCHAR(100) | Nombre descriptivo del grupo. Ej: "Audio", "Iluminación", "Vídeo" |
+-- | **descripcion_grupo** | VARCHAR(255) | Descripción breve del grupo. Ej: "Equipos de sonido y megafonía" |
+-- | **observaciones_grupo** | TEXT | Notas internas sobre el grupo, consideraciones especiales, etc. |
+-- | **activo_grupo** | BOOLEAN | Permite desactivar grupos sin eliminarlos |
+-- | **created_at_grupo** | TIMESTAMP | Fecha y hora de creación del registro |
+-- | **updated_at_grupo** | TIMESTAMP | Fecha y hora de última actualización |
+-- 
+-- ### Ejemplos de registros:
+-- 
+-- sql
+-- INSERT INTO grupo_articulo (codigo_grupo, nombre_grupo, descripcion_grupo) VALUES
+-- ('AUD', 'Audio', 'Equipos de sonido, megafonía y amplificación'),
+-- ('ILU', 'Iluminación', 'Equipos de iluminación escénica y arquitectónica'),
+-- ('VID', 'Vídeo', 'Equipos de proyección, pantallas y cámaras'),
+-- ('EST', 'Estructuras', 'Truss, torres, escenarios y rigging'),
+-- ('COM', 'Comunicaciones', 'Intercomunicadores y sistemas de coordinación'),
+-- ('ELE', 'Eléctrico', 'Distribución eléctrica y cableado'),
+-- ('ACC', 'Accesorios', 'Cables, conectores, adaptadores y consumibles'),
+-- ('MOB', 'Mobiliario', 'Sillas, mesas, vallas y elementos de evento');
+-- 
+-- 
+-- ### Ventajas de usar grupos:
+-- 
+-- ✅ **Organización visual**: En tu interfaz puedes mostrar pestañas o menús por grupos  
+-- ✅ **Filtrado rápido**: Buscar "todo el audio" o "toda la iluminación"  
+-- ✅ **Reportes por categoría**: "Facturación del grupo Audio en 2024"  
+-- ✅ **Tarifas diferenciadas**: Aplicar políticas de precio por grupo  
+-- ✅ **Control de permisos**: Usuarios que solo gestionan ciertos grupos  
+-- ✅ **Estadísticas**: "¿Qué grupo genera más ingresos?"  
+-- 
+-- ### Relación con otras tablas:
+-- 
+-- sql
+-- -- La tabla familia tiene una FK a grupo_articulo
+-- CREATE TABLE familia (
+--     id_familia INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+--     id_grupo INT UNSIGNED,  -- ← Aquí se vincula
+--     codigo_familia VARCHAR(20) NOT NULL UNIQUE,
+--     nombre_familia VARCHAR(100) NOT NULL,
+--     ...
+--     CONSTRAINT fk_familia_grupo FOREIGN KEY (id_grupo) 
+--         REFERENCES grupo_articulo(id_grupo)
+-- );
+-- 
+-- 
+-- ### Uso en consultas:
+-- 
+-- sql
+-- -- Ver todos los artículos del grupo "Audio"
+-- SELECT 
+--     g.nombre_grupo,
+--     f.nombre_familia,
+--     a.nombre_articulo,
+--     a.precio_alquiler_articulo
+-- FROM grupo_articulo g
+-- INNER JOIN familia f ON g.id_grupo = f.id_grupo
+-- INNER JOIN articulo a ON f.id_familia = a.id_familia
+-- WHERE g.codigo_grupo = 'AUD'
+-- AND g.activo_grupo = TRUE
+-- AND f.activo_familia = TRUE
+-- AND a.activo_articulo = TRUE;
+-- 
+-- 
+-- sql
+-- -- Facturación por grupo en 2024
+-- SELECT 
+--     g.nombre_grupo,
+--     SUM(a.facturacion_anio_articulo) as total_facturado
+-- FROM grupo_articulo g
+-- INNER JOIN familia f ON g.id_grupo = f.id_grupo
+-- INNER JOIN articulo a ON f.id_familia = a.id_familia
+-- WHERE g.activo_grupo = TRUE
+-- GROUP BY g.id_grupo, g.nombre_grupo
+-- ORDER BY total_facturado DESC;
+-- 
+-- 
+-- ### ¿Es obligatorio usar grupos?
+-- 
+-- **No**, la FK en `familia.id_grupo` permite NULL:
+-- sql
+-- id_grupo INT UNSIGNED,  -- Puede ser NULL
+
+-- 
+-- Esto significa que puedes tener familias sin grupo asignado, aunque **no es recomendable** para mantener una buena organización.
+-- 
+-- ### Diferencia con FAMILIA:
+-- 
+-- - **GRUPO**: Macro categoría ("Audio", "Vídeo", "Iluminación")
+-- - **FAMILIA**: Categoría específica dentro del grupo ("Micrófonos", "Altavoces", "Consolas")
+-- 
+-- Esta estructura te da **flexibilidad** para organizarte como mejor te convenga según crezca tu catálogo de productos.
+
+
+
+
+-- ========================================================
+-- YA ESTA - TABLA DE MARCAS
+-- ========================================================
+
+CREATE TABLE marca (
+    id_marca INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_marca VARCHAR(20) NOT NULL UNIQUE,
+    nombre_marca VARCHAR(100) NOT NULL,
+    prefijo_marca VARCHAR(10),
+    observaciones_marca TEXT,
+    activo_marca BOOLEAN DEFAULT TRUE,
+    created_at_marca TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_marca TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- ===============================
+-- YA ESTA - TABLA DE FAMILIAS
+-- ===============================
+CREATE TABLE `familia` (
+  `id_familia` int unsigned NOT NULL AUTO_INCREMENT,
+  `codigo_familia` varchar(20) NOT NULL,
+  `nombre_familia` varchar(100) NOT NULL,
+  `name_familia` varchar(100) NOT NULL COMMENT 'Nombre en inglés',
+  `descr_familia` varchar(255) DEFAULT NULL,
+  `activo_familia` tinyint(1) DEFAULT '1',
+  `coeficiente_familia` tinyint DEFAULT NULL,
+  `id_unidad_familia` int DEFAULT NULL COMMENT 'el Id (id_unidad) de la tabla unidad_medida',
+  `imagen_familia` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Es la foto representativa de la familia',
+  `created_at_familia` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at_familia` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_familia`),
+  UNIQUE KEY `codigo_familia` (`codigo_familia`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+-- ==================================================================
+-- YA ESTA 
+-- MODIFICACIONES A TABLA FAMILIA
+-- Para incluir observaciones de presupuesto y orden de las mismas
+-- =================================================================
+ALTER TABLE familia 
+ADD COLUMN observaciones_presupuesto_familia TEXT AFTER imagen_familia,
+ADD COLUMN orden_obs_familia INT DEFAULT 100 AFTER observaciones_presupuesto_familia;
+
+
+-- ==================================================================
+-- YA ESTA
+-- MODIFICACIONES A TABLA FAMILIA
+-- Incluir el grupo de artículo al que pertenece la familia
+-- =================================================================
+ALTER TABLE familia
+ADD COLUMN id_grupo INT UNSIGNED AFTER id_familia,
+ADD CONSTRAINT fk_familia_grupo FOREIGN KEY (id_grupo) 
+    REFERENCES grupo_articulo(id_grupo) 
+    ON DELETE SET NULL 
+    ON UPDATE CASCADE,
+ADD INDEX idx_id_grupo_familia (id_grupo);
+
+
+Podemos aprovecharlo o añadir uno específico:
+ALTER TABLE familia 
+ADD COLUMN observaciones_presupuesto_familia TEXT AFTER imagen_familia,
+ADD COLUMN orden_obs_familia INT DEFAULT 100 AFTER observaciones_presupuesto_familia;
+
+-- ==================================================================
+-- YA ESTA
+-- CREAR LA VISTA PARA QUE INCLUYA LA DESCRIPCIÓN DE LA UNIDAD DE MEDIDA
+-- =================================================================
+
+-- Eliminar la vista existente si existe
+DROP VIEW IF EXISTS familia_unidad_media;
+
+-- Crear la vista actualizada con los campos coeficiente_familia, id_grupo y datos de grupo_articulo
+CREATE VIEW familia_unidad_media AS
+SELECT 
+    f.id_familia,
+    f.id_grupo,
+    f.codigo_familia,
+    f.nombre_familia,
+    f.name_familia,
+    f.descr_familia,
+    f.imagen_familia,
+    f.activo_familia,
+    f.coeficiente_familia,
+    f.created_at_familia,
+    f.updated_at_familia,
+    f.id_unidad_familia,
+    u.nombre_unidad,
+    u.descr_unidad,
+    u.simbolo_unidad,
+    u.activo_unidad,
+    g.codigo_grupo,
+    g.nombre_grupo,
+    g.descripcion_grupo
+FROM familia f
+LEFT JOIN unidad_medida u ON f.id_unidad_familia = u.id_unidad
+LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo;
+
+-- Verificar que la vista se creó correctamente
+SELECT 'Vista familia_unidad_media actualizada correctamente' AS mensaje;
+
+-- Mostrar estructura de la vista
+DESCRIBE familia_unidad_media;
+
+
+-- ========================================================
+-- TABLA DE ARTÍCULOS GENERALES
+-- ========================================================
+CREATE TABLE articulo (
+    id_articulo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_familia INT UNSIGNED NOT NULL,
+    id_unidad INT UNSIGNED,
+    codigo_articulo VARCHAR(50) NOT NULL UNIQUE,
+    nombre_articulo VARCHAR(255) NOT NULL,
+    name_articulo VARCHAR(255) NOT NULL,
+    imagen_articulo VARCHAR(255),
+    precio_alquiler_articulo DECIMAL(10,2) DEFAULT 0.00,
+    coeficiente_articulo TINYINT(1) NULL,
+    es_kit_articulo TINYINT(1) DEFAULT 0,
+    control_total_articulo TINYINT(1) DEFAULT 0,
+    no_facturar_articulo TINYINT(1) DEFAULT 0,
+    notas_presupuesto_articulo TEXT,
+    notes_budget_articulo TEXT,
+    orden_obs_articulo INT DEFAULT 200,
+    observaciones_articulo TEXT,
+    activo_articulo TINYINT(1) DEFAULT 1,
+    created_at_articulo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_articulo TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_articulo_familia FOREIGN KEY (id_familia) 
+        REFERENCES familia(id_familia) 
+        ON DELETE RESTRICT 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_articulo_unidad FOREIGN KEY (id_unidad) 
+        REFERENCES unidad_medida(id_unidad) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    INDEX idx_codigo_articulo (codigo_articulo),
+    INDEX idx_id_familia_articulo (id_familia),
+    INDEX idx_nombre_articulo (nombre_articulo),
+    INDEX idx_es_kit_articulo (es_kit_articulo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ========================================================
+-- VISTA COMPLETA DE ARTÍCULOS CON TODAS LAS DEPENDENCIAS
+-- ========================================================
+
+DROP VIEW IF EXISTS vista_articulo_completa;
+
+CREATE VIEW vista_articulo_completa AS
+SELECT 
+    -- =====================================================
+    -- DATOS DEL ARTÍCULO
+    -- =====================================================
+    a.id_articulo,
+    a.codigo_articulo,
+    a.nombre_articulo,
+    a.name_articulo,
+    a.imagen_articulo,
+    a.precio_alquiler_articulo,
+    a.coeficiente_articulo,
+    a.es_kit_articulo,
+    a.control_total_articulo,
+    a.no_facturar_articulo,
+    a.notas_presupuesto_articulo,
+    a.notes_budget_articulo,
+    a.orden_obs_articulo,
+    a.observaciones_articulo,
+    a.activo_articulo,
+    a.created_at_articulo,
+    a.updated_at_articulo,
+    
+    -- =====================================================
+    -- DATOS DE LA FAMILIA
+    -- =====================================================
+    f.id_familia,
+    f.codigo_familia,
+    f.nombre_familia,
+    f.name_familia,
+    f.descr_familia,
+    f.imagen_familia,
+    f.coeficiente_familia,
+    f.observaciones_presupuesto_familia,
+    f.orden_obs_familia,
+    f.activo_familia,
+    
+    -- =====================================================
+    -- DATOS DEL GRUPO (desde familia)
+    -- =====================================================
+    g.id_grupo,
+    g.codigo_grupo,
+    g.nombre_grupo,
+    g.descripcion_grupo,
+    g.activo_grupo,
+    
+    -- =====================================================
+    -- DATOS DE LA UNIDAD DE MEDIDA
+    -- =====================================================
+    u.id_unidad,
+    u.nombre_unidad,
+    u.descr_unidad,
+    u.simbolo_unidad,
+    u.activo_unidad,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS
+    -- =====================================================
+    
+    -- Coeficiente efectivo (lógica de herencia)
+    CASE 
+        WHEN a.coeficiente_articulo IS NULL THEN f.coeficiente_familia
+        WHEN a.coeficiente_articulo = 1 THEN 1
+        ELSE 0
+    END AS coeficiente_efectivo,
+    
+    -- Ruta completa de imagen del artículo (con fallback a familia)
+    COALESCE(a.imagen_articulo, f.imagen_familia) AS imagen_efectiva,
+    
+    -- Indica si tiene imagen propia o heredada
+    CASE 
+        WHEN a.imagen_articulo IS NOT NULL THEN 'propia'
+        WHEN f.imagen_familia IS NOT NULL THEN 'heredada'
+        ELSE 'sin_imagen'
+    END AS tipo_imagen,
+    
+    -- Jerarquía completa como texto
+    CONCAT(
+        COALESCE(g.nombre_grupo, 'Sin grupo'), 
+        ' > ', 
+        f.nombre_familia, 
+        ' > ', 
+        a.nombre_articulo
+    ) AS jerarquia_completa,
+    
+    -- Indica si está completamente configurado
+    CASE 
+        WHEN a.precio_alquiler_articulo > 0 
+            AND a.imagen_articulo IS NOT NULL 
+            AND a.notas_presupuesto_articulo IS NOT NULL 
+        THEN 1 
+        ELSE 0 
+    END AS configuracion_completa
+    
+FROM articulo a
+INNER JOIN familia f ON a.id_familia = f.id_familia
+LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+LEFT JOIN unidad_medida u ON a.id_unidad = u.id_unidad;
+
+-- ========================================================
+-- CONSULTAS DE PRUEBA Y VALIDACIÓN
+-- ========================================================
+
+-- 1. Ver todos los artículos activos con su información completa
+SELECT 
+    codigo_articulo,
+    nombre_articulo,
+    nombre_familia,
+    nombre_grupo,
+    nombre_unidad,
+    descr_unidad,
+    simbolo_unidad,
+    precio_alquiler_articulo,
+    coeficiente_efectivo,
+    imagen_efectiva,
+    tipo_imagen,
+    configuracion_completa
+FROM vista_articulo_completa
+WHERE activo_articulo = 1
+ORDER BY nombre_grupo, nombre_familia, nombre_articulo;
+
+-- 2. Artículos por grupo con estadísticas
+SELECT 
+    COALESCE(nombre_grupo, 'Sin grupo') as nombre_grupo,
+    COUNT(*) as total_articulos,
+    SUM(CASE WHEN imagen_articulo IS NOT NULL THEN 1 ELSE 0 END) as con_imagen_propia,
+    SUM(CASE WHEN imagen_efectiva IS NOT NULL THEN 1 ELSE 0 END) as con_imagen_efectiva,
+    ROUND(AVG(precio_alquiler_articulo), 2) as precio_promedio,
+    SUM(CASE WHEN configuracion_completa = 1 THEN 1 ELSE 0 END) as totalmente_configurados
+FROM vista_articulo_completa
+WHERE activo_articulo = 1
+GROUP BY id_grupo, nombre_grupo
+ORDER BY nombre_grupo;
+
+-- 3. Artículos sin configurar completamente
+SELECT 
+    codigo_articulo,
+    nombre_articulo,
+    jerarquia_completa,
+    CASE WHEN precio_alquiler_articulo = 0 THEN 'Sin precio' ELSE '' END as problema_precio,
+    CASE WHEN imagen_articulo IS NULL THEN 'Sin imagen' ELSE '' END as problema_imagen,
+    CASE WHEN notas_presupuesto_articulo IS NULL THEN 'Sin notas' ELSE '' END as problema_notas
+FROM vista_articulo_completa
+WHERE activo_articulo = 1
+AND configuracion_completa = 0
+ORDER BY nombre_grupo, nombre_familia, nombre_articulo;
+
+-- 4. Catálogo completo para exportar/imprimir
+SELECT 
+    COALESCE(codigo_grupo, '') as codigo_grupo,
+    COALESCE(nombre_grupo, 'Sin grupo') as nombre_grupo,
+    codigo_familia,
+    nombre_familia,
+    codigo_articulo,
+    nombre_articulo,
+    name_articulo,
+    precio_alquiler_articulo,
+    CASE 
+        WHEN simbolo_unidad IS NOT NULL THEN CONCAT(nombre_unidad, ' (', simbolo_unidad, ')')
+        ELSE nombre_unidad
+    END as unidad_completa,
+    CASE WHEN coeficiente_efectivo = 1 THEN 'Sí' ELSE 'No' END as aplica_coeficiente,
+    CASE WHEN es_kit_articulo = 1 THEN 'Sí' ELSE 'No' END as es_kit,
+    imagen_efectiva,
+    notas_presupuesto_articulo
+FROM vista_articulo_completa
+WHERE activo_articulo = 1
+ORDER BY 
+    nombre_grupo,
+    nombre_familia,
+    nombre_articulo;
+
+-- 5. Artículos que requieren control total
+SELECT 
+    codigo_articulo,
+    nombre_articulo,
+    jerarquia_completa,
+    precio_alquiler_articulo,
+    imagen_efectiva
+FROM vista_articulo_completa
+WHERE control_total_articulo = 1
+AND activo_articulo = 1
+ORDER BY nombre_articulo;
+
+-- 6. Kits disponibles con su información
+SELECT 
+    codigo_articulo,
+    nombre_articulo,
+    nombre_familia,
+    precio_alquiler_articulo,
+    imagen_efectiva,
+    notas_presupuesto_articulo,
+    notes_budget_articulo
+FROM vista_articulo_completa
+WHERE es_kit_articulo = 1
+AND activo_articulo = 1
+ORDER BY precio_alquiler_articulo DESC;
+
+-- 7. Estadísticas generales del catálogo
+SELECT 
+    COUNT(*) as total_articulos,
+    COUNT(DISTINCT id_familia) as total_familias,
+    COUNT(DISTINCT id_grupo) as total_grupos,
+    SUM(CASE WHEN imagen_articulo IS NOT NULL THEN 1 ELSE 0 END) as con_imagen_propia,
+    SUM(CASE WHEN imagen_efectiva IS NOT NULL THEN 1 ELSE 0 END) as con_imagen_total,
+    SUM(CASE WHEN es_kit_articulo = 1 THEN 1 ELSE 0 END) as total_kits,
+    SUM(CASE WHEN control_total_articulo = 1 THEN 1 ELSE 0 END) as con_control_total,
+    SUM(CASE WHEN configuracion_completa = 1 THEN 1 ELSE 0 END) as completamente_configurados,
+    ROUND(AVG(precio_alquiler_articulo), 2) as precio_promedio,
+    MIN(precio_alquiler_articulo) as precio_minimo,
+    MAX(precio_alquiler_articulo) as precio_maximo
+FROM vista_articulo_completa
+WHERE activo_articulo = 1;
+
+-- 8. Artículos por unidad de medida
+SELECT 
+    COALESCE(nombre_unidad, 'Sin unidad') as unidad,
+    COALESCE(simbolo_unidad, '') as simbolo,
+    COALESCE(descr_unidad, '') as descripcion,
+    COUNT(*) as total_articulos,
+    ROUND(AVG(precio_alquiler_articulo), 2) as precio_promedio
+FROM vista_articulo_completa
+WHERE activo_articulo = 1
+GROUP BY id_unidad, nombre_unidad, simbolo_unidad, descr_unidad
+ORDER BY total_articulos DESC;
+
+-- 9. Artículos sin unidad de medida asignada
+SELECT 
+    codigo_articulo,
+    nombre_articulo,
+    nombre_familia,
+    precio_alquiler_articulo
+FROM vista_articulo_completa
+WHERE id_unidad IS NULL
+AND activo_articulo = 1
+ORDER BY nombre_articulo;
+
+-- 10. Resumen por familia
+SELECT 
+    codigo_familia,
+    nombre_familia,
+    COALESCE(nombre_grupo, 'Sin grupo') as nombre_grupo,
+    COUNT(*) as total_articulos,
+    SUM(CASE WHEN es_kit_articulo = 1 THEN 1 ELSE 0 END) as total_kits,
+    ROUND(SUM(precio_alquiler_articulo), 2) as suma_precios,
+    ROUND(AVG(precio_alquiler_articulo), 2) as precio_promedio
+FROM vista_articulo_completa
+WHERE activo_articulo = 1
+GROUP BY id_familia, codigo_familia, nombre_familia, nombre_grupo
+ORDER BY nombre_grupo, nombre_familia;
+
+
+
+
+-- ========================================================
+-- TABLA DE ESTADOS DE ELEMENTOS
+-- ========================================================
+CREATE TABLE estado_elemento (
+    id_estado_elemento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_estado_elemento VARCHAR(20) NOT NULL UNIQUE,
+    descripcion_estado_elemento VARCHAR(50) NOT NULL,
+    color_estado_elemento VARCHAR(7) COMMENT 'Color hexadecimal para visualización',
+    permite_alquiler_estado_elemento BOOLEAN DEFAULT TRUE COMMENT 'Si TRUE, el elemento puede ser alquilado en este estado',
+    observaciones_estado_elemento TEXT,
+    activo_estado_elemento BOOLEAN DEFAULT TRUE,
+    created_at_estado_elemento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_estado_elemento TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_codigo_estado_elemento (codigo_estado_elemento)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Datos iniciales sugeridos
+INSERT INTO estado_elemento (codigo_estado_elemento, descripcion_estado_elemento, color_estado_elemento, permite_alquiler_estado_elemento) VALUES
+('DISP', 'Disponible', '#4CAF50', TRUE),
+('ALQU', 'Alquilado', '#2196F3', FALSE),
+('REPA', 'En reparación', '#FF9800', FALSE),
+('BAJA', 'Dado de baja', '#F44336', FALSE),
+('TERC', 'De terceros', '#9C27B0', TRUE),
+('DEPO', 'En depósito', '#607D8B', FALSE),
+('MANT', 'Mantenimiento', '#FFC107', FALSE),
+('TRAN', 'En tránsito', '#00BCD4', FALSE);
+
+
+-- ========================================================
+-- ELIMINAR TABLA ELEMENTO SI EXISTE
+-- ========================================================
+DROP TABLE IF EXISTS elemento;
+
+-- ========================================================
+-- TABLA DE ELEMENTOS ESPECÍFICOS CON UBICACIÓN DETALLADA
+-- ========================================================
+
+CREATE TABLE elemento (
+    id_elemento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_articulo_elemento INT UNSIGNED NOT NULL,
+    id_marca_elemento INT UNSIGNED,
+    modelo_elemento VARCHAR(100),
+    
+    -- Código automático: CODIGO_ARTICULO + CORRELATIVO
+    -- Ejemplo: "0001-001", "0001-002", "0001-003"
+    codigo_elemento VARCHAR(50) NOT NULL UNIQUE COMMENT 'Formato: codigo_articulo-correlativo',
+    
+    codigo_barras_elemento VARCHAR(100) UNIQUE,
+    descripcion_elemento VARCHAR(255) NOT NULL,
+    numero_serie_elemento VARCHAR(100) UNIQUE,
+    
+    -- Estado (referencia a tabla estado_elemento)
+    id_estado_elemento INT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Estado actual del elemento',
+    
+    -- =====================================================
+    -- UBICACIÓN DETALLADA (3 CAMPOS)
+    -- =====================================================
+    nave_elemento VARCHAR(50) COMMENT 'Nave o almacén donde se encuentra (ej: "Nave 1", "Nave Principal")',
+    pasillo_columna_elemento VARCHAR(50) COMMENT 'Pasillo y columna (ej: "A-5", "B-12", "C-3")',
+    altura_elemento VARCHAR(50) COMMENT 'Altura o nivel (ej: "Planta baja", "Nivel 2", "Altura 3m")',
+    
+    -- Datos de adquisición
+    fecha_compra_elemento DATE COMMENT 'Fecha de compra del elemento',
+    precio_compra_elemento DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Precio de compra',
+    proveedor_compra_elemento VARCHAR(255) COMMENT 'Proveedor que lo vendió',
+    fecha_alta_elemento DATE COMMENT 'Fecha de puesta en servicio',
+    
+    -- Garantía y mantenimiento
+    fecha_fin_garantia_elemento DATE,
+    proximo_mantenimiento_elemento DATE,
+    
+    observaciones_elemento TEXT,
+    activo_elemento BOOLEAN DEFAULT TRUE,
+    created_at_elemento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_elemento TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_elemento_articulo FOREIGN KEY (id_articulo_elemento) 
+        REFERENCES articulo(id_articulo) 
+        ON DELETE RESTRICT 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_elemento_marca FOREIGN KEY (id_marca_elemento) 
+        REFERENCES marca(id_marca) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_elemento_estado FOREIGN KEY (id_estado_elemento) 
+        REFERENCES estado_elemento(id_estado_elemento) 
+        ON DELETE RESTRICT 
+        ON UPDATE CASCADE,
+    
+    -- Índice único compuesto
+    
+    
+    INDEX idx_codigo_elemento (codigo_elemento),
+    INDEX idx_codigo_barras_elemento (codigo_barras_elemento),
+    INDEX idx_numero_serie_elemento (numero_serie_elemento),
+    INDEX idx_id_articulo_elemento (id_articulo_elemento),
+    INDEX idx_id_marca_elemento (id_marca_elemento),
+    INDEX idx_id_estado_elemento (id_estado_elemento),
+    INDEX idx_nave_elemento (nave_elemento),
+    INDEX idx_pasillo_columna_elemento (pasillo_columna_elemento),
+    INDEX idx_fecha_compra_elemento (fecha_compra_elemento)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE elemento DROP INDEX uk_articulo;
+
+-- ========================================================
+-- VISTA COMPLETA DE ELEMENTOS (ACTUALIZADA CON UBICACIÓN DETALLADA)
+-- CUIDADO SOLO ACTIVOS
+-- ========================================================
+
+DROP VIEW IF EXISTS vista_elemento_completa;
+
+CREATE VIEW vista_elemento_completa AS
+SELECT 
+    -- =====================================================
+    -- DATOS DEL ELEMENTO
+    -- =====================================================
+    e.id_elemento,
+    e.codigo_elemento,
+    e.codigo_barras_elemento,
+    e.descripcion_elemento,
+    e.numero_serie_elemento,
+    e.modelo_elemento,
+    
+    -- =====================================================
+    -- UBICACIÓN DETALLADA (3 CAMPOS)
+    -- =====================================================
+    e.nave_elemento,
+    e.pasillo_columna_elemento,
+    e.altura_elemento,
+    
+    -- Ubicación concatenada para visualización rápida
+    CONCAT_WS(' | ', 
+        COALESCE(e.nave_elemento, ''),
+        COALESCE(e.pasillo_columna_elemento, ''),
+        COALESCE(e.altura_elemento, '')
+    ) AS ubicacion_completa_elemento,
+    
+    -- =====================================================
+    -- DATOS DEL ARTÍCULO
+    -- =====================================================
+    a.id_articulo,
+    a.codigo_articulo,
+    a.nombre_articulo,
+    a.name_articulo,
+    a.precio_alquiler_articulo,
+    
+    -- =====================================================
+    -- DATOS DE LA FAMILIA (viene del artículo)
+    -- =====================================================
+    f.id_familia,
+    f.codigo_familia,
+    f.nombre_familia,
+    f.name_familia,
+    
+    -- =====================================================
+    -- DATOS DEL GRUPO (viene de la familia)
+    -- =====================================================
+    g.id_grupo,
+    g.codigo_grupo,
+    g.nombre_grupo,
+    
+    -- =====================================================
+    -- DATOS DE LA MARCA
+    -- =====================================================
+    m.id_marca,
+    m.codigo_marca,
+    m.nombre_marca,
+    
+    -- =====================================================
+    -- DATOS DEL ESTADO
+    -- =====================================================
+    est.id_estado_elemento,
+    est.codigo_estado_elemento,
+    est.descripcion_estado_elemento,
+    est.color_estado_elemento,
+    est.permite_alquiler_estado_elemento,
+    
+    -- =====================================================
+    -- DATOS ECONÓMICOS
+    -- =====================================================
+    e.fecha_compra_elemento,
+    e.precio_compra_elemento,
+    e.proveedor_compra_elemento,
+    e.fecha_alta_elemento,
+    
+    -- =====================================================
+    -- GARANTÍA Y MANTENIMIENTO
+    -- =====================================================
+    e.fecha_fin_garantia_elemento,
+    e.proximo_mantenimiento_elemento,
+    
+    -- Indicadores de vencimientos
+    CASE 
+        WHEN e.fecha_fin_garantia_elemento < CURDATE() THEN 'Vencida'
+        WHEN e.fecha_fin_garantia_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Por vencer'
+        WHEN e.fecha_fin_garantia_elemento > DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Vigente'
+        ELSE 'Sin garantía'
+    END AS estado_garantia_elemento,
+    
+    CASE 
+        WHEN e.proximo_mantenimiento_elemento < CURDATE() THEN 'Atrasado'
+        WHEN e.proximo_mantenimiento_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Próximo'
+        WHEN e.proximo_mantenimiento_elemento > DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Al día'
+        ELSE 'Sin programar'
+    END AS estado_mantenimiento_elemento,
+    
+    -- =====================================================
+    -- OBSERVACIONES
+    -- =====================================================
+    e.observaciones_elemento,
+    
+    -- =====================================================
+    -- ESTADO ACTIVO
+    -- =====================================================
+    e.activo_elemento,
+    
+    -- =====================================================
+    -- TIMESTAMPS
+    -- =====================================================
+    e.created_at_elemento,
+    e.updated_at_elemento,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS ADICIONALES
+    -- =====================================================
+    
+    -- Jerarquía completa
+    CONCAT_WS(' > ',
+        COALESCE(g.nombre_grupo, 'Sin grupo'),
+        f.nombre_familia,
+        a.nombre_articulo,
+        e.descripcion_elemento
+    ) AS jerarquia_completa_elemento,
+    
+    -- Antigüedad en días
+    DATEDIFF(CURDATE(), e.fecha_alta_elemento) AS dias_en_servicio_elemento,
+    
+    -- Antigüedad en años (redondeado a 2 decimales)
+    ROUND(DATEDIFF(CURDATE(), e.fecha_alta_elemento) / 365.25, 2) AS anios_en_servicio_elemento
+    
+FROM elemento e
+INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
+INNER JOIN familia f ON a.id_familia = f.id_familia
+LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
+INNER JOIN estado_elemento est ON e.id_estado_elemento = est.id_estado_elemento
+WHERE e.activo_elemento = TRUE;
+
+
+
+
+
+-- ========================================================
+-- VISTA COMPLETA DE ELEMENTOS (ACTUALIZADA CON UBICACIÓN DETALLADA)
+-- TODOS LOS ELEMENTOS
+-- ========================================================
+
+DROP VIEW IF EXISTS vista_elementos_completa;
+
+CREATE VIEW vista_elementos_completa AS
+SELECT 
+    -- =====================================================
+    -- DATOS DEL ELEMENTO
+    -- =====================================================
+    e.id_elemento,
+    e.codigo_elemento,
+    e.codigo_barras_elemento,
+    e.descripcion_elemento,
+    e.numero_serie_elemento,
+    e.modelo_elemento,
+    
+    -- =====================================================
+    -- UBICACIÓN DETALLADA (3 CAMPOS)
+    -- =====================================================
+    e.nave_elemento,
+    e.pasillo_columna_elemento,
+    e.altura_elemento,
+    
+    -- Ubicación concatenada para visualización rápida
+    CONCAT_WS(' | ', 
+        COALESCE(e.nave_elemento, ''),
+        COALESCE(e.pasillo_columna_elemento, ''),
+        COALESCE(e.altura_elemento, '')
+    ) AS ubicacion_completa_elemento,
+    
+    -- =====================================================
+    -- DATOS DEL ARTÍCULO
+    -- =====================================================
+    a.id_articulo,
+    a.codigo_articulo,
+    a.nombre_articulo,
+    a.name_articulo,
+    a.precio_alquiler_articulo,
+    
+    -- =====================================================
+    -- DATOS DE LA FAMILIA (viene del artículo)
+    -- =====================================================
+    f.id_familia,
+    f.codigo_familia,
+    f.nombre_familia,
+    f.name_familia,
+    
+    -- =====================================================
+    -- DATOS DEL GRUPO (viene de la familia)
+    -- =====================================================
+    g.id_grupo,
+    g.codigo_grupo,
+    g.nombre_grupo,
+    
+    -- =====================================================
+    -- DATOS DE LA MARCA
+    -- =====================================================
+    m.id_marca,
+    m.codigo_marca,
+    m.nombre_marca,
+    
+    -- =====================================================
+    -- DATOS DEL ESTADO
+    -- =====================================================
+    est.id_estado_elemento,
+    est.codigo_estado_elemento,
+    est.descripcion_estado_elemento,
+    est.color_estado_elemento,
+    est.permite_alquiler_estado_elemento,
+    
+    -- =====================================================
+    -- DATOS ECONÓMICOS
+    -- =====================================================
+    e.fecha_compra_elemento,
+    e.precio_compra_elemento,
+    e.proveedor_compra_elemento,
+    e.fecha_alta_elemento,
+    
+    -- =====================================================
+    -- GARANTÍA Y MANTENIMIENTO
+    -- =====================================================
+    e.fecha_fin_garantia_elemento,
+    e.proximo_mantenimiento_elemento,
+    
+    -- Indicadores de vencimientos
+    CASE 
+        WHEN e.fecha_fin_garantia_elemento < CURDATE() THEN 'Vencida'
+        WHEN e.fecha_fin_garantia_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Por vencer'
+        WHEN e.fecha_fin_garantia_elemento > DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Vigente'
+        ELSE 'Sin garantía'
+    END AS estado_garantia_elemento,
+    
+    CASE 
+        WHEN e.proximo_mantenimiento_elemento < CURDATE() THEN 'Atrasado'
+        WHEN e.proximo_mantenimiento_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Próximo'
+        WHEN e.proximo_mantenimiento_elemento > DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Al día'
+        ELSE 'Sin programar'
+    END AS estado_mantenimiento_elemento,
+    
+    -- =====================================================
+    -- OBSERVACIONES
+    -- =====================================================
+    e.observaciones_elemento,
+    
+    -- =====================================================
+    -- ESTADO ACTIVO
+    -- =====================================================
+    e.activo_elemento,
+    
+    -- =====================================================
+    -- TIMESTAMPS
+    -- =====================================================
+    e.created_at_elemento,
+    e.updated_at_elemento,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS ADICIONALES
+    -- =====================================================
+    
+    -- Jerarquía completa
+    CONCAT_WS(' > ',
+        COALESCE(g.nombre_grupo, 'Sin grupo'),
+        f.nombre_familia,
+        a.nombre_articulo,
+        e.descripcion_elemento
+    ) AS jerarquia_completa_elemento,
+    
+    -- Antigüedad en días
+    DATEDIFF(CURDATE(), e.fecha_alta_elemento) AS dias_en_servicio_elemento,
+    
+    -- Antigüedad en años (redondeado a 2 decimales)
+    ROUND(DATEDIFF(CURDATE(), e.fecha_alta_elemento) / 365.25, 2) AS anios_en_servicio_elemento
+    
+FROM elemento e
+INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
+INNER JOIN familia f ON a.id_familia = f.id_familia
+LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
+INNER JOIN estado_elemento est ON e.id_estado_elemento = est.id_estado_elemento
+
+
+
+
+-- ========================================================
+-- DISPARADOR
+-- ========================================================
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_elemento_before_insert$$
+
+CREATE TRIGGER trg_elemento_before_insert
+BEFORE INSERT ON elemento
+FOR EACH ROW
+BEGIN
+    DECLARE codigo_art VARCHAR(50);
+    DECLARE max_correlativo INT;
+    
+    SELECT codigo_articulo 
+    INTO codigo_art
+    FROM articulo
+    WHERE id_articulo = NEW.id_articulo_elemento;
+    
+    IF NEW.id_estado_elemento IS NULL THEN
+        SET NEW.id_estado_elemento = 1;
+    END IF;
+    
+    SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(codigo_elemento, '-', -1) AS UNSIGNED)), 0) + 1 INTO max_correlativo
+    FROM elemento
+    WHERE id_articulo_elemento = NEW.id_articulo_elemento;
+    
+    SET NEW.codigo_elemento = CONCAT(codigo_art, '-', LPAD(max_correlativo, 3, '0'));
+END$$
+
+DELIMITER ;
+
+
+-- ==========================================================================
+-- YA ESTA - TABLA DE DOCUMENTOS DE ELEMENTOS - con campo boolean de privado
+-- ==========================================================================
+
+CREATE TABLE documento_elemento (
+    id_documento_elemento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_elemento INT UNSIGNED NOT NULL,
+    
+    -- Identificación del documento
+    -- codigo_documento_elemento VARCHAR(50) COMMENT 'Código o referencia del documento', -- No lo vamos a utilizar
+    descripcion_documento_elemento TEXT,
+    tipo_documento_elemento VARCHAR(100) COMMENT 'Tipo: Manual, Garantía, Factura, Certificado, etc.',
+    
+    -- Información del archivo
+    archivo_documento VARCHAR(500) NOT NULL COMMENT 'Ruta completa con nombre del archivo',
+    
+    -- Control de acceso
+    privado_documento BOOLEAN DEFAULT FALSE COMMENT 'Si TRUE, solo visible para administración',
+    
+    observaciones_documento TEXT,
+    activo_documento BOOLEAN DEFAULT TRUE,
+    created_at_documento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_documento TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_documento_elemento FOREIGN KEY (id_elemento) 
+        REFERENCES elemento(id_elemento) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    INDEX idx_id_elemento_documento (id_elemento),
+    INDEX idx_tipo_documento (tipo_documento_elemento),
+    INDEX idx_privado_documento (privado_documento)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ===============================================================
+-- TABLA DE DOCUMENTOS DE ELEMENTOS - 
+-- DISPARADOR PARA GENERAR CÓDIGO AUTOMÁTICO
+-- No lo vamos autilizar , al cliente este código no le interesa
+-- ===============================================================
+
+
+-- DELIMITER $$
+-- 
+-- DROP TRIGGER IF EXISTS trg_documento_elemento_before_insert$$
+-- 
+-- CREATE TRIGGER trg_documento_elemento_before_insert
+-- BEFORE INSERT ON documento_elemento
+-- FOR EACH ROW
+-- BEGIN
+--     DECLARE iniciales_tipo VARCHAR(2);
+--     DECLARE codigo_elem VARCHAR(255);
+--     DECLARE max_secuencial INT;
+--     DECLARE nuevo_codigo VARCHAR(50);
+--     
+--     SET iniciales_tipo = UPPER(LEFT(TRIM(NEW.tipo_documento_elemento), 2));
+--     
+--     SELECT codigo_elemento 
+--     INTO codigo_elem
+--     FROM elemento
+--     WHERE id_elemento = NEW.id_elemento;
+--     
+--     SET codigo_elem = REPLACE(TRIM(codigo_elem), '-', '_');
+--     SET codigo_elem = REPLACE(codigo_elem, '/', '-');
+--     SET codigo_elem = REPLACE(codigo_elem, '\\', '-');
+--     SET codigo_elem = REPLACE(codigo_elem, ' ', '_');
+--     
+--     SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(codigo_documento_elemento, '-', -1) AS UNSIGNED)), 0) + 1 
+--     INTO max_secuencial
+--     FROM documento_elemento
+--     WHERE id_elemento = NEW.id_elemento
+--     AND codigo_documento_elemento LIKE CONCAT(iniciales_tipo, '-', codigo_elem, '-%');
+--     
+--     SET nuevo_codigo = CONCAT(iniciales_tipo, '-', codigo_elem, '-', LPAD(max_secuencial, 3, '0'));
+--     
+--     SET NEW.codigo_documento_elemento = nuevo_codigo;
+--     
+-- END$$
+-- 
+-- DELIMITER ;
+
+
+
+
+-- ========================================================
+-- YA ESTA - TABLA DE FOTOS DE ELEMENTOS
+-- ========================================================
+
+CREATE TABLE foto_elemento (
+    id_foto_elemento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_elemento INT UNSIGNED NOT NULL,
+    
+    -- Información del archivo
+    descripcion_foto_elemento TEXT,
+    archivo_foto VARCHAR(500) NOT NULL COMMENT 'Ruta completa con nombre del archivo de imagen',
+    
+ -- Control de acceso
+    privado_foto BOOLEAN DEFAULT FALSE COMMENT 'Si TRUE, solo visible para administración',
+
+
+    observaciones_foto TEXT,
+    activo_foto BOOLEAN DEFAULT TRUE,
+    created_at_foto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_foto TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_foto_elemento FOREIGN KEY (id_elemento) 
+        REFERENCES elemento(id_elemento) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    INDEX idx_id_elemento_foto (id_elemento),
+    INDEX idx_privado_foto (privado_foto)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+
+
+
+
+
+-- ======================================================================
+-- YA ESTA - MODIFICACIONES PARA GESTIÓN DE OBSERVACIONES EN PRESUPUESTOS
+-- ======================================================================
+
+## 1. AÑADIR CAMPOS A TABLAS EXISTENTES
+
+ALTER TABLE articulo 
+ADD COLUMN orden_obs_articulo INT DEFAULT 200 AFTER notas_presupuesto_articulo;
+
+
+## 2. CREAR TABLA DE OBSERVACIONES GENERALES
+
+
+-- ==========================================================
+-- YA ESTA - TABLA DE OBSERVACIONES GENERALES DE PRESUPUESTOS
+-- ==========================================================
+
+CREATE TABLE observacion_general (
+    id_obs_general INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo_obs_general VARCHAR(20) NOT NULL UNIQUE,
+    titulo_obs_general VARCHAR(100) NOT NULL,
+    texto_obs_general TEXT NOT NULL,
+    orden_obs_general INT DEFAULT 0,
+    tipo_obs_general ENUM('condiciones', 'tecnicas', 'legales', 'comerciales', 'otras') DEFAULT 'otras',
+    obligatoria_obs_general BOOLEAN DEFAULT TRUE COMMENT 'Si TRUE, siempre aparece en presupuestos',
+    activo_obs_general BOOLEAN DEFAULT TRUE,
+    created_at_obs_general TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_obs_general TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_orden_obs_general (orden_obs_general),
+    INDEX idx_obligatoria_obs_general (obligatoria_obs_general)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- ========================================================
+-- YA ESTA - ALTER TABLE OBSERVACION_GENERAL - AÑADIR CAMPOS EN INGLÉS
+-- ========================================================
+
+ALTER TABLE observacion_general
+ADD COLUMN title_obs_general VARCHAR(100) NOT NULL DEFAULT '' COMMENT 'Título en inglés' AFTER titulo_obs_general,
+ADD COLUMN text_obs_general TEXT NOT NULL COMMENT 'Texto en inglés' AFTER texto_obs_general;
+
+-- Opcional: Eliminar el DEFAULT '' del título después de rellenar los datos
+-- ALTER TABLE observacion_general MODIFY COLUMN title_obs_general VARCHAR(100) NOT NULL COMMENT 'Título en inglés';
+
+
+
+-- ========================================================
+-- TABLA DE EMPRESAS - DOCUMENTACIÓN COMPLETA
+-- ========================================================
+
+/*
+PROPÓSITO:
+Gestión de empresas del grupo para emisión de presupuestos y facturas.
+Permite trabajar con empresas ficticias para presupuestos y empresas 
+reales para facturación, cumpliendo con la normativa VeriFact española.
+
+CASOS DE USO:
+1. Empresa ficticia para presupuestos (empresa_ficticia_principal = TRUE)
+2. Múltiples empresas reales para facturación
+3. Cualquier empresa puede emitir presupuestos
+4. Control de series y numeración independiente por empresa
+5. Cumplimiento normativa VeriFact para empresas reales
+*/
+
+-- ========================================================
+-- TABLA DE EMPRESAS (COLLATION CORREGIDA)
+-- ========================================================
+
+DROP TABLE IF EXISTS empresa;
+
+CREATE TABLE empresa (
+    id_empresa INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    -- =====================================================
+    -- IDENTIFICACIÓN BÁSICA
+    -- =====================================================
+    codigo_empresa VARCHAR(20) NOT NULL UNIQUE COMMENT 'Código único identificador (ej: MDR01, MDR02, FICTICIA)',
+    nombre_empresa VARCHAR(255) NOT NULL COMMENT 'Razón social completa',
+    nombre_comercial_empresa VARCHAR(255) COMMENT 'Nombre comercial si difiere de la razón social',
+    
+    -- =====================================================
+    -- TIPO DE EMPRESA
+    -- =====================================================
+    ficticia_empresa BOOLEAN DEFAULT FALSE 
+        COMMENT 'Si TRUE, empresa ficticia solo para presupuestos. Si FALSE, empresa real que factura',
+    
+    empresa_ficticia_principal BOOLEAN DEFAULT FALSE 
+        COMMENT 'Si TRUE, esta es la empresa ficticia por defecto para presupuestos',
+    
+    -- =====================================================
+    -- DATOS FISCALES (obligatorios para VeriFact)
+    -- =====================================================
+    nif_empresa VARCHAR(20) NOT NULL UNIQUE COMMENT 'NIF/CIF de la empresa',
+    
+    -- Dirección fiscal
+    direccion_fiscal_empresa VARCHAR(255) NOT NULL COMMENT 'Dirección completa del domicilio fiscal',
+    cp_fiscal_empresa VARCHAR(10) NOT NULL COMMENT 'Código postal',
+    poblacion_fiscal_empresa VARCHAR(100) NOT NULL COMMENT 'Población/Ciudad',
+    provincia_fiscal_empresa VARCHAR(100) NOT NULL COMMENT 'Provincia',
+    pais_fiscal_empresa VARCHAR(100) DEFAULT 'España' COMMENT 'País',
+    
+    -- =====================================================
+    -- DATOS DE CONTACTO
+    -- =====================================================
+    telefono_empresa VARCHAR(50) COMMENT 'Teléfono principal',
+    movil_empresa VARCHAR(50) COMMENT 'Teléfono móvil',
+    email_empresa VARCHAR(255) COMMENT 'Email general',
+    email_facturacion_empresa VARCHAR(255) COMMENT 'Email específico para facturación',
+    web_empresa VARCHAR(255) COMMENT 'Sitio web',
+    
+    -- =====================================================
+    -- DATOS BANCARIOS
+    -- =====================================================
+    iban_empresa VARCHAR(34) COMMENT 'IBAN para domiciliaciones y transferencias',
+    swift_empresa VARCHAR(11) COMMENT 'Código SWIFT/BIC',
+    banco_empresa VARCHAR(100) COMMENT 'Nombre del banco',
+    
+    -- =====================================================
+    -- SERIES DE NUMERACIÓN
+    -- =====================================================
+    
+    -- PRESUPUESTOS
+    serie_presupuesto_empresa VARCHAR(10) DEFAULT 'P' 
+        COMMENT 'Serie para presupuestos (ej: P, PPTO, MDR-P)',
+    
+    numero_actual_presupuesto_empresa INT UNSIGNED DEFAULT 0 
+        COMMENT 'Último número de presupuesto emitido',
+    
+    -- FACTURAS
+    serie_factura_empresa VARCHAR(10) DEFAULT 'F' 
+        COMMENT 'Serie para facturas (ej: F, FAC, A)',
+    
+    numero_actual_factura_empresa INT UNSIGNED DEFAULT 0 
+        COMMENT 'Último número de factura emitido',
+    
+    -- FACTURAS RECTIFICATIVAS (ABONOS)
+    serie_abono_empresa VARCHAR(10) DEFAULT 'R' 
+        COMMENT 'Serie para facturas rectificativas/abonos (ej: R, AB, REC)',
+    
+    numero_actual_abono_empresa INT UNSIGNED DEFAULT 0 
+        COMMENT 'Último número de abono emitido',
+    
+    -- =====================================================
+    -- DATOS ESPECÍFICOS VERIFACTU
+    -- =====================================================
+    
+    verifactu_activo_empresa BOOLEAN DEFAULT TRUE 
+        COMMENT 'Si TRUE, esta empresa debe cumplir con VeriFact',
+    
+    verifactu_software_empresa VARCHAR(100) COMMENT 'Nombre del software de facturación',
+    verifactu_version_empresa VARCHAR(50) COMMENT 'Versión del software',
+    verifactu_nif_desarrollador_empresa VARCHAR(20) COMMENT 'NIF del desarrollador del software',
+    verifactu_nombre_desarrollador_empresa VARCHAR(255) COMMENT 'Nombre del desarrollador',
+    
+    -- Sistema de envío VeriFact
+    verifactu_sistema_empresa ENUM('online', 'offline') DEFAULT 'online' 
+        COMMENT 'online=envío inmediato | offline=envío diferido',
+    
+    verifactu_url_empresa VARCHAR(255) COMMENT 'URL del endpoint de VeriFact',
+    verifactu_certificado_empresa TEXT COMMENT 'Ruta o datos del certificado digital',
+    
+    -- =====================================================
+    -- LOGOTIPO Y MARCA
+    -- =====================================================
+    logotipo_empresa VARCHAR(255) COMMENT 'Ruta al archivo del logotipo (para facturas y presupuestos)',
+    logotipo_pie_empresa VARCHAR(255) COMMENT 'Logotipo secundario para pie de página',
+    
+    -- =====================================================
+    -- TEXTOS LEGALES PARA DOCUMENTOS
+    -- =====================================================
+    texto_legal_factura_empresa TEXT 
+        COMMENT 'Texto legal que aparece en facturas (registro mercantil, etc.)',
+    
+    texto_pie_presupuesto_empresa TEXT 
+        COMMENT 'Texto que aparece en el pie de los presupuestos',
+    
+    texto_pie_factura_empresa TEXT 
+        COMMENT 'Texto que aparece en el pie de las facturas',
+    
+    -- =====================================================
+    -- DATOS ADICIONALES
+    -- =====================================================
+    observaciones_empresa TEXT 
+        COMMENT 'Observaciones internas sobre la empresa',
+    
+    -- =====================================================
+    -- CONTROL
+    -- =====================================================
+    activo_empresa BOOLEAN DEFAULT TRUE 
+        COMMENT 'Si FALSE, la empresa no estará disponible para nuevos documentos',
+    
+    created_at_empresa TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_empresa TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- =====================================================
+    -- ÍNDICES
+    -- =====================================================
+    INDEX idx_codigo_empresa (codigo_empresa),
+    INDEX idx_nif_empresa (nif_empresa),
+    INDEX idx_ficticia_empresa (ficticia_empresa),
+    INDEX idx_empresa_ficticia_principal (empresa_ficticia_principal),
+    INDEX idx_activo_empresa (activo_empresa)
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci 
+COMMENT='Gestión de empresas del grupo para facturación y presupuestos';
+
+-- ========================================================
+-- EXPLICACIÓN DE CAMPOS CLAVE
+-- ========================================================
+
+/*
+TIPO DE EMPRESA:
+----------------
+ficticia_empresa (BOOLEAN):
+  - TRUE  = Empresa ficticia que solo emite presupuestos (sin validez fiscal)
+  - FALSE = Empresa real que puede emitir presupuestos Y facturas
+
+empresa_ficticia_principal (BOOLEAN):
+  - TRUE  = Esta es la empresa por defecto para presupuestos
+  - FALSE = Empresa secundaria
+  - Solo debe haber UNA empresa con este valor en TRUE
+
+CASO DE USO MDR:
+  1. Empresa FICTICIA (ficticia_empresa=TRUE, empresa_ficticia_principal=TRUE)
+     → Se usa para hacer presupuestos
+     
+  2. MDR AUDIOVISUALES S.L. (ficticia_empresa=FALSE)
+     → Empresa real que factura
+     
+  3. MDR EVENTOS S.L. (ficticia_empresa=FALSE)
+     → Segunda empresa real que factura
+     
+  Flujo: 
+  - Presupuesto → Se emite con empresa FICTICIA
+  - Al aceptar → Cliente elige si factura MDR AUDIOVISUALES o MDR EVENTOS
+  - Factura → Se emite con la empresa real elegida
+
+
+SERIES DE NUMERACIÓN:
+---------------------
+Cada empresa tiene sus propias series independientes:
+  
+  serie_presupuesto_empresa: "P", "PPTO", "MDR-P"
+  serie_factura_empresa:     "F", "FAC", "A", "B"
+  serie_abono_empresa:       "R", "AB", "REC"
+
+Los contadores (numero_actual_*_empresa) se incrementan automáticamente 
+al emitir cada documento.
+
+FORMATO DE NUMERACIÓN (hardcoded en procedimientos):
+  Presupuestos: SERIE + AÑO + "-" + NÚMERO  → P2024-0001
+  Facturas:     SERIE + AÑO + "/" + NÚMERO  → F2024/0001
+  Abonos:       SERIE + AÑO + "/" + NÚMERO  → R2024/0001
+
+
+VERIFACTU:
+----------
+Solo aplica a empresas REALES (ficticia_empresa = FALSE).
+
+Campos obligatorios para cumplir normativa:
+  - verifactu_activo_empresa: Activar/desactivar cumplimiento
+  - verifactu_software_empresa: Nombre del software (ej: "MDR ERP Manager")
+  - verifactu_version_empresa: Versión del software
+  - verifactu_nif_desarrollador_empresa: NIF del desarrollador
+  - verifactu_nombre_desarrollador_empresa: Nombre del desarrollador
+  - verifactu_sistema_empresa: 'online' (envío inmediato) o 'offline' (diferido)
+  - verifactu_url_empresa: Endpoint de la AEAT para envío
+  - verifactu_certificado_empresa: Certificado digital de la empresa
+
+Las empresas ficticias NO necesitan VeriFact (verifactu_activo_empresa = FALSE)
+*/
+
+-- ========================================================
+-- DATOS INICIALES DE EJEMPLO
+-- ========================================================
+
+-- 1. EMPRESA FICTICIA PARA PRESUPUESTOS
+INSERT INTO empresa (
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    ficticia_empresa,
+    empresa_ficticia_principal,
+    nif_empresa,
+    direccion_fiscal_empresa,
+    cp_fiscal_empresa,
+    poblacion_fiscal_empresa,
+    provincia_fiscal_empresa,
+    telefono_empresa,
+    email_empresa,
+    serie_presupuesto_empresa,
+    verifactu_activo_empresa,
+    logotipo_empresa,
+    texto_pie_presupuesto_empresa,
+    observaciones_empresa
+) VALUES (
+    'FICTICIA',
+    'MDR Audiovisuales Group',
+    'MDR Group',
+    TRUE,                    -- Es ficticia
+    TRUE,                    -- Es la principal para presupuestos
+    'B00000000',            -- NIF ficticio
+    'Polígono Industrial La Paz',
+    '06006',
+    'Badajoz',
+    'Badajoz',
+    '+34 924 000 000',
+    'info@mdrgroup.com',
+    'P',                     -- Serie de presupuestos
+    FALSE,                   -- NO requiere VeriFact
+    '/images/logos/mdr_group_logo.png',
+    'Presupuesto sin validez fiscal. La factura se emitirá por la empresa que corresponda según se indique en la aceptación del presupuesto.',
+    'Empresa ficticia creada únicamente para emisión de presupuestos comerciales. No emite facturas.'
+);
+
+-- 2. PRIMERA EMPRESA REAL - MDR AUDIOVISUALES S.L.
+INSERT INTO empresa (
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    ficticia_empresa,
+    empresa_ficticia_principal,
+    nif_empresa,
+    direccion_fiscal_empresa,
+    cp_fiscal_empresa,
+    poblacion_fiscal_empresa,
+    provincia_fiscal_empresa,
+    telefono_empresa,
+    movil_empresa,
+    email_empresa,
+    email_facturacion_empresa,
+    web_empresa,
+    iban_empresa,
+    swift_empresa,
+    banco_empresa,
+    serie_presupuesto_empresa,
+    serie_factura_empresa,
+    serie_abono_empresa,
+    verifactu_activo_empresa,
+    verifactu_software_empresa,
+    verifactu_version_empresa,
+    verifactu_nif_desarrollador_empresa,
+    verifactu_nombre_desarrollador_empresa,
+    verifactu_sistema_empresa,
+    verifactu_url_empresa,
+    logotipo_empresa,
+    logotipo_pie_empresa,
+    texto_legal_factura_empresa,
+    texto_pie_presupuesto_empresa,
+    texto_pie_factura_empresa,
+    observaciones_empresa
+) VALUES (
+    'MDR01',
+    'MDR AUDIOVISUALES S.L.',
+    'MDR Audiovisuales',
+    FALSE,                   -- Es empresa REAL
+    FALSE,                   -- No es la principal (solo hay una principal: la ficticia)
+    'B06123456',
+    'Polígono Industrial La Paz, Nave 15',
+    '06006',
+    'Badajoz',
+    'Badajoz',
+    '+34 924 123 456',
+    '+34 600 123 456',
+    'info@mdraudiovisuales.com',
+    'facturacion@mdraudiovisuales.com',
+    'www.mdraudiovisuales.com',
+    'ES91 2100 0418 4502 0005 1332',
+    'CAIXESBBXXX',
+    'CaixaBank',
+    'P',                     -- Serie de presupuestos
+    'F',                     -- Serie de facturas
+    'R',                     -- Serie de abonos/rectificativas
+    TRUE,                    -- SÍ requiere VeriFact
+    'MDR ERP Manager',
+    '1.0',
+    'B00000001',            -- NIF del desarrollador
+    'Software Solutions S.L.',
+    'online',                -- Envío inmediato
+    'https://www.agenciatributaria.gob.es/verifactu/api',
+    '/images/logos/mdr_audiovisuales_logo.png',
+    '/images/logos/mdr_audiovisuales_pie.png',
+    'MDR AUDIOVISUALES S.L. - B06123456 - Inscrita en el Registro Mercantil de Badajoz, Tomo 123, Folio 456, Hoja BA-7890. Capital Social: 3.000,00 EUR',
+    'Oferta sujeta a disponibilidad de equipos. Consulte condiciones generales en www.mdraudiovisuales.com',
+    'Factura sujeta a la Ley General Tributaria. Conserve este documento para su contabilidad.',
+    'Empresa principal del grupo para alquiler de equipos audiovisuales profesionales.'
+);
+
+-- 3. SEGUNDA EMPRESA REAL - MDR EVENTOS Y PRODUCCIONES S.L.
+INSERT INTO empresa (
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    ficticia_empresa,
+    empresa_ficticia_principal,
+    nif_empresa,
+    direccion_fiscal_empresa,
+    cp_fiscal_empresa,
+    poblacion_fiscal_empresa,
+    provincia_fiscal_empresa,
+    telefono_empresa,
+    movil_empresa,
+    email_empresa,
+    email_facturacion_empresa,
+    web_empresa,
+    iban_empresa,
+    swift_empresa,
+    banco_empresa,
+    serie_presupuesto_empresa,
+    serie_factura_empresa,
+    serie_abono_empresa,
+    verifactu_activo_empresa,
+    verifactu_software_empresa,
+    verifactu_version_empresa,
+    verifactu_nif_desarrollador_empresa,
+    verifactu_nombre_desarrollador_empresa,
+    verifactu_sistema_empresa,
+    logotipo_empresa,
+    texto_legal_factura_empresa,
+    texto_pie_factura_empresa,
+    observaciones_empresa
+) VALUES (
+    'MDR02',
+    'MDR EVENTOS Y PRODUCCIONES S.L.',
+    'MDR Eventos',
+    FALSE,                   -- Es empresa REAL
+    FALSE,
+    'B06654321',
+    'Polígono Industrial La Paz, Nave 16',
+    '06006',
+    'Badajoz',
+    'Badajoz',
+    '+34 924 654 321',
+    '+34 600 654 321',
+    'info@mdreventos.com',
+    'facturacion@mdreventos.com',
+    'www.mdreventos.com',
+    'ES91 2100 0418 4502 0005 9999',
+    'CAIXESBBXXX',
+    'CaixaBank',
+    'PE',                    -- Serie diferente para presupuestos
+    'FE',                    -- Serie diferente para facturas
+    'RE',                    -- Serie diferente para abonos
+    TRUE,                    -- SÍ requiere VeriFact
+    'MDR ERP Manager',
+    '1.0',
+    'B00000001',
+    'Software Solutions S.L.',
+    'online',
+    '/images/logos/mdr_eventos_logo.png',
+    'MDR EVENTOS Y PRODUCCIONES S.L. - B06654321 - Inscrita en el Registro Mercantil de Badajoz, Tomo 456, Folio 789, Hoja BA-1234. Capital Social: 5.000,00 EUR',
+    'Factura sujeta a la Ley General Tributaria. Conserve este documento para su contabilidad.',
+    'Empresa especializada en producción y gestión integral de eventos.'
+);
+
+-- ========================================================
+-- CONSULTAS ÚTILES
+-- ========================================================
+
+-- 1. Obtener empresa ficticia principal para presupuestos
+-- --------------------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    serie_presupuesto_empresa,
+    numero_actual_presupuesto_empresa,
+    logotipo_empresa
+FROM empresa 
+WHERE empresa_ficticia_principal = TRUE 
+AND activo_empresa = TRUE;
+
+-- 2. Obtener todas las empresas reales para facturación
+-- ------------------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    nombre_empresa,
+    nombre_comercial_empresa,
+    nif_empresa,
+    serie_factura_empresa,
+    numero_actual_factura_empresa,
+    serie_abono_empresa,
+    numero_actual_abono_empresa,
+    verifactu_activo_empresa
+FROM empresa 
+WHERE ficticia_empresa = FALSE 
+AND activo_empresa = TRUE
+ORDER BY nombre_empresa;
+
+-- 3. Verificar empresas que requieren VeriFact
+-- ---------------------------------------------
+SELECT 
+    codigo_empresa,
+    nombre_empresa,
+    nif_empresa,
+    verifactu_activo_empresa,
+    verifactu_sistema_empresa,
+    verifactu_software_empresa,
+    verifactu_version_empresa,
+    verifactu_nif_desarrollador_empresa
+FROM empresa 
+WHERE verifactu_activo_empresa = TRUE
+AND ficticia_empresa = FALSE
+AND activo_empresa = TRUE;
+
+-- 4. Resumen de todas las empresas
+-- ---------------------------------
+SELECT 
+    codigo_empresa,
+    nombre_empresa,
+    CASE 
+        WHEN ficticia_empresa = TRUE THEN 'FICTICIA'
+        ELSE 'REAL'
+    END as tipo_empresa,
+    CASE 
+        WHEN empresa_ficticia_principal = TRUE THEN 'SÍ'
+        ELSE 'NO'
+    END as principal,
+    serie_presupuesto_empresa AS serie_ppto,
+    numero_actual_presupuesto_empresa AS num_ppto,
+    serie_factura_empresa AS serie_fact,
+    numero_actual_factura_empresa AS num_fact,
+    serie_abono_empresa AS serie_abono,
+    numero_actual_abono_empresa AS num_abono,
+    CASE 
+        WHEN verifactu_activo_empresa = TRUE THEN 'ACTIVO'
+        ELSE 'INACTIVO'
+    END as verifact,
+    CASE 
+        WHEN activo_empresa = TRUE THEN 'ACTIVA'
+        ELSE 'INACTIVA'
+    END as estado
+FROM empresa
+ORDER BY ficticia_empresa DESC, nombre_empresa;
+
+-- 5. Datos completos de una empresa específica
+-- ---------------------------------------------
+SELECT * FROM empresa 
+WHERE codigo_empresa = 'MDR01';
+
+-- 6. Siguiente número de presupuesto para empresa ficticia
+-- ---------------------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    serie_presupuesto_empresa,
+    numero_actual_presupuesto_empresa + 1 AS siguiente_numero,
+    CONCAT(
+        serie_presupuesto_empresa,
+        YEAR(CURDATE()),
+        '-',
+        LPAD(numero_actual_presupuesto_empresa + 1, 4, '0')
+    ) AS numero_presupuesto_completo
+FROM empresa
+WHERE empresa_ficticia_principal = TRUE;
+-- Resultado esperado: P2024-0001
+
+-- 7. Siguiente número de factura para empresa real
+-- -------------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    serie_factura_empresa,
+    numero_actual_factura_empresa + 1 AS siguiente_numero,
+    CONCAT(
+        serie_factura_empresa,
+        YEAR(CURDATE()),
+        '/',
+        LPAD(numero_actual_factura_empresa + 1, 4, '0')
+    ) AS numero_factura_completo
+FROM empresa
+WHERE codigo_empresa = 'MDR01';
+-- Resultado esperado: F2024/0001
+
+-- 8. Siguiente número de abono para empresa real
+-- -----------------------------------------------
+SELECT 
+    id_empresa,
+    codigo_empresa,
+    serie_abono_empresa,
+    numero_actual_abono_empresa + 1 AS siguiente_numero,
+    CONCAT(
+        serie_abono_empresa,
+        YEAR(CURDATE()),
+        '/',
+        LPAD(numero_actual_abono_empresa + 1, 4, '0')
+    ) AS numero_abono_completo
+FROM empresa
+WHERE codigo_empresa = 'MDR01';
+-- Resultado esperado: R2024/0001
+
+-- 9. Verificar que solo hay una empresa ficticia principal
+-- ---------------------------------------------------------
+SELECT 
+    COUNT(*) as total,
+    CASE 
+        WHEN COUNT(*) = 1 THEN '✓ CORRECTO'
+        WHEN COUNT(*) = 0 THEN '⚠ ADVERTENCIA: No hay empresa ficticia principal'
+        ELSE '✗ ERROR: Hay más de una empresa ficticia principal'
+    END as validacion
+FROM empresa
+WHERE empresa_ficticia_principal = TRUE
+AND activo_empresa = TRUE;
+
+-- 10. Empresas con datos incompletos
+-- -----------------------------------
+SELECT 
+    codigo_empresa,
+    nombre_empresa,
+    CASE WHEN logotipo_empresa IS NULL THEN '✗ Sin logotipo' ELSE '✓' END as logo,
+    CASE WHEN iban_empresa IS NULL THEN '✗ Sin IBAN' ELSE '✓' END as iban,
+    CASE WHEN email_facturacion_empresa IS NULL THEN '✗ Sin email facturación' ELSE '✓' END as email,
+    CASE 
+        WHEN ficticia_empresa = FALSE 
+            AND verifactu_activo_empresa = TRUE 
+            AND verifactu_software_empresa IS NULL 
+        THEN '✗ Sin datos VeriFact' 
+        ELSE '✓' 
+    END as verifact
+FROM empresa
+WHERE activo_empresa = TRUE;
+
+-- ========================================================
+-- PROCEDIMIENTOS ALMACENADOS
+-- ========================================================
+
+-- PROCEDIMIENTO 1: Obtener siguiente número de documento
+-- -------------------------------------------------------
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_obtener_siguiente_numero$$
+
+CREATE PROCEDURE sp_obtener_siguiente_numero(
+    IN p_codigo_empresa VARCHAR(20),
+    IN p_tipo_documento ENUM('presupuesto', 'factura', 'abono'),
+    OUT p_numero_completo VARCHAR(50)
+)
+BEGIN
+    DECLARE v_serie VARCHAR(10);
+    DECLARE v_numero_actual INT;
+    DECLARE v_anio VARCHAR(4);
+    
+    SET v_anio = YEAR(CURDATE());
+    
+    -- Obtener datos según tipo de documento
+    IF p_tipo_documento = 'presupuesto' THEN
+        SELECT 
+            serie_presupuesto_empresa,
+            numero_actual_presupuesto_empresa + 1
+        INTO v_serie, v_numero_actual
+        FROM empresa
+        WHERE codigo_empresa = p_codigo_empresa
+        AND activo_empresa = TRUE;
+        
+        -- Formato: P2024-0001
+        SET p_numero_completo = CONCAT(
+            v_serie,
+            v_anio,
+            '-',
+            LPAD(v_numero_actual, 4, '0')
+        );
+        
+    ELSEIF p_tipo_documento = 'factura' THEN
+        SELECT 
+            serie_factura_empresa,
+            numero_actual_factura_empresa + 1
+        INTO v_serie, v_numero_actual
+        FROM empresa
+        WHERE codigo_empresa = p_codigo_empresa
+        AND activo_empresa = TRUE;
+        
+        -- Formato: F2024/0001
+        SET p_numero_completo = CONCAT(
+            v_serie,
+            v_anio,
+            '/',
+            LPAD(v_numero_actual, 4, '0')
+        );
+        
+    ELSEIF p_tipo_documento = 'abono' THEN
+        SELECT 
+            serie_abono_empresa,
+            numero_actual_abono_empresa + 1
+        INTO v_serie, v_numero_actual
+        FROM empresa
+        WHERE codigo_empresa = p_codigo_empresa
+        AND activo_empresa = TRUE;
+        
+        -- Formato: R2024/0001
+        SET p_numero_completo = CONCAT(
+            v_serie,
+            v_anio,
+            '/',
+            LPAD(v_numero_actual, 4, '0')
+        );
+    END IF;
+    
+END$$
+
+DELIMITER ;
+
+-- PROCEDIMIENTO 2: Actualizar contador de documentos
+-- ---------------------------------------------------
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_actualizar_contador_empresa$$
+
+CREATE PROCEDURE sp_actualizar_contador_empresa(
+    IN p_id_empresa INT UNSIGNED,
+    IN p_tipo_documento ENUM('presupuesto', 'factura', 'abono')
+)
+BEGIN
+    IF p_tipo_documento = 'presupuesto' THEN
+        UPDATE empresa 
+        SET numero_actual_presupuesto_empresa = numero_actual_presupuesto_empresa + 1
+        WHERE id_empresa = p_id_empresa;
+        
+    ELSEIF p_tipo_documento = 'factura' THEN
+        UPDATE empresa 
+        SET numero_actual_factura_empresa = numero_actual_factura_empresa + 1
+        WHERE id_empresa = p_id_empresa;
+        
+    ELSEIF p_tipo_documento = 'abono' THEN
+        UPDATE empresa 
+        SET numero_actual_abono_empresa = numero_actual_abono_empresa + 1
+        WHERE id_empresa = p_id_empresa;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- PROCEDIMIENTO 3: Obtener empresa ficticia principal
+-- ----------------------------------------------------
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_obtener_empresa_ficticia_principal$$
+
+CREATE PROCEDURE sp_obtener_empresa_ficticia_principal()
+BEGIN
+    SELECT 
+        id_empresa,
+        codigo_empresa,
+        nombre_empresa,
+        nombre_comercial_empresa,
+        serie_presupuesto_empresa,
+        numero_actual_presupuesto_empresa,
+        logotipo_empresa,
+        texto_pie_presupuesto_empresa
+    FROM empresa
+    WHERE empresa_ficticia_principal = TRUE
+    AND activo_empresa = TRUE
+    LIMIT 1;
+END$$
+
+DELIMITER ;
+
+-- PROCEDIMIENTO 4: Listar empresas reales para facturación
+-- ---------------------------------------------------------
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_listar_empresas_facturacion$$
+
+CREATE PROCEDURE sp_listar_empresas_facturacion()
+BEGIN
+    SELECT 
+        id_empresa,
+        codigo_empresa,
+        nombre_empresa,
+        nombre_comercial_empresa,
+        nif_empresa,
+        serie_factura_empresa,
+        serie_abono_empresa,
+        logotipo_empresa,
+        verifactu_activo_empresa
+    FROM empresa
+    WHERE ficticia_empresa = FALSE
+    AND activo_empresa = TRUE
+    ORDER BY nombre_empresa;
+END$$
+
+DELIMITER ;
+
+-- ========================================================
+-- EJEMPLOS DE USO DE LOS PROCEDIMIENTOS
+-- ========================================================
+
+-- Ejemplo 1: Obtener siguiente número de presupuesto
+CALL sp_obtener_siguiente_numero('FICTICIA', 'presupuesto', @numero);
+SELECT @numero AS siguiente_presupuesto;
+-- Resultado: P2024-0001
+
+-- Ejemplo 2: Obtener siguiente número de factura
+CALL sp_obtener_siguiente_numero('MDR01', 'factura', @numero);
+SELECT @numero AS siguiente_factura;
+-- Resultado: F2024/0001
+
+-- Ejemplo 3: Obtener siguiente número de abono
+CALL sp_obtener_siguiente_numero('MDR02', 'abono', @numero);
+SELECT @numero AS siguiente_abono;
+-- Resultado: RE2024/0001
+
+-- Ejemplo 4: Actualizar contador después de emitir presupuesto
+CALL sp_actualizar_contador_empresa(1, 'presupuesto');
+
+-- Ejemplo 5: Actualizar contador después de emitir factura
+CALL sp_actualizar_contador_empresa(2, 'factura');
+
+-- Ejemplo 6: Obtener datos de empresa ficticia principal
+CALL sp_obtener_empresa_ficticia_principal();
+
+-- Ejemplo 7: Listar empresas disponibles para facturación
+CALL sp_listar_empresas_facturacion();
+
+-- ========================================================
+-- VALIDACIONES Y REGLAS DE NEGOCIO
+-- ========================================================
+
+/*
+REGLAS IMPORTANTES:
+
+1. UNICIDAD DE EMPRESA FICTICIA PRINCIPAL:
+   - Solo debe existir UNA empresa con empresa_ficticia_principal = TRUE
+   - Esta es la que se usa por defecto en todos los presupuestos
+
+2. EMPRESAS FICTICIAS NO FACTURAN:
+   - Si ficticia_empresa = TRUE → NO puede emitir facturas ni abonos
+   - Solo puede emitir presupuestos
+
+3. EMPRESAS REALES SÍ FACTURAN:
+   - Si ficticia_empresa = FALSE → Puede emitir presupuestos, facturas y abonos
+
+4. VERIFACT SOLO PARA EMPRESAS REALES:
+   - Las empresas ficticias NO requieren VeriFact
+   - Las empresas reales DEBEN tener verifactu_activo_empresa = TRUE
+
+5. SERIES INDEPENDIENTES:
+   - Cada empresa tiene sus propias series y contadores
+   - Los números NO se comparten entre empresas
+
+6. FORMATO DE NUMERACIÓN:
+   - Presupuestos: SERIE + AÑO + "-" + NÚMERO (4 dígitos)
+   - Facturas:     SERIE + AÑO + "/" + NÚMERO (4 dígitos)
+   - Abonos:       SERIE + AÑO + "/" + NÚMERO (4 dígitos)
+
+7. DATOS OBLIGATORIOS:
+   - Todas las empresas necesitan: código, nombre, NIF, dirección fiscal completa
+   - Empresas reales necesitan además: IBAN, datos VeriFact (si activo)
+
+8. FLUJO DE TRABAJO MDR:
+   Paso 1: Cliente solicita presupuesto
+   Paso 2: Se crea presupuesto con empresa FICTICIA
+   Paso 3: Cliente acepta presupuesto
+   Paso 4: Cliente elige empresa real para facturación (MDR01 o MDR02)
+   Paso 5: Se genera factura con la empresa real elegida
+*/
+
+-- ========================================================
+-- TRIGGER DE VALIDACIÓN (OPCIONAL)
+-- ========================================================
+
+/*
+Este trigger asegura que solo haya una empresa ficticia principal activa
+*/
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_empresa_validar_ficticia_principal$$
+
+CREATE TRIGGER trg_empresa_validar_ficticia_principal
+BEFORE INSERT ON empresa
+FOR EACH ROW
+BEGIN
+    DECLARE v_existe_principal INT;
+    
+    -- Si estamos marcando esta empresa como principal ficticia
+    IF NEW.empresa_ficticia_principal = TRUE THEN
+        
+        -- Verificar si ya existe otra empresa ficticia principal activa
+        SELECT COUNT(*) INTO v_existe_principal
+        FROM empresa
+        WHERE empresa_ficticia_principal = TRUE
+        AND activo_empresa = TRUE;
+        
+        -- Si ya existe una, lanzar error
+        IF v_existe_principal > 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Ya existe una empresa ficticia principal activa. Solo puede haber una.';
+        END IF;
+        
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- ========================================================
+-- NOTAS FINALES
+-- ========================================================
+
+/*
+MANTENIMIENTO:
+--------------
+- Los contadores se incrementan automáticamente con sp_actualizar_contador_empresa
+- NO modificar manualmente los campos numero_actual_*_empresa
+- Si necesitas resetear contadores (nuevo año fiscal), hazlo con UPDATE controlado
+
+SEGURIDAD:
+----------
+- Los campos verifactu_certificado_empresa contienen información sensible
+- Asegurar permisos adecuados en la base de datos
+- Considerar encriptación para certificados digitales
+
+EXTENSIBILIDAD:
+---------------
+- Puedes añadir más empresas reales sin límite
+- Puedes tener múltiples empresas ficticias (pero solo una principal)
+- Las series son totalmente personalizables por empresa
+
+INTEGRACIÓN CON PRESUPUESTOS Y FACTURAS:
+-----------------------------------------
+- Tabla presupuesto debe tener FK a id_empresa
+- Tabla factura debe tener FK a id_empresa
+- Al crear presupuesto → usar empresa ficticia principal
+- Al crear factura → usar empresa real elegida por el cliente
+*/
+
+
+
+## 3. ESTRUCTURA DE LA TABLA PRESUPUESTO (propuesta)
+
+
+-- ========================================================
+-- TABLA DE PRESUPUESTOS
+-- ========================================================
+
+CREATE TABLE presupuesto (
+    id_presupuesto INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    numero_presupuesto VARCHAR(50) NOT NULL UNIQUE,
+    id_cliente INT UNSIGNED NOT NULL,
+    id_contacto_cliente INT UNSIGNED,
+    id_estado_ppto INT UNSIGNED NOT NULL,
+    id_forma_pago INT UNSIGNED,
+    fecha_presupuesto DATE NOT NULL,
+    fecha_validez_presupuesto DATE,
+    
+    -- Datos del evento/proyecto
+    nombre_evento_presupuesto VARCHAR(255),
+    lugar_evento_presupuesto VARCHAR(255),
+    fecha_evento_presupuesto DATE,
+    
+    -- Importes
+    subtotal_presupuesto DECIMAL(12,2) DEFAULT 0.00,
+    descuento_presupuesto DECIMAL(5,2) DEFAULT 0.00,
+    base_imponible_presupuesto DECIMAL(12,2) DEFAULT 0.00,
+    total_iva_presupuesto DECIMAL(12,2) DEFAULT 0.00,
+    total_req_presupuesto DECIMAL(12,2) DEFAULT 0.00,
+    total_presupuesto DECIMAL(12,2) DEFAULT 0.00,
+    
+    -- Observaciones específicas del presupuesto
+    observaciones_cabecera_presupuesto TEXT COMMENT 'Observaciones iniciales del presupuesto',
+    observaciones_pie_presupuesto TEXT COMMENT 'Observaciones específicas adicionales al pie',
+    mostrar_obs_familias_presupuesto BOOLEAN DEFAULT TRUE,
+    mostrar_obs_articulos_presupuesto BOOLEAN DEFAULT TRUE,
+    
+    observaciones_internas_presupuesto TEXT COMMENT 'Notas internas, no se imprimen',
+    activo_presupuesto BOOLEAN DEFAULT TRUE,
+    created_at_presupuesto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_presupuesto TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_presupuesto_cliente FOREIGN KEY (id_cliente) 
+        REFERENCES cliente(id_cliente) 
+        ON DELETE RESTRICT 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_presupuesto_contacto FOREIGN KEY (id_contacto_cliente) 
+        REFERENCES contacto_cliente(id_contacto_cliente) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_presupuesto_estado FOREIGN KEY (id_estado_ppto) 
+        REFERENCES estado_presupuesto(id_estado_ppto) 
+        ON DELETE RESTRICT 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_presupuesto_forma_pago FOREIGN KEY (id_forma_pago) 
+        REFERENCES forma_pago(id_pago) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    
+    INDEX idx_numero_presupuesto (numero_presupuesto),
+    INDEX idx_id_cliente_presupuesto (id_cliente),
+    INDEX idx_id_estado_presupuesto (id_estado_ppto),
+    INDEX idx_fecha_presupuesto (fecha_presupuesto),
+    INDEX idx_fecha_evento_presupuesto (fecha_evento_presupuesto)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+## 4. TABLA DE LÍNEAS DE PRESUPUESTO
+
+
+-- ========================================================
+-- TABLA DE LÍNEAS DE PRESUPUESTO
+-- ========================================================
+
+CREATE TABLE linea_presupuesto (
+    id_linea_ppto INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_presupuesto INT UNSIGNED NOT NULL,
+    id_articulo INT UNSIGNED,
+    numero_linea_ppto INT NOT NULL,
+    tipo_linea_ppto ENUM('articulo', 'kit', 'seccion', 'texto', 'subtotal') DEFAULT 'articulo',
+    
+    -- Datos del artículo
+    codigo_linea_ppto VARCHAR(50),
+    descripcion_linea_ppto TEXT NOT NULL,
+    
+    -- Cantidades y precios
+    cantidad_linea_ppto DECIMAL(10,2) DEFAULT 1.00,
+    precio_unitario_linea_ppto DECIMAL(10,2) DEFAULT 0.00,
+    descuento_linea_ppto DECIMAL(5,2) DEFAULT 0.00,
+    
+    -- Coeficiente reductor
+    jornadas_linea_ppto INT,
+    id_coeficiente INT UNSIGNED,
+    valor_coeficiente_linea_ppto DECIMAL(10,2),
+    
+    -- IVA
+    id_iva INT UNSIGNED,
+    porcentaje_iva_linea_ppto DECIMAL(5,2) DEFAULT 21.00,
+    
+    -- Totales
+    subtotal_linea_ppto DECIMAL(10,2) DEFAULT 0.00,
+    total_linea_ppto DECIMAL(10,2) DEFAULT 0.00,
+    
+    -- Observaciones específicas de esta línea
+    observaciones_linea_ppto TEXT COMMENT 'Observaciones específicas de esta línea en concreto',
+    mostrar_obs_articulo_linea_ppto BOOLEAN DEFAULT TRUE COMMENT 'Mostrar las observaciones del artículo',
+    
+    orden_linea_ppto INT DEFAULT 0,
+    activo_linea_ppto BOOLEAN DEFAULT TRUE,
+    created_at_linea_ppto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_linea_ppto TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_linea_ppto_presupuesto FOREIGN KEY (id_presupuesto) 
+        REFERENCES presupuesto(id_presupuesto) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_linea_ppto_articulo FOREIGN KEY (id_articulo) 
+        REFERENCES articulo(id_articulo) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_linea_ppto_coeficiente FOREIGN KEY (id_coeficiente) 
+        REFERENCES coeficiente(id_coeficiente) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_linea_ppto_iva FOREIGN KEY (id_iva) 
+        REFERENCES tipo_iva(id_iva) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    
+    INDEX idx_id_presupuesto_linea (id_presupuesto),
+    INDEX idx_id_articulo_linea (id_articulo),
+    INDEX idx_orden_linea_ppto (orden_linea_ppto)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+## 5. TABLA PARA VINCULAR OBSERVACIONES ESPECÍFICAS AL PRESUPUESTO
+
+
+-- ========================================================
+-- TABLA DE OBSERVACIONES VINCULADAS A PRESUPUESTOS
+-- ========================================================
+
+CREATE TABLE presupuesto_observacion (
+    id_ppto_obs INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_presupuesto INT UNSIGNED NOT NULL,
+    id_obs_general INT UNSIGNED,
+    texto_personalizado_ppto_obs TEXT COMMENT 'Si se personaliza el texto de una observación general',
+    orden_ppto_obs INT DEFAULT 0,
+    activo_ppto_obs BOOLEAN DEFAULT TRUE,
+    created_at_ppto_obs TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_ppto_obs_presupuesto FOREIGN KEY (id_presupuesto) 
+        REFERENCES presupuesto(id_presupuesto) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_ppto_obs_general FOREIGN KEY (id_obs_general) 
+        REFERENCES observacion_general(id_obs_general) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    INDEX idx_id_presupuesto_obs (id_presupuesto),
+    INDEX idx_orden_ppto_obs (orden_ppto_obs)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+## 6. LÓGICA DE CONSOLIDACIÓN DE OBSERVACIONES
+
+Al generar el PDF del presupuesto, las observaciones se mostrarían en este orden:
+
+
+-- Query para obtener todas las observaciones de un presupuesto
+SELECT 
+    'general' as tipo_observacion,
+    og.titulo_obs_general as titulo,
+    COALESCE(po.texto_personalizado_ppto_obs, og.texto_obs_general) as texto,
+    COALESCE(po.orden_ppto_obs, og.orden_obs_general) as orden
+FROM observacion_general og
+LEFT JOIN presupuesto_observacion po 
+    ON og.id_obs_general = po.id_obs_general 
+    AND po.id_presupuesto = ?
+WHERE og.obligatoria_obs_general = TRUE 
+    AND og.activo_obs_general = TRUE
+
+UNION ALL
+
+-- Observaciones de familias (solo de las familias usadas en el presupuesto)
+SELECT 
+    'familia' as tipo_observacion,
+    f.nombre_familia as titulo,
+    f.observaciones_presupuesto_familia as texto,
+    f.orden_obs_familia as orden
+FROM familia f
+INNER JOIN articulo a ON f.id_familia = a.id_familia
+INNER JOIN linea_presupuesto lp ON a.id_articulo = lp.id_articulo
+WHERE lp.id_presupuesto = ?
+    AND f.observaciones_presupuesto_familia IS NOT NULL
+    AND f.observaciones_presupuesto_familia != ''
+GROUP BY f.id_familia
+
+UNION ALL
+
+-- Observaciones de artículos (solo de los artículos incluidos)
+SELECT 
+    'articulo' as tipo_observacion,
+    a.nombre_articulo as titulo,
+    a.notas_presupuesto_articulo as texto,
+    a.orden_obs_articulo as orden
+FROM articulo a
+INNER JOIN linea_presupuesto lp ON a.id_articulo = lp.id_articulo
+WHERE lp.id_presupuesto = ?
+    AND lp.mostrar_obs_articulo_linea_ppto = TRUE
+    AND a.notas_presupuesto_articulo IS NOT NULL
+    AND a.notas_presupuesto_articulo != ''
+
+UNION ALL
+
+-- Observaciones específicas del pie del presupuesto
+SELECT 
+    'presupuesto' as tipo_observacion,
+    'Observaciones específicas' as titulo,
+    p.observaciones_pie_presupuesto as texto,
+    9999 as orden
+FROM presupuesto p
+WHERE p.id_presupuesto = ?
+    AND p.observaciones_pie_presupuesto IS NOT NULL
+    AND p.observaciones_pie_presupuesto != ''
+
+ORDER BY orden;
+
+
+## VENTAJAS DE ESTE DISEÑO
+
+✅ **Coherente** con tu estructura actual  
+✅ **Flexible**: Puedes activar/desactivar observaciones por nivel  
+✅ **Ordenable**: Control total del orden de aparición  
+✅ **No duplica datos**: Reutiliza observaciones generales  
+✅ **Personalizable**: Puedes sobrescribir textos en presupuestos específicos  
+✅ **Control fino**: Cada línea puede decidir si muestra las observaciones del artículo  
+
+## EJEMPLOS DE USO
+
+**Observaciones generales** (siempre aparecen):
+- Condiciones de pago y entrega
+- Validez del presupuesto
+- Responsabilidades y seguros
+
+**Observaciones de familia** (aparecen si usas artículos de esa familia):
+- Iluminación: "Incluye programación y operador técnico durante evento"
+- Sonido: "Requiere acceso 4 horas antes del evento para montaje"
+
+**Observaciones de artículo** (específicas del artículo):
+- "Consola digital X32: Requiere corriente trifásica"
+- "Moving Head XYZ: Peso 25kg, necesita punto de anclaje certificado"
+
+**Observaciones del presupuesto** (solo para este presupuesto):
+- "Horarios especiales acordados con el cliente"
+- "Incluye transporte adicional por ubicación remota"
+
+
+
+-- ========================================================
+-- INSERTS DE GRUPOS PARA LOS EJEMPLOS
+-- ========================================================
+
+INSERT INTO grupo_articulo (
+    codigo_grupo,
+    nombre_grupo,
+    descripcion_grupo,
+    observaciones_grupo,
+    activo_grupo
+) VALUES
+
+-- =====================================================
+-- GRUPO 1: AUDIO
+-- =====================================================
+(
+    'AUD',
+    'Audio',
+    'Equipos de sonido, megafonía y amplificación',
+    'Incluye micrófonos, consolas, altavoces, procesadores de audio, amplificadores y todo el equipamiento relacionado con la captación, procesamiento y reproducción de sonido profesional.',
+    1 -- activo
+),
+
+-- =====================================================
+-- GRUPO 2: VIDEO
+-- =====================================================
+(
+    'VID',
+    'Video',
+    'Equipos de proyección, pantallas y visualización',
+    'Incluye proyectores, pantallas LED, monitores, procesadores de video, cámaras, sistemas de videoconferencia y todo el equipamiento relacionado con imagen y video.',
+    1 -- activo
+),
+
+-- =====================================================
+-- GRUPO 3: ILUMINACIÓN
+-- =====================================================
+(
+    'ILU',
+    'Iluminación',
+    'Equipos de iluminación escénica y arquitectónica',
+    'Incluye focos PAR, moving heads, scanners, strobes, controladores DMX, dimmers y todo tipo de iluminación profesional para eventos y espectáculos.',
+    1 -- activo
+),
+
+-- =====================================================
+-- GRUPO 4: ESTRUCTURAS
+-- =====================================================
+(
+    'EST',
+    'Estructuras',
+    'Truss, torres, escenarios y rigging',
+    'Incluye estructuras de aluminio (truss), torres de elevación, motores chain hoist, sistemas de rigging, escenarios modulares y todos los elementos estructurales certificados.',
+    1 -- activo
+),
+
+-- =====================================================
+-- GRUPO 5: ACCESORIOS
+-- =====================================================
+(
+    'ACC',
+    'Accesorios',
+    'Cables, conectores, adaptadores y consumibles',
+    'Incluye todo tipo de cableado (audio, video, datos, alimentación), conectores, adaptadores, regletas, cajas de señal, soportes y material auxiliar.',
+    1 -- activo
+),
+
+-- =====================================================
+-- GRUPO 6: COMUNICACIONES
+-- =====================================================
+(
+    'COM',
+    'Comunicaciones',
+    'Intercomunicadores y sistemas de coordinación',
+    'Incluye sistemas de intercom, walkie-talkies, sistemas de IFB, auriculares de comunicación y todo el equipamiento para coordinación técnica durante eventos.',
+    1 -- activo
+),
+
+-- =====================================================
+-- GRUPO 7: ELÉCTRICO
+-- =====================================================
+(
+    'ELE',
+    'Eléctrico',
+    'Distribución eléctrica y cableado de potencia',
+    'Incluye cuadros de distribución, cables de potencia, regletas industriales, grupos electrógenos, transformadores y todo el material eléctrico certificado.',
+    1 -- activo
+),
+
+-- =====================================================
+-- GRUPO 8: MOBILIARIO
+-- =====================================================
+(
+    'MOB',
+    'Mobiliario',
+    'Sillas, mesas, vallas y elementos de evento',
+    'Incluye mobiliario para eventos, vallas de seguridad, moquetas, tarimas, atriles, stands y elementos decorativos o funcionales para eventos.',
+    1 -- activo
+);
+
+
+
+
+
+-- ========================================================
+-- INSERTS DE FAMILIAS PARA LOS EJEMPLOS DE ARTÍCULOS
+-- ========================================================
+
+INSERT INTO familia (
+    id_grupo,
+    codigo_familia,
+    nombre_familia,
+    name_familia,
+    descr_familia,
+    activo_familia,
+    coeficiente_familia,
+    id_unidad_familia,
+    imagen_familia,
+    observaciones_presupuesto_familia,
+    orden_obs_familia
+) VALUES
+
+-- =====================================================
+-- FAMILIA 1: AUDIO/MICROFONÍA
+-- =====================================================
+(
+    1, -- id_grupo (ejemplo: Audio)
+    'AUD-MIC',
+    'Microfonía y Sonido',
+    'Microphones and Sound',
+    'Equipos de captación y procesamiento de audio profesional',
+    1, -- activo
+    1, -- Aplica coeficiente reductor
+    1, -- id_unidad (Unidades)
+    'familias/audio_microfonia.jpg',
+    'Todos los equipos de audio incluyen cables de conexión básicos. El técnico de sonido se cotiza por separado. Se requiere prueba de sonido 2 horas antes del evento.',
+    100
+),
+
+-- =====================================================
+-- FAMILIA 2: ILUMINACIÓN
+-- =====================================================
+(
+    2, -- id_grupo (ejemplo: Iluminación)
+    'ILU-GEN',
+    'Iluminación Profesional',
+    'Professional Lighting',
+    'Equipos de iluminación escénica, arquitectónica y de efectos',
+    1, -- activo
+    1, -- Aplica coeficiente reductor
+    1, -- id_unidad (Unidades)
+    'familias/iluminacion_profesional.jpg',
+    'La iluminación requiere acceso a cuadro eléctrico con tomas trifásicas. Incluye programación básica de escenas. El operador de iluminación se cotiza por separado.',
+    110
+),
+
+-- =====================================================
+-- FAMILIA 3: CABLEADO Y ACCESORIOS
+-- =====================================================
+(
+    3, -- id_grupo (ejemplo: Accesorios)
+    'ACC-CABLE',
+    'Cableado y Conectores',
+    'Cables and Connectors',
+    'Cables de audio, video, datos y alimentación, conectores y adaptadores',
+    1, -- activo
+    1, -- Aplica coeficiente reductor
+    2, -- id_unidad (Metros)
+    'familias/cables_conectores.jpg',
+    'Los cables se alquilan en tramos estándar. Disponemos de cables especiales bajo pedido. Se recomienda solicitar 20% adicional como backup.',
+    300
+),
+
+-- =====================================================
+-- FAMILIA 4: VIDEO Y PROYECCIÓN
+-- =====================================================
+(
+    2, -- id_grupo (ejemplo: Video)
+    'VID-PROY',
+    'Video y Proyección',
+    'Video and Projection',
+    'Proyectores, pantallas LED, procesadores de video y sistemas de visualización',
+    1, -- activo
+    0, -- NO aplica coeficiente reductor (precio fijo)
+    1, -- id_unidad (Unidades)
+    'familias/video_proyeccion.jpg',
+    'Los equipos de video requieren visita técnica previa para verificar condiciones de instalación. Montaje de pantallas LED requiere mínimo 24h de antelación. Incluye técnico durante el evento.',
+    50
+),
+
+-- =====================================================
+-- FAMILIA 5: ESTRUCTURAS Y RIGGING
+-- =====================================================
+(
+    3, -- id_grupo (ejemplo: Estructuras)
+    'EST-TRUSS',
+    'Estructuras y Rigging',
+    'Structures and Rigging',
+    'Truss, torres de elevación, motores y sistemas de suspensión certificados',
+    1, -- activo
+    0, -- NO aplica coeficiente (precio por metro)
+    2, -- id_unidad (Metros)
+    'familias/estructuras_rigging.jpg',
+    'IMPORTANTE: Todas las estructuras requieren certificación de carga y punto de anclaje certificado. Instalación únicamente por personal cualificado. Se requiere seguro de responsabilidad civil. Cálculo de cargas obligatorio.',
+    20
+);
+
+-- ========================================================
+-- CONSULTA PARA VERIFICAR LAS FAMILIAS INSERTADAS
+-- ========================================================
+
+SELECT 
+    id_familia,
+    codigo_familia,
+    nombre_familia,
+    name_familia,
+    CASE WHEN coeficiente_familia = 1 THEN 'Sí' ELSE 'No' END as aplica_coeficiente,
+    CASE WHEN activo_familia = 1 THEN 'Activo' ELSE 'Inactivo' END as estado,
+    orden_obs_familia
+FROM familia
+ORDER BY orden_obs_familia;
+
+-- ========================================================
+-- CONSULTA: Ver familias con su grupo
+-- ========================================================
+
+SELECT 
+    f.codigo_familia,
+    f.nombre_familia,
+    g.nombre_grupo,
+    f.coeficiente_familia,
+    u.nombre_unidad,
+    u.simbolo_unidad
+FROM familia f
+LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+LEFT JOIN unidad_medida u ON f.id_unidad_familia = u.id_unidad
+ORDER BY g.nombre_grupo, f.nombre_familia;
+
+
+-- ========================================================
+-- INSERTS DE EJEMPLO PARA TABLA ARTICULO
+-- Equipos audiovisuales con diferentes configuraciones
+-- ========================================================
+
+-- ========================================================
+-- INSERTS CORREGIDOS
+-- IMPORTANTE: Ajusta los id_familia e id_unidad según TUS datos reales
+-- ========================================================
+
+INSERT INTO articulo (
+    id_familia,
+    id_unidad,
+    codigo_articulo,
+    nombre_articulo,
+    name_articulo,
+    imagen_articulo,
+    precio_alquiler_articulo,
+    coeficiente_articulo,
+    es_kit_articulo,
+    control_total_articulo,
+    no_facturar_articulo,
+    notas_presupuesto_articulo,
+    notes_budget_articulo,
+    orden_obs_articulo,
+    observaciones_articulo
+) VALUES
+
+-- Ejemplo 1: Micrófono inalámbrico
+-- CAMBIA el id_familia por el ID REAL de tu familia "Microfonía y Sonido"
+(
+    (SELECT id_familia FROM familia WHERE codigo_familia = 'AUD-MIC' LIMIT 1), -- Busca el ID dinámicamente
+    (SELECT id_unidad FROM unidad_medida WHERE nombre_unidad LIKE '%unidad%' LIMIT 1), -- Busca ID de unidad
+    'MIC-INAL-001',
+    'Micrófono inalámbrico Shure SM58',
+    'Shure SM58 Wireless Microphone',
+    'articulos/mic_shure_sm58.jpg',
+    25.00,
+    1, -- Aplica coeficiente
+    0, -- No es kit
+    1, -- Control total
+    0, -- Sí se factura
+    'Incluye petaca transmisora, micrófono de mano y receptor. Requiere 2 pilas AA (no incluidas). Alcance hasta 100 metros en línea directa.',
+    'Includes bodypack transmitter, handheld microphone and receiver. Requires 2 AA batteries (not included). Range up to 100 meters in direct line.',
+    200,
+    'Verificar estado de baterías antes de cada alquiler. Comprobar frecuencias disponibles.'
+),
+
+-- Ejemplo 2: Kit de iluminación básica
+(
+    (SELECT id_familia FROM familia WHERE codigo_familia = 'ILU-GEN' LIMIT 1),
+    (SELECT id_unidad FROM unidad_medida WHERE nombre_unidad LIKE '%unidad%' LIMIT 1),
+    'KIT-ILU-BASIC',
+    'Kit iluminación básica (4 PAR LED + trípodes)',
+    'Basic lighting kit (4 LED PAR + tripods)',
+    'articulos/kit_iluminacion_basica.jpg',
+    120.00,
+    NULL, -- Hereda coeficiente de familia
+    1, -- Es un kit
+    0, -- No requiere control exhaustivo
+    0, -- Sí se factura
+    'Kit completo listo para usar. Incluye 4 focos PAR LED RGBW de 54W, 4 trípodes telescópicos hasta 3m, cables DMX, controlador DMX y bolsa de transporte. Consumo total: 220W.',
+    'Complete plug-and-play kit. Includes 4x 54W RGBW LED PAR fixtures, 4x telescopic tripods up to 3m, DMX cables, DMX controller and transport bag. Total consumption: 220W.',
+    100,
+    'Revisar estado de LEDs y conexiones DMX antes de entregar.'
+),
+
+-- Ejemplo 3: Mesa de mezclas
+(
+    (SELECT id_familia FROM familia WHERE codigo_familia = 'AUD-MIC' LIMIT 1),
+    (SELECT id_unidad FROM unidad_medida WHERE nombre_unidad LIKE '%unidad%' LIMIT 1),
+    'MIX-DIG-X32',
+    'Consola digital Behringer X32',
+    'Behringer X32 Digital Console',
+    'articulos/consola_x32.jpg',
+    180.00,
+    0, -- No aplica coeficiente
+    0, -- No es kit
+    1, -- Control total
+    0, -- Sí se factura
+    'Consola digital de 32 canales con 16 buses auxiliares, 8 efectos integrados y grabación multipista USB. Incluye flight case y cable de alimentación. Requiere corriente trifásica.',
+    '32-channel digital console with 16 aux buses, 8 integrated effects and USB multitrack recording. Includes flight case and power cable. Requires three-phase power.',
+    200,
+    'Verificar configuración de escenas. Resetear a valores de fábrica después de cada uso.'
+),
+
+-- Ejemplo 4: Cables XLR
+(
+    (SELECT id_familia FROM familia WHERE codigo_familia = 'ACC-CABLE' LIMIT 1),
+    (SELECT id_unidad FROM unidad_medida WHERE nombre_unidad LIKE '%metro%' LIMIT 1),
+    'CABLE-XLR-10M',
+    'Cable XLR 10 metros',
+    '10m XLR Cable',
+    'articulos/cable_xlr.jpg',
+    3.50,
+    1, -- Aplica coeficiente
+    0, -- No es kit
+    0, -- No requiere control total
+    0, -- Sí se factura
+    'Cable balanceado XLR macho-hembra de 10 metros. Conductor OFC de baja impedancia.',
+    '10m balanced XLR male-female cable. Low impedance OFC conductor.',
+    300,
+    'Verificar conectores y continuidad antes de alquilar.'
+),
+
+-- Ejemplo 5: Pantalla LED modular
+(
+    (SELECT id_familia FROM familia WHERE codigo_familia = 'VID-PROY' LIMIT 1),
+    (SELECT id_unidad FROM unidad_medida WHERE simbolo_unidad = 'm²' LIMIT 1),
+    'LED-PANEL-P3',
+    'Pantalla LED modular P3 interior (por m²)',
+    'P3 Indoor LED Panel (per sqm)',
+    'articulos/pantalla_led_p3.jpg',
+    450.00,
+    0, -- No aplica coeficiente
+    0, -- No es kit
+    1, -- Control total
+    0, -- Sí se factura
+    'Pantalla LED modular de pixel pitch 3mm para interior. Resolución 111.111 píxeles/m². Brillo 1200 nits. Incluye estructura de soporte, procesador de video y cableado. Requiere técnico especializado para montaje.',
+    'P3 indoor modular LED screen. Resolution 111,111 pixels/sqm. Brightness 1200 nits. Includes support structure, video processor and cabling. Requires specialized technician for assembly.',
+    50,
+    'Revisar píxeles muertos. Calibrar color antes de cada evento. Requiere montaje 24h antes.'
+);
+
+-- ========================================================
+-- ÍNDICE DE CONTENIDOS DE LA BASE DE DATOS
+-- ========================================================
+/*
+SECCIÓN 1: CONFIGURACIÓN BÁSICA
+  - tipo_iva: Tipos de IVA y recargo de equivalencia
+  - metodo_pago: Métodos de pago (transferencia, tarjeta, efectivo, etc.)
+  - forma_pago: Formas de pago con fraccionamiento y descuentos
+  - estado_presupuesto: Estados del ciclo de vida del presupuesto
+  - unidad_medida: Unidades de medida (unidades, metros, kg, etc.)
+  - coeficiente: Coeficientes reductores para alquileres multi-día
+
+SECCIÓN 2: CLIENTES Y PROVEEDORES
+  - cliente: Datos de clientes con dirección de facturación
+  - contacto_cliente: Contactos asociados a clientes
+  - contacto_cantidad_cliente: Vista con cantidad de contactos
+  - proveedor: Datos de proveedores
+  - contacto_proveedor: Contactos asociados a proveedores
+  - contacto_cantidad_proveedor: Vista con cantidad de contactos
+
+SECCIÓN 3: CATÁLOGO DE PRODUCTOS (Jerarquía)
+  - grupo_articulo: Nivel 1 - Categorías principales (Audio, Video, Iluminación...)
+  - familia: Nivel 2 - Subcategorías con coeficientes y observaciones
+  - familia_unidad_media: Vista con unidad de medida y grupo
+  - marca: Marcas de equipos
+  - articulo: Nivel 3 - Artículos genéricos (TV-40, Micrófono inalámbrico)
+  - vista_articulo_completa: Vista con toda la jerarquía y cálculos
+
+SECCIÓN 4: INVENTARIO FÍSICO
+  - estado_elemento: Estados de elementos (Disponible, Alquilado, Reparación...)
+  - elemento: Nivel 4 - Unidades físicas con número de serie y ubicación
+  - vista_elemento_completa: Vista activos con ubicación y estado
+  - vista_elementos_completa: Vista todos los elementos
+  - documento_elemento: Documentos asociados (manuales, garantías)
+  - foto_elemento: Fotografías de elementos
+
+SECCIÓN 5: OBSERVACIONES Y TEXTOS
+  - observacion_general: Textos estándar para presupuestos (bilingüe)
+  
+SECCIÓN 6: EMPRESAS Y FACTURACIÓN
+  - empresa: Empresas del grupo (reales y ficticia para presupuestos)
+  - Procedimientos almacenados para numeración de documentos
+  - Triggers de validación
+
+SECCIÓN 7: PRESUPUESTOS (Estructura propuesta)
+  - presupuesto: Cabecera de presupuestos
+  - linea_presupuesto: Líneas de detalle
+  - presupuesto_observacion: Observaciones vinculadas
+
+SECCIÓN 8: DATOS DE EJEMPLO
+  - Inserts de ejemplo para grupos, familias y artículos
+*/
+
+-- ========================================================
+-- NOTAS DE VERSIÓN 2.0 (2025-12-10)
+-- ========================================================
+/*
+CAMBIOS PRINCIPALES:
+
+1. SISTEMA DE PAGOS OPTIMIZADO
+   - Eliminada tabla forma_pago antigua (anulada)
+   - Nueva estructura con metodo_pago + forma_pago
+   - Soporte para pagos fraccionados con porcentajes
+   - Descuentos por pronto pago solo en pagos únicos
+   - Ejemplos: 40% anticipo + 60% al finalizar evento
+
+2. GESTIÓN DE EMPRESAS
+   - Nueva tabla empresa completa
+   - Soporte para empresa ficticia (solo presupuestos)
+   - Múltiples empresas reales para facturación
+   - Series independientes por empresa
+   - Cumplimiento VeriFact para empresas españolas
+   - Procedimientos para numeración automática
+
+3. UBICACIÓN DETALLADA DE ELEMENTOS
+   - 3 campos: nave_elemento, pasillo_columna_elemento, altura_elemento
+   - Facilita localización en almacén
+   - Optimizado para uso con NFC
+
+4. OBSERVACIONES MULTINIVEL
+   - observacion_general: Textos estándar bilingües
+   - familia.observaciones_presupuesto_familia
+   - articulo.notas_presupuesto_articulo (bilingüe)
+   - presupuesto.observaciones_pie_presupuesto
+   - Sistema de ordenación con campos orden_obs_*
+
+5. DOCUMENTACIÓN Y FOTOS
+   - documento_elemento con campo privado_documento
+   - foto_elemento con campo privado_foto
+   - Soporte para archivos públicos y privados
+
+6. VISTAS MEJORADAS
+   - vista_articulo_completa: Con grupo, familia, unidad y cálculos
+   - vista_elemento_completa: Solo activos con ubicación
+   - vista_elementos_completa: Todos los elementos
+   - contacto_cantidad_cliente: Con forma de pago habitual
+
+7. DATOS BILINGÜES
+   - Campos name_* y notes_* en inglés
+   - observacion_general con title_obs y text_obs
+   - Soporte completo español/inglés
+
+MEJORAS TÉCNICAS:
+- Triggers optimizados para generación de códigos
+- Validaciones de integridad
+- Índices optimizados para búsquedas
+- Consultas de ejemplo documentadas
+- Procedimientos almacenados para empresas
+
+PRÓXIMOS PASOS SUGERIDOS:
+- Implementar tabla presupuesto completa
+- Tabla linea_presupuesto
+- Tabla presupuesto_observacion
+- Sistema de pedidos y albaranes
+- Sistema de facturación con VeriFact
+- Gestión de mantenimientos programados
+- Integración NFC para warehouse
+*/
+
+-- ========================================================
+-- DIAGRAMA ENTIDAD-RELACIÓN (TEXTO)
+-- ========================================================
+/*
+JERARQUÍA PRINCIPAL:
+
+grupo_articulo (1) ──┬──> (N) familia (1) ──┬──> (N) articulo (1) ──> (N) elemento
+                     │                       │
+                     │                       └──> unidad_medida
+                     │
+                     └──> [Audio, Video, Iluminación, Estructuras...]
+
+CLIENTES:
+cliente (1) ──┬──> (N) contacto_cliente
+              │
+              └──> forma_pago (forma_pago_habitual)
+
+PROVEEDORES:
+proveedor (1) ──> (N) contacto_proveedor
+
+ELEMENTOS:
+elemento ──┬──> articulo
+           ├──> marca
+           ├──> estado_elemento
+           ├──> (N) documento_elemento
+           └──> (N) foto_elemento
+
+PRESUPUESTOS:
+empresa (ficticia) ──> presupuesto ──┬──> cliente
+                                     ├──> contacto_cliente
+                                     ├──> estado_presupuesto
+                                     ├──> forma_pago
+                                     ├──> (N) linea_presupuesto ──> articulo
+                                     └──> (N) presupuesto_observacion ──> observacion_general
+
+FACTURACIÓN:
+empresa (real) ──> factura ──> presupuesto
+*/
+
+-- ========================================================
+-- CONSULTAS ÚTILES RÁPIDAS
+-- ========================================================
+
+-- Ver estructura completa del catálogo
+-- SELECT * FROM vista_articulo_completa WHERE activo_articulo = 1;
+
+-- Ver inventario con ubicaciones
+-- SELECT codigo_elemento, descripcion_elemento, nave_elemento, 
+--        pasillo_columna_elemento, altura_elemento, descripcion_estado_elemento
+-- FROM vista_elemento_completa;
+
+-- Ver clientes con su forma de pago
+-- SELECT nombre_cliente, nombre_pago, descripcion_forma_pago_cliente, cantidad_contactos_cliente
+-- FROM contacto_cantidad_cliente
+-- WHERE activo_cliente = 1;
+
+-- Obtener empresa ficticia para presupuestos
+-- CALL sp_obtener_empresa_ficticia_principal();
+
+-- Listar empresas disponibles para facturación
+-- CALL sp_listar_empresas_facturacion();
+
+-- ========================================================
+-- FIN DEL ARCHIVO
+-- ========================================================

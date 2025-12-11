@@ -1,0 +1,282 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 01:51:18"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 01:51:18"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 10:59:01"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 10:59:01"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 14:23:54"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 14:23:54"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 16:45:42"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 16:45:42"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 18:08:00"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 18:08:00"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 18:30:25"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 18:30:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 18:46:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 18:46:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de estados",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 18:50:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Presupuesto",
+        "actividad": "Insertar",
+        "mensaje": "Se insertó el presupuesto con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 19:01:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Guardar el presupuesto",
+        "mensaje": "Presupuesto guardado exitosamente con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 19:01:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 19:01:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 19:10:07"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:12:09"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:12:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Presupuesto",
+        "actividad": "Insertar",
+        "mensaje": "Se insertó el presupuesto con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:17:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Guardar el presupuesto",
+        "mensaje": "Presupuesto guardado exitosamente con ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:17:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:17:24"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:38:31"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:38:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:38:49"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 2 contactos del cliente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:38:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 0 contactos del cliente ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:40:20"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 2 contactos del cliente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:40:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:40:51"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:40:55"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:41:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:41:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 2 contactos del cliente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-10 20:41:15"
+    }
+]

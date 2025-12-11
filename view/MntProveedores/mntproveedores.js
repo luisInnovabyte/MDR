@@ -380,6 +380,38 @@ $(document).ready(function () {
                                             ${d.created_at_proveedor ? formatoFechaEuropeo(d.created_at_proveedor) : '<span class="text-muted fst-italic">Sin fecha</span>'}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-credit-card me-2"></i>Forma de Pago
+                                        </th>
+                                        <td class="pe-4">
+                                            ${d.descripcion_forma_pago_proveedor || '<span class="text-muted fst-italic">Sin forma de pago</span>'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-tag me-2"></i>Tipo de Pago
+                                        </th>
+                                        <td class="pe-4">
+                                            ${d.tipo_pago_proveedor ? `<span class="badge ${d.tipo_pago_proveedor === 'Pago único' ? 'bg-info' : d.tipo_pago_proveedor === 'Pago fraccionado' ? 'bg-warning' : 'bg-secondary'}">${d.tipo_pago_proveedor}</span>` : '<span class="text-muted fst-italic">Sin información</span>'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-percent me-2"></i>Descuento
+                                        </th>
+                                        <td class="pe-4">
+                                            ${d.descuento_pago ? `${d.descuento_pago}%` : '<span class="text-muted fst-italic">Sin descuento</span>'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-check-circle me-2"></i>Estado Forma Pago
+                                        </th>
+                                        <td class="pe-4">
+                                            ${d.estado_forma_pago_proveedor ? `<span class="badge ${d.estado_forma_pago_proveedor === 'Configurado' ? 'bg-success' : d.estado_forma_pago_proveedor === 'Sin configurar' ? 'bg-secondary' : 'bg-danger'}">${d.estado_forma_pago_proveedor}</span>` : '<span class="text-muted fst-italic">Sin estado</span>'}
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
