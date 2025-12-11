@@ -51,13 +51,13 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_pago', data: 'id_pago', visible: false, className: "text-center" }, // Columna 1: ID_PAGO
-            { name: 'codigo_pago', data: 'codigo_pago', className: "text-center" }, // Columna 2: CODIGO_PAGO
-            { name: 'nombre_pago', data: 'nombre_pago', className: "text-center" }, // Columna 3: NOMBRE_PAGO
-            { name: 'nombre_metodo_pago', data: 'nombre_metodo_pago', className: "text-center" }, // Columna 4: METODO_PAGO
-            { name: 'tipo_pago', data: 'tipo_pago', className: "text-center" }, // Columna 5: TIPO_PAGO
-            { name: 'activo_pago', data: 'activo_pago', className: "text-center" }, // Columna 6: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 7: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center" },  // Columna 8: EDITAR
+            { name: 'codigo_pago', data: 'codigo_pago', className: "text-center align-middle" }, // Columna 2: CODIGO_PAGO
+            { name: 'nombre_pago', data: 'nombre_pago', className: "text-center align-middle" }, // Columna 3: NOMBRE_PAGO
+            { name: 'nombre_metodo_pago', data: 'nombre_metodo_pago', className: "text-center align-middle" }, // Columna 4: METODO_PAGO
+            { name: 'tipo_pago', data: 'tipo_pago', className: "text-center align-middle" }, // Columna 5: TIPO_PAGO
+            { name: 'activo_pago', data: 'activo_pago', className: "text-center align-middle" }, // Columna 6: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 7: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" },  // Columna 8: EDITAR
             
         ], // de las columnas
         columnDefs: [

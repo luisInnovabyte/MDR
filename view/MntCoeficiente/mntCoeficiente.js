@@ -62,29 +62,29 @@ $(document).ready(function () {
       {
         name: "jornadas_coeficiente",
         data: "jornadas_coeficiente",
-        className: "text-center",
+        className: "text-center ",
       }, // Columna 2: JORNADAS_COEFICIENTE
       {
         name: "valor_coeficiente",
         data: "valor_coeficiente",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 3: VALOR_COEFICIENTE
       {
         name: "observaciones_coeficiente",
         data: "observaciones_coeficiente",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 4: OBSERVACIONES_COEFICIENTE
       {
         name: "activo_coeficiente",
         data: "activo_coeficiente",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 5: ESTADO
-      { name: "activar", data: null, className: "text-center" }, // Columna 6: ACTIVAR/DESACTIVAR
+      { name: "activar", data: null, className: "text-center align-middle" }, // Columna 6: ACTIVAR/DESACTIVAR
       {
         name: "editar",
         data: null,
         defaultContent: "",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 7: EDITAR
     ], // de las columnas
     columnDefs: [

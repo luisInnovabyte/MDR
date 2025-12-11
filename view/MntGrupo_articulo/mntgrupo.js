@@ -54,29 +54,29 @@ $(document).ready(function () {
       {
         name: "codigo_grupo",
         data: "codigo_grupo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 2: CODIGO_GRUPO
       {
         name: "nombre_grupo",
         data: "nombre_grupo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 3: NOMBRE_GRUPO
       {
         name: "descripcion_grupo",
         data: "descripcion_grupo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 4: DESCRIPCION_GRUPO
       {
         name: "activo_grupo",
         data: "activo_grupo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 5: ESTADO
-      { name: "activar", data: null, className: "text-center" }, // Columna 6: ACTIVAR/DESACTIVAR
+      { name: "activar", data: null, className: "text-center align-middle" }, // Columna 6: ACTIVAR/DESACTIVAR
       {
         name: "editar",
         data: null,
         defaultContent: "",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 7: EDITAR
     ], // de las columnas
     columnDefs: [

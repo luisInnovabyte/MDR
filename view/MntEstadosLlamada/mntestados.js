@@ -171,11 +171,11 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_estado', data: 'id_estado', visible: false, className: "text-center" }, // Columna 1: ID_ESTADO
-            { name: 'desc_estado', data: 'desc_estado' , className: "text-center" }, // Columna 2: DESC_ESTADO
-            { name: 'peso_estado', data: 'peso_estado', className: "text-center" }, // Columna 3: PESO_ESTADO
-            { name: 'activo_estado', data: 'activo_estado', className: "text-center"  }, // Columna 4: ACTIVO_ESTADO
-            { name: 'activar', data: null, defaultContent: '', className: "text-center"  },  // Columna 5: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center"  },  // Columna // 6: EDITAR
+            { name: 'desc_estado', data: 'desc_estado' , className: "text-center align-middle" }, // Columna 2: DESC_ESTADO
+            { name: 'peso_estado', data: 'peso_estado', className: "text-center align-middle" }, // Columna 3: PESO_ESTADO
+            { name: 'activo_estado', data: 'activo_estado', className: "text-center align-middle"  }, // Columna 4: ACTIVO_ESTADO
+            { name: 'activar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 5: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna // 6: EDITAR
             
         ], // de las columnas
         columnDefs: [

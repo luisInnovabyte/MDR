@@ -63,12 +63,12 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_usuario', data: 'id_usuario', visible: false, className: "text-center" }, // Columna 1: ID_USUARIO
-            { name: 'nombre', data: 'nombre' , className: "text-center" }, // Columna 2: NOMBRE_COMPLETO_USUARIO
-            { name: 'email', data: 'email', className: "text-center" }, // Columna 1: ID_USUARIO
-            { name: 'nombre_rol', data: 'nombre_rol', className: "text-center"  }, // Columna 3: ROL
-            { name: 'est', data: 'est', className: "text-center"  }, // Columna 4: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 5: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center"  },  // Columna 6: EDITAR
+            { name: 'nombre', data: 'nombre' , className: "text-center align-middle" }, // Columna 2: NOMBRE_COMPLETO_USUARIO
+            { name: 'email', data: 'email', className: "text-center align-middle" }, // Columna 1: ID_USUARIO
+            { name: 'nombre_rol', data: 'nombre_rol', className: "text-center align-middle"  }, // Columna 3: ROL
+            { name: 'est', data: 'est', className: "text-center align-middle"  }, // Columna 4: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 5: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 6: EDITAR
             
         ], // de las columnas
         columnDefs: [

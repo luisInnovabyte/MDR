@@ -62,12 +62,12 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_marca', data: 'id_marca', visible: false, className: "text-center" }, // Columna 1: ID_MARCA
-            { name: 'codigo_marca', data: 'codigo_marca', className: "text-center" }, // Columna 2: CODIGO_MARCA
-            { name: 'nombre_marca', data: 'nombre_marca', className: "text-center" }, // Columna 3: NOMBRE_MARCA
+            { name: 'codigo_marca', data: 'codigo_marca', className: "text-center align-middle" }, // Columna 2: CODIGO_MARCA
+            { name: 'nombre_marca', data: 'nombre_marca', className: "text-center align-middle" }, // Columna 3: NOMBRE_MARCA
 
-            { name: 'activo_marca', data: 'activo_marca', className: "text-center" }, // Columna 5: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 6: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center" },  // Columna 7: EDITAR
+            { name: 'activo_marca', data: 'activo_marca', className: "text-center align-middle" }, // Columna 5: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 6: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" },  // Columna 7: EDITAR
             
         ], // de las columnas
         columnDefs: [

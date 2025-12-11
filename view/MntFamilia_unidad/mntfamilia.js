@@ -82,30 +82,30 @@ $(document).ready(function () {
       {
         name: "codigo_familia",
         data: "codigo_familia",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 2: CODIGO_FAMILIA
       {
         name: "nombre_familia",
         data: "nombre_familia",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 3: NOMBRE_FAMILIA
-      { name: "unidad_medida", data: null, className: "text-center" }, // Columna 4: UNIDAD DE MEDIDA (simbolo + nombre)
+      { name: "unidad_medida", data: null, className: "text-center align-middle" }, // Columna 4: UNIDAD DE MEDIDA (simbolo + nombre)
       {
         name: "coeficiente_familia",
         data: "coeficiente_familia",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 5: COEFICIENTES
       {
         name: "activo_familia",
         data: "activo_familia",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 6: ESTADO
-      { name: "activar", data: null, className: "text-center" }, // Columna 7: ACTIVAR/DESACTIVAR
+      { name: "activar", data: null, className: "text-center align-middle" }, // Columna 7: ACTIVAR/DESACTIVAR
       {
         name: "editar",
         data: null,
         defaultContent: "",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 8: EDITAR
     ], // de las columnas
     columnDefs: [

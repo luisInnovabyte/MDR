@@ -62,34 +62,34 @@ $(document).ready(function () {
       {
         name: "codigo_estado_elemento",
         data: "codigo_estado_elemento",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 2: CODIGO_ESTADO_ELEMENTO
       {
         name: "descripcion_estado_elemento",
         data: "descripcion_estado_elemento",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 3: DESCRIPCION_ESTADO_ELEMENTO
       {
         name: "color_estado_elemento",
         data: "color_estado_elemento",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 4: COLOR_ESTADO_ELEMENTO
       {
         name: "permite_alquiler_estado_elemento",
         data: "permite_alquiler_estado_elemento",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 5: PERMITE_ALQUILER_ESTADO_ELEMENTO
       {
         name: "activo_estado_elemento",
         data: "activo_estado_elemento",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 6: ESTADO
-      { name: "activar", data: null, className: "text-center" }, // Columna 7: ACTIVAR/DESACTIVAR
+      { name: "activar", data: null, className: "text-center align-middle" }, // Columna 7: ACTIVAR/DESACTIVAR
       {
         name: "editar",
         data: null,
         defaultContent: "",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 8: EDITAR
     ], // de las columnas
     columnDefs: [

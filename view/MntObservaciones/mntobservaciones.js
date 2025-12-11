@@ -51,14 +51,14 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_obs_general', data: 'id_obs_general', visible: false, className: "text-center" }, // Columna 1: ID_OBS_GENERAL
-            { name: 'codigo_obs_general', data: 'codigo_obs_general', className: "text-center" }, // Columna 2: CODIGO_OBS_GENERAL
-            { name: 'titulo_obs_general', data: 'titulo_obs_general', className: "text-center" }, // Columna 3: TITULO_OBS_GENERAL
-            { name: 'tipo_obs_general', data: 'tipo_obs_general', className: "text-center" }, // Columna 4: TIPO_OBS_GENERAL
-            { name: 'orden_obs_general', data: 'orden_obs_general', className: "text-center" }, // Columna 5: ORDEN_OBS_GENERAL
-            { name: 'obligatoria_obs_general', data: 'obligatoria_obs_general', className: "text-center" }, // Columna 6: OBLIGATORIA_OBS_GENERAL
-            { name: 'activo_obs_general', data: 'activo_obs_general', className: "text-center" }, // Columna 7: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 8: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center" },  // Columna 9: EDITAR
+            { name: 'codigo_obs_general', data: 'codigo_obs_general', className: "text-center align-middle" }, // Columna 2: CODIGO_OBS_GENERAL
+            { name: 'titulo_obs_general', data: 'titulo_obs_general', className: "text-center align-middle" }, // Columna 3: TITULO_OBS_GENERAL
+            { name: 'tipo_obs_general', data: 'tipo_obs_general', className: "text-center align-middle" }, // Columna 4: TIPO_OBS_GENERAL
+            { name: 'orden_obs_general', data: 'orden_obs_general', className: "text-center align-middle" }, // Columna 5: ORDEN_OBS_GENERAL
+            { name: 'obligatoria_obs_general', data: 'obligatoria_obs_general', className: "text-center align-middle" }, // Columna 6: OBLIGATORIA_OBS_GENERAL
+            { name: 'activo_obs_general', data: 'activo_obs_general', className: "text-center align-middle" }, // Columna 7: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 8: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" },  // Columna 9: EDITAR
             
         ], // de las columnas
         columnDefs: [

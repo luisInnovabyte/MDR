@@ -93,46 +93,46 @@ $(document).ready(function () {
       {
         name: "codigo_articulo",
         data: "codigo_articulo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 2: CODIGO_ARTICULO
       {
         name: "nombre_articulo",
         data: "nombre_articulo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 3: NOMBRE_ARTICULO
-      { name: "familia", data: null, className: "text-center" }, // Columna 4: FAMILIA
+      { name: "familia", data: null, className: "text-center align-middle" }, // Columna 4: FAMILIA
       {
         name: "precio_alquiler_articulo",
         data: "precio_alquiler_articulo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 5: PRECIO
       {
         name: "es_kit_articulo",
         data: "es_kit_articulo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 6: ES_KIT
       {
         name: "coeficiente_efectivo",
         data: "coeficiente_efectivo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 7: COEFICIENTES
       {
         name: "activo_articulo",
         data: "activo_articulo",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 8: ESTADO
-      { name: "activar", data: null, className: "text-center" }, // Columna 9: ACTIVAR/DESACTIVAR
+      { name: "activar", data: null, className: "text-center align-middle" }, // Columna 9: ACTIVAR/DESACTIVAR
       {
         name: "editar",
         data: null,
         defaultContent: "",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 10: EDITAR
       {
         name: "elementos",
         data: null,
         defaultContent: "",
-        className: "text-center",
+        className: "text-center align-middle",
       }, // Columna 11: ELEMENTOS
     ],
     columnDefs: [

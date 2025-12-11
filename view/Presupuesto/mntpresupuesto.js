@@ -392,17 +392,18 @@ $(document).ready(function () {
     /************************************/
     //     FILTROS DE BÚSQUEDA         //
     /************************************/
-    table_e.columns().every(function () {
-        var that = this;
-        var footerCell = $(that.footer());
-        var input = footerCell.find('input, select');
-
-        input.on('keyup change clear', function () {
-            if (that.search() !== this.value) {
-                that.search(this.value).draw();
-            }
-            updateFilterMessage();
-        });
+    $('#presupuestos_data tfoot th').each(function (index) {
+        var input = $(this).find('input, select');
+        
+        if (input.length) {
+            input.on('keyup change', function () {
+                var column = table_e.column(index);
+                if (column.search() !== this.value) {
+                    column.search(this.value).draw();
+                }
+                updateFilterMessage();
+            });
+        }
     });
 
     // Limpiar filtros
@@ -413,17 +414,15 @@ $(document).ready(function () {
     });
 
     function updateFilterMessage() {
-        var activeFilters = [];
+        var activeFiltersCount = 0;
         $('tfoot input, tfoot select').each(function () {
             if ($(this).val()) {
-                var columnName = $(this).closest('th').index();
-                var headerText = $('thead th').eq(columnName).text();
-                activeFilters.push(headerText + ': ' + $(this).val());
+                activeFiltersCount++;
             }
         });
 
-        if (activeFilters.length > 0) {
-            $('#active-filters-text').text(activeFilters.join(', '));
+        if (activeFiltersCount > 0) {
+            $('#active-filters-text').text('');
             $('#filter-alert').show();
         } else {
             $('#filter-alert').hide();

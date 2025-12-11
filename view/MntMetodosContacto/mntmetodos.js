@@ -81,11 +81,11 @@ $(document).ready(function () {
         columns: [
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más      
             { name: 'id_metodo', data: 'id_metodo', visible: false, className: "text-center"  }, // Columna 0: ID_METODO
-            { name: 'nombre', data: 'nombre', className: "text-center"  }, // Columna 1: NOMBRE
-            { name: 'estado', data: 'estado', className: "text-center"  }, // Columna 2: ESTADO
-            { name: 'imagen_metodo', data: 'imagen_metodo', className: "text-center"  }, // Columna 3: IMAGEN_METODO
-            { name: 'activar', data: null, defaultContent: '', className: "text-center"  },  // Columna //  4: ACTIVAR/DESACTIVAR ADJUNTO
-            { name: 'editar', data: null, defaultContent: '', className: "text-center"  },  // Columna //  5: EDITAR METODO
+            { name: 'nombre', data: 'nombre', className: "text-center align-middle"  }, // Columna 1: NOMBRE
+            { name: 'estado', data: 'estado', className: "text-center align-middle"  }, // Columna 2: ESTADO
+            { name: 'imagen_metodo', data: 'imagen_metodo', className: "text-center align-middle"  }, // Columna 3: IMAGEN_METODO
+            { name: 'activar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna //  4: ACTIVAR/DESACTIVAR ADJUNTO
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna //  5: EDITAR METODO
         ], // de las columnas
         columnDefs: [
             // 0 - CONTROL

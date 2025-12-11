@@ -60,7 +60,7 @@ $(document).ready(function () {
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_familia', data: 'id_familia', visible: false, className: "text-center " }, // Columna 1: ID_FAMILIA
             { name: 'codigo_familia', data: 'codigo_familia', className: "text-center align-middle" }, // Columna 2: CODIGO_FAMILIA
-            { name: 'nombre_familia', data: 'nombre_familia', className: "text-center" }, // Columna 3: NOMBRE_FAMILIA
+            { name: 'nombre_familia', data: 'nombre_familia', className: "text-center align-middle" }, // Columna 3: NOMBRE_FAMILIA
             
             { name: 'activo_familia', data: 'activo_familia', className: "text-center" }, // Columna 5: ESTADO
             { name: 'activar', data: null, className: "text-center" }, // Columna 6: ACTIVAR/DESACTIVAR

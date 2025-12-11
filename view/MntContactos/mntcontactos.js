@@ -315,16 +315,16 @@ const ajaxConfig = idLlamada
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_contacto', data: 'id_contacto', visible: false, className: "text-center"  }, // Columna 0: ID_CONTACTO
-            { name: 'id_llamada', data: 'id_llamada', className: "text-center"  }, // Columna 1: ID_LLAMADA
-            { name: 'fecha_hora_contacto', data: 'fecha_hora_contacto', className: "text-center"  }, // Columna 2: FECHA_HORA_CONTACTO
-            { name: 'id_metodo', data: 'id_metodo', className: "text-center"  }, // Columna 3: ID_METODO
-            { name: 'observaciones', data: 'observaciones', visible: false, className: "text-center"  }, // Columna 4: OBSERVACIONES
+            { name: 'id_llamada', data: 'id_llamada', className: "text-center align-middle"  }, // Columna 1: ID_LLAMADA
+            { name: 'fecha_hora_contacto', data: 'fecha_hora_contacto', className: "text-center align-middle"  }, // Columna 2: FECHA_HORA_CONTACTO
+            { name: 'id_metodo', data: 'id_metodo', className: "text-center align-middle"  }, // Columna 3: ID_METODO
+            { name: 'observaciones', data: 'observaciones', visible: false, className: "text-center align-middle"  }, // Columna 4: OBSERVACIONES
             { name: 'fecha_visita_cerrada', data: 'fecha_visita_cerrada', visible: false}, // Columna 5: FECHA_VISITA_CERRADA
-            { name: 'estado', data: 'estado', className: "text-center" }, // Columna 6: ESTADO
-            { name: 'activar', data: null, defaultContent: '', className: "text-center"  },  // Columna //  7: ACT/DES ESTADO
-            { name: 'editar', data: null, defaultContent: '', className: "text-center"  },  // Columna //  8: EDITAR
-            { name: 'nombre_metodo', data: 'nombre_metodo', className: "text-center", visible: false}, 
-            { name: 'imagen_metodo', data: 'imagen_metodo', className: "text-center",  visible: false}, 
+            { name: 'estado', data: 'estado', className: "text-center align-middle" }, // Columna 6: ESTADO
+            { name: 'activar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna //  7: ACT/DES ESTADO
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna //  8: EDITAR
+            { name: 'nombre_metodo', data: 'nombre_metodo', className: "text-center align-middle", visible: false}, 
+            { name: 'imagen_metodo', data: 'imagen_metodo', className: "text-center align-middle",  visible: false}, 
         ], // de las columnas
         columnDefs: [
             // Columna 0: BOTÓN MÁS 

@@ -67,18 +67,18 @@ $(document).ready(function () {
         },
         columns: [
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
-            { name: 'id_elemento', data: 'id_elemento', visible: false, className: "text-center" }, // Columna 1: ID
-            { name: 'nombre_articulo', data: 'nombre_articulo', visible:false, className: "text-center" }, // Columna 2: ARTÍCULO
-            { name: 'codigo_elemento', data: 'codigo_elemento', className: "text-center" }, // Columna 3: CODIGO
-            { name: 'descripcion_elemento', data: 'descripcion_elemento', className: "text-center" }, // Columna 4: DESCRIPCION
-            { name: 'nombre_marca', data: 'nombre_marca', className: "text-center" }, // Columna 5: MARCA
-            { name: 'modelo_elemento', data: 'modelo_elemento', className: "text-center" }, // Columna 6: MODELO
-            { name: 'numero_serie_elemento', data: 'numero_serie_elemento', className: "text-center" }, // Columna 7: N° SERIE
-            { name: 'descripcion_estado_elemento', data: 'descripcion_estado_elemento', className: "text-center" }, // Columna 8: ESTADO
+            { name: 'id_elemento', data: 'id_elemento', visible: false, className: "text-center align-middle" }, // Columna 1: ID
+            { name: 'nombre_articulo', data: 'nombre_articulo', visible:false, className: "text-center align-middle" }, // Columna 2: ARTÍCULO
+            { name: 'codigo_elemento', data: 'codigo_elemento', className: "text-center align-middle" }, // Columna 3: CODIGO
+            { name: 'descripcion_elemento', data: 'descripcion_elemento', className: "text-center align-middle" }, // Columna 4: DESCRIPCION
+            { name: 'nombre_marca', data: 'nombre_marca', className: "text-center align-middle" }, // Columna 5: MARCA
+            { name: 'modelo_elemento', data: 'modelo_elemento', className: "text-center align-middle" }, // Columna 6: MODELO
+            { name: 'numero_serie_elemento', data: 'numero_serie_elemento', className: "text-center align-middle" }, // Columna 7: N° SERIE
+            { name: 'descripcion_estado_elemento', data: 'descripcion_estado_elemento', className: "text-center align-middle" }, // Columna 8: ESTADO
             { 
                 name: 'ubicacion', 
                 data: 'nave_elemento',
-                className: "text-center",
+                className: "text-center align-middle",
                 render: function(data, type, row) {
                     if (type === 'display') {
                         let ubicacion = [];
@@ -90,9 +90,9 @@ $(document).ready(function () {
                     return data;
                 }
             }, // Columna 9: UBICACION
-            { name: 'documentos', data: null, className: "text-center" }, // Columna 10: DOCUMENTOS
-            { name: 'fotos', data: null, className: "text-center" }, // Columna 11: FOTOS
-            { name: 'activo_elemento', data: 'activo_elemento', className: "text-center" } // Columna 12: ACTIVO
+            { name: 'documentos', data: null, className: "text-center align-middle" }, // Columna 10: DOCUMENTOS
+            { name: 'fotos', data: null, className: "text-center align-middle" }, // Columna 11: FOTOS
+            { name: 'activo_elemento', data: 'activo_elemento', className: "text-center align-middle" } // Columna 12: ACTIVO
         ],
         columnDefs: [
             // Columna 0: BOTÓN MÁS 

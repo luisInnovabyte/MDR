@@ -176,8 +176,26 @@
                             <th><input type="text" placeholder="Días val." class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Duración" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Días" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Estado evento" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Estado" class="form-control form-control-sm" /></th>
+                            <th>
+                                <select class="form-control form-control-sm" title="Filtrar por estado evento">
+                                    <option value="">Todos los estados</option>
+                                    <option value="finalizado">Evento finalizado</option>
+                                    <option value="curso">Evento en curso</option>
+                                    <option value="hoy">Evento hoy</option>
+                                    <option value="próximo">Evento próximo</option>
+                                    <option value="futuro">Evento futuro</option>
+                                </select>
+                            </th>
+                            <th>
+                                <select class="form-control form-control-sm" title="Filtrar por estado presupuesto">
+                                    <option value="">Todos los estados</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
+                                    <option value="Aprobado">Aprobado</option>
+                                    <option value="Rechazado">Rechazado</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                </select>
+                            </th>
                             <th>
                                 <select class="form-control form-control-sm" title="Filtrar por estado">
                                     <option value="">Todos los estados</option>
