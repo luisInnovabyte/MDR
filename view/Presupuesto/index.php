@@ -75,6 +75,26 @@
         .ui-datepicker {
             z-index: 1060 !important;
         }
+
+        /* Evitar scroll horizontal en la tabla */
+        .dataTables_wrapper {
+            overflow-x: hidden !important;
+        }
+
+        .table-wrapper {
+            overflow-x: hidden !important;
+        }
+
+        /* Estilos para el modo responsive */
+        table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+        table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+            background-color: #0168fa;
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control:before,
+        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th.dtr-control:before {
+            background-color: #d33333;
+        }
     </style>
     <!-- ########## START: MAIN PANEL ########## -->
 <div class="br-mainpanel">

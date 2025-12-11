@@ -10,6 +10,19 @@ $(document).ready(function () {
     ///////////////////////////////////
     var datatable_presupuestosConfig = {
         processing: true,
+        responsive: {
+            details: {
+                type: 'column',
+                target: 0,
+                renderer: function (api, rowIdx, columns) {
+                    // Obtener los datos de la fila
+                    var data = api.row(rowIdx).data();
+                    
+                    // Usar nuestra función format personalizada
+                    return format(data);
+                }
+            }
+        },
         layout: {
             bottomEnd: {
                 paging: {
@@ -45,16 +58,23 @@ $(document).ready(function () {
             { name: 'editar', data: null, defaultContent: '', className: "text-center" }  // Columna 14: EDITAR
         ],
         columnDefs: [
-            // Columna 0: BOTÓN MÁS 
-            { targets: "control:name", width: '3%', searchable: false, orderable: false, className: "text-center"},
+            // Columna 0: BOTÓN MÁS - Control responsive
+            { 
+                targets: "control:name", 
+                width: '3%', 
+                searchable: false, 
+                orderable: false, 
+                className: "control text-center",
+                responsivePriority: 1
+            },
             // Columna 1: id_presupuesto 
             { targets: "id_presupuesto:name", width: '3%', searchable: false, orderable: false, className: "text-center" },
             // Columna 2: numero_presupuesto
-            { targets: "numero_presupuesto:name", width: '8%', searchable: true, orderable: true, className: "text-center" },
+            { targets: "numero_presupuesto:name", width: '8%', searchable: true, orderable: true, className: "text-center", responsivePriority: 2 },
             // Columna 3: nombre_cliente
-            { targets: "nombre_cliente:name", width: '12%', searchable: true, orderable: true, className: "text-center" },
+            { targets: "nombre_cliente:name", width: '12%', searchable: true, orderable: true, className: "text-center", responsivePriority: 3 },
             // Columna 4: nombre_evento_presupuesto
-            { targets: "nombre_evento_presupuesto:name", width: '12%', searchable: true, orderable: true, className: "text-center" },
+            { targets: "nombre_evento_presupuesto:name", width: '12%', searchable: true, orderable: true, className: "text-center", responsivePriority: 4 },
             // Columna 5: fecha_inicio_evento_presupuesto
             { 
                 targets: "fecha_inicio_evento_presupuesto:name", width: '8%', searchable: true, orderable: true, className: "text-center",
@@ -142,7 +162,7 @@ $(document).ready(function () {
             },
             // Columna 13: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
             {   
-                targets: "activar:name", width: '5%', searchable: false, orderable: false, class: "text-center",
+                targets: "activar:name", width: '5%', searchable: false, orderable: false, class: "text-center", responsivePriority: 5,
                 render: function (data, type, row) {
                     if (row.activo_presupuesto == 1) {
                         return `<button type="button" class="btn btn-danger btn-sm desacPresupuesto" data-bs-toggle="tooltip-primary" data-placement="top" title="Desactivar" data-original-title="Tooltip on top" 
@@ -159,7 +179,7 @@ $(document).ready(function () {
             },
             // Columna 14: BOTON PARA EDITAR PRESUPUESTO
             {   
-                targets: "editar:name", width: '5%', searchable: false, orderable: false, class: "text-center",
+                targets: "editar:name", width: '5%', searchable: false, orderable: false, class: "text-center", responsivePriority: 6,
                 render: function (data, type, row) {
                     return `<button type="button" class="btn btn-info btn-sm editarPresupuesto" data-toggle="tooltip-primary" data-placement="top" title="Editar"  
                              data-id_presupuesto="${row.id_presupuesto}"> 
@@ -356,7 +376,11 @@ $(document).ready(function () {
         `;
     }
     
+    // NOTA: El modo responsive de DataTables maneja automáticamente 
+    // el click en la columna de control para mostrar/ocultar detalles.
+    // Ya no necesitamos el handler manual del click.
     
+    /*
     $tableBody.on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
         var row = table_e.row(tr);
@@ -369,6 +393,7 @@ $(document).ready(function () {
             tr.addClass('shown');
         }
     });
+    */
 
     ////////////////////////////////////////////
     //   INICIO ZONA FUNCIONES DE APOYO      //

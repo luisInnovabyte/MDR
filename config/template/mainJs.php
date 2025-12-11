@@ -59,6 +59,10 @@
     crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
 
+<!-- DataTables Responsive JS -->
+<script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.dataTables.min.js"></script>
+
 <!-- Para los botones de exportación -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
     integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG"
