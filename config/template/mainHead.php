@@ -69,9 +69,6 @@ session_start();
 <!-- para los iconos de bootstrap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<!-- DataTables Responsive CSS -->
-<link href="https://cdn.datatables.net/v/dt/dt-2.2.2/r-3.0.4/datatables.min.css" rel="stylesheet" integrity="sha384-gmZ5jterufNKMboaPX/+AZbRRbDF+z379XQUHv6DYWg2o8yTKtN/tMySXHexqf8y" crossorigin="anonymous">
-
 <!-- DEL MODAL -->
 <link href="../../public/lib/highlightjs/styles/github.css" rel="stylesheet">
 

@@ -1,8 +1,10 @@
 <!-- ---------------------- -->
 <!--   Comprobar permisos     -->
 <!-- ---------------------- -->
-<?php $moduloActual = 'mantenimientos'; ?>
-<?php require_once('../../config/template/verificarPermiso.php'); ?>
+<?php 
+// $moduloActual = 'presupuestos'; 
+// require_once('../../config/template/verificarPermiso.php'); 
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -67,6 +69,7 @@
 
     </div><!-- br-sideright -->
     <!-- ########## END: RIGHT PANEL ########## -->
+    
     <style>
         #modalMantenimiento {
             z-index: 1050 !important;
@@ -76,26 +79,22 @@
             z-index: 1060 !important;
         }
 
-        /* Evitar scroll horizontal en la tabla */
+        /* Estilos para scroll horizontal */
         .dataTables_wrapper {
-            overflow-x: hidden !important;
+            overflow-x: auto;
         }
-
-        .table-wrapper {
-            overflow-x: hidden !important;
+        
+        /* Contenedor DataTables */
+        div.dt-container {
+            width: 96% !important;
         }
-
-        /* Estilos para el modo responsive */
-        table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
-        table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
-            background-color: #0168fa;
-        }
-
-        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control:before,
-        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th.dtr-control:before {
-            background-color: #d33333;
+        
+        /* Botón de detalles */
+        button.details-control {
+            min-width: 30px;
         }
     </style>
+    
     <!-- ########## START: MAIN PANEL ########## -->
 <div class="br-mainpanel">
     <div class="br-pageheader">
@@ -142,71 +141,12 @@
                 </a>
             </div>
 
-            <!-- Acordeón de Filtros -->
-            <div id="accordion" class="accordion mb-3">
-                <div class="card">
-                    <div id="collapseOne" class="collapse" data-parent="#accordion">
-                        <div class="card-body pd-20 pt-3">
-                            <div class="row g-3">
-                                <!-- Bloque Estado -->
-                                <div class="col-md-6">
-                                    <div class="card shadow-sm h-100">
-                                        <div class="card-header bg-white border-bottom py-2">
-                                            <h6 class="mb-0 text-primary">
-                                                <i class="fas fa-toggle-on me-2"></i>Estado
-                                            </h6>
-                                        </div>
-                                        <div class="card-body p-2">
-                                            <div class="status-selector">
-                                                <div class="status-option">
-                                                    <input type="radio" name="filterStatus" id="filterAll" value="all" class="status-radio" checked>
-                                                    <label for="filterAll" class="status-label">
-                                                        <span class="status-icon">
-                                                            <i class="fas fa-layer-group"></i>
-                                                        </span>
-                                                        <span class="status-text">Todos</span>
-                                                    </label>
-                                                </div>
-                                                <div class="status-option">
-                                                    <input type="radio" name="filterStatus" id="filterActive" value="1" class="status-radio">
-                                                    <label for="filterActive" class="status-label">
-                                                        <span class="status-icon">
-                                                            <i class="fas fa-check-circle"></i>
-                                                        </span>
-                                                        <span class="status-text">Activado</span>
-                                                    </label>
-                                                </div>
-                                                <div class="status-option">
-                                                    <input type="radio" name="filterStatus" id="filterInactive" value="0" class="status-radio">
-                                                    <label for="filterInactive" class="status-label">
-                                                        <span class="status-icon">
-                                                            <i class="fas fa-times-circle"></i>
-                                                        </span>
-                                                        <span class="status-text">Desactivado</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Espacio para otros filtros -->
-                                <div class="col-md-6">
-                                    <!-- Puedes agregar más filtros aquí si es necesario -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- card -->
-            </div><!-- accordion -->
-
             <!-- Tabla de presupuestos -->
             <div class="table-wrapper">
-                <table id="presupuestos_data" class="table display responsive nowrap">
+                <table id="presupuestos_data" class="table display nowrap" style="width:100%">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th>Id</th>
+                            <th class="d-none">Id</th>
                             <th>Número</th>
                             <th>Cliente</th>
                             <th>Evento</th>
@@ -227,8 +167,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th></th>
-                            <th class="d-none"><input type="text" placeholder="Buscar ID" class="form-control form-control-sm" /></th>
+                            <th class="d-none"></th>
                             <th><input type="text" placeholder="Buscar número" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar cliente" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar evento" class="form-control form-control-sm" /></th>
@@ -246,7 +185,7 @@
                                     <option value="0">Inactivo</option>
                                 </select>
                             </th>
-                            <th class="d-none"><input type="text" placeholder="NO Buscar" class="form-control form-control-sm" /></th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </tfoot>
@@ -259,52 +198,24 @@
         <?php include_once('../../config/template/mainFooter.php') ?>
     </footer>
 </div><!-- br-mainpanel -->
-    <!-- ########## END: MAIN PANEL ########## -->
+<!-- ########## END: MAIN PANEL ########## -->
 
-    <!-- *********************************** -->
-    <!--                FIN                  -->
-    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
-    <!--        DE LA PROPIA TABLA           -->
-    <!--             columDef                -->
-    <!-- *********************************** -->
+<!-- Modal de ayuda -->
+<?php //include_once('ayudaPresupuestos.php') ?>
 
-<!-- *************************************** -->
-    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
-    <!--             AYUDA                   -->
-    <!-- *********************************** -->
-
-    <?php include_once('ayudaPresupuestos.php') ?>
+<!-- MainJs.php -->
+<?php include_once('../../config/template/mainJs.php') ?>
+<script src="mntpresupuesto.js"></script>
 
 
-    <!-- *********************************** -->
-    <!--                FIN                  -->
-    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
-    <!--               AYUDA                 -->
-    <!-- *********************************** -->
-
-
-    <!-- ----------------------- -->
-    <!--       mainJs.php        -->
-    <!-- ----------------------- -->
-    <?php include_once('../../config/template/mainJs.php') ?>
-
-    <script src="../../public/js/tooltip-colored.js"></script>
-    <script src="../../public/js/popover-colored.js"></script>
-    <!-- ------------------------- -->
-    <!--     END mainJs.php        -->
-    <!-- ------------------------- -->
-    <script type="text/javascript" src="mntpresupuesto.js"></script>
-
-
-  <script>
+<script>
         // Colapsar el sidebar al cargar la página
         $(document).ready(function() {
             $('body').addClass('collapsed-menu');
             $('.br-sideleft').addClass('collapsed');
         });
-    </script>
+</script>
 
 
 </body>
-
 </html>

@@ -1,0 +1,1 @@
+[2025-12-11 13:07:12] {"action":"selectByCliente","id_cliente":"1","method":"POST"}
