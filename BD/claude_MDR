@@ -2440,6 +2440,18 @@ CREATE TABLE empresa (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci 
 COMMENT='Gestión de empresas del grupo para facturación y presupuestos';
 
+
+-- ============================================
+-- ALTER TABLE: empresa
+-- Añadir campo días de validez de presupuesto
+-- Fecha: 2025-12-12
+-- ============================================
+
+ALTER TABLE empresa
+ADD COLUMN dias_validez_presupuesto_empresa INT UNSIGNED NOT NULL DEFAULT 30 
+    COMMENT 'Días de validez por defecto para los presupuestos emitidos por esta empresa'
+    AFTER numero_actual_presupuesto_empresa;
+
 -- ========================================================
 -- EXPLICACIÓN DE CAMPOS CLAVE
 -- ========================================================
@@ -3291,6 +3303,7 @@ CREATE TABLE presupuesto (
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 
 COMMENT='Cabecera de presupuestos para alquiler de equipos';
+
 
 
 -- ======================================

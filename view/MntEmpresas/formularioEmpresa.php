@@ -319,6 +319,14 @@
 
                             <div class="row mb-3">
                                 <div class="col-12 col-md-6">
+                                    <label for="dias_validez_presupuesto_empresa" class="form-label">Días Validez Presupuesto:</label>
+                                    <input type="number" class="form-control" name="dias_validez_presupuesto_empresa" id="dias_validez_presupuesto_empresa" value="30" min="1" max="365">
+                                    <small class="form-text text-muted">Días de validez por defecto para presupuestos (1-365)</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6">
                                     <label for="serie_factura_empresa" class="form-label">Serie Factura:</label>
                                     <input type="text" class="form-control" name="serie_factura_empresa" id="serie_factura_empresa" maxlength="10" placeholder="FAC" value="F">
                                 </div>

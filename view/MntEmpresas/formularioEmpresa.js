@@ -82,6 +82,7 @@ $(document).ready(function () {
                     // Series
                     $('#serie_presupuesto_empresa').val(data.serie_presupuesto_empresa);
                     $('#numero_actual_presupuesto_empresa').val(data.numero_actual_presupuesto_empresa);
+                    $('#dias_validez_presupuesto_empresa').val(data.dias_validez_presupuesto_empresa || 30);
                     $('#serie_factura_empresa').val(data.serie_factura_empresa);
                     $('#numero_actual_factura_empresa').val(data.numero_actual_factura_empresa);
                     $('#serie_abono_empresa').val(data.serie_abono_empresa);
@@ -206,6 +207,7 @@ $(document).ready(function () {
         // Series
         var serie_presupuesto_empresa = $('#serie_presupuesto_empresa').val().trim();
         var numero_actual_presupuesto_empresa = $('#numero_actual_presupuesto_empresa').val().trim();
+        var dias_validez_presupuesto_empresa = $('#dias_validez_presupuesto_empresa').val().trim() || '30';
         var serie_factura_empresa = $('#serie_factura_empresa').val().trim();
         var numero_actual_factura_empresa = $('#numero_actual_factura_empresa').val().trim();
         var serie_abono_empresa = $('#serie_abono_empresa').val().trim();
@@ -243,7 +245,7 @@ $(document).ready(function () {
             nif_empresa, direccion_fiscal_empresa, cp_fiscal_empresa, poblacion_fiscal_empresa, provincia_fiscal_empresa, pais_fiscal_empresa,
             telefono_empresa, movil_empresa, email_empresa, email_facturacion_empresa, web_empresa,
             iban_empresa, swift_empresa, banco_empresa,
-            serie_presupuesto_empresa, numero_actual_presupuesto_empresa,
+            serie_presupuesto_empresa, numero_actual_presupuesto_empresa, dias_validez_presupuesto_empresa,
             serie_factura_empresa, numero_actual_factura_empresa,
             serie_abono_empresa, numero_actual_abono_empresa,
             verifactu_activo_empresa, verifactu_sistema_empresa, verifactu_nif_empresa,
@@ -369,24 +371,25 @@ $(document).ready(function () {
             banco_empresa: params[19],
             serie_presupuesto_empresa: params[20],
             numero_actual_presupuesto_empresa: params[21],
-            serie_factura_empresa: params[22],
-            numero_actual_factura_empresa: params[23],
-            serie_abono_empresa: params[24],
-            numero_actual_abono_empresa: params[25],
-            verifactu_activo_empresa: params[26],
-            verifactu_sistema_empresa: params[27],
-            verifactu_nif_empresa: params[28],
-            verifactu_nombre_empresa: params[29],
-            verifactu_nombre_comercial_empresa: params[30],
-            verifactu_id_software_empresa: params[31],
-            verifactu_nombre_software_empresa: params[32],
-            verifactu_version_software_empresa: params[33],
-            verifactu_numero_instalacion_empresa: params[34],
-            logotipo_empresa: params[35],
-            logotipo2_empresa: params[36],
-            texto_legal_empresa: params[37],
-            texto_pie_empresa: params[38],
-            activo_empresa: params[39]
+            dias_validez_presupuesto_empresa: params[22],
+            serie_factura_empresa: params[23],
+            numero_actual_factura_empresa: params[24],
+            serie_abono_empresa: params[25],
+            numero_actual_abono_empresa: params[26],
+            verifactu_activo_empresa: params[27],
+            verifactu_sistema_empresa: params[28],
+            verifactu_nif_empresa: params[29],
+            verifactu_nombre_empresa: params[30],
+            verifactu_nombre_comercial_empresa: params[31],
+            verifactu_id_software_empresa: params[32],
+            verifactu_nombre_software_empresa: params[33],
+            verifactu_version_software_empresa: params[34],
+            verifactu_numero_instalacion_empresa: params[35],
+            logotipo_empresa: params[36],
+            logotipo2_empresa: params[37],
+            texto_legal_empresa: params[38],
+            texto_pie_empresa: params[39],
+            activo_empresa: params[40]
         };
         
         console.log('💾 Datos a guardar:', datosEnvio);
