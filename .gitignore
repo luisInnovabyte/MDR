@@ -11,4 +11,5 @@ Thumbs.db
 *.txt
 *.png
 *.gif  
-DATOS.accdb
+BD/Importacion_BD_VerI/**/*.accdb
+*.accdb
