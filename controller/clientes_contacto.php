@@ -132,7 +132,8 @@ switch ($_GET["op"]) {
 
                     echo json_encode([
                         "success" => true,
-                        "message" => "Contacto cliente insertado correctamente"
+                        "message" => "Contacto cliente insertado correctamente",
+                        "id_contacto_cliente" => $resultado
                     ]);
                 } else {
                     echo json_encode([

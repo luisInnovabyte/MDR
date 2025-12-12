@@ -199,9 +199,17 @@
                                         Contacto del cliente:
                                         <i class="bi bi-info-circle text-info" data-bs-toggle="tooltip" title="Solo se muestran los contactos marcados como activos en la tabla de contactos."></i>
                                     </label>
-                                    <select class="form-control" name="id_contacto_cliente" id="id_contacto_cliente">
-                                        <option value="">Seleccione primero un cliente</option>
-                                    </select>
+                                    <div class="input-group">
+                                        <select class="form-control" name="id_contacto_cliente" id="id_contacto_cliente">
+                                            <option value="">Seleccione primero un cliente</option>
+                                        </select>
+                                        <button type="button" class="btn btn-outline-primary btn-disabled" id="btnNuevoContacto" data-enabled="false" title="Agregar nuevo contacto">
+                                            <i class="bi bi-person-plus-fill"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-disabled" id="btnEditarContacto" data-enabled="false" title="Editar contacto">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+                                    </div>
                                     <small class="form-text text-muted">Contacto específico del cliente (opcional)</small>
                                     
                                     <!-- Información del contacto del cliente -->
@@ -433,6 +441,9 @@
         </div>
     </div>
 
+    <!-- Modal de Contacto Rápido -->
+    <?php include_once('contacto_presupuesto.php'); ?>
+
     <!-- ----------------------- -->
     <!--       mainJs.php        -->
     <!-- ----------------------- -->
@@ -443,6 +454,14 @@
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
+    
+    <style>
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+    
     <script type="text/javascript" src="formularioPresupuesto.js"></script>
 
 </body>

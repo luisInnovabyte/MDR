@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    console.log('formularioPresupuesto.js cargado');
+    console.log('Botón Nuevo existe:', $('#btnNuevoContacto').length);
+    console.log('Botón Editar existe:', $('#btnEditarContacto').length);
 
     /////////////////////////////////////
     //     FORMATEO DE CAMPOS          //
@@ -278,6 +281,11 @@ $(document).ready(function () {
                         select.append(option);
                     });
                     select.prop('disabled', false);
+                    
+                    // Disparar evento change para actualizar la información del contacto
+                    if (idContactoSeleccionado) {
+                        select.trigger('change');
+                    }
                 } else {
                     select.append('<option value="">No hay contactos disponibles</option>');
                     select.prop('disabled', true);
@@ -370,12 +378,26 @@ $(document).ready(function () {
         cargarInfoCliente(idCliente);
         // Limpiar información del contacto al cambiar de cliente
         $('#info-contacto-cliente').hide();
+        
+        // Habilitar/deshabilitar botón de nuevo contacto
+        if (idCliente) {
+            $('#btnNuevoContacto').removeClass('btn-disabled').attr('data-enabled', 'true');
+        } else {
+            $('#btnNuevoContacto, #btnEditarContacto').addClass('btn-disabled').attr('data-enabled', 'false');
+        }
     });
     
     // Event listener para cambio de contacto
     $('#id_contacto_cliente').on('change', function() {
         var idContacto = $(this).val();
         cargarInfoContacto(idContacto);
+        
+        // Habilitar/deshabilitar botón de editar contacto
+        if (idContacto) {
+            $('#btnEditarContacto').removeClass('btn-disabled').attr('data-enabled', 'true');
+        } else {
+            $('#btnEditarContacto').addClass('btn-disabled').attr('data-enabled', 'false');
+        }
     });
 
     // Función para cargar datos de presupuesto para edición
@@ -786,6 +808,241 @@ $(document).ready(function () {
     function markFormAsSaved() {
         formSaved = true;
     }
+
+    /////////////////////////////////////////
+    //   GESTIÓN DE CONTACTOS RÁPIDOS     //
+    ///////////////////////////////////////
+
+    console.log('Registrando event handlers de botones...');
+    console.log('btnNuevoContacto encontrado:', $('#btnNuevoContacto').length);
+    console.log('btnEditarContacto encontrado:', $('#btnEditarContacto').length);
+    console.log('btnNuevoContacto disabled:', $('#btnNuevoContacto').prop('disabled'));
+    console.log('btnEditarContacto disabled:', $('#btnEditarContacto').prop('disabled'));
+
+    // Abrir modal para nuevo contacto
+    $('#btnNuevoContacto').on('click', function(e) {
+        e.preventDefault();
+        console.log('Click en btnNuevoContacto');
+        
+        var idCliente = $('#id_cliente').val();
+        console.log('ID Cliente:', idCliente);
+        
+        if (!idCliente) {
+            toastr.warning('Debe seleccionar un cliente primero');
+            return;
+        }
+        
+        $('#tituloModalContacto').text('Nuevo Contacto');
+        $('#formContactoRapido')[0].reset();
+        $('#id_contacto_cliente_modal').val('');
+        $('#id_cliente_modal').val(idCliente);
+        $('#principal_contacto_cliente_modal').prop('checked', false);
+        $('#modalContactoRapido').modal('show');
+    });
+
+    // Abrir modal para editar contacto
+    $('#btnEditarContacto').on('click', function(e) {
+        e.preventDefault();
+        console.log('Click en btnEditarContacto');
+        
+        var idContacto = $('#id_contacto_cliente').val();
+        console.log('ID Contacto:', idContacto);
+        
+        if (!idContacto) {
+            toastr.warning('Debe seleccionar un contacto primero');
+            return;
+        }
+        
+        $('#tituloModalContacto').text('Editar Contacto');
+        
+        // Cargar datos del contacto
+        $.ajax({
+            url: '../../controller/clientes_contacto.php?op=mostrar',
+            type: 'POST',
+            data: { id_contacto_cliente: idContacto },
+            dataType: 'json',
+            success: function(data) {
+                if (data) {
+                    $('#id_contacto_cliente_modal').val(data.id_contacto_cliente);
+                    $('#id_cliente_modal').val(data.id_cliente);
+                    $('#nombre_contacto_cliente_modal').val(data.nombre_contacto_cliente || '');
+                    $('#apellidos_contacto_cliente_modal').val(data.apellidos_contacto_cliente || '');
+                    $('#cargo_contacto_cliente_modal').val(data.cargo_contacto_cliente || '');
+                    $('#departamento_contacto_cliente_modal').val(data.departamento_contacto_cliente || '');
+                    $('#telefono_contacto_cliente_modal').val(data.telefono_contacto_cliente || '');
+                    $('#movil_contacto_cliente_modal').val(data.movil_contacto_cliente || '');
+                    $('#email_contacto_cliente_modal').val(data.email_contacto_cliente || '');
+                    $('#principal_contacto_cliente_modal').prop('checked', data.principal_contacto_cliente == 1);
+                    $('#modalContactoRapido').modal('show');
+                } else {
+                    toastr.error('No se pudo cargar la información del contacto');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar contacto:', error);
+                toastr.error('Error de comunicación con el servidor');
+            }
+        });
+    });
+    
+    console.log('Event handlers de botones registrados correctamente');
+    
+    // ALTERNATIVA: Event delegation para asegurar que funcione
+    $(document).on('click', '#btnNuevoContacto', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Click en btnNuevoContacto (delegación)');
+        
+        // Verificar si el botón está habilitado
+        if ($(this).attr('data-enabled') !== 'true') {
+            console.log('Botón deshabilitado, ignorando click');
+            return false;
+        }
+        
+        var idCliente = $('#id_cliente').val();
+        console.log('ID Cliente (delegación):', idCliente);
+        
+        if (!idCliente) {
+            toastr.warning('Debe seleccionar un cliente primero');
+            return false;
+        }
+        
+        $('#tituloModalContacto').text('Nuevo Contacto');
+        $('#formContactoRapido')[0].reset();
+        $('#id_contacto_cliente_modal').val('');
+        $('#id_cliente_modal').val(idCliente);
+        $('#principal_contacto_cliente_modal').prop('checked', false);
+        $('#modalContactoRapido').modal('show');
+        
+        return false;
+    });
+    
+    $(document).on('click', '#btnEditarContacto', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Click en btnEditarContacto (delegación)');
+        
+        // Verificar si el botón está habilitado
+        if ($(this).attr('data-enabled') !== 'true') {
+            console.log('Botón deshabilitado, ignorando click');
+            return false;
+        }
+        
+        var idContacto = $('#id_contacto_cliente').val();
+        console.log('ID Contacto (delegación):', idContacto);
+        
+        if (!idContacto) {
+            toastr.warning('Debe seleccionar un contacto primero');
+            return false;
+        }
+        
+        $('#tituloModalContacto').text('Editar Contacto');
+        
+        // Cargar datos del contacto
+        $.ajax({
+            url: '../../controller/clientes_contacto.php?op=mostrar',
+            type: 'POST',
+            data: { id_contacto_cliente: idContacto },
+            dataType: 'json',
+            success: function(data) {
+                if (data) {
+                    $('#id_contacto_cliente_modal').val(data.id_contacto_cliente);
+                    $('#id_cliente_modal').val(data.id_cliente);
+                    $('#nombre_contacto_cliente_modal').val(data.nombre_contacto_cliente || '');
+                    $('#apellidos_contacto_cliente_modal').val(data.apellidos_contacto_cliente || '');
+                    $('#cargo_contacto_cliente_modal').val(data.cargo_contacto_cliente || '');
+                    $('#departamento_contacto_cliente_modal').val(data.departamento_contacto_cliente || '');
+                    $('#telefono_contacto_cliente_modal').val(data.telefono_contacto_cliente || '');
+                    $('#movil_contacto_cliente_modal').val(data.movil_contacto_cliente || '');
+                    $('#email_contacto_cliente_modal').val(data.email_contacto_cliente || '');
+                    $('#principal_contacto_cliente_modal').prop('checked', data.principal_contacto_cliente == 1);
+                    $('#modalContactoRapido').modal('show');
+                } else {
+                    toastr.error('No se pudo cargar la información del contacto');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar contacto:', error);
+                toastr.error('Error de comunicación con el servidor');
+            }
+        });
+        
+        return false;
+    });
+
+    // Guardar contacto desde el modal
+    $('#btnGuardarContactoRapido').on('click', function(e) {
+        e.preventDefault();
+        console.log('Click en btnGuardarContactoRapido');
+        
+        var form = $('#formContactoRapido')[0];
+        
+        // Validar formulario
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        var idContacto = $('#id_contacto_cliente_modal').val();
+        console.log('ID Contacto a guardar:', idContacto);
+        
+        // Preparar datos del formulario
+        var formData = new FormData(form);
+        formData.append('activo_contacto_cliente', '1');
+        
+        // Si no está marcado como principal, enviar 0
+        if (!$('#principal_contacto_cliente_modal').prop('checked')) {
+            formData.set('principal_contacto_cliente', '0');
+        }
+        
+        // Deshabilitar botón mientras se guarda
+        var btnGuardar = $('#btnGuardarContactoRapido');
+        var textoOriginal = btnGuardar.html();
+        btnGuardar.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
+        
+        console.log('Enviando petición AJAX a guardaryeditar');
+        
+        $.ajax({
+            url: '../../controller/clientes_contacto.php?op=guardaryeditar',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                btnGuardar.prop('disabled', false).html(textoOriginal);
+                
+                if (response.success || response.status === 'success') {
+                    var mensaje = idContacto ? 'Contacto actualizado correctamente' : 'Contacto creado correctamente';
+                    toastr.success(mensaje);
+                    $('#modalContactoRapido').modal('hide');
+                    
+                    // Obtener el ID del contacto guardado
+                    var idContactoGuardado = response.id_contacto_cliente || response.id || idContacto;
+                    
+                    console.log('ID del contacto guardado:', idContactoGuardado);
+                    
+                    // Recargar lista de contactos del cliente (el trigger change cargará la info)
+                    var idCliente = $('#id_cliente').val();
+                    cargarContactosCliente(idCliente, idContactoGuardado);
+                } else {
+                    toastr.error(response.message || 'Error al guardar el contacto');
+                }
+            },
+            error: function(xhr, status, error) {
+                btnGuardar.prop('disabled', false).html(textoOriginal);
+                console.error('Error al guardar contacto:', error);
+                console.error('Status:', status);
+                console.error('XHR Status:', xhr.status);
+                console.error('Response Text:', xhr.responseText);
+                console.error('FormData entries:');
+                for (var pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+                toastr.error('Error de comunicación con el servidor. Ver consola para detalles.');
+            }
+        });
+    });
 
     /////////////////////////////////////////
     //   FIN FUNCIONES DE UTILIDAD        //
