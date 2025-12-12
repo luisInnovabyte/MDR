@@ -63,17 +63,17 @@ $(document).ready(function () {
         columns: [
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_elemento', data: 'id_elemento', visible: false, className: "text-center" }, // Columna 1: ID
-            { name: 'nombre_articulo', data: 'nombre_articulo', visible:false, className: "text-center" }, // Columna 2: ARTÍCULO
-            { name: 'codigo_elemento', data: 'codigo_elemento', visible:false, className: "text-center" }, // Columna 3: CODIGO
-            { name: 'descripcion_elemento', data: 'descripcion_elemento', className: "text-center" }, // Columna 4: DESCRIPCION
-            { name: 'nombre_marca', data: 'nombre_marca', className: "text-center" }, // Columna 5: MARCA
-            { name: 'modelo_elemento', data: 'modelo_elemento', className: "text-center" }, // Columna 6: MODELO
-            { name: 'numero_serie_elemento', data: 'numero_serie_elemento', className: "text-center" }, // Columna 7: N° SERIE
+            { name: 'nombre_articulo', data: 'nombre_articulo', visible:false, className: "text-center align-middle" }, // Columna 2: ARTÍCULO
+            { name: 'codigo_elemento', data: 'codigo_elemento', visible:false, className: "text-center align-middle" }, // Columna 3: CODIGO
+            { name: 'descripcion_elemento', data: 'descripcion_elemento', className: "text-center align-middle" }, // Columna 4: DESCRIPCION
+            { name: 'nombre_marca', data: 'nombre_marca', className: "text-center align-middle" }, // Columna 5: MARCA
+            { name: 'modelo_elemento', data: 'modelo_elemento', className: "text-center align-middle" }, // Columna 6: MODELO
+            { name: 'numero_serie_elemento', data: 'numero_serie_elemento', className: "text-center align-middle" }, // Columna 7: N° SERIE
     
             { 
                 name: 'ubicacion', 
                 data: 'nave_elemento',
-                className: "text-center",
+                className: "text-center align-middle",
                 render: function(data, type, row) {
                     if (type === 'display') {
                         let ubicacion = [];
@@ -90,7 +90,7 @@ $(document).ready(function () {
             { 
                 name: 'estado_garantia_elemento',          // <- name para el estado de garantía
                 data: 'estado_garantia_elemento',
-                className: "text-center",
+                className: "text-center align-middle",
                 render: function(data, type, row) {
                     if (!data) return '<span class="text-muted fst-italic">Sin garantía</span>';
                     let colorClass = data === 'Vigente' ? 'bg-success' :
@@ -103,13 +103,13 @@ $(document).ready(function () {
             { 
                 name: 'fecha_fin_garantia_elemento',           // <- name para la fecha de garantía
                 data: 'fecha_fin_garantia_elemento',
-                className: "text-center",
+                className: "text-center align-middle",
                 render: function(data, type, row) {
                     return data ? formatoFechaEuropeo(data) : '<span class="text-muted fst-italic">Sin garantía</span>';
                 }
             },
             //columna 12: ACTIVO
-            { name: 'activo_elemento', data: 'activo_elemento', className: "text-center" } // Columna 10: ACTIVO
+            { name: 'activo_elemento', data: 'activo_elemento', className: "text-center align-middle" } // Columna 10: ACTIVO
         ],
         columnDefs: [
             // Columna 0: BOTÓN MÁS 

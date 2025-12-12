@@ -84,16 +84,16 @@ $(document).ready(function () {
         columnDefs: [
             // Cuidado que el ordrData puede interferir con el ordenamiento de la tabla    
             // usuario
-            { targets: 0, width: '10%', searchable: true, orderable: true, className: "text-center" },
+            { targets: 0, width: '10%', searchable: true, orderable: true, className: "text-center align-middle" },
             //pantalla
-            { targets: 1, width: '10%', searchable: true, orderable: true, className: "text-center" },
+            { targets: 1, width: '10%', searchable: true, orderable: true, className: "text-center align-middle" },
             //actividad
-            { targets: 2, width: '20%', searchable: true, orderable: true, className: "text-center" },
+            { targets: 2, width: '20%', searchable: true, orderable: true, className: "text-center align-middle" },
             //mensaje
-            { targets: 3, width: '40%', searchable: true, orderable: true, className: "text-center" },
+            { targets: 3, width: '40%', searchable: true, orderable: true, className: "text-center align-middle" },
             //tipo
             {
-                targets: 4, width: '10%', searchable: true, orderable: true, class: "text-center",
+                targets: 4, width: '10%', searchable: true, orderable: true, class: "text-center align-middle",
                 render: function (data, type, row) {
                     // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
                     //<i class="bi bi-check-circle text-success"></i>
@@ -115,7 +115,7 @@ $(document).ready(function () {
             },
             //fecha_hora
             {
-                targets: 5, width: '10%', orderable: true, className: "text-center",
+                targets: 5, width: '10%', orderable: true, className: "text-center align-middle",
                 render: function (data, type, row) {
                     if (type === "display" || type === "filter") {
                         return formatoFechaEuropeo(data);

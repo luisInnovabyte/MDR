@@ -75,16 +75,16 @@ $(document).ready(function () {
             // No tocar
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_cliente', data: 'id_cliente', visible: false, className: "text-center" }, // Columna 1: ID_CLIENTE
-            { name: 'codigo_cliente', data: 'codigo_cliente' , className: "text-center" }, // Columna 2: CODIGO_CLIENTE
-            { name: 'nombre_cliente', data: 'nombre_cliente', className: "text-center"  }, // Columna 3: NOMBRE_CLIENTE
-            { name: 'nif_cliente', data: 'nif_cliente', className: "text-center"  }, // Columna 4: NIF_CLIENTE
-            { name: 'telefono_cliente', data: 'telefono_cliente', className: "text-center"  }, // Columna 5: TELEFONO_CLIENTE
-            { name: 'email_cliente', data: 'email_cliente', className: "text-center"  }, // Columna 6: EMAIL_CLIENTE
-            { name: 'cantidad_contactos', data: 'cantidad_contactos', className: "text-center"  }, // Columna 7: CANTIDAD_CONTACTOS
-            { name: 'activo_cliente', data: 'activo_cliente', className: "text-center"  }, // Columna 8: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 9: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center"  },  // Columna 10: EDITAR
-            { name: 'formulario', data: null, defaultContent: '', className: "text-center"  },  // Columna 11: FORMULARIO
+            { name: 'codigo_cliente', data: 'codigo_cliente' , className: "text-center align-middle" }, // Columna 2: CODIGO_CLIENTE
+            { name: 'nombre_cliente', data: 'nombre_cliente', className: "text-center align-middle"  }, // Columna 3: NOMBRE_CLIENTE
+            { name: 'nif_cliente', data: 'nif_cliente', className: "text-center align-middle"  }, // Columna 4: NIF_CLIENTE
+            { name: 'telefono_cliente', data: 'telefono_cliente', className: "text-center align-middle"  }, // Columna 5: TELEFONO_CLIENTE
+            { name: 'email_cliente', data: 'email_cliente', className: "text-center align-middle"  }, // Columna 6: EMAIL_CLIENTE
+            { name: 'cantidad_contactos', data: 'cantidad_contactos', className: "text-center align-middle"  }, // Columna 7: CANTIDAD_CONTACTOS
+            { name: 'activo_cliente', data: 'activo_cliente', className: "text-center align-middle"  }, // Columna 8: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 9: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 10: EDITAR
+            { name: 'formulario', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 11: FORMULARIO
             
         ], // de las columnas
         columnDefs: [

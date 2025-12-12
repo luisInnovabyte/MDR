@@ -48,32 +48,32 @@ $(document).ready(function () {
         },
         columns: [
             { name: 'id_presupuesto', data: 'id_presupuesto', visible: false, className: "text-center" }, // Columna 0: ID
-            { name: 'numero_presupuesto', data: 'numero_presupuesto', className: "text-center" }, // Columna 1: NÚMERO
-            { name: 'nombre_cliente', data: 'nombre_cliente', className: "text-center" }, // Columna 2: CLIENTE
-            { name: 'nombre_evento_presupuesto', data: 'nombre_evento_presupuesto', className: "text-center" }, // Columna 3: EVENTO
-            { name: 'fecha_inicio_evento_presupuesto', data: 'fecha_inicio_evento_presupuesto', className: "text-center" }, // Columna 4: FECHA INICIO
-            { name: 'fecha_fin_evento_presupuesto', data: 'fecha_fin_evento_presupuesto', className: "text-center" }, // Columna 5: FECHA FIN
-            { name: 'dias_validez_restantes', data: 'dias_validez_restantes', className: "text-center" }, // Columna 6: DÍAS VALIDEZ
-            { name: 'duracion_evento_dias', data: 'duracion_evento_dias', className: "text-center" }, // Columna 7: DURACIÓN
-            { name: 'dias_hasta_inicio_evento', data: 'dias_hasta_inicio_evento', className: "text-center" }, // Columna 8: DÍAS INICIO
-            { name: 'estado_evento_presupuesto', data: 'estado_evento_presupuesto', className: "text-center" }, // Columna 9: ESTADO EVENTO
-            { name: 'nombre_estado_ppto', data: 'nombre_estado_ppto', className: "text-center" }, // Columna 10: ESTADO
-            { name: 'total_presupuesto', data: 'total_presupuesto', className: "text-center" }, // Columna 11: IMPORTE
-            { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center" }, // Columna 12: ACTIVO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 13: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center" }, // Columna 14: EDITAR
-            { name: 'lineas', data: null, defaultContent: '', className: "text-center" }  // Columna 15: LÍNEAS
+            { name: 'numero_presupuesto', data: 'numero_presupuesto', className: "text-start" }, // Columna 1: NÚMERO
+            { name: 'nombre_cliente', data: 'nombre_cliente', className: "text-center align-middle" }, // Columna 2: CLIENTE
+            { name: 'nombre_evento_presupuesto', data: 'nombre_evento_presupuesto', className: "text-center align-middle" }, // Columna 3: EVENTO
+            { name: 'fecha_inicio_evento_presupuesto', data: 'fecha_inicio_evento_presupuesto', className: "text-center align-middle" }, // Columna 4: FECHA INICIO
+            { name: 'fecha_fin_evento_presupuesto', data: 'fecha_fin_evento_presupuesto', className: "text-center align-middle" }, // Columna 5: FECHA FIN
+            { name: 'dias_validez_restantes', data: 'dias_validez_restantes', className: "text-center align-middle" }, // Columna 6: DÍAS VALIDEZ
+            { name: 'duracion_evento_dias', data: 'duracion_evento_dias', className: "text-center align-middle" }, // Columna 7: DURACIÓN
+            { name: 'dias_hasta_inicio_evento', data: 'dias_hasta_inicio_evento', className: "text-center align-middle" }, // Columna 8: DÍAS INICIO
+            { name: 'estado_evento_presupuesto', data: 'estado_evento_presupuesto', className: "text-center align-middle" }, // Columna 9: ESTADO EVENTO
+            { name: 'nombre_estado_ppto', data: 'nombre_estado_ppto', className: "text-center align-middle" }, // Columna 10: ESTADO
+            { name: 'total_presupuesto', data: 'total_presupuesto', className: "text-center align-middle" }, // Columna 11: IMPORTE
+            { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center align-middle" }, // Columna 12: ACTIVO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 13: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" }, // Columna 14: EDITAR
+            { name: 'lineas', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 15: LÍNEAS
         ],
         columnDefs: [
             // Columna 0: id_presupuesto
-            { targets: "id_presupuesto:name", width: '3%', searchable: false, orderable: false, className: "text-center" },
+            { targets: "id_presupuesto:name", width: '3%', searchable: false, orderable: false, className: "text-center align-middle" },
             // Columna 1: numero_presupuesto CON BOTÓN
             { 
                 targets: "numero_presupuesto:name", 
                 width: '10%', 
                 searchable: true, 
                 orderable: true, 
-                className: "text-center",
+                className: "text-start align-middle ",
                 render: function(data, type, row) {
                     if (type === 'display') {
                         return '<button class="btn btn-sm btn-primary me-2 details-control"><i class="bi bi-plus-circle"></i></button>' + data;

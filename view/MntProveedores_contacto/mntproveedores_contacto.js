@@ -62,17 +62,17 @@ $(document).ready(function () {
             // Son los botones para más
             { name: 'control', data: null, defaultContent: '', className: 'details-control sorting_1 text-center' }, // Columna 0: Mostrar más
             { name: 'id_contacto_proveedor', data: 'id_contacto_proveedor', visible: false, className: "text-center" }, // Columna 1: ID
-            { name: 'nombre_contacto_proveedor', data: 'nombre_contacto_proveedor', className: "text-center" }, // Columna 2: NOMBRE
-            { name: 'apellidos_contacto_proveedor', data: 'apellidos_contacto_proveedor', className: "text-center" }, // Columna 3: APELLIDOS
-            { name: 'cargo_contacto_proveedor', data: 'cargo_contacto_proveedor', className: "text-center" }, // Columna 4: CARGO
-            { name: 'departamento_contacto_proveedor', data: 'departamento_contacto_proveedor', className: "text-center" }, // Columna 5: DEPARTAMENTO
-            { name: 'telefono_contacto_proveedor', data: 'telefono_contacto_proveedor', className: "text-center" }, // Columna 6: TELEFONO
-            { name: 'movil_contacto_proveedor', data: 'movil_contacto_proveedor', className: "text-center" }, // Columna 7: MOVIL
-            { name: 'email_contacto_proveedor', data: 'email_contacto_proveedor', className: "text-center" }, // Columna 8: EMAIL
-            { name: 'principal_contacto_proveedor', data: 'principal_contacto_proveedor', className: "text-center" }, // Columna 9: PRINCIPAL
-            { name: 'activo_contacto_proveedor', data: 'activo_contacto_proveedor', className: "text-center" }, // Columna 10: ESTADO
-            { name: 'activar', data: null, className: "text-center" }, // Columna 11: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center" }  // Columna 12: EDITAR
+            { name: 'nombre_contacto_proveedor', data: 'nombre_contacto_proveedor', className: "text-center align-middle" }, // Columna 2: NOMBRE
+            { name: 'apellidos_contacto_proveedor', data: 'apellidos_contacto_proveedor', className: "text-center align-middle" }, // Columna 3: APELLIDOS
+            { name: 'cargo_contacto_proveedor', data: 'cargo_contacto_proveedor', className: "text-center align-middle" }, // Columna 4: CARGO
+            { name: 'departamento_contacto_proveedor', data: 'departamento_contacto_proveedor', className: "text-center align-middle" }, // Columna 5: DEPARTAMENTO
+            { name: 'telefono_contacto_proveedor', data: 'telefono_contacto_proveedor', className: "text-center align-middle" }, // Columna 6: TELEFONO
+            { name: 'movil_contacto_proveedor', data: 'movil_contacto_proveedor', className: "text-center align-middle" }, // Columna 7: MOVIL
+            { name: 'email_contacto_proveedor', data: 'email_contacto_proveedor', className: "text-center align-middle" }, // Columna 8: EMAIL
+            { name: 'principal_contacto_proveedor', data: 'principal_contacto_proveedor', className: "text-center align-middle" }, // Columna 9: PRINCIPAL
+            { name: 'activo_contacto_proveedor', data: 'activo_contacto_proveedor', className: "text-center align-middle" }, // Columna 10: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 11: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 12: EDITAR
         ],
         columnDefs: [
             // Columna 0: BOTÓN MÁS 
