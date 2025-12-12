@@ -197,6 +197,21 @@
                                         <option value="">Seleccione primero un cliente</option>
                                     </select>
                                     <small class="form-text text-muted">Contacto específico del cliente (opcional)</small>
+                                    
+                                    <!-- Información del contacto del cliente -->
+                                    <div id="info-contacto-cliente" style="display: none;" class="mt-2">
+                                        <div class="alert alert-light border-start border-info border-4 mb-0 py-2" role="alert">
+                                            <h6 class="alert-heading tx-11 tx-semibold mb-1">
+                                                <i class="bi bi-person-fill me-1"></i>Datos del Contacto
+                                            </h6>
+                                            <div class="tx-10">
+                                                <div><strong>Cargo:</strong> <span id="cargo_contacto_info">-</span></div>
+                                                <div><strong>Departamento:</strong> <span id="departamento_contacto_info">-</span></div>
+                                                <div><strong>Teléfono:</strong> <span id="telefono_contacto_info">-</span> | <strong>Móvil:</strong> <span id="movil_contacto_info">-</span></div>
+                                                <div><strong>Email:</strong> <span id="email_contacto_info">-</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

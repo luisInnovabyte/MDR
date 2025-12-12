@@ -328,11 +328,54 @@ $(document).ready(function () {
         });
     }
 
+    // Función para cargar y mostrar información del contacto
+    function cargarInfoContacto(idContacto) {
+        if (!idContacto) {
+            // Ocultar información si no hay contacto seleccionado
+            $('#info-contacto-cliente').hide();
+            return;
+        }
+        
+        $.ajax({
+            url: "../../controller/clientes_contacto.php?op=mostrar",
+            type: "POST",
+            data: { id_contacto_cliente: idContacto },
+            dataType: "json",
+            success: function(data) {
+                if (data) {
+                    // Mostrar los datos del contacto
+                    $('#cargo_contacto_info').text(data.cargo_contacto_cliente || '-');
+                    $('#departamento_contacto_info').text(data.departamento_contacto_cliente || '-');
+                    $('#telefono_contacto_info').text(data.telefono_contacto_cliente || '-');
+                    $('#movil_contacto_info').text(data.movil_contacto_cliente || '-');
+                    $('#email_contacto_info').text(data.email_contacto_cliente || '-');
+                    
+                    // Mostrar el panel de información
+                    $('#info-contacto-cliente').slideDown();
+                } else {
+                    $('#info-contacto-cliente').hide();
+                }
+            },
+            error: function(error) {
+                console.error('Error al cargar información del contacto:', error);
+                $('#info-contacto-cliente').hide();
+            }
+        });
+    }
+
     // Event listener para cambio de cliente
     $('#id_cliente').on('change', function() {
         var idCliente = $(this).val();
         cargarContactosCliente(idCliente);
         cargarInfoCliente(idCliente);
+        // Limpiar información del contacto al cambiar de cliente
+        $('#info-contacto-cliente').hide();
+    });
+    
+    // Event listener para cambio de contacto
+    $('#id_contacto_cliente').on('change', function() {
+        var idContacto = $(this).val();
+        cargarInfoContacto(idContacto);
     });
 
     // Función para cargar datos de presupuesto para edición
@@ -383,6 +426,12 @@ $(document).ready(function () {
                         if (data.id_cliente) {
                             cargarContactosCliente(data.id_cliente, data.id_contacto_cliente);
                             cargarInfoCliente(data.id_cliente);
+                            // Cargar información del contacto si existe
+                            if (data.id_contacto_cliente) {
+                                setTimeout(function() {
+                                    cargarInfoContacto(data.id_contacto_cliente);
+                                }, 800);
+                            }
                         }
                     }, 500);
                     
