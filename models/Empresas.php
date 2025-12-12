@@ -76,6 +76,7 @@ class Empresas
                         nombre_comercial_empresa,
                         serie_presupuesto_empresa,
                         numero_actual_presupuesto_empresa,
+                        dias_validez_presupuesto_empresa,
                         logotipo_empresa
                     FROM empresa 
                     WHERE empresa_ficticia_principal = TRUE 

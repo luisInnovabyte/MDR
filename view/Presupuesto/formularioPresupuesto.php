@@ -111,6 +111,30 @@
                             </h5>
                         </div>
                         <div class="card-body">
+                            
+                          <!-- Información de la Empresa -->
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-8">
+                                    <label for="nombre_empresa_info" class="form-label">
+                                        Empresa emisora del presupuesto:
+                                        <i class="bi bi-info-circle text-info" data-bs-toggle="tooltip" title="Empresa ficticia que emite este presupuesto. Solo informativo."></i>
+                                    </label>
+                                    <input type="text" class="form-control bg-light" id="nombre_empresa_info" placeholder="Cargando..." readonly>
+                                    <small class="form-text text-muted">Empresa configurada para emisión de presupuestos</small>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label for="dias_validez_info" class="form-label">
+                                        Días de validez configurados:
+                                        <i class="bi bi-info-circle text-info" data-bs-toggle="tooltip" title="Días de validez por defecto configurados en la empresa. Solo informativo."></i>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light text-center" id="dias_validez_info" placeholder="--" readonly>
+                                        <span class="input-group-text bg-light">días</span>
+                                    </div>
+                                    <small class="form-text text-muted">Configurado en la empresa</small>
+                                </div>
+                            </div>
+                        
                             <div class="row mb-3">
                                 <div class="col-12 col-md-3">
                                     <label for="numero_presupuesto" class="form-label">Número: <span class="tx-danger">*</span></label>
@@ -123,10 +147,13 @@
                                     <div class="invalid-feedback small-invalid-feedback">Ingrese una fecha válida</div>
                                 </div>
                                 <div class="col-12 col-md-3">
-                                    <label for="fecha_validez_presupuesto" class="form-label">Validez:</label>
+                                    <label for="fecha_validez_presupuesto" class="form-label">
+                                        Validez:
+                                        <i class="bi bi-info-circle text-info" data-bs-toggle="tooltip" title="Se calcula automáticamente según los días de validez configurados en la empresa. Puede modificarse."></i>
+                                    </label>
                                     <input type="date" class="form-control" name="fecha_validez_presupuesto" id="fecha_validez_presupuesto">
                                     <div class="invalid-feedback small-invalid-feedback">Debe ser mayor o igual a la fecha del presupuesto</div>
-                                    <small class="form-text text-muted">Fecha de validez del presupuesto</small>
+                                    <small class="form-text text-muted">Fecha hasta la que es válido el presupuesto (modificable)</small>
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <label class="form-label">Estado:</label>
@@ -139,6 +166,7 @@
                                 </div>
                             </div>
 
+                          
                             <div class="row mb-3">
                                 <div class="col-12 col-md-6">
                                     <label for="id_cliente" class="form-label">Cliente: <span class="tx-danger">*</span></label>

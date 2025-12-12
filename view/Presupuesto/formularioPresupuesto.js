@@ -67,6 +67,36 @@ $(document).ready(function () {
         validarFechasEvento();
     });
 
+    // Listener para recalcular fecha de validez al cambiar fecha de presupuesto
+    $('#fecha_presupuesto').on('change', function() {
+        var fechaPresupuesto = $(this).val();
+        if (fechaPresupuesto) {
+            var fechaValidezActual = $('#fecha_validez_presupuesto').val();
+            
+            // Si no hay fecha de validez previa, calcularla automáticamente
+            if (!fechaValidezActual) {
+                // Asegurar que los días de validez estén cargados
+                if (diasValidezPresupuesto === 30) {
+                    // Cargar días si aún no se han cargado
+                    cargarDiasValidezEmpresa().then(function() {
+                        var nuevaFechaValidez = calcularFechaValidez(fechaPresupuesto);
+                        $('#fecha_validez_presupuesto').val(nuevaFechaValidez);
+                        console.log('✓ Fecha de validez calculada:', nuevaFechaValidez, '(+' + diasValidezPresupuesto + ' días)');
+                    });
+                } else {
+                    // Ya están cargados, calcular directamente
+                    var nuevaFechaValidez = calcularFechaValidez(fechaPresupuesto);
+                    $('#fecha_validez_presupuesto').val(nuevaFechaValidez);
+                    console.log('✓ Fecha de validez calculada:', nuevaFechaValidez, '(+' + diasValidezPresupuesto + ' días)');
+                }
+            } else {
+                // Si ya existe, solo mostrar sugerencia en consola
+                var fechaSugerida = calcularFechaValidez(fechaPresupuesto);
+                console.log('ℹ Fecha de validez sugerida:', fechaSugerida, '(actual: ' + fechaValidezActual + ')');
+            }
+        }
+    });
+
     /////////////////////////////////////////
     //   FIN VALIDACIONES DE FECHAS       //
     ///////////////////////////////////////
@@ -79,9 +109,15 @@ $(document).ready(function () {
     //   FUNCIONES DE INICIALIZACIÓN      //
     ///////////////////////////////////////
 
+    // Variable global para almacenar los días de validez
+    var diasValidezPresupuesto = 30; // Valor por defecto
+
     // Cargar opciones de selects
     cargarClientes();
     cargarEstadosPresupuesto();
+    
+    // Cargar información de la empresa (nombre y días de validez) al iniciar
+    cargarDiasValidezEmpresa();
 
     // Función para obtener parámetros de la URL
     function getUrlParameter(name) {
@@ -89,6 +125,58 @@ $(document).ready(function () {
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
         var results = regex.exec(location.search);
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    // Función para cargar días de validez de la empresa ficticia principal (retorna Promise)
+    function cargarDiasValidezEmpresa() {
+        return $.ajax({
+            url: "../../controller/empresas.php?op=obtenerEmpresaActiva",
+            type: "GET",
+            dataType: "json"
+        }).then(function(data) {
+            if (data && data.dias_validez_presupuesto_empresa) {
+                diasValidezPresupuesto = parseInt(data.dias_validez_presupuesto_empresa);
+                console.log('✓ Días de validez cargados desde empresa:', diasValidezPresupuesto);
+                
+                // Actualizar campos informativos
+                if (data.nombre_empresa) {
+                    $('#nombre_empresa_info').val(data.nombre_empresa);
+                }
+                $('#dias_validez_info').val(diasValidezPresupuesto);
+            } else {
+                console.warn('⚠ No se pudieron cargar los días de validez, usando valor por defecto: 30');
+                diasValidezPresupuesto = 30;
+                $('#nombre_empresa_info').val('No disponible');
+                $('#dias_validez_info').val('30');
+            }
+            return diasValidezPresupuesto;
+        }).fail(function(xhr, status, error) {
+            console.error('✗ Error al cargar días de validez de empresa:', error);
+            diasValidezPresupuesto = 30; // Valor por defecto en caso de error
+            $('#nombre_empresa_info').val('Error al cargar');
+            $('#dias_validez_info').val('30');
+            return diasValidezPresupuesto;
+        });
+    }
+
+    // Función para calcular fecha de validez basada en fecha de presupuesto
+    function calcularFechaValidez(fechaPresupuesto) {
+        if (!fechaPresupuesto) {
+            return '';
+        }
+        
+        // Convertir la fecha string a objeto Date
+        var fecha = new Date(fechaPresupuesto + 'T00:00:00');
+        
+        // Sumar los días de validez
+        fecha.setDate(fecha.getDate() + diasValidezPresupuesto);
+        
+        // Convertir de vuelta a formato YYYY-MM-DD
+        var year = fecha.getFullYear();
+        var month = String(fecha.getMonth() + 1).padStart(2, '0');
+        var day = String(fecha.getDate()).padStart(2, '0');
+        
+        return year + '-' + month + '-' + day;
     }
 
     // Función para cargar clientes
@@ -310,6 +398,13 @@ $(document).ready(function () {
         // En modo nuevo, establecer fecha actual
         var hoy = new Date().toISOString().split('T')[0];
         $('#fecha_presupuesto').val(hoy);
+        
+        // Calcular y establecer fecha de validez automáticamente DESPUÉS de cargar los días
+        cargarDiasValidezEmpresa().then(function() {
+            var fechaValidez = calcularFechaValidez(hoy);
+            $('#fecha_validez_presupuesto').val(fechaValidez);
+            console.log('✓ Fecha de validez calculada automáticamente:', fechaValidez, '(+' + diasValidezPresupuesto + ' días)');
+        });
         
         $('#numero_presupuesto').focus();
         setTimeout(function() {
