@@ -169,7 +169,10 @@
                           
                             <div class="row mb-3">
                                 <div class="col-12 col-md-6">
-                                    <label for="id_cliente" class="form-label">Cliente: <span class="tx-danger">*</span></label>
+                                    <label for="id_cliente" class="form-label">
+                                        Cliente: <span class="tx-danger">*</span>
+                                        <i class="bi bi-info-circle text-info" data-bs-toggle="tooltip" title="Solo se muestran los clientes marcados como activos en la tabla de clientes."></i>
+                                    </label>
                                     <select class="form-control" name="id_cliente" id="id_cliente" required>
                                         <option value="">Seleccione un cliente</option>
                                     </select>
@@ -192,7 +195,10 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="id_contacto_cliente" class="form-label">Contacto del cliente:</label>
+                                    <label for="id_contacto_cliente" class="form-label">
+                                        Contacto del cliente:
+                                        <i class="bi bi-info-circle text-info" data-bs-toggle="tooltip" title="Solo se muestran los contactos marcados como activos en la tabla de contactos."></i>
+                                    </label>
                                     <select class="form-control" name="id_contacto_cliente" id="id_contacto_cliente">
                                         <option value="">Seleccione primero un cliente</option>
                                     </select>
