@@ -293,10 +293,46 @@ $(document).ready(function () {
         });
     }
 
+    // Función para cargar y mostrar información del cliente
+    function cargarInfoCliente(idCliente) {
+        if (!idCliente) {
+            // Ocultar información si no hay cliente seleccionado
+            $('#info-direccion-cliente').hide();
+            return;
+        }
+        
+        $.ajax({
+            url: "../../controller/cliente.php?op=mostrar",
+            type: "POST",
+            data: { id_cliente: idCliente },
+            dataType: "json",
+            success: function(data) {
+                if (data) {
+                    // Mostrar los datos del cliente
+                    $('#nif_cliente_info').text(data.nif_cliente || '-');
+                    $('#direccion_cliente_info').text(data.direccion_cliente || '-');
+                    $('#cp_cliente_info').text(data.cp_cliente || '-');
+                    $('#poblacion_cliente_info').text(data.poblacion_cliente || '-');
+                    $('#provincia_cliente_info').text(data.provincia_cliente || '-');
+                    
+                    // Mostrar el panel de información
+                    $('#info-direccion-cliente').slideDown();
+                } else {
+                    $('#info-direccion-cliente').hide();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar información del cliente:', error);
+                $('#info-direccion-cliente').hide();
+            }
+        });
+    }
+
     // Event listener para cambio de cliente
     $('#id_cliente').on('change', function() {
         var idCliente = $(this).val();
         cargarContactosCliente(idCliente);
+        cargarInfoCliente(idCliente);
     });
 
     // Función para cargar datos de presupuesto para edición
@@ -346,6 +382,7 @@ $(document).ready(function () {
                         // Cargar contactos del cliente y seleccionar el contacto si existe
                         if (data.id_cliente) {
                             cargarContactosCliente(data.id_cliente, data.id_contacto_cliente);
+                            cargarInfoCliente(data.id_cliente);
                         }
                     }, 500);
                     

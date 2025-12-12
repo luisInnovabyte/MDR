@@ -175,6 +175,21 @@
                                     </select>
                                     <div class="invalid-feedback small-invalid-feedback">Debe seleccionar un cliente</div>
                                     <small class="form-text text-muted">Cliente al que se emite el presupuesto</small>
+                                    
+                                    <!-- Información de dirección del cliente -->
+                                    <div id="info-direccion-cliente" style="display: none;" class="mt-2">
+                                        <div class="alert alert-light border-start border-primary border-4 mb-0 py-2" role="alert">
+                                            <h6 class="alert-heading tx-11 tx-semibold mb-1">
+                                                <i class="bi bi-geo-alt-fill me-1"></i>Dirección del Cliente
+                                            </h6>
+                                            <div class="tx-10">
+                                                <div><strong>NIF:</strong> <span id="nif_cliente_info">-</span></div>
+                                                <div><strong>Dirección:</strong> <span id="direccion_cliente_info">-</span></div>
+                                                <div><strong>CP:</strong> <span id="cp_cliente_info">-</span> | <strong>Población:</strong> <span id="poblacion_cliente_info">-</span></div>
+                                                <div><strong>Provincia:</strong> <span id="provincia_cliente_info">-</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="id_contacto_cliente" class="form-label">Contacto del cliente:</label>
