@@ -315,7 +315,9 @@ $(document).ready(function () {
                     select.prop('disabled', false);
                     
                     // Disparar evento change para actualizar la información del contacto
-                    if (idContactoSeleccionado) {
+                    // Dispara siempre que haya un contacto seleccionado (principal o específico)
+                    var contactoSeleccionado = select.val();
+                    if (contactoSeleccionado) {
                         select.trigger('change');
                     }
                 } else {
