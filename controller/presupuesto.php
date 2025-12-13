@@ -44,7 +44,9 @@ switch ($_GET["op"]) {
                 
                 // Observaciones
                 "observaciones_cabecera_presupuesto" => $row["observaciones_cabecera_presupuesto"],
+                "observaciones_cabecera_ingles_presupuesto" => $row["observaciones_cabecera_ingles_presupuesto"] ?? null,
                 "observaciones_pie_presupuesto" => $row["observaciones_pie_presupuesto"],
+                "observaciones_pie_ingles_presupuesto" => $row["observaciones_pie_ingles_presupuesto"] ?? null,
                 "mostrar_obs_familias_presupuesto" => $row["mostrar_obs_familias_presupuesto"],
                 "mostrar_obs_articulos_presupuesto" => $row["mostrar_obs_articulos_presupuesto"],
                 "observaciones_internas_presupuesto" => $row["observaciones_internas_presupuesto"],
@@ -217,7 +219,9 @@ switch ($_GET["op"]) {
                     $_POST["cp_evento_presupuesto"] ?? '', 
                     $_POST["provincia_evento_presupuesto"] ?? '', 
                     $_POST["observaciones_cabecera_presupuesto"], 
+                    $_POST["observaciones_cabecera_ingles_presupuesto"] ?? '', 
                     $_POST["observaciones_pie_presupuesto"], 
+                    $_POST["observaciones_pie_ingles_presupuesto"] ?? '', 
                     isset($_POST["mostrar_obs_familias_presupuesto"]) ? $_POST["mostrar_obs_familias_presupuesto"] : 1, 
                     isset($_POST["mostrar_obs_articulos_presupuesto"]) ? $_POST["mostrar_obs_articulos_presupuesto"] : 1, 
                     $_POST["observaciones_internas_presupuesto"]
@@ -297,7 +301,9 @@ switch ($_GET["op"]) {
                     $_POST["cp_evento_presupuesto"] ?? '', 
                     $_POST["provincia_evento_presupuesto"] ?? '', 
                     $_POST["observaciones_cabecera_presupuesto"], 
+                    $_POST["observaciones_cabecera_ingles_presupuesto"] ?? '', 
                     $_POST["observaciones_pie_presupuesto"], 
+                    $_POST["observaciones_pie_ingles_presupuesto"] ?? '', 
                     isset($_POST["mostrar_obs_familias_presupuesto"]) ? $_POST["mostrar_obs_familias_presupuesto"] : 1, 
                     isset($_POST["mostrar_obs_articulos_presupuesto"]) ? $_POST["mostrar_obs_articulos_presupuesto"] : 1, 
                     $_POST["observaciones_internas_presupuesto"]

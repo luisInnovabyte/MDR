@@ -116,18 +116,21 @@ $(document).ready(function () {
                 }
             },
             // Columna 7: dias_hasta_inicio_evento
-            {
-                targets: "dias_hasta_inicio_evento:name", width: '6%', searchable: true, orderable: true, className: "text-center",
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        if (row.dias_hasta_inicio_evento === null) return '<span class="text-muted">-</span>';
-                        let dias = row.dias_hasta_inicio_evento;
-                        let clase = dias < 0 ? 'text-muted' : (dias <= 7 ? 'text-danger' : 'text-primary');
-                        return `<span class="${clase} fw-bold">${dias}</span>`;
-                    }
-                    return row.dias_hasta_inicio_evento;
-                }
-            },
+           // ...existing code...
+           // Columna 7: dias_hasta_inicio_evento
+           {
+               targets: "dias_hasta_inicio_evento:name", width: '6%', searchable: true, orderable: true, className: "text-center",
+               render: function (data, type, row) {
+                   if (type === "display") {
+                       if (row.dias_hasta_inicio_evento === null) return '<span class="text-muted">-</span>';
+                       let dias = row.dias_hasta_inicio_evento;
+                       if (dias < 0) return '<span class="text-muted">-</span>';
+                       let clase = dias <= 7 ? 'text-danger' : 'text-primary';
+                       return `<span class="${clase} fw-bold">${dias}</span>`;
+                   }
+                   return row.dias_hasta_inicio_evento;
+               }
+           },
             // Columna 8: estado_evento_presupuesto
             {
                 targets: "estado_evento_presupuesto:name", width: '10%', searchable: true, orderable: true, className: "text-center",
@@ -386,8 +389,15 @@ $(document).ready(function () {
                                 <p class="mb-1"><strong><i class="bi bi-file-text me-1"></i>Obs. Cabecera:</strong></p>
                                 <p class="ms-3 text-muted small">${val(d.observaciones_cabecera_presupuesto)}</p>
                                 
+                                <p class="mb-1"><strong><i class="bi bi-translate me-1"></i>Obs. Cabecera (Inglés):</strong></p>
+                                <p class="ms-3 text-muted small">${val(d.observaciones_cabecera_ingles_presupuesto)}</p>
+                                
                                 <p class="mb-1"><strong><i class="bi bi-file-text me-1"></i>Obs. Pie:</strong></p>
                                 <p class="ms-3 text-muted small">${val(d.observaciones_pie_presupuesto)}</p>
+                                
+                                <p class="mb-1"><strong><i class="bi bi-translate me-1"></i>Obs. Pie (Inglés):</strong></p>
+                                <p class="ms-3 text-muted small">${val(d.observaciones_pie_ingles_presupuesto)}</p>
+                                
                                 <p class="mb-1"><strong><i class="bi bi-lock me-1"></i>Obs. Internas:</strong></p>
                                 <p class="ms-3 text-muted small">${val(d.observaciones_internas_presupuesto)}</p>
 

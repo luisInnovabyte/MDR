@@ -318,7 +318,7 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
-                                    <label for="observaciones_cabecera_presupuesto" class="form-label">Observaciones de cabecera:</label>
+                                    <label for="observaciones_cabecera_presupuesto" class="form-label">Observaciones de cabecera (Español):</label>
                                     <textarea class="form-control" name="observaciones_cabecera_presupuesto" id="observaciones_cabecera_presupuesto" rows="3" placeholder="Observaciones que aparecerán al inicio del presupuesto..."></textarea>
                                     <small class="form-text text-muted">Observaciones iniciales del presupuesto</small>
                                 </div>
@@ -326,9 +326,31 @@
 
                             <div class="row mb-3">
                                 <div class="col-12">
-                                    <label for="observaciones_pie_presupuesto" class="form-label">Observaciones de pie:</label>
+                                    <label for="observaciones_cabecera_ingles_presupuesto" class="form-label">
+                                        Observaciones de cabecera (Inglés):
+                                        <i class="bi bi-translate text-info" data-bs-toggle="tooltip" title="Versión en inglés de las observaciones de cabecera"></i>
+                                    </label>
+                                    <textarea class="form-control" name="observaciones_cabecera_ingles_presupuesto" id="observaciones_cabecera_ingles_presupuesto" rows="3" placeholder="Header observations in English..."></textarea>
+                                    <small class="form-text text-muted">Observaciones iniciales del presupuesto en inglés</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="observaciones_pie_presupuesto" class="form-label">Observaciones de pie (Español):</label>
                                     <textarea class="form-control" name="observaciones_pie_presupuesto" id="observaciones_pie_presupuesto" rows="3" placeholder="Observaciones que aparecerán al final del presupuesto..."></textarea>
                                     <small class="form-text text-muted">Observaciones específicas adicionales al pie</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="observaciones_pie_ingles_presupuesto" class="form-label">
+                                        Observaciones de pie (Inglés):
+                                        <i class="bi bi-translate text-info" data-bs-toggle="tooltip" title="Versión en inglés de las observaciones de pie"></i>
+                                    </label>
+                                    <textarea class="form-control" name="observaciones_pie_ingles_presupuesto" id="observaciones_pie_ingles_presupuesto" rows="3" placeholder="Footer observations in English..."></textarea>
+                                    <small class="form-text text-muted">Observaciones específicas adicionales al pie en inglés</small>
                                 </div>
                             </div>
 
@@ -426,8 +448,10 @@
                             <h6 class="text-primary"><i class="fas fa-comment-alt me-2"></i>Observaciones</h6>
                             <p><strong>Notas y comentarios.</strong> Información adicional del presupuesto.</p>
                             <ul class="list-unstyled ms-3">
-                                <li><i class="fas fa-info text-info me-2"></i>Observaciones de cabecera: aparecen al inicio del PDF</li>
-                                <li><i class="fas fa-info text-info me-2"></i>Observaciones de pie: aparecen al final del PDF</li>
+                                <li><i class="fas fa-info text-info me-2"></i>Observaciones de cabecera (Español): aparecen al inicio del PDF</li>
+                                <li><i class="fas fa-globe text-info me-2"></i>Observaciones de cabecera (Inglés): versión en inglés para clientes internacionales</li>
+                                <li><i class="fas fa-info text-info me-2"></i>Observaciones de pie (Español): aparecen al final del PDF</li>
+                                <li><i class="fas fa-globe text-info me-2"></i>Observaciones de pie (Inglés): versión en inglés para clientes internacionales</li>
                                 <li><i class="fas fa-lock text-warning me-2"></i>Observaciones internas: no se imprimen, solo para uso interno</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Los switches controlan la visualización de observaciones de familias y artículos</li>
                             </ul>

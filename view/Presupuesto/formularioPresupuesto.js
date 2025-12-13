@@ -431,7 +431,9 @@ $(document).ready(function () {
                     $('#cp_evento_presupuesto').val(data.cp_evento_presupuesto);
                     $('#provincia_evento_presupuesto').val(data.provincia_evento_presupuesto);
                     $('#observaciones_cabecera_presupuesto').val(data.observaciones_cabecera_presupuesto);
+                    $('#observaciones_cabecera_ingles_presupuesto').val(data.observaciones_cabecera_ingles_presupuesto);
                     $('#observaciones_pie_presupuesto').val(data.observaciones_pie_presupuesto);
+                    $('#observaciones_pie_ingles_presupuesto').val(data.observaciones_pie_ingles_presupuesto);
                     $('#observaciones_internas_presupuesto').val(data.observaciones_internas_presupuesto);
                     
                     // Checkboxes
@@ -550,7 +552,9 @@ $(document).ready(function () {
         var cp_evento_presupuestoR = $('#cp_evento_presupuesto').val() || '';
         var provincia_evento_presupuestoR = $('#provincia_evento_presupuesto').val() || '';
         var observaciones_cabecera_presupuestoR = $('#observaciones_cabecera_presupuesto').val() || '';
+        var observaciones_cabecera_ingles_presupuestoR = $('#observaciones_cabecera_ingles_presupuesto').val() || '';
         var observaciones_pie_presupuestoR = $('#observaciones_pie_presupuesto').val() || '';
+        var observaciones_pie_ingles_presupuestoR = $('#observaciones_pie_ingles_presupuesto').val() || '';
         var mostrar_obs_familias_presupuestoR = $('#mostrar_obs_familias_presupuesto').is(':checked') ? 1 : 0;
         var mostrar_obs_articulos_presupuestoR = $('#mostrar_obs_articulos_presupuesto').is(':checked') ? 1 : 0;
         var observaciones_internas_presupuestoR = $('#observaciones_internas_presupuesto').val() || '';
@@ -597,7 +601,9 @@ $(document).ready(function () {
             cp_evento_presupuestoR,
             provincia_evento_presupuestoR,
             observaciones_cabecera_presupuestoR,
+            observaciones_cabecera_ingles_presupuestoR,
             observaciones_pie_presupuestoR,
+            observaciones_pie_ingles_presupuestoR,
             mostrar_obs_familias_presupuestoR,
             mostrar_obs_articulos_presupuestoR,
             observaciones_internas_presupuestoR,
@@ -624,7 +630,9 @@ $(document).ready(function () {
         cp_evento_presupuesto,
         provincia_evento_presupuesto,
         observaciones_cabecera_presupuesto,
+        observaciones_cabecera_ingles_presupuesto,
         observaciones_pie_presupuesto,
+        observaciones_pie_ingles_presupuesto,
         mostrar_obs_familias_presupuesto,
         mostrar_obs_articulos_presupuesto,
         observaciones_internas_presupuesto,
@@ -663,7 +671,9 @@ $(document).ready(function () {
                         cp_evento_presupuesto,
                         provincia_evento_presupuesto,
                         observaciones_cabecera_presupuesto,
+                        observaciones_cabecera_ingles_presupuesto,
                         observaciones_pie_presupuesto,
+                        observaciones_pie_ingles_presupuesto,
                         mostrar_obs_familias_presupuesto,
                         mostrar_obs_articulos_presupuesto,
                         observaciones_internas_presupuesto,
@@ -707,7 +717,9 @@ $(document).ready(function () {
         cp_evento_presupuesto,
         provincia_evento_presupuesto,
         observaciones_cabecera_presupuesto,
+        observaciones_cabecera_ingles_presupuesto,
         observaciones_pie_presupuesto,
+        observaciones_pie_ingles_presupuesto,
         mostrar_obs_familias_presupuesto,
         mostrar_obs_articulos_presupuesto,
         observaciones_internas_presupuesto,
@@ -735,7 +747,9 @@ $(document).ready(function () {
             'cp_evento_presupuesto': cp_evento_presupuesto,
             'provincia_evento_presupuesto': provincia_evento_presupuesto,
             'observaciones_cabecera_presupuesto': observaciones_cabecera_presupuesto,
+            'observaciones_cabecera_ingles_presupuesto': observaciones_cabecera_ingles_presupuesto,
             'observaciones_pie_presupuesto': observaciones_pie_presupuesto,
+            'observaciones_pie_ingles_presupuesto': observaciones_pie_ingles_presupuesto,
             'mostrar_obs_familias_presupuesto': mostrar_obs_familias_presupuesto,
             'mostrar_obs_articulos_presupuesto': mostrar_obs_articulos_presupuesto,
             'observaciones_internas_presupuesto': observaciones_internas_presupuesto,

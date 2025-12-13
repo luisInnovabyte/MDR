@@ -3305,6 +3305,24 @@ CREATE TABLE presupuesto (
 COMMENT='Cabecera de presupuestos para alquiler de equipos';
 
 
+-- ============================================
+-- ALTER TABLE: presupuesto
+-- Añadir campos de observaciones en inglés
+-- Fecha: 2025-12-13
+-- ============================================
+
+ALTER TABLE presupuesto
+
+ADD COLUMN observaciones_cabecera_ingles_presupuesto TEXT 
+    COMMENT 'Observaciones iniciales del presupuesto en inglés'
+    AFTER observaciones_cabecera_presupuesto,
+
+ADD COLUMN observaciones_pie_ingles_presupuesto TEXT 
+    COMMENT 'Observaciones específicas adicionales al pie en inglés'
+    AFTER observaciones_pie_presupuesto;
+
+
+
 
 -- ======================================
 -- Calcular duración del evento en días
@@ -3406,6 +3424,10 @@ VIEW `toldos_db`.`vista_presupuesto_completa` AS
                 `p`.`provincia_evento_presupuesto`) AS `ubicacion_completa_evento_presupuesto`,
         `p`.`observaciones_cabecera_presupuesto` AS `observaciones_cabecera_presupuesto`,
         `p`.`observaciones_pie_presupuesto` AS `observaciones_pie_presupuesto`,
+        
+        `p`.`observaciones_cabecera_ingles_presupuesto` AS `observaciones_cabecera_ingles_presupuesto`,
+        `p`.`observaciones_pie_ingles_presupuesto` AS `observaciones_pie_ingles_presupuesto`,
+        
         `p`.`mostrar_obs_familias_presupuesto` AS `mostrar_obs_familias_presupuesto`,
         `p`.`mostrar_obs_articulos_presupuesto` AS `mostrar_obs_articulos_presupuesto`,
         `p`.`observaciones_internas_presupuesto` AS `observaciones_internas_presupuesto`,
@@ -3555,6 +3577,9 @@ VIEW `toldos_db`.`vista_presupuesto_completa` AS
         LEFT JOIN toldos_db.forma_pago fp ON ((p.id_forma_pago = fp.id_pago)))
         LEFT JOIN toldos_db.metodo_pago mp ON ((fp.id_metodo_pago = mp.id_metodo_pago)))
         LEFT JOIN toldos_db.metodos_contacto mc ON ((p.id_metodo = mc.id_metodo)));
+
+
+
 
 
 -- El campo total_presupuesto se ha añadido con CAST(0 AS DECIMAL(12,2)) para mantener consistencia con el tipo de datos que usarás cuando implementes la tabla linea_presupuesto. 
