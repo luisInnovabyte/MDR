@@ -118,6 +118,7 @@ $(document).ready(function () {
     // Cargar opciones de selects
     cargarClientes();
     cargarEstadosPresupuesto();
+    cargarFormasPago();
     
     // Cargar información de la empresa (nombre y días de validez) al iniciar
     cargarDiasValidezEmpresa();
@@ -234,6 +235,37 @@ $(document).ready(function () {
         });
     }
 
+    // Función para cargar formas de pago
+    function cargarFormasPago() {
+        $.ajax({
+            url: "../../controller/formaspago.php?op=listar",
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                var select = $('#id_forma_pago');
+                select.empty();
+                select.append('<option value="">Sin forma de pago</option>');
+                
+                if (data.data && Array.isArray(data.data)) {
+                    $.each(data.data, function(index, formaPago) {
+                        if (formaPago.activo_pago == 1) {
+                            var descripcion = formaPago.nombre_pago;
+                            // Añadir información adicional si está disponible
+                            if (formaPago.nombre_metodo_pago) {
+                                descripcion += ' (' + formaPago.nombre_metodo_pago + ')';
+                            }
+                            select.append('<option value="' + formaPago.id_pago + '">' + descripcion + '</option>');
+                        }
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar formas de pago:', error);
+                toastr.error('Error al cargar la lista de formas de pago');
+            }
+        });
+    }
+
     // Función para cargar contactos del cliente seleccionado
     function cargarContactosCliente(idCliente, idContactoSeleccionado = null) {
         var select = $('#id_contacto_cliente');
@@ -336,6 +368,27 @@ $(document).ready(function () {
         });
     }
 
+    // Función para cargar la forma de pago habitual del cliente
+    function cargarFormaPagoHabitualCliente(idCliente) {
+        $.ajax({
+            url: "../../controller/cliente.php?op=mostrar",
+            type: "POST",
+            data: { id_cliente: idCliente },
+            dataType: "json",
+            success: function(data) {
+                if (data && data.id_forma_pago_habitual) {
+                    $('#id_forma_pago').val(data.id_forma_pago_habitual);
+                    console.log('✓ Forma de pago habitual cargada:', data.id_forma_pago_habitual);
+                } else {
+                    console.log('ℹ Cliente sin forma de pago habitual configurada');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar forma de pago habitual:', error);
+            }
+        });
+    }
+
     // Función para cargar y mostrar información del contacto
     function cargarInfoContacto(idContacto) {
         if (!idContacto) {
@@ -379,10 +432,12 @@ $(document).ready(function () {
         // Limpiar información del contacto al cambiar de cliente
         $('#info-contacto-cliente').hide();
         
-        // Habilitar/deshabilitar botón de nuevo contacto
+        // Cargar forma de pago habitual del cliente
         if (idCliente) {
+            cargarFormaPagoHabitualCliente(idCliente);
             $('#btnNuevoContacto').removeClass('btn-disabled').attr('data-enabled', 'true');
         } else {
+            $('#id_forma_pago').val('');
             $('#btnNuevoContacto, #btnEditarContacto').addClass('btn-disabled').attr('data-enabled', 'false');
         }
     });
@@ -445,6 +500,7 @@ $(document).ready(function () {
                     setTimeout(function() {
                         $('#id_cliente').val(data.id_cliente);
                         $('#id_estado_ppto').val(data.id_estado_ppto);
+                        $('#id_forma_pago').val(data.id_forma_pago);
                         
                         // Cargar contactos del cliente y seleccionar el contacto si existe
                         if (data.id_cliente) {

@@ -3321,9 +3321,6 @@ ADD COLUMN observaciones_pie_ingles_presupuesto TEXT
     COMMENT 'Observaciones específicas adicionales al pie en inglés'
     AFTER observaciones_pie_presupuesto;
 
-
-
-
 -- ======================================
 -- Calcular duración del evento en días
 -- ======================================   
@@ -3392,193 +3389,208 @@ presupuesto
   └─→ linea_presupuesto (1:N) [vía id_presupuesto]
 
 
--- ========================================================
--- VISTA COMPLETA DE PRESUPUESTOS
--- ========================================================
+-- ============================================
+-- Vista: vista_presupuesto_completa
+-- Descripción: Vista completa de presupuestos con todas las relaciones
+-- Fecha: Diciembre 2024
+-- ============================================
 
 DROP VIEW IF EXISTS vista_presupuesto_completa;
 
-CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `root`@`%` 
-    SQL SECURITY DEFINER
-VIEW `toldos_db`.`vista_presupuesto_completa` AS
-    SELECT 
-        `p`.`id_presupuesto` AS `id_presupuesto`,
-        `p`.`numero_presupuesto` AS `numero_presupuesto`,
-        `p`.`fecha_presupuesto` AS `fecha_presupuesto`,
-        `p`.`fecha_validez_presupuesto` AS `fecha_validez_presupuesto`,
-        `p`.`fecha_inicio_evento_presupuesto` AS `fecha_inicio_evento_presupuesto`,
-        `p`.`fecha_fin_evento_presupuesto` AS `fecha_fin_evento_presupuesto`,
-        `p`.`numero_pedido_cliente_presupuesto` AS `numero_pedido_cliente_presupuesto`,
-        `p`.`nombre_evento_presupuesto` AS `nombre_evento_presupuesto`,
-        `p`.`direccion_evento_presupuesto` AS `direccion_evento_presupuesto`,
-        `p`.`poblacion_evento_presupuesto` AS `poblacion_evento_presupuesto`,
-        `p`.`cp_evento_presupuesto` AS `cp_evento_presupuesto`,
-        `p`.`provincia_evento_presupuesto` AS `provincia_evento_presupuesto`,
-        CONCAT_WS(', ',
-                `p`.`direccion_evento_presupuesto`,
-                CONCAT(`p`.`cp_evento_presupuesto`,
-                        ' ',
-                        `p`.`poblacion_evento_presupuesto`),
-                `p`.`provincia_evento_presupuesto`) AS `ubicacion_completa_evento_presupuesto`,
-        `p`.`observaciones_cabecera_presupuesto` AS `observaciones_cabecera_presupuesto`,
-        `p`.`observaciones_pie_presupuesto` AS `observaciones_pie_presupuesto`,
-        
-        `p`.`observaciones_cabecera_ingles_presupuesto` AS `observaciones_cabecera_ingles_presupuesto`,
-        `p`.`observaciones_pie_ingles_presupuesto` AS `observaciones_pie_ingles_presupuesto`,
-        
-        `p`.`mostrar_obs_familias_presupuesto` AS `mostrar_obs_familias_presupuesto`,
-        `p`.`mostrar_obs_articulos_presupuesto` AS `mostrar_obs_articulos_presupuesto`,
-        `p`.`observaciones_internas_presupuesto` AS `observaciones_internas_presupuesto`,
-        `p`.`activo_presupuesto` AS `activo_presupuesto`,
-        `p`.`created_at_presupuesto` AS `created_at_presupuesto`,
-        `p`.`updated_at_presupuesto` AS `updated_at_presupuesto`,
-        `c`.`id_cliente` AS `id_cliente`,
-        `c`.`codigo_cliente` AS `codigo_cliente`,
-        `c`.`nombre_cliente` AS `nombre_cliente`,
-        `c`.`nif_cliente` AS `nif_cliente`,
-        `c`.`direccion_cliente` AS `direccion_cliente`,
-        `c`.`cp_cliente` AS `cp_cliente`,
-        `c`.`poblacion_cliente` AS `poblacion_cliente`,
-        `c`.`provincia_cliente` AS `provincia_cliente`,
-        `c`.`telefono_cliente` AS `telefono_cliente`,
-        `c`.`email_cliente` AS `email_cliente`,
-        `c`.`web_cliente` AS `web_cliente`,
-        `c`.`nombre_facturacion_cliente` AS `nombre_facturacion_cliente`,
-        `c`.`direccion_facturacion_cliente` AS `direccion_facturacion_cliente`,
-        `c`.`cp_facturacion_cliente` AS `cp_facturacion_cliente`,
-        `c`.`poblacion_facturacion_cliente` AS `poblacion_facturacion_cliente`,
-        `c`.`provincia_facturacion_cliente` AS `provincia_facturacion_cliente`,
-        CONCAT_WS(', ',
-                `c`.`direccion_cliente`,
-                CONCAT(`c`.`cp_cliente`,
-                        ' ',
-                        `c`.`poblacion_cliente`),
-                `c`.`provincia_cliente`) AS `direccion_completa_cliente`,
-        (CASE
-            WHEN
-                (`c`.`direccion_facturacion_cliente` IS NOT NULL)
-            THEN
-                CONCAT_WS(', ',
-                        `c`.`direccion_facturacion_cliente`,
-                        CONCAT(`c`.`cp_facturacion_cliente`,
-                                ' ',
-                                `c`.`poblacion_facturacion_cliente`),
-                        `c`.`provincia_facturacion_cliente`)
-            ELSE NULL
-        END) AS `direccion_facturacion_completa_cliente`,
-        `cc`.`id_contacto_cliente` AS `id_contacto_cliente`,
-        `cc`.`nombre_contacto_cliente` AS `nombre_contacto_cliente`,
-        `cc`.`apellidos_contacto_cliente` AS `apellidos_contacto_cliente`,
-        `cc`.`cargo_contacto_cliente` AS `cargo_contacto_cliente`,
-        `cc`.`telefono_contacto_cliente` AS `telefono_contacto_cliente`,
-        `cc`.`movil_contacto_cliente` AS `movil_contacto_cliente`,
-        `cc`.`email_contacto_cliente` AS `email_contacto_cliente`,
-        CONCAT_WS(' ',
-                `cc`.`nombre_contacto_cliente`,
-                `cc`.`apellidos_contacto_cliente`) AS `nombre_completo_contacto_cliente`,
-        `ep`.`id_estado_ppto` AS `id_estado_ppto`,
-        `ep`.`codigo_estado_ppto` AS `codigo_estado_ppto`,
-        `ep`.`nombre_estado_ppto` AS `nombre_estado_ppto`,
-        `ep`.`color_estado_ppto` AS `color_estado_ppto`,
-        `ep`.`orden_estado_ppto` AS `orden_estado_ppto`,
-        `fp`.`id_pago` AS `id_pago`,
-        `fp`.`codigo_pago` AS `codigo_pago`,
-        `fp`.`nombre_pago` AS `nombre_pago`,
-        `fp`.`porcentaje_anticipo_pago` AS `porcentaje_anticipo_pago`,
-        `fp`.`dias_anticipo_pago` AS `dias_anticipo_pago`,
-        `fp`.`porcentaje_final_pago` AS `porcentaje_final_pago`,
-        `fp`.`dias_final_pago` AS `dias_final_pago`,
-        `fp`.`descuento_pago` AS `descuento_pago`,
-        `mp`.`id_metodo_pago` AS `id_metodo_pago`,
-        `mp`.`codigo_metodo_pago` AS `codigo_metodo_pago`,
-        `mp`.`nombre_metodo_pago` AS `nombre_metodo_pago`,
-        `mc`.`id_metodo` AS `id_metodo`,
-        `mc`.`nombre` AS `nombre_metodo_contacto`,
-        
-        -- =====================================================
-        -- TOTAL PRESUPUESTO (calculado desde líneas - pendiente)
-        -- =====================================================
-        CAST(0 AS DECIMAL(12,2)) AS `total_presupuesto`,
-        
-        (TO_DAYS(`p`.`fecha_validez_presupuesto`) - TO_DAYS(CURDATE())) AS `dias_validez_restantes`,
-        (CASE
-            WHEN (`p`.`fecha_validez_presupuesto` IS NULL) THEN 'Sin fecha de validez'
-            WHEN (`p`.`fecha_validez_presupuesto` < CURDATE()) THEN 'Caducado'
-            WHEN (`p`.`fecha_validez_presupuesto` = CURDATE()) THEN 'Caduca hoy'
-            WHEN ((TO_DAYS(`p`.`fecha_validez_presupuesto`) - TO_DAYS(CURDATE())) <= 7) THEN 'Próximo a caducar'
-            ELSE 'Vigente'
-        END) AS estado_validez_presupuesto,
-        ((TO_DAYS(p.fecha_fin_evento_presupuesto) - TO_DAYS(p.fecha_inicio_evento_presupuesto)) + 1) AS duracion_evento_dias,
-        (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) AS dias_hasta_inicio_evento,
-        (TO_DAYS(p.fecha_fin_evento_presupuesto) - TO_DAYS(CURDATE())) AS dias_hasta_fin_evento,
-        (CASE
-            WHEN (p.fecha_inicio_evento_presupuesto IS NULL) THEN 'Sin fecha de evento'
-            WHEN (p.fecha_fin_evento_presupuesto < CURDATE()) THEN 'Evento finalizado'
-            WHEN
-                ((p.fecha_inicio_evento_presupuesto <= CURDATE())
-                    AND (p.fecha_fin_evento_presupuesto >= CURDATE()))
-            THEN
-                'Evento en curso'
-            WHEN (p.fecha_inicio_evento_presupuesto = CURDATE()) THEN 'Evento inicia hoy'
-            WHEN ((TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) <= 7) THEN 'Evento próximo'
-            ELSE 'Evento futuro'
-        END) AS estado_evento_presupuesto,
-        (CASE
-            WHEN (fp.porcentaje_anticipo_pago = 100.00) THEN 'Pago único'
-            WHEN (fp.porcentaje_anticipo_pago < 100.00) THEN 'Pago fraccionado'
-            ELSE 'Sin forma de pago'
-        END) AS tipo_pago_presupuesto,
-        (CASE
-            WHEN (fp.id_pago IS NULL) THEN 'Sin forma de pago asignada'
-            WHEN
-                (fp.porcentaje_anticipo_pago = 100.00)
-            THEN
-                CONCAT(mp.nombre_metodo_pago,
-                        ' - ',
-                        fp.nombre_pago,
-                        (CASE
-                            WHEN (fp.descuento_pago > 0) THEN CONCAT(' (Dto: ', fp.descuento_pago, '%)')
-                            ELSE ''
-                        END))
-            ELSE CONCAT(mp.nombre_metodo_pago,
-                    ' - ',
-                    fp.porcentaje_anticipo_pago,
-                    '% + ',
-                    fp.porcentaje_final_pago,
-                    '%')
-        END) AS descripcion_forma_pago_presupuesto,
-        (CASE
-            WHEN (fp.dias_anticipo_pago = 0) THEN p.fecha_presupuesto
-            ELSE (p.fecha_presupuesto + INTERVAL fp.dias_anticipo_pago DAY)
-        END) AS fecha_vencimiento_anticipo,
-        (CASE
-            WHEN
-                ((fp.dias_final_pago = 0)
-                    AND (p.fecha_fin_evento_presupuesto IS NOT NULL))
-            THEN
-                p.fecha_fin_evento_presupuesto
-            WHEN (fp.dias_final_pago > 0) THEN (p.fecha_presupuesto + INTERVAL fp.dias_final_pago DAY)
-            WHEN
-                ((fp.dias_final_pago < 0)
-                    AND (p.fecha_inicio_evento_presupuesto IS NOT NULL))
-            THEN
-                (p.fecha_inicio_evento_presupuesto + INTERVAL fp.dias_final_pago DAY)
-            ELSE NULL
-        END) AS fecha_vencimiento_final,
-        (TO_DAYS(CURDATE()) - TO_DAYS(p.fecha_presupuesto)) AS dias_antiguedad_presupuesto
-       
-    FROM
-        ((((((toldos_db.presupuesto p
-        JOIN toldos_db.cliente c ON ((p.id_cliente = c.id_cliente)))
-        LEFT JOIN toldos_db.contacto_cliente cc ON ((p.id_contacto_cliente = cc.id_contacto_cliente)))
-        JOIN toldos_db.estado_presupuesto ep ON ((p.id_estado_ppto = ep.id_estado_ppto)))
-        LEFT JOIN toldos_db.forma_pago fp ON ((p.id_forma_pago = fp.id_pago)))
-        LEFT JOIN toldos_db.metodo_pago mp ON ((fp.id_metodo_pago = mp.id_metodo_pago)))
-        LEFT JOIN toldos_db.metodos_contacto mc ON ((p.id_metodo = mc.id_metodo)));
+CREATE VIEW vista_presupuesto_completa AS
+SELECT 
+    -- =====================================================
+    -- DATOS DEL PRESUPUESTO
+    -- =====================================================
+    p.id_presupuesto,
+    p.numero_presupuesto,
+    p.fecha_presupuesto,
+    p.fecha_validez_presupuesto,
+    p.fecha_inicio_evento_presupuesto,
+    p.fecha_fin_evento_presupuesto,
+    p.numero_pedido_cliente_presupuesto,
+    p.nombre_evento_presupuesto,
+    p.direccion_evento_presupuesto,
+    p.poblacion_evento_presupuesto,
+    p.cp_evento_presupuesto,
+    p.provincia_evento_presupuesto,
+    CONCAT_WS(', ',
+        p.direccion_evento_presupuesto,
+        CONCAT(p.cp_evento_presupuesto, ' ', p.poblacion_evento_presupuesto),
+        p.provincia_evento_presupuesto
+    ) AS ubicacion_completa_evento_presupuesto,
+    p.observaciones_cabecera_presupuesto,
+    p.observaciones_pie_presupuesto,
+    p.observaciones_cabecera_ingles_presupuesto,
+    p.observaciones_pie_ingles_presupuesto,
+    p.mostrar_obs_familias_presupuesto,
+    p.mostrar_obs_articulos_presupuesto,
+    p.observaciones_internas_presupuesto,
+    p.id_forma_pago,
+    p.id_metodo,
+    p.activo_presupuesto,
+    p.created_at_presupuesto,
+    p.updated_at_presupuesto,
+    
+    -- =====================================================
+    -- DATOS DEL CLIENTE
+    -- =====================================================
+    c.id_cliente,
+    c.codigo_cliente,
+    c.nombre_cliente,
+    c.nif_cliente,
+    c.direccion_cliente,
+    c.cp_cliente,
+    c.poblacion_cliente,
+    c.provincia_cliente,
+    c.telefono_cliente,
+    c.email_cliente,
+    c.web_cliente,
+    c.nombre_facturacion_cliente,
+    c.direccion_facturacion_cliente,
+    c.cp_facturacion_cliente,
+    c.poblacion_facturacion_cliente,
+    c.provincia_facturacion_cliente,
+    CONCAT_WS(', ',
+        c.direccion_cliente,
+        CONCAT(c.cp_cliente, ' ', c.poblacion_cliente),
+        c.provincia_cliente
+    ) AS direccion_completa_cliente,
+    CASE
+        WHEN c.direccion_facturacion_cliente IS NOT NULL THEN
+            CONCAT_WS(', ',
+                c.direccion_facturacion_cliente,
+                CONCAT(c.cp_facturacion_cliente, ' ', c.poblacion_facturacion_cliente),
+                c.provincia_facturacion_cliente
+            )
+        ELSE NULL
+    END AS direccion_facturacion_completa_cliente,
+    
+    -- =====================================================
+    -- FORMA DE PAGO HABITUAL DEL CLIENTE
+    -- =====================================================
+    c.id_forma_pago_habitual,
+    fph.codigo_pago AS codigo_pago_habitual,
+    fph.nombre_pago AS nombre_pago_habitual,
+    
+    -- =====================================================
+    -- CONTACTO DEL CLIENTE
+    -- =====================================================
+    cc.id_contacto_cliente,
+    cc.nombre_contacto_cliente,
+    cc.apellidos_contacto_cliente,
+    cc.cargo_contacto_cliente,
+    cc.telefono_contacto_cliente,
+    cc.movil_contacto_cliente,
+    cc.email_contacto_cliente,
+    CONCAT_WS(' ', cc.nombre_contacto_cliente, cc.apellidos_contacto_cliente) AS nombre_completo_contacto_cliente,
+    
+    -- =====================================================
+    -- ESTADO DEL PRESUPUESTO
+    -- =====================================================
+    ep.id_estado_ppto,
+    ep.codigo_estado_ppto,
+    ep.nombre_estado_ppto,
+    ep.color_estado_ppto,
+    ep.orden_estado_ppto,
+    
+    -- =====================================================
+    -- FORMA DE PAGO DEL PRESUPUESTO
+    -- =====================================================
+    fp.id_pago,
+    fp.codigo_pago,
+    fp.nombre_pago,
+    fp.porcentaje_anticipo_pago,
+    fp.dias_anticipo_pago,
+    fp.porcentaje_final_pago,
+    fp.dias_final_pago,
+    fp.descuento_pago,
+    
+    -- =====================================================
+    -- MÉTODO DE PAGO
+    -- =====================================================
+    mp.id_metodo_pago,
+    mp.codigo_metodo_pago,
+    mp.nombre_metodo_pago,
+    
+    -- =====================================================
+    -- MÉTODO DE CONTACTO
+    -- =====================================================
+    mc.id_metodo AS id_metodo_contacto,
+    mc.nombre AS nombre_metodo_contacto,
+    
+    -- =====================================================
+    -- TOTAL PRESUPUESTO (calculado desde líneas - pendiente)
+    -- =====================================================
+    CAST(0 AS DECIMAL(12,2)) AS total_presupuesto,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS - VALIDEZ
+    -- =====================================================
+    (TO_DAYS(p.fecha_validez_presupuesto) - TO_DAYS(CURDATE())) AS dias_validez_restantes,
+    CASE
+        WHEN p.fecha_validez_presupuesto IS NULL THEN 'Sin fecha de validez'
+        WHEN p.fecha_validez_presupuesto < CURDATE() THEN 'Caducado'
+        WHEN p.fecha_validez_presupuesto = CURDATE() THEN 'Caduca hoy'
+        WHEN (TO_DAYS(p.fecha_validez_presupuesto) - TO_DAYS(CURDATE())) <= 7 THEN 'Próximo a caducar'
+        ELSE 'Vigente'
+    END AS estado_validez_presupuesto,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS - EVENTO
+    -- =====================================================
+    ((TO_DAYS(p.fecha_fin_evento_presupuesto) - TO_DAYS(p.fecha_inicio_evento_presupuesto)) + 1) AS duracion_evento_dias,
+    (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) AS dias_hasta_inicio_evento,
+    (TO_DAYS(p.fecha_fin_evento_presupuesto) - TO_DAYS(CURDATE())) AS dias_hasta_fin_evento,
+    CASE
+        WHEN p.fecha_inicio_evento_presupuesto IS NULL THEN 'Sin fecha de evento'
+        WHEN p.fecha_fin_evento_presupuesto < CURDATE() THEN 'Evento finalizado'
+        WHEN p.fecha_inicio_evento_presupuesto <= CURDATE() AND p.fecha_fin_evento_presupuesto >= CURDATE() THEN 'Evento en curso'
+        WHEN p.fecha_inicio_evento_presupuesto = CURDATE() THEN 'Evento inicia hoy'
+        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) <= 7 THEN 'Evento próximo'
+        ELSE 'Evento futuro'
+    END AS estado_evento_presupuesto,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS - PAGOS
+    -- =====================================================
+    CASE
+        WHEN fp.porcentaje_anticipo_pago = 100.00 THEN 'Pago único'
+        WHEN fp.porcentaje_anticipo_pago < 100.00 THEN 'Pago fraccionado'
+        ELSE 'Sin forma de pago'
+    END AS tipo_pago_presupuesto,
+    CASE
+        WHEN fp.id_pago IS NULL THEN 'Sin forma de pago asignada'
+        WHEN fp.porcentaje_anticipo_pago = 100.00 THEN
+            CONCAT(mp.nombre_metodo_pago, ' - ', fp.nombre_pago,
+                CASE WHEN fp.descuento_pago > 0 THEN CONCAT(' (Dto: ', fp.descuento_pago, '%)') ELSE '' END
+            )
+        ELSE CONCAT(mp.nombre_metodo_pago, ' - ', fp.porcentaje_anticipo_pago, '% + ', fp.porcentaje_final_pago, '%')
+    END AS descripcion_forma_pago_presupuesto,
+    CASE
+        WHEN fp.dias_anticipo_pago = 0 THEN p.fecha_presupuesto
+        ELSE (p.fecha_presupuesto + INTERVAL fp.dias_anticipo_pago DAY)
+    END AS fecha_vencimiento_anticipo,
+    CASE
+        WHEN fp.dias_final_pago = 0 AND p.fecha_fin_evento_presupuesto IS NOT NULL THEN p.fecha_fin_evento_presupuesto
+        WHEN fp.dias_final_pago > 0 THEN (p.fecha_presupuesto + INTERVAL fp.dias_final_pago DAY)
+        WHEN fp.dias_final_pago < 0 AND p.fecha_inicio_evento_presupuesto IS NOT NULL THEN (p.fecha_inicio_evento_presupuesto + INTERVAL fp.dias_final_pago DAY)
+        ELSE NULL
+    END AS fecha_vencimiento_final,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS - ANTIGÜEDAD
+    -- =====================================================
+    (TO_DAYS(CURDATE()) - TO_DAYS(p.fecha_presupuesto)) AS dias_antiguedad_presupuesto
 
-
+FROM presupuesto p
+INNER JOIN cliente c ON p.id_cliente = c.id_cliente
+LEFT JOIN contacto_cliente cc ON p.id_contacto_cliente = cc.id_contacto_cliente
+INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+LEFT JOIN forma_pago fp ON p.id_forma_pago = fp.id_pago
+LEFT JOIN metodo_pago mp ON fp.id_metodo_pago = mp.id_metodo_pago
+LEFT JOIN metodos_contacto mc ON p.id_metodo = mc.id_metodo
+LEFT JOIN forma_pago fph ON c.id_forma_pago_habitual = fph.id_pago;
 
 
 

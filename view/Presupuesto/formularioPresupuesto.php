@@ -231,12 +231,27 @@
 
                             <div class="row mb-3">
                                 <div class="col-12 col-md-6">
-                                    <label for="id_estado_ppto" class="form-label">Estado presupuesto: <span class="tx-danger">*</span></label>
-                                    <select class="form-control" name="id_estado_ppto" id="id_estado_ppto" required>
-                                        <option value="">Seleccione un estado</option>
+                                    <div class="p-3 bg-warning bg-opacity-10 border border-warning border-2 rounded">
+                                        <label for="id_estado_ppto" class="form-label fw-bold">
+                                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                            Estado presupuesto: <span class="tx-danger">*</span>
+                                            <span class="badge bg-warning text-dark ms-2">IMPORTANTE</span>
+                                        </label>
+                                        <select class="form-control border-warning" name="id_estado_ppto" id="id_estado_ppto" required>
+                                            <option value="">Seleccione un estado</option>
+                                        </select>
+                                        <div class="invalid-feedback small-invalid-feedback">Debe seleccionar un estado</div>
+                                        <small class="form-text text-muted">
+                                            <strong>Estado actual del presupuesto - Define el ciclo de vida</strong>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="id_forma_pago" class="form-label">Forma de pago:</label>
+                                    <select class="form-control" name="id_forma_pago" id="id_forma_pago">
+                                        <option value="">Seleccione una forma de pago</option>
                                     </select>
-                                    <div class="invalid-feedback small-invalid-feedback">Debe seleccionar un estado</div>
-                                    <small class="form-text text-muted">Estado actual del presupuesto</small>
+                                    <small class="form-text text-muted">Condiciones de pago del presupuesto</small>
                                 </div>
                             </div>
                         </div>
@@ -423,12 +438,27 @@
                         <div class="col-12">
                             <h6 class="text-primary"><i class="fas fa-file-invoice me-2"></i>Información Básica</h6>
                             <p><strong>Campos obligatorios:</strong> Número de presupuesto, fecha, cliente y estado.</p>
+                            
+                            <!-- Destacado importante -->
+                            <div class="alert alert-warning border-start border-warning border-4 mb-3" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-triangle fs-4 me-3"></i>
+                                    <div>
+                                        <h6 class="alert-heading mb-1">
+                                            <strong>Estado del Presupuesto</strong>
+                                            <span class="badge bg-warning text-dark ms-2">MUY IMPORTANTE</span>
+                                        </h6>
+                                        <p class="mb-0">El estado define el ciclo de vida del presupuesto y es fundamental para el control del flujo de trabajo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <ul class="list-unstyled ms-3">
                                 <li><i class="fas fa-check text-success me-2"></i>Número de presupuesto: único en el sistema</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Fecha: fecha de emisión del presupuesto</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Cliente: obligatorio seleccionar uno</li>
                                 <li><i class="fas fa-info text-info me-2"></i>Contacto del cliente: se carga automáticamente al seleccionar el cliente (opcional)</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Estado: define el estado actual del presupuesto</li>
+                                <li><i class="fas fa-credit-card text-info me-2"></i>Forma de pago: se carga automáticamente la forma habitual del cliente (puede modificarse)</li>
                             </ul>
                             <hr>
                         </div>
