@@ -75,25 +75,7 @@
                                     <td><strong>F. Fin</strong></td>
                                     <td>Fecha de finalización del evento. Formato: <code>dd/mm/yyyy</code></td>
                                 </tr>
-                                <tr class="table-warning">
-                                    <td><strong><i class="bi bi-calendar-check me-1"></i> Días Val.</strong></td>
-                                    <td>
-                                        <strong>DÍAS DE VALIDEZ RESTANTES del presupuesto.</strong> Calcula cuántos días quedan hasta que expire el presupuesto.
-                                        <div class="mt-2">
-                                            <span class="badge bg-danger me-2">Negativo (Rojo)</span> = Presupuesto vencido
-                                        </div>
-                                        <div class="mt-1">
-                                            <span class="badge bg-warning text-dark me-2">≤ 7 días (Amarillo)</span> = Próximo a vencer
-                                        </div>
-                                        <div class="mt-1">
-                                            <span class="badge bg-success me-2">&gt; 7 días (Verde)</span> = Vigente con margen
-                                        </div>
-                                        <div class="alert alert-info mt-2 mb-0 small">
-                                            <i class="bi bi-info-circle me-1"></i>
-                                            Se calcula automáticamente desde la <strong>fecha de validez del presupuesto</strong> hasta la fecha actual.
-                                        </div>
-                                    </td>
-                                </tr>
+                             
                                 <tr class="table-info">
                                     <td><strong><i class="bi bi-hourglass-split me-1"></i> Duración</strong></td>
                                     <td>
@@ -124,6 +106,10 @@
                                             <i class="bi bi-calendar-event me-1"></i>
                                             Se calcula automáticamente desde la fecha actual hasta la <strong>fecha de inicio del evento</strong>.
                                         </div>
+                                        <div class="alert alert-warning mt-2 mb-0 small">
+                                            <i class="bi bi-dash-circle me-1"></i>
+                                            <strong>Nota importante:</strong> Si el evento ya ha comenzado o ha pasado, se mostrará el símbolo <strong>"-"</strong> en lugar del número de días.
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr class="table-success">
@@ -152,6 +138,27 @@
                                         </div>
                                     </td>
                                 </tr>
+
+                                <tr class="table-warning">
+                                    <td><strong><i class="bi bi-calendar-check me-1"></i> Días Val.</strong></td>
+                                    <td>
+                                        <strong>DÍAS DE VALIDEZ RESTANTES del presupuesto.</strong> Calcula cuántos días quedan hasta que expire el presupuesto.
+                                        <div class="mt-2">
+                                            <span class="badge bg-danger me-2">Negativo (Rojo)</span> = Presupuesto vencido
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-warning text-dark me-2">≤ 7 días (Amarillo)</span> = Próximo a vencer
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-success me-2">&gt; 7 días (Verde)</span> = Vigente con margen
+                                        </div>
+                                        <div class="alert alert-info mt-2 mb-0 small">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Se calcula automáticamente desde la <strong>fecha de validez del presupuesto</strong> hasta la fecha actual.
+                                        </div>
+                                    </td>
+                                </tr>
+
                                 <tr>
                                     <td><strong>Estado</strong></td>
                                     <td>Estado administrativo del presupuesto (Pendiente, Aprobado, Rechazado, etc.). Se muestra con el color definido en la tabla de estados.</td>
@@ -480,6 +487,97 @@
                     </div>
                 </div>
 
+                <!-- Sección: Estadísticas de Presupuestos -->
+                <div class="help-section mb-4">
+                    <h6 class="text-primary d-flex align-items-center">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Estadísticas de Presupuestos
+                    </h6>
+                    <p class="text-muted">
+                        El módulo incluye un sistema completo de estadísticas que se accede mediante el botón 
+                        <button class="btn btn-sm btn-primary" disabled><i class="fas fa-chart-bar me-1"></i>Estadísticas</button>
+                        en la parte superior de la tabla.
+                    </p>
+
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <strong><i class="fas fa-chart-line me-2"></i>Estadísticas Generales</strong>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-2">El panel muestra indicadores clave de rendimiento:</p>
+                            <ul class="small">
+                                <li><strong>Total Activos:</strong> Número total de presupuestos activos en el sistema</li>
+                                <li><strong>Aprobados:</strong> Cantidad de presupuestos con estado aprobado</li>
+                                <li><strong>En Proceso/Pendientes:</strong> Suma de presupuestos en proceso, pendientes de revisión y esperando respuesta</li>
+                                <li><strong>Tasa de Conversión:</strong> Porcentaje calculado como (Aprobados / Total Activos) × 100</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card border-info mb-3">
+                        <div class="card-header bg-info text-white">
+                            <strong><i class="fas fa-chart-pie me-2"></i>Distribución por Estados</strong>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-2">Muestra el desglose detallado de presupuestos por cada estado:</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="small">
+                                        <li><i class="fas fa-circle text-info me-1"></i> <strong>En Proceso:</strong> Presupuestos en elaboración</li>
+                                        <li><i class="fas fa-circle text-warning me-1"></i> <strong>Pendiente Revisión:</strong> Esperando validación</li>
+                                        <li><i class="fas fa-circle text-primary me-1"></i> <strong>Esperando Respuesta:</strong> Enviados al cliente</li>
+                                        <li><i class="fas fa-circle text-success me-1"></i> <strong>Aprobados:</strong> Confirmados por el cliente</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="small">
+                                        <li><i class="fas fa-circle text-danger me-1"></i> <strong>Rechazados:</strong> No aceptados</li>
+                                        <li><i class="fas fa-circle text-secondary me-1"></i> <strong>Cancelados:</strong> Anulados</li>
+                                        <li><i class="fas fa-circle text-success me-1"></i> <strong>Vigentes:</strong> Con validez activa</li>
+                                        <li><i class="fas fa-circle text-warning me-1"></i> <strong>Por caducar:</strong> Caducan en 7 días o menos</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-success mb-3">
+                        <div class="card-header bg-success text-white">
+                            <strong><i class="fas fa-calendar-alt me-2"></i>Estadísticas del Mes Actual</strong>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-2">Métricas específicas del mes en curso:</p>
+                            <ul class="small">
+                                <li><strong>Total del Mes:</strong> Presupuestos creados en el mes actual</li>
+                                <li><strong>Aceptados:</strong> Presupuestos aprobados este mes</li>
+                                <li><strong>Pendientes:</strong> En proceso o esperando respuesta</li>
+                                <li><strong>Rechazados:</strong> No aceptados durante el mes</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card border-warning mb-3">
+                        <div class="card-header bg-warning text-dark">
+                            <strong><i class="fas fa-exclamation-triangle me-2"></i>Alertas y Eventos</strong>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-2">Sistema de alertas para seguimiento urgente:</p>
+                            <ul class="small">
+                                <li><i class="fas fa-hourglass-half text-warning me-1"></i> <strong>Caduca hoy:</strong> Presupuestos que vencen en el día actual</li>
+                                <li><i class="fas fa-times-circle text-danger me-1"></i> <strong>Caducados:</strong> Presupuestos cuya fecha de validez ya pasó</li>
+                                <li><i class="fas fa-calendar-check text-info me-1"></i> <strong>Eventos próximos:</strong> Eventos que comienzan en los próximos 7 días</li>
+                                <li><i class="fas fa-calendar-day text-success me-1"></i> <strong>Eventos en curso:</strong> Eventos que están sucediendo ahora</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Actualización:</strong> Las estadísticas se actualizan en tiempo real. 
+                        Usa el botón <strong>"Actualizar"</strong> en el pie del modal para refrescar los datos manualmente.
+                    </div>
+                </div>
+
                 <!-- Sección: Notas Técnicas -->
                 <div class="help-section mb-4">
                     <h6 class="text-primary d-flex align-items-center">
@@ -494,6 +592,8 @@
                             <li>Las fechas se muestran en formato europeo (dd/mm/yyyy).</li>
                             <li>El scroll horizontal se activa automáticamente cuando la tabla es más ancha que el contenedor.</li>
                             <li>Todos los cambios (activar/desactivar) se confirman con ventanas de alerta (SweetAlert2).</li>
+                            <li>Las estadísticas se calculan mediante consultas SQL optimizadas que consideran solo presupuestos activos.</li>
+                            <li>Los colores en las estadísticas coinciden con los de la tabla principal para facilitar la interpretación.</li>
                         </ul>
                     </div>
                 </div>
