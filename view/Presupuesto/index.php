@@ -93,6 +93,54 @@
         button.details-control {
             min-width: 30px;
         }
+        
+        /* Estilos para encabezados agrupados */
+        #presupuestos_data thead tr:first-child th[colspan] {
+            font-weight: bold;
+            font-size: 0.95rem;
+            padding: 12px 8px;
+            vertical-align: middle;
+        }
+        
+        #presupuestos_data thead tr:first-child th[colspan="8"] {
+            background-color: #d1ecf1 !important; /* Azul claro suave */
+            color: #0c5460;
+            border-color: #bee5eb !important;
+        }
+        
+        #presupuestos_data thead tr:first-child th[colspan="3"] {
+            background-color: #d4edda !important; /* Verde claro suave */
+            color: #155724;
+            border-color: #c3e6cb !important;
+        }
+        
+        /* Estilos para las columnas de la segunda fila del encabezado - Grupo EVENTO */
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(1),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(2),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(3),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(4),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(5),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(6),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(7),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(8) {
+            background-color: #d1ecf1 !important; /* Azul claro suave - EVENTO */
+            color: #0c5460 !important;
+            border-color: #bee5eb !important;
+        }
+        
+        /* Estilos para las columnas de la segunda fila del encabezado - Grupo PRESUPUESTO */
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(9),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(10),
+        #presupuestos_data thead tr:nth-child(2) th:nth-child(11) {
+            background-color: #d4edda !important; /* Verde claro suave - PRESUPUESTO */
+            color: #155724 !important;
+            border-color: #c3e6cb !important;
+        }
+        
+        /* Asegurar que DataTables no sobrescriba los colores */
+        #presupuestos_data.dataTable thead th {
+            background-color: inherit !important;
+        }
     </style>
     
     <!-- ########## START: MAIN PANEL ########## -->
@@ -149,22 +197,26 @@
                 <table id="presupuestos_data" class="table display nowrap" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="d-none">Id</th>
+                            <th class="d-none" rowspan="2">Id</th>
+                            <th colspan="8" class="text-center">EVENTO</th>
+                            <th colspan="3" class="text-center">PRESUPUESTO</th>
+                            <th rowspan="2">Activo</th>
+                            <th rowspan="2">Act./Desac.</th>
+                            <th rowspan="2">Edit.</th>
+                            <th rowspan="2">Líneas</th>
+                        </tr>
+                        <tr>
                             <th>Número</th>
                             <th>Cliente</th>
                             <th>Evento</th>
                             <th>F. Inicio</th>
                             <th>F. Fin</th>
-                            <th>Días Val.</th>
                             <th>Duración</th>
                             <th>Días Inicio</th>
                             <th>Estado Evento</th>
+                            <th>Días Val.</th>
                             <th>Estado</th>
                             <th>Importe (€)</th>
-                            <th>Activo</th>
-                            <th>Act./Desac.</th>
-                            <th>Edit.</th>
-                            <th>Líneas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -178,7 +230,6 @@
                             <th><input type="text" placeholder="Buscar evento" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="F. Inicio" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="F. Fin" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Días val." class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Duración" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Días" class="form-control form-control-sm" /></th>
                             <th>
@@ -191,6 +242,7 @@
                                     <option value="futuro">Evento futuro</option>
                                 </select>
                             </th>
+                            <th><input type="text" placeholder="Días val." class="form-control form-control-sm" /></th>
                             <th>
                                 <select class="form-control form-control-sm" title="Filtrar por estado presupuesto">
                                     <option value="">Todos los estados</option>

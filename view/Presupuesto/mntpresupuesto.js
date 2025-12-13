@@ -53,10 +53,10 @@ $(document).ready(function () {
             { name: 'nombre_evento_presupuesto', data: 'nombre_evento_presupuesto', className: "text-center align-middle" }, // Columna 3: EVENTO
             { name: 'fecha_inicio_evento_presupuesto', data: 'fecha_inicio_evento_presupuesto', className: "text-center align-middle" }, // Columna 4: FECHA INICIO
             { name: 'fecha_fin_evento_presupuesto', data: 'fecha_fin_evento_presupuesto', className: "text-center align-middle" }, // Columna 5: FECHA FIN
-            { name: 'dias_validez_restantes', data: 'dias_validez_restantes', className: "text-center align-middle" }, // Columna 6: DÍAS VALIDEZ
-            { name: 'duracion_evento_dias', data: 'duracion_evento_dias', className: "text-center align-middle" }, // Columna 7: DURACIÓN
-            { name: 'dias_hasta_inicio_evento', data: 'dias_hasta_inicio_evento', className: "text-center align-middle" }, // Columna 8: DÍAS INICIO
-            { name: 'estado_evento_presupuesto', data: 'estado_evento_presupuesto', className: "text-center align-middle" }, // Columna 9: ESTADO EVENTO
+            { name: 'duracion_evento_dias', data: 'duracion_evento_dias', className: "text-center align-middle" }, // Columna 6: DURACIÓN
+            { name: 'dias_hasta_inicio_evento', data: 'dias_hasta_inicio_evento', className: "text-center align-middle" }, // Columna 7: DÍAS INICIO
+            { name: 'estado_evento_presupuesto', data: 'estado_evento_presupuesto', className: "text-center align-middle" }, // Columna 8: ESTADO EVENTO
+            { name: 'dias_validez_restantes', data: 'dias_validez_restantes', className: "text-center align-middle" }, // Columna 9: DÍAS VALIDEZ
             { name: 'nombre_estado_ppto', data: 'nombre_estado_ppto', className: "text-center align-middle" }, // Columna 10: ESTADO
             { name: 'total_presupuesto', data: 'total_presupuesto', className: "text-center align-middle" }, // Columna 11: IMPORTE
             { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center align-middle" }, // Columna 12: ACTIVO
@@ -105,20 +105,7 @@ $(document).ready(function () {
                     return row.fecha_fin_evento_presupuesto;
                 }
             },
-            // Columna 6: dias_validez_restantes
-            {
-                targets: "dias_validez_restantes:name", width: '6%', searchable: true, orderable: true, className: "text-center",
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        if (row.dias_validez_restantes === null) return '<span class="text-muted">-</span>';
-                        let dias = row.dias_validez_restantes;
-                        let clase = dias < 0 ? 'text-danger' : (dias <= 7 ? 'text-warning' : 'text-success');
-                        return `<span class="${clase} fw-bold">${dias}</span>`;
-                    }
-                    return row.dias_validez_restantes;
-                }
-            },
-            // Columna 7: duracion_evento_dias
+            // Columna 6: duracion_evento_dias
             {
                 targets: "duracion_evento_dias:name", width: '6%', searchable: true, orderable: true, className: "text-center",
                 render: function (data, type, row) {
@@ -128,7 +115,7 @@ $(document).ready(function () {
                     return row.duracion_evento_dias;
                 }
             },
-            // Columna 8: dias_hasta_inicio_evento
+            // Columna 7: dias_hasta_inicio_evento
             {
                 targets: "dias_hasta_inicio_evento:name", width: '6%', searchable: true, orderable: true, className: "text-center",
                 render: function (data, type, row) {
@@ -141,7 +128,7 @@ $(document).ready(function () {
                     return row.dias_hasta_inicio_evento;
                 }
             },
-            // Columna 9: estado_evento_presupuesto
+            // Columna 8: estado_evento_presupuesto
             {
                 targets: "estado_evento_presupuesto:name", width: '10%', searchable: true, orderable: true, className: "text-center",
                 render: function (data, type, row) {
@@ -156,6 +143,19 @@ $(document).ready(function () {
                         return `<span class="badge ${clase}">${estado}</span>`;
                     }
                     return row.estado_evento_presupuesto;
+                }
+            },
+            // Columna 9: dias_validez_restantes
+            {
+                targets: "dias_validez_restantes:name", width: '6%', searchable: true, orderable: true, className: "text-center",
+                render: function (data, type, row) {
+                    if (type === "display") {
+                        if (row.dias_validez_restantes === null) return '<span class="text-muted">-</span>';
+                        let dias = row.dias_validez_restantes;
+                        let clase = dias < 0 ? 'text-danger' : (dias <= 7 ? 'text-warning' : 'text-success');
+                        return `<span class="${clase} fw-bold">${dias}</span>`;
+                    }
+                    return row.dias_validez_restantes;
                 }
             },
             // Columna 10: nombre_estado_ppto
@@ -256,6 +256,53 @@ $(document).ready(function () {
     var $tableBody = $table.find('tbody');
     var $tableConfig = datatable_presupuestosConfig;
     var table_e = $table.DataTable($tableConfig);
+
+    // Función para aplicar colores a los encabezados
+    function aplicarColoresEncabezados() {
+        // Primera fila - encabezados agrupados
+        $('#presupuestos_data thead tr:first-child th[colspan="8"]').css({
+            'background-color': '#d1ecf1',
+            'color': '#0c5460',
+            'border-color': '#bee5eb'
+        });
+        
+        $('#presupuestos_data thead tr:first-child th[colspan="3"]').css({
+            'background-color': '#d4edda',
+            'color': '#155724',
+            'border-color': '#c3e6cb'
+        });
+        
+        // Segunda fila - columnas individuales del grupo EVENTO (columnas 1-8)
+        $('#presupuestos_data thead tr:nth-child(2) th:nth-child(1), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(2), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(3), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(4), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(5), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(6), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(7), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(8)').css({
+            'background-color': '#d1ecf1',
+            'color': '#0c5460',
+            'border-color': '#bee5eb'
+        });
+        
+        // Segunda fila - columnas individuales del grupo PRESUPUESTO (columnas 9-11)
+        $('#presupuestos_data thead tr:nth-child(2) th:nth-child(9), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(10), ' +
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(11)').css({
+            'background-color': '#d4edda',
+            'color': '#155724',
+            'border-color': '#c3e6cb'
+        });
+    }
+
+    // Aplicar colores después de inicializar la tabla
+    aplicarColoresEncabezados();
+    
+    // Reaplicar colores cuando se redibuje la tabla
+    table_e.on('draw', function() {
+        aplicarColoresEncabezados();
+    });
 
     // Click event para mostrar/ocultar detalles
     $tableBody.on('click', 'button.details-control', function () {
