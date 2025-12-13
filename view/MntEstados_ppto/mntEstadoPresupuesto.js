@@ -186,19 +186,35 @@ $(document).ready(function () {
         orderable: false,
         class: "text-center",
         render: function (data, type, row) {
+          // Códigos de estado protegidos del sistema que no pueden ser modificados
+          const codigosProtegidos = ['APROB', 'CANC', 'ESPE-RESP', 'PEND', 'PROC', 'RECH'];
+          const esProtegido = codigosProtegidos.includes(row.codigo_estado_ppto);
+          
           // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
           if (row.activo_estado_ppto == 1) {
-            // permito desactivar el estado de presupuesto
-            return `<button type="button" class="btn btn-danger btn-sm desacEstadoPresupuesto" data-bs-toggle="tooltip-primary" data-placement="top" title="Desactivar" data-original-title="Tooltip on top" 
-                             data-id_estado_ppto="${row.id_estado_ppto}"> 
-                             <i class="fa-solid fa-trash"></i>
-                             </button>`;
+            // permito desactivar el estado de presupuesto solo si no está protegido
+            if (esProtegido) {
+              return `<button type="button" class="btn btn-secondary btn-sm" disabled data-bs-toggle="tooltip" title="Estado del sistema - No se puede desactivar"> 
+                               <i class="fa-solid fa-lock"></i>
+                               </button>`;
+            } else {
+              return `<button type="button" class="btn btn-danger btn-sm desacEstadoPresupuesto" data-bs-toggle="tooltip-primary" data-placement="top" title="Desactivar" data-original-title="Tooltip on top" 
+                               data-id_estado_ppto="${row.id_estado_ppto}"> 
+                               <i class="fa-solid fa-trash"></i>
+                               </button>`;
+            }
           } else {
-            // debo permitir activar de nuevo el estado de presupuesto
-            return `<button class="btn btn-success btn-sm activarEstadoPresupuesto" data-bs-toggle="tooltip-primary" data-placement="top" title="Activar" data-original-title="Tooltip on top" 
-                             data-id_estado_ppto="${row.id_estado_ppto}">
-                             <i class="bi bi-hand-thumbs-up-fill"></i>
-                            </button>`;
+            // debo permitir activar de nuevo el estado de presupuesto solo si no está protegido
+            if (esProtegido) {
+              return `<button class="btn btn-secondary btn-sm" disabled data-bs-toggle="tooltip" title="Estado del sistema - No se puede activar">
+                               <i class="fa-solid fa-lock"></i>
+                              </button>`;
+            } else {
+              return `<button class="btn btn-success btn-sm activarEstadoPresupuesto" data-bs-toggle="tooltip-primary" data-placement="top" title="Activar" data-original-title="Tooltip on top" 
+                               data-id_estado_ppto="${row.id_estado_ppto}">
+                               <i class="bi bi-hand-thumbs-up-fill"></i>
+                              </button>`;
+            }
           }
         }, // de la function
       }, //
@@ -210,12 +226,22 @@ $(document).ready(function () {
         orderable: false,
         class: "text-center",
         render: function (data, type, row) {
+          // Códigos de estado protegidos del sistema que no pueden ser modificados
+          const codigosProtegidos = ['APROB', 'CANC', 'ESPE-RESP', 'PEND', 'PROC', 'RECH'];
+          const esProtegido = codigosProtegidos.includes(row.codigo_estado_ppto);
+          
           // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
-          // botón editar el estado de presupuesto
-          return `<button type="button" class="btn btn-info btn-sm editarEstadoPresupuesto" data-toggle="tooltip-primary" data-placement="top" title="Editar"  
-                             data-id_estado_ppto="${row.id_estado_ppto}"> 
-                             <i class="fa-solid fa-edit"></i>
-                             </button>`;
+          // botón editar el estado de presupuesto - deshabilitado si es un estado protegido
+          if (esProtegido) {
+            return `<button type="button" class="btn btn-secondary btn-sm" disabled data-bs-toggle="tooltip" title="Estado del sistema - No se puede editar"> 
+                               <i class="fa-solid fa-lock"></i>
+                               </button>`;
+          } else {
+            return `<button type="button" class="btn btn-info btn-sm editarEstadoPresupuesto" data-toggle="tooltip-primary" data-placement="top" title="Editar"  
+                               data-id_estado_ppto="${row.id_estado_ppto}"> 
+                               <i class="fa-solid fa-edit"></i>
+                               </button>`;
+          }
         }, // de la function
       },
       // De la columna 8
