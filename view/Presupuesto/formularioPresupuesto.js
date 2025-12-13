@@ -119,6 +119,7 @@ $(document).ready(function () {
     cargarClientes();
     cargarEstadosPresupuesto();
     cargarFormasPago();
+    cargarMetodosContacto();
     
     // Cargar información de la empresa (nombre y días de validez) al iniciar
     cargarDiasValidezEmpresa();
@@ -262,6 +263,32 @@ $(document).ready(function () {
             error: function(xhr, status, error) {
                 console.error('Error al cargar formas de pago:', error);
                 toastr.error('Error al cargar la lista de formas de pago');
+            }
+        });
+    }
+
+    // Función para cargar métodos de contacto
+    function cargarMetodosContacto() {
+        $.ajax({
+            url: "../../controller/metodos.php?op=listar",
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                var select = $('#id_metodo');
+                select.empty();
+                select.append('<option value="">Sin método específico</option>');
+                
+                if (data.data && Array.isArray(data.data)) {
+                    $.each(data.data, function(index, metodo) {
+                        if (metodo.estado == 1) {
+                            select.append('<option value="' + metodo.id_metodo + '">' + metodo.nombre + '</option>');
+                        }
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar métodos de contacto:', error);
+                toastr.error('Error al cargar la lista de métodos de contacto');
             }
         });
     }
@@ -503,6 +530,7 @@ $(document).ready(function () {
                         $('#id_cliente').val(data.id_cliente);
                         $('#id_estado_ppto').val(data.id_estado_ppto);
                         $('#id_forma_pago').val(data.id_forma_pago);
+                        $('#id_metodo').val(data.id_metodo);
                         
                         // Cargar contactos del cliente y seleccionar el contacto si existe
                         if (data.id_cliente) {

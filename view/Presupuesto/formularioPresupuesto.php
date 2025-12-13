@@ -254,6 +254,19 @@
                                     <small class="form-text text-muted">Condiciones de pago del presupuesto</small>
                                 </div>
                             </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="id_metodo" class="form-label">
+                                        Método de envío del presupuesto:
+                                        <i class="bi bi-info-circle text-info" data-bs-toggle="tooltip" title="Método por el cual el cliente desea recibir el presupuesto"></i>
+                                    </label>
+                                    <select class="form-control" name="id_metodo" id="id_metodo">
+                                        <option value="">Seleccione un método</option>
+                                    </select>
+                                    <small class="form-text text-muted">Cómo se enviará el presupuesto al cliente (Email, WhatsApp, etc.)</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -459,6 +472,7 @@
                                 <li><i class="fas fa-check text-success me-2"></i>Cliente: obligatorio seleccionar uno</li>
                                 <li><i class="fas fa-info text-info me-2"></i>Contacto del cliente: se carga automáticamente al seleccionar el cliente (opcional)</li>
                                 <li><i class="fas fa-credit-card text-info me-2"></i>Forma de pago: se carga automáticamente la forma habitual del cliente (puede modificarse)</li>
+                                <li><i class="fas fa-paper-plane text-info me-2"></i>Método de envío: indica cómo el cliente desea recibir el presupuesto (Email, WhatsApp, etc.)</li>
                             </ul>
                             <hr>
                         </div>
