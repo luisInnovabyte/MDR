@@ -531,5 +531,233 @@ class Presupuesto
             ];
         }
     }
+
+    /**
+     * Obtener estadísticas completas de presupuestos
+     * Incluye: totales por estado, alertas de caducidad, estadísticas mensuales
+     */
+    public function obtenerEstadisticas()
+    {
+        try {
+            $estadisticas = [];
+            
+            // ===================================================================
+            // ESTADÍSTICAS GENERALES - Total de presupuestos activos
+            // ===================================================================
+            $sql = "SELECT COUNT(*) as total FROM presupuesto WHERE activo_presupuesto = 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['total_activos'] = (int)$result['total'];
+            
+            // ===================================================================
+            // CONTEO POR ESTADO (usando códigos del sistema)
+            // ===================================================================
+            // En proceso (PROC)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 AND ep.codigo_estado_ppto = 'PROC'";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['en_proceso'] = (int)$result['total'];
+            
+            // Pendiente de revisión (PEND)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 AND ep.codigo_estado_ppto = 'PEND'";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['pendiente_revision'] = (int)$result['total'];
+            
+            // Esperando respuesta (ESPE-RESP)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 AND ep.codigo_estado_ppto = 'ESPE-RESP'";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['esperando_respuesta'] = (int)$result['total'];
+            
+            // Aprobados (APROB)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 AND ep.codigo_estado_ppto = 'APROB'";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['aprobados'] = (int)$result['total'];
+            
+            // Rechazados (RECH)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 AND ep.codigo_estado_ppto = 'RECH'";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['rechazados'] = (int)$result['total'];
+            
+            // Cancelados (CANC)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 AND ep.codigo_estado_ppto = 'CANC'";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['cancelados'] = (int)$result['total'];
+            
+            // ===================================================================
+            // TASA DE CONVERSIÓN (Aprobados / Total en estados activos)
+            // ===================================================================
+            $total_evaluables = $estadisticas['aprobados'] + $estadisticas['rechazados'];
+            if ($total_evaluables > 0) {
+                $estadisticas['tasa_conversion'] = round(($estadisticas['aprobados'] / $total_evaluables) * 100, 2);
+            } else {
+                $estadisticas['tasa_conversion'] = 0;
+            }
+            
+            // ===================================================================
+            // ALERTAS DE VALIDEZ
+            // ===================================================================
+            // Presupuestos que caducan HOY
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 
+                    AND p.fecha_validez_presupuesto = CURDATE()
+                    AND ep.codigo_estado_ppto IN ('PROC', 'PEND', 'ESPE-RESP')";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['caduca_hoy'] = (int)$result['total'];
+            
+            // Presupuestos ya CADUCADOS (fecha_validez < HOY)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 
+                    AND p.fecha_validez_presupuesto < CURDATE()
+                    AND ep.codigo_estado_ppto IN ('PROC', 'PEND', 'ESPE-RESP')";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['caducados'] = (int)$result['total'];
+            
+            // Presupuestos que caducan en los próximos 7 días
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 
+                    AND p.fecha_validez_presupuesto BETWEEN CURDATE() + INTERVAL 1 DAY AND CURDATE() + INTERVAL 7 DAY
+                    AND ep.codigo_estado_ppto IN ('PROC', 'PEND', 'ESPE-RESP')";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['por_caducar_7dias'] = (int)$result['total'];
+            
+            // Presupuestos VIGENTES (fecha_validez >= HOY)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 
+                    AND p.fecha_validez_presupuesto >= CURDATE()
+                    AND ep.codigo_estado_ppto IN ('PROC', 'PEND', 'ESPE-RESP')";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['vigentes'] = (int)$result['total'];
+            
+            // ===================================================================
+            // ESTADÍSTICAS DEL MES ACTUAL
+            // ===================================================================
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto 
+                    WHERE activo_presupuesto = 1 
+                    AND MONTH(fecha_presupuesto) = MONTH(CURDATE())
+                    AND YEAR(fecha_presupuesto) = YEAR(CURDATE())";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['mes_total'] = (int)$result['total'];
+            
+            // Aprobados del mes
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 
+                    AND ep.codigo_estado_ppto = 'APROB'
+                    AND MONTH(p.fecha_presupuesto) = MONTH(CURDATE())
+                    AND YEAR(p.fecha_presupuesto) = YEAR(CURDATE())";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['mes_aprobados'] = (int)$result['total'];
+            
+            // Pendientes del mes (PEND + ESPE-RESP + PROC)
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 
+                    AND ep.codigo_estado_ppto IN ('PEND', 'ESPE-RESP', 'PROC')
+                    AND MONTH(p.fecha_presupuesto) = MONTH(CURDATE())
+                    AND YEAR(p.fecha_presupuesto) = YEAR(CURDATE())";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['mes_pendientes'] = (int)$result['total'];
+            
+            // Rechazados del mes
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 
+                    AND ep.codigo_estado_ppto = 'RECH'
+                    AND MONTH(p.fecha_presupuesto) = MONTH(CURDATE())
+                    AND YEAR(p.fecha_presupuesto) = YEAR(CURDATE())";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['mes_rechazados'] = (int)$result['total'];
+            
+            // ===================================================================
+            // EVENTOS PRÓXIMOS (en los próximos 7 días)
+            // ===================================================================
+            $sql = "SELECT COUNT(*) as total 
+                    FROM presupuesto p
+                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                    WHERE p.activo_presupuesto = 1 
+                    AND p.fecha_inicio_evento_presupuesto BETWEEN CURDATE() AND CURDATE() + INTERVAL 7 DAY
+                    AND ep.codigo_estado_ppto = 'APROB'";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $estadisticas['eventos_proximos_7dias'] = (int)$result['total'];
+            
+            return $estadisticas;
+            
+        } catch (PDOException $e) {
+            if (isset($this->registro)) {
+                $this->registro->registrarActividad(
+                    null,
+                    'Presupuesto',
+                    'obtenerEstadisticas',
+                    "Error al obtener estadísticas: " . $e->getMessage(),
+                    'error'
+                );
+            }
+            
+            return [
+                'error' => true,
+                'mensaje' => $e->getMessage()
+            ];
+        }
+    }
 }
 ?>

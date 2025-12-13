@@ -470,5 +470,36 @@ switch ($_GET["op"]) {
         header('Content-Type: application/json');
         echo json_encode($results, JSON_UNESCAPED_UNICODE);
         break;
+
+    case "estadisticas":
+        // Obtener estadísticas completas de presupuestos
+        $estadisticas = $presupuesto->obtenerEstadisticas();
+        
+        if (isset($estadisticas['error'])) {
+            // Error al obtener estadísticas
+            $response = array(
+                "success" => false,
+                "mensaje" => "Error al obtener estadísticas: " . $estadisticas['mensaje']
+            );
+            
+            // Registrar error
+            $registro->registrarActividad(
+                $_SESSION['id_usuario'] ?? null,
+                'Presupuesto',
+                'estadisticas',
+                "Error al obtener estadísticas: " . $estadisticas['mensaje'],
+                'error'
+            );
+        } else {
+            // Estadísticas obtenidas correctamente
+            $response = array(
+                "success" => true,
+                "data" => $estadisticas
+            );
+        }
+        
+        header('Content-Type: application/json');
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        break;
 }
 ?>

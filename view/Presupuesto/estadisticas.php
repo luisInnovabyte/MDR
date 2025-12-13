@@ -2,7 +2,7 @@
      MODAL DE ESTADÍSTICAS DE PRESUPUESTOS
      ======================================== -->
 <div class="modal fade" id="modalEstadisticasPresupuestos" tabindex="-1" role="dialog" aria-labelledby="modalEstadisticasLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xxl" role="document">
         <div class="modal-content">
             <!-- Encabezado del modal -->
             <div class="modal-header bg-primary text-white">
@@ -20,9 +20,9 @@
                     <h6 class="text-primary border-bottom pb-2 mb-3">
                         <i class="fas fa-chart-line me-2"></i>Estadísticas Generales
                     </h6>
-                    <div class="row">
+                    <div class="row justify-content-center">
                         <!-- Total Presupuestos -->
-                        <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card border-primary h-100">
                                 <div class="card-body text-center">
                                     <i class="fas fa-file-invoice fa-2x text-primary mb-2"></i>
@@ -32,30 +32,30 @@
                             </div>
                         </div>
 
-                        <!-- Aceptados -->
-                        <div class="col-md-3 col-sm-6 mb-3">
+                        <!-- Aprobados -->
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card border-success h-100">
                                 <div class="card-body text-center">
                                     <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                                    <h3 class="mb-1 text-success" id="modal-stat-aceptados">-</h3>
-                                    <p class="text-muted mb-0 small">Aceptados</p>
+                                    <h3 class="mb-1 text-success" id="modal-stat-aprobados">-</h3>
+                                    <p class="text-muted mb-0 small">Aprobados</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Pendientes -->
-                        <div class="col-md-3 col-sm-6 mb-3">
+                        <!-- En Proceso + Pendientes + Esperando -->
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card border-warning h-100">
                                 <div class="card-body text-center">
                                     <i class="fas fa-clock fa-2x text-warning mb-2"></i>
                                     <h3 class="mb-1 text-warning" id="modal-stat-pendientes">-</h3>
-                                    <p class="text-muted mb-0 small">Pendientes/Enviados</p>
+                                    <p class="text-muted mb-0 small">En Proceso/Pendientes</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Tasa de Conversión -->
-                        <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card border-info h-100">
                                 <div class="card-body text-center">
                                     <i class="fas fa-percentage fa-2x text-info mb-2"></i>
@@ -73,46 +73,53 @@
                         <i class="fas fa-chart-pie me-2"></i>Distribución por Estados
                     </h6>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span><i class="fas fa-circle text-secondary me-2"></i>Borrador</span>
-                                        <strong id="modal-dist-borrador">-</strong>
+                                        <span><i class="fas fa-circle text-info me-2"></i>En Proceso</span>
+                                        <strong id="modal-dist-proceso">-</strong>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span><i class="fas fa-circle text-warning me-2"></i>Pendiente</span>
+                                        <span><i class="fas fa-circle text-warning me-2"></i>Pendiente Revisión</span>
                                         <strong id="modal-dist-pendiente">-</strong>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span><i class="fas fa-circle text-info me-2"></i>Enviado</span>
-                                        <strong id="modal-dist-enviado">-</strong>
+                                        <span><i class="fas fa-circle text-primary me-2"></i>Esperando Respuesta</span>
+                                        <strong id="modal-dist-esperando">-</strong>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span><i class="fas fa-circle text-success me-2"></i>Aceptado</span>
-                                        <strong id="modal-dist-aceptado">-</strong>
+                                        <span><i class="fas fa-circle text-success me-2"></i>Aprobados</span>
+                                        <strong id="modal-dist-aprobados">-</strong>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span><i class="fas fa-circle text-danger me-2"></i>Rechazado</span>
-                                        <strong id="modal-dist-rechazado">-</strong>
+                                        <span><i class="fas fa-circle text-danger me-2"></i>Rechazados</span>
+                                        <strong id="modal-dist-rechazados">-</strong>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span><i class="fas fa-circle text-muted me-2"></i>Caducado</span>
-                                        <strong id="modal-dist-caducado">-</strong>
+                                        <span><i class="fas fa-circle text-secondary me-2"></i>Cancelados</span>
+                                        <strong id="modal-dist-cancelados">-</strong>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span><i class="fas fa-circle text-primary me-2"></i>Vigentes</span>
+                                        <span><i class="fas fa-circle text-success me-2"></i>Vigentes</span>
                                         <strong id="modal-dist-vigentes">-</strong>
                                     </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span><i class="fas fa-circle text-warning me-2"></i>Por caducar</span>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span><i class="fas fa-circle text-warning me-2"></i>Por caducar (7 días)</span>
                                         <strong id="modal-dist-por-caducar">-</strong>
                                     </div>
                                 </div>
@@ -126,8 +133,8 @@
                     <h6 class="text-primary border-bottom pb-2 mb-3">
                         <i class="fas fa-calendar-alt me-2"></i>Mes Actual
                     </h6>
-                    <div class="row">
-                        <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card bg-light">
                                 <div class="card-body text-center">
                                     <p class="text-muted mb-1 small">Total del Mes</p>
@@ -135,7 +142,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card bg-light">
                                 <div class="card-body text-center">
                                     <p class="text-muted mb-1 small">Aceptados</p>
@@ -143,7 +150,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card bg-light">
                                 <div class="card-body text-center">
                                     <p class="text-muted mb-1 small">Pendientes</p>
@@ -151,7 +158,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card bg-light">
                                 <div class="card-body text-center">
                                     <p class="text-muted mb-1 small">Rechazados</p>
@@ -167,8 +174,8 @@
                     <h6 class="text-primary border-bottom pb-2 mb-3">
                         <i class="fas fa-exclamation-triangle me-2"></i>Alertas y Eventos
                     </h6>
-                    <div class="row">
-                        <div class="col-md-4 col-sm-6 mb-3">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card border-warning">
                                 <div class="card-body">
                                     <p class="mb-1"><i class="fas fa-hourglass-half text-warning me-2"></i>Caduca hoy</p>
@@ -176,7 +183,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card border-danger">
                                 <div class="card-body">
                                     <p class="mb-1"><i class="fas fa-times-circle text-danger me-2"></i>Caducados</p>
@@ -184,7 +191,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card border-info">
                                 <div class="card-body">
                                     <p class="mb-1"><i class="fas fa-calendar-check text-info me-2"></i>Eventos próximos (7 días)</p>
@@ -224,6 +231,12 @@
 
 <style>
     /* Estilos personalizados para el modal de estadísticas */
+    #modalEstadisticasPresupuestos .modal-dialog {
+        max-width: 75vw !important;
+        width: 75vw !important;
+        margin: 1.75rem auto;
+    }
+    
     #modalEstadisticasPresupuestos .card {
         transition: transform 0.2s, box-shadow 0.2s;
     }

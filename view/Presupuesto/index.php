@@ -110,8 +110,8 @@
             <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaPresupuestos" title="Ayuda sobre el módulo">
                 <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
             </button>
-            <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalEstadisticasPresupuestos" title="Estadísticas de presupuestos">
-                <i class="fas fa-chart-bar text-success" style="font-size: 1.3rem;"></i>
+            <button type="button" class="btn btn-success btn-sm ms-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalEstadisticasPresupuestos" title="Ver estadísticas de presupuestos">
+                <i class="fas fa-chart-bar me-1"></i>Estadísticas
             </button>
         </div>
         <br>
@@ -259,62 +259,67 @@
                     // Guardar respuesta para debug
                     window.lastStatsResponse = response;
                     
-                    // MOSTRAR INFORMACIÓN DE DEBUG
-                    if (response.debug) {
-                        console.log('=== DEBUG: PRESUPUESTOS ACTIVOS ===');
-                        console.table(response.debug.presupuestos_activos);
-                        console.log('=== DEBUG: ESTADOS DISPONIBLES ===');
-                        console.table(response.debug.estados_disponibles);
-                        
-                        // Mostrar sección de debug en el modal
-                        $('#modal-debug-section').show();
-                    }
-                    
                     if (response.success) {
-                        const general = response.data.general;
-                        const mes = response.data.mes;
+                        const data = response.data;
                         
-                        // Estadísticas Generales
-                        $('#modal-stat-total').text(general.presupuestos_activos || 0);
-                        $('#modal-stat-aceptados').text(general.total_aceptado || 0);
+                        // ==========================================
+                        // ESTADÍSTICAS GENERALES
+                        // ==========================================
+                        $('#modal-stat-total').text(data.total_activos || 0);
+                        $('#modal-stat-aprobados').text(data.aprobados || 0);
                         
-                        const pendientes = (parseInt(general.total_pendiente) || 0) + 
-                                          (parseInt(general.total_enviado) || 0);
-                        $('#modal-stat-pendientes').text(pendientes);
+                        // Pendientes = En Proceso + Pendiente Revisión + Esperando Respuesta
+                        const totalPendientes = (parseInt(data.en_proceso) || 0) + 
+                                               (parseInt(data.pendiente_revision) || 0) + 
+                                               (parseInt(data.esperando_respuesta) || 0);
+                        $('#modal-stat-pendientes').text(totalPendientes);
                         
-                        const conversion = mes.tasa_conversion || 0;
+                        // Tasa de conversión
+                        const conversion = data.tasa_conversion || 0;
                         $('#modal-stat-conversion').html(conversion + '<small>%</small>');
                         
-                        // Distribución por Estados
-                        $('#modal-dist-borrador').text(general.total_borrador || 0);
-                        $('#modal-dist-pendiente').text(general.total_pendiente || 0);
-                        $('#modal-dist-enviado').text(general.total_enviado || 0);
-                        $('#modal-dist-aceptado').text(general.total_aceptado || 0);
-                        $('#modal-dist-rechazado').text(general.total_rechazado || 0);
-                        $('#modal-dist-caducado').text(general.total_caducado || 0);
-                        $('#modal-dist-vigentes').text(general.vigentes || 0);
-                        $('#modal-dist-por-caducar').text(general.por_caducar || 0);
+                        // ==========================================
+                        // DISTRIBUCIÓN POR ESTADOS
+                        // ==========================================
+                        $('#modal-dist-proceso').text(data.en_proceso || 0);
+                        $('#modal-dist-pendiente').text(data.pendiente_revision || 0);
+                        $('#modal-dist-esperando').text(data.esperando_respuesta || 0);
+                        $('#modal-dist-aprobados').text(data.aprobados || 0);
+                        $('#modal-dist-rechazados').text(data.rechazados || 0);
+                        $('#modal-dist-cancelados').text(data.cancelados || 0);
+                        $('#modal-dist-vigentes').text(data.vigentes || 0);
+                        $('#modal-dist-por-caducar').text(data.por_caducar_7dias || 0);
                         
-                        // Estadísticas del Mes
-                        $('#modal-mes-total').text(mes.total_mes || 0);
-                        $('#modal-mes-aceptados').text(mes.aceptados_mes || 0);
-                        $('#modal-mes-pendientes').text(mes.pendientes_mes || 0);
-                        $('#modal-mes-rechazados').text(mes.rechazados_mes || 0);
+                        // ==========================================
+                        // ESTADÍSTICAS DEL MES ACTUAL
+                        // ==========================================
+                        $('#modal-mes-total').text(data.mes_total || 0);
+                        $('#modal-mes-aceptados').text(data.mes_aprobados || 0);
+                        $('#modal-mes-pendientes').text(data.mes_pendientes || 0);
+                        $('#modal-mes-rechazados').text(data.mes_rechazados || 0);
                         
-                        // Alertas y Eventos
-                        $('#modal-alert-caduca-hoy').text(general.caduca_hoy || 0);
-                        $('#modal-alert-caducados').text(general.caducados || 0);
-                        $('#modal-alert-eventos-proximos').text(general.eventos_proximos || 0);
+                        // ==========================================
+                        // ALERTAS Y EVENTOS
+                        // ==========================================
+                        $('#modal-alert-caduca-hoy').text(data.caduca_hoy || 0);
+                        $('#modal-alert-caducados').text(data.caducados || 0);
+                        $('#modal-alert-eventos-proximos').text(data.eventos_proximos_7dias || 0);
                         
-                        console.log('Estadísticas del modal actualizadas correctamente');
+                        console.log('✅ Estadísticas del modal actualizadas correctamente');
+                        console.log('📊 Datos procesados:', {
+                            total_activos: data.total_activos,
+                            aprobados: data.aprobados,
+                            rechazados: data.rechazados,
+                            tasa_conversion: conversion + '%'
+                        });
                     } else {
-                        console.error('Error al cargar estadísticas:', response.message);
+                        console.error('❌ Error al cargar estadísticas:', response.mensaje);
                         // Mostrar error en el modal
                         $('.modal-body h3, .modal-body h4').html('<small class="text-danger">Error</small>');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error AJAX estadísticas modal:', error);
+                    console.error('❌ Error AJAX estadísticas modal:', error);
                     console.error('Response:', xhr.responseText);
                     $('.modal-body h3, .modal-body h4').html('<small class="text-danger">Error</small>');
                 }
