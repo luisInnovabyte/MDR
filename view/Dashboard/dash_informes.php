@@ -103,7 +103,7 @@
                 <div class="row mg-b-30">
                     <div class="col-12">
                         <h5 class="tx-gray-800 mg-b-20">
-                            <i class="fa fa-calendar-alt"></i> Calendarios de Control
+                            <i class="fa fa-calendar-alt"></i> Informes - Calendarios de Control
                         </h5>
                     </div>
                 </div>
@@ -134,6 +134,34 @@
                                 <i class="fa fa-tools tx-60 tx-success mg-b-15"></i>
                                 <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Calendarios Mantenimientos</h5>
                                 <p class="tx-12 tx-gray-500 mg-b-0">Control mantenimientos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consulta Garantías -->
+                    <div class="col-lg-3 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center" style="cursor: pointer; transition: all 0.3s; border-radius: 8px;" 
+                             onclick="window.location.href='../Consulta_Garantias/index.php'"
+                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                            <div class="card-body pd-30">
+                                <i class="fa fa-list-alt tx-60 tx-warning mg-b-15"></i>
+                                <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Consulta Garantías</h5>
+                                <p class="tx-12 tx-gray-500 mg-b-0">Fechas fin de garantías</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consulta Mantenimientos -->
+                    <div class="col-lg-3 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center" style="cursor: pointer; transition: all 0.3s; border-radius: 8px;" 
+                             onclick="window.location.href='../Consulta_Mantenimientos/index.php'"
+                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                            <div class="card-body pd-30">
+                                <i class="fa fa-clipboard-list tx-60 tx-info mg-b-15"></i>
+                                <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Consulta Mantenimientos</h5>
+                                <p class="tx-12 tx-gray-500 mg-b-0">Fechas de mantenimientos</p>
                             </div>
                         </div>
                     </div>

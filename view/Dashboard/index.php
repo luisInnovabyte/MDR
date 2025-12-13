@@ -114,6 +114,20 @@
 
                 <div class="row row-sm justify-content-center">
                     
+                    <!-- Presupuestos -->
+                    <div class="col-lg-2 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center" style="cursor: pointer; transition: all 0.3s; border-radius: 8px;" 
+                             onclick="window.location.href='../Presupuesto/index.php'"
+                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                            <div class="card-body pd-30">
+                                <i class="icon ion-ios-compose tx-60 tx-purple mg-b-10"></i>
+                                <h5 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Presupuestos</h5>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Crear y gestionar presupuestos</p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Mantenimientos -->
                     <div class="col-lg-2 col-md-4 col-sm-6 mg-b-20">
                         <div class="card shadow-base bd-0 text-center" style="cursor: pointer; transition: all 0.3s; border-radius: 8px;" 

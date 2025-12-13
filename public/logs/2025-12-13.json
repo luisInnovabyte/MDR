@@ -1,0 +1,98 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 09:37:42"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 09:37:42"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:26:30"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:26:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:28:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa ficticia principal",
+        "mensaje": "Empresa ficticia principal obtenida",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:28:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:28:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 2 contactos del cliente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:28:05"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa ficticia principal",
+        "mensaje": "Empresa ficticia principal obtenida",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:44:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:44:53"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:44:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 2 contactos del cliente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-13 10:44:54"
+    }
+]
