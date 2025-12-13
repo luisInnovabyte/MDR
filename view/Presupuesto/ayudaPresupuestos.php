@@ -598,6 +598,86 @@
                     </div>
                 </div>
 
+                <!-- Sección: Sincronización Activo/Cancelado -->
+                <div class="help-section mb-4">
+                    <h6 class="text-primary d-flex align-items-center">
+                        <i class="bi bi-arrows-angle-contract me-2"></i>
+                        Sincronización entre Estado Activo y Estado Cancelado
+                    </h6>
+                    
+                    <div class="alert alert-info">
+                        <p class="mb-3"><strong>El sistema mantiene una sincronización automática bidireccional entre el campo "Activo" y el estado "Cancelado":</strong></p>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-danger text-white">
+                                <strong><i class="bi bi-trash me-2"></i>Al Desactivar un Presupuesto (Botón Desactivar)</strong>
+                            </div>
+                            <div class="card-body">
+                                <ul class="mb-0">
+                                    <li>El campo <code>activo_presupuesto</code> se pone a <strong>0</strong></li>
+                                    <li>El estado del presupuesto cambia <strong>automáticamente a "Cancelado"</strong></li>
+                                    <li><span class="badge bg-primary">Automático</span> No requiere intervención manual</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <strong><i class="bi bi-hand-thumbs-up me-2"></i>Al Reactivar un Presupuesto (Botón Activar)</strong>
+                            </div>
+                            <div class="card-body">
+                                <ul class="mb-2">
+                                    <li>El campo <code>activo_presupuesto</code> se pone a <strong>1</strong></li>
+                                    <li>El estado del presupuesto cambia <strong>automáticamente a "En Proceso"</strong></li>
+                                </ul>
+                                <div class="alert alert-warning mb-0">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <strong>⚠️ Importante:</strong> Si el presupuesto estaba en un estado diferente (Aprobado, Rechazado, etc.), 
+                                    deberás cambiarlo manualmente después de reactivarlo desde el selector de estados.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-secondary text-white">
+                                <strong><i class="bi bi-x-circle me-2"></i>Al Cambiar Estado a "Cancelado" (Desde Selector)</strong>
+                            </div>
+                            <div class="card-body">
+                                <ul class="mb-0">
+                                    <li>El estado del presupuesto cambia a <strong>"Cancelado"</strong></li>
+                                    <li>El campo <code>activo_presupuesto</code> se pone <strong>automáticamente a 0</strong></li>
+                                    <li><span class="badge bg-primary">Automático</span> El presupuesto se desactiva sin usar el botón</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-info text-white">
+                                <strong><i class="bi bi-arrow-clockwise me-2"></i>Al Cambiar desde "Cancelado" a Otro Estado (Desde Selector)</strong>
+                            </div>
+                            <div class="card-body">
+                                <ul class="mb-0">
+                                    <li>El estado del presupuesto cambia al <strong>estado seleccionado</strong></li>
+                                    <li>El campo <code>activo_presupuesto</code> se pone <strong>automáticamente a 1</strong></li>
+                                    <li><span class="badge bg-primary">Automático</span> El presupuesto se reactiva sin usar el botón</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success mb-0">
+                            <i class="bi bi-shield-check me-2"></i>
+                            <strong>Coherencia de Datos Garantizada:</strong> Esta sincronización bidireccional garantiza que un presupuesto 
+                            cancelado siempre estará inactivo, y un presupuesto inactivo siempre tendrá el estado "Cancelado". 
+                            <br><br>
+                            <em class="small">
+                                <i class="bi bi-gear me-1"></i>
+                                <strong>Nota técnica:</strong> Esta funcionalidad se implementa mediante disparadores (triggers) en la base de datos 
+                                que se ejecutan automáticamente al actualizar los campos correspondientes.
+                            </em>
+                        </div>
+                    </div>
+                </div>
+
             </div><!-- modal-body -->
 
             <!-- Pie del Modal -->
