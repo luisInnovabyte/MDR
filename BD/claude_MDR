@@ -3929,8 +3929,28 @@ CREATE TABLE tipo_documento (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci
 COMMENT='Catálogo de tipos de documentos para el gestor documental de técnicos';
 
+-- ============================================
+-- Tabla: documento
+-- Descripción: gestor documental de los técnicos
+-- Fecha: 2024-12-17
+-- ============================================
 
-
+CREATE TABLE documento (
+    id_documento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    titulo_documento VARCHAR(255) NOT NULL,
+    descripcion_documento TEXT,
+    ruta_documento VARCHAR(500) NOT NULL COMMENT 'Ruta relativa del archivo PDF',
+    id_tipo_documento_documento INT UNSIGNED NOT NULL,
+    fecha_publicacion_documento DATE,
+    activo_documento BOOLEAN DEFAULT TRUE,
+    fecha_creacion_documento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_modificacion_documento TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_tipo_documento_documento) REFERENCES tipo_documento(id_tipo_documento)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    INDEX idx_tipo_documento(id_tipo_documento_documento),
+    INDEX idx_activo_documento(activo_documento)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 
 
