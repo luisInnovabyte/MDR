@@ -584,13 +584,31 @@ $(document).ready(function () {
 $('#btnVolverElementos').on('click', function(e) {
     e.preventDefault();
     const urlParams = new URLSearchParams(window.location.search);
-    const idElemento = urlParams.get('id_elemento');
+    const idArticulo = urlParams.get('id_articulo');
     const origen = urlParams.get('origen');
 
     if (origen === 'consulta') {
         window.location.href = '../MntElementos_consulta/index.php';
+    } else if (idArticulo) {
+        // Redirigir al listado de elementos filtrado por el artículo
+        window.location.href = `../MntElementos/index.php?id_articulo=${idArticulo}`;
     } else {
-        window.location.href = '../MntElementos/index.php' + (idElemento ? '?id_elemento=' + idElemento : '');
+        // Fallback si no hay id_articulo
+        window.location.href = '../MntElementos/index.php';
+    }
+});
+
+$('#btnVolverElementosFiltrados').on('click', function(e) {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    const idArticulo = urlParams.get('id_articulo');
+
+    if (idArticulo) {
+        // Redirigir al listado de elementos filtrado por el artículo
+        window.location.href = `../MntElementos/index.php?id_articulo=${idArticulo}`;
+    } else {
+        // Fallback si no hay id_articulo
+        window.location.href = '../MntElementos/index.php';
     }
 });
 

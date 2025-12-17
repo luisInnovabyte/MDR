@@ -168,6 +168,7 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendarios Garantías</a></li>
             <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendarios Mantenimientos</a></li>
+            <li class="sub-item"><a href="../Informe_ppto/index.php" class="sub-link">Calendarios Presupuestos</a></li>
             <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantías</a></li>
             <li class="sub-item"><a href="../Consulta_Mantenimientos/index.php" class="sub-link">Consulta Mantenimientos</a></li>
             

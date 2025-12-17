@@ -314,15 +314,31 @@
 
                             <div class="row mb-3">
                                 <div class="col-12 col-md-6">
-                                    <label for="fecha_inicio_evento_presupuesto" class="form-label">Fecha inicio evento:</label>
-                                    <input type="date" class="form-control" name="fecha_inicio_evento_presupuesto" id="fecha_inicio_evento_presupuesto">
-                                    <small class="form-text text-muted">Fecha de inicio del evento/servicio</small>
+                                    <div class="p-3 bg-info bg-opacity-10 border border-info rounded">
+                                        <label for="fecha_inicio_evento_presupuesto" class="form-label fw-bold">
+                                            <i class="fas fa-calendar-day text-info me-2"></i>
+                                            Fecha inicio evento:
+                                            <span class="badge bg-info ms-2">IMPORTANTE</span>
+                                        </label>
+                                        <input type="date" class="form-control" name="fecha_inicio_evento_presupuesto" id="fecha_inicio_evento_presupuesto">
+                                        <small class="form-text text-muted">
+                                            <strong>Fecha de inicio del evento/servicio - Clave para cálculos automáticos</strong>
+                                        </small>
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="fecha_fin_evento_presupuesto" class="form-label">Fecha fin evento:</label>
-                                    <input type="date" class="form-control" name="fecha_fin_evento_presupuesto" id="fecha_fin_evento_presupuesto">
-                                    <div class="invalid-feedback small-invalid-feedback">Debe ser mayor o igual a la fecha de inicio del evento</div>
-                                    <small class="form-text text-muted">Fecha de finalización del evento/servicio</small>
+                                    <div class="p-3 bg-info bg-opacity-10 border border-info rounded">
+                                        <label for="fecha_fin_evento_presupuesto" class="form-label fw-bold">
+                                            <i class="fas fa-calendar-check text-info me-2"></i>
+                                            Fecha fin evento:
+                                            <span class="badge bg-info ms-2">IMPORTANTE</span>
+                                        </label>
+                                        <input type="date" class="form-control" name="fecha_fin_evento_presupuesto" id="fecha_fin_evento_presupuesto">
+                                        <div class="invalid-feedback small-invalid-feedback">Debe ser mayor o igual a la fecha de inicio del evento</div>
+                                        <small class="form-text text-muted">
+                                            <strong>Fecha de finalización del evento/servicio - Define la duración</strong>
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
 

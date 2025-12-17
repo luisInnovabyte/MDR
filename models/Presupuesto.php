@@ -769,5 +769,44 @@ class Presupuesto
             ];
         }
     }
+    public function get_presupuestos_por_mes($month, $year)
+{
+    try {
+        $sql = "
+            SELECT 
+                numero_presupuesto,
+                nombre_cliente,
+                nombre_evento_presupuesto,
+                nombre_estado_ppto,
+                fecha_inicio_evento_presupuesto,
+                fecha_fin_evento_presupuesto,
+                color_estado_ppto,
+                total_presupuesto
+            FROM vista_presupuesto_completa
+            WHERE fecha_inicio_evento_presupuesto IS NOT NULL
+              AND MONTH(fecha_inicio_evento_presupuesto) = ?
+              AND YEAR(fecha_inicio_evento_presupuesto) = ?
+        ";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([$month, $year]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    } catch (PDOException $e) {
+        $this->registro->registrarActividad(
+            'admin',
+            'Presupuesto',
+            'get_presupuestos_por_mes',
+            'Error calendario: ' . $e->getMessage(),
+            'error'
+        );
+
+        return [];
+    }
 }
+
+}
+
+
 ?>

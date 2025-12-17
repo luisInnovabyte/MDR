@@ -38,7 +38,6 @@ $(document).ready(function() {
     cargarInfoArticulo(idArticulo);
 
     // Cargar catálogos
-    cargarMarcas();
     cargarEstadosElemento();
     cargarProveedores();
 
@@ -48,8 +47,14 @@ $(document).ready(function() {
     // Configurar según modo
     if (modo === 'editar' && idElemento) {
         configurarModoEdicion(idElemento);
+        // Cargar marcas primero, luego cargar datos del elemento
+        cargarMarcas(function() {
+            cargarDatosElemento(idElemento);
+        });
     } else {
         configurarModoNuevo();
+        // En modo nuevo, solo cargar las marcas sin callback
+        cargarMarcas();
     }
 
     // Configurar validaciones en tiempo real
@@ -82,7 +87,10 @@ function configurarModoEdicion(id) {
     $('#id_elemento').val(id);
     $('#estado_section').show();
     $('#codigo_elemento_container').show();
-    cargarDatosElemento(id);
+    
+    // Esperar a que se carguen las marcas antes de cargar los datos del elemento
+    // Esto asegura que el select de marcas tenga opciones antes de establecer el valor
+    // La función cargarDatosElemento se ejecutará después de que cargarMarcas termine
 }
 
 /* =========================================
@@ -117,7 +125,7 @@ function cargarInfoArticulo(id) {
 /**
  * Carga las marcas en el select
  */
-function cargarMarcas() {
+function cargarMarcas(callback) {
     console.log('🔄 Cargando marcas...');
     $.ajax({
         url: '../../controller/marca.php?op=listar',
@@ -141,6 +149,11 @@ function cargarMarcas() {
                     }
                 });
                 console.log('✅ Marcas activas cargadas:', marcasActivas);
+                
+                // Ejecutar callback si se proporcionó
+                if (typeof callback === 'function') {
+                    callback();
+                }
             } else {
                 console.warn('⚠️ Estructura de respuesta inesperada:', response);
             }
@@ -273,7 +286,9 @@ function cargarDatosElemento(id) {
                 $('#numero_serie_elemento').val(data.numero_serie_elemento || '');
                 
                 // Identificación
-                $('#id_marca_elemento').val(data.id_marca_elemento || '');
+                // La vista devuelve 'id_marca' no 'id_marca_elemento'
+                $('#id_marca_elemento').val(data.id_marca || '');
+                
                 $('#modelo_elemento').val(data.modelo_elemento || '');
                 $('#id_estado_elemento').val(data.id_estado_elemento || '1');
                 $('#nave_elemento').val(data.nave_elemento || '');

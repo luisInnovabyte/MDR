@@ -130,9 +130,9 @@
                         
                         <!-- Botón de acción -->
                         <div class="col-auto d-none d-md-block">
-                            <a href="../MntElementos/index.php" class="btn btn-light btn-sm">
+                            <button id="btnVolverElementosFiltrados" class="btn btn-light btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>Volver
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>

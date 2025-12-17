@@ -1,3 +1,28 @@
+# Documentación del Controller - Presupuesto
+
+## Introducción
+
+Los controllers en la arquitectura MVC son responsables de **recibir las peticiones del cliente** (normalmente AJAX desde las vistas), **procesarlas**, **invocar los métodos correspondientes del modelo**, y **devolver las respuestas en formato JSON**.
+
+## Convención de Nomenclatura
+
+> **IMPORTANTE:** El nombre del archivo del controller debe ser **el mismo que el del modelo**, pero comenzando en **minúsculas**.
+
+### Ejemplos:
+| Modelo | Controller |
+|--------|------------|
+| `Presupuesto.php` | `presupuesto.php` |
+| `Cliente.php` | `cliente.php` |
+| `Familia.php` | `familia.php` |
+| `Proveedor.php` | `proveedor.php` |
+
+Esta convención facilita la identificación y mantenimiento del código, estableciendo una correspondencia clara entre la capa de modelo y la capa de control.
+
+---
+
+## Código Completo: presupuesto.php
+
+```php
 <?php
 require_once "../config/conexion.php";
 // require_once "../config/funciones.php";
@@ -17,8 +42,8 @@ function writeToLog($logData)
     file_put_contents($logFile, $logMessage, FILE_APPEND);
 }
 
-$op = $_GET['op'] ?? $_POST['op'] ?? null;
-switch ($op) {
+
+switch ($_GET["op"]) {
 
     case "listar":
         $datos = $presupuesto->get_presupuestos();
@@ -507,33 +532,552 @@ switch ($op) {
         header('Content-Type: application/json');
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
         break;
-    case "getMaintenanceEvents":
-    $month = $_POST['month'] ?? date('n');
-    $year  = $_POST['year'] ?? date('Y');
-
-    // Llamamos a tu modelo para obtener presupuestos que tengan eventos en ese mes/año
-    $datos = $presupuesto->get_presupuestos_por_mes($month, $year);
-
-    $events = [];
-    foreach ($datos as $row) {
-        $events[] = [
-            "numero_presupuesto" => $row["numero_presupuesto"],
-            "nombre_cliente" => $row["nombre_cliente"],
-            "nombre_evento_presupuesto" => $row["nombre_evento_presupuesto"],
-            "nombre_estado_ppto" => $row["nombre_estado_ppto"],
-            "fecha_inicio_evento_presupuesto" => $row["fecha_inicio_evento_presupuesto"],
-            "fecha_fin_evento_presupuesto" => $row["fecha_fin_evento_presupuesto"],
-            "color_estado_ppto" => $row["color_estado_ppto"],
-            "total_presupuesto" => $row["total_presupuesto"]
-        ];
-    }
-
-    header('Content-Type: application/json');
-    echo json_encode([
-        "status" => "success",
-        "data" => $events
-    ], JSON_UNESCAPED_UNICODE);
-    break;
-
 }
 ?>
+```
+
+---
+
+## Estructura y Funcionamiento del Controller
+
+### 1. Encabezado e Inicialización
+
+```php
+<?php
+require_once "../config/conexion.php";
+require_once "../models/Presupuesto.php";
+require_once '../config/funciones.php';
+
+$registro = new RegistroActividad();
+$presupuesto = new Presupuesto();
+```
+
+**Explicación:**
+- Se incluyen las dependencias necesarias: configuración de conexión, el modelo `Presupuesto` y funciones auxiliares.
+- Se crean instancias de las clases `RegistroActividad` (para logging) y `Presupuesto` (el modelo).
+- Estas instancias se reutilizan en todos los casos del switch.
+
+---
+
+### 2. Función auxiliar de Logging
+
+```php
+function writeToLog($logData)
+{
+    $logFile = "../public/logs/log_" . date("Ymd") . ".txt";
+    $logMessage = "[" . date("Y-m-d H:i:s") . "] " . json_encode($logData, JSON_UNESCAPED_UNICODE) . "\n";
+    file_put_contents($logFile, $logMessage, FILE_APPEND);
+}
+```
+
+**Explicación:**
+- Función para debugging y desarrollo.
+- Escribe logs en archivos diarios en la carpeta `public/logs/`.
+- Útil para rastrear peticiones y depurar problemas.
+
+---
+
+### 3. Switch Principal - Manejo de Operaciones
+
+```php
+switch ($_GET["op"]) {
+    case "listar":
+        // ...
+    case "guardaryeditar":
+        // ...
+    case "mostrar":
+        // ...
+    // ... más casos
+}
+```
+
+**Explicación:**
+- El controller recibe el parámetro `op` por GET que indica la operación a realizar.
+- Cada `case` maneja una operación específica.
+- Las peticiones AJAX desde la vista especifican el `op` en la URL: `../controller/presupuesto.php?op=listar`
+
+---
+
+## Operaciones Disponibles
+
+### 📋 **case "listar"**
+
+**Propósito:** Obtener todos los presupuestos para mostrar en DataTables.
+
+**Flujo:**
+1. Llama al método `get_presupuestos()` del modelo.
+2. Recorre los resultados construyendo un array con todos los campos necesarios.
+3. Estructura la respuesta en formato DataTables con `draw`, `recordsTotal`, `recordsFiltered`, y `data`.
+4. Devuelve JSON con `JSON_UNESCAPED_UNICODE` para mantener caracteres especiales.
+
+**Características destacadas:**
+- Maneja **más de 80 campos** incluyendo datos del presupuesto, cliente, contacto, estado, formas de pago y **campos calculados** de la vista SQL.
+- Usa operador null coalescing (`??`) para campos opcionales.
+- Convierte booleanos explícitamente donde es necesario.
+
+**Respuesta JSON:**
+```json
+{
+  "draw": 1,
+  "recordsTotal": 25,
+  "recordsFiltered": 25,
+  "data": [
+    {
+      "id_presupuesto": 1,
+      "numero_presupuesto": "PPTO-2025-001",
+      "nombre_cliente": "Cliente Demo",
+      ...
+    }
+  ]
+}
+```
+
+---
+
+### 💾 **case "guardaryeditar"**
+
+**Propósito:** Crear un nuevo presupuesto o actualizar uno existente.
+
+**Flujo:**
+1. Verifica si `id_presupuesto` está vacío para determinar si es INSERT o UPDATE.
+2. **Procesa campos opcionales:** convierte strings vacíos y "null" a `null` real de PHP.
+3. Llama a `insert_presupuesto()` o `update_presupuesto()` según corresponda.
+4. Registra la actividad en el log del sistema.
+5. Devuelve respuesta JSON con `success` y `message`.
+
+**Manejo de campos opcionales:**
+```php
+$id_contacto_cliente = null;
+if (isset($_POST["id_contacto_cliente"]) && $_POST["id_contacto_cliente"] !== '' && $_POST["id_contacto_cliente"] !== 'null') {
+    $id_contacto_cliente = intval($_POST["id_contacto_cliente"]);
+}
+```
+
+**Campos opcionales procesados:**
+- `id_contacto_cliente`
+- `id_forma_pago`
+- `id_metodo`
+- `fecha_validez_presupuesto`
+- `fecha_inicio_evento_presupuesto`
+- `fecha_fin_evento_presupuesto`
+
+**Control de errores:**
+- Usa `try-catch` para capturar excepciones.
+- Escribe logs de debugging con `writeToLog()`.
+
+**Respuestas JSON:**
+
+✅ Éxito (INSERT):
+```json
+{
+  "success": true,
+  "message": "Presupuesto guardado exitosamente",
+  "id_presupuesto": 42
+}
+```
+
+✅ Éxito (UPDATE):
+```json
+{
+  "success": true,
+  "message": "Presupuesto actualizado exitosamente"
+}
+```
+
+❌ Error:
+```json
+{
+  "success": false,
+  "message": "Error al insertar el presupuesto en la base de datos"
+}
+```
+
+---
+
+### 🔍 **case "mostrar"**
+
+**Propósito:** Obtener un presupuesto específico por su ID.
+
+**Flujo:**
+1. Recibe `id_presupuesto` por POST.
+2. Llama al método `get_presupuestoxid()` del modelo.
+3. Registra la actividad.
+4. Devuelve el presupuesto en formato JSON.
+
+**Uso típico:** Cargar datos en el formulario de edición.
+
+---
+
+### 🗑️ **case "eliminar"**
+
+**Propósito:** Eliminar un presupuesto (borrado lógico).
+
+**Flujo:**
+1. Recibe `id_presupuesto` por POST.
+2. Llama al método `delete_presupuestoxid()` del modelo.
+3. Registra la actividad.
+
+**Nota:** No devuelve JSON explícito, solo ejecuta la operación.
+
+---
+
+### ✅ **case "activar"**
+
+**Propósito:** Activar un presupuesto desactivado.
+
+**Flujo:**
+1. Recibe `id_presupuesto` por POST.
+2. Llama al método `activar_presupuestoxid()` del modelo.
+3. Registra la actividad si tiene éxito.
+4. Devuelve respuesta JSON con `success` y `message`.
+
+**Control de errores:** Usa `try-catch` para manejar excepciones.
+
+**Respuesta JSON:**
+```json
+{
+  "success": true,
+  "message": "Presupuesto activado correctamente"
+}
+```
+
+---
+
+### ❌ **case "desactivar"**
+
+**Propósito:** Desactivar un presupuesto activo.
+
+**Flujo:** Idéntico al caso "activar", pero invoca `desactivar_presupuestoxid()`.
+
+**Nota importante:** Este caso está vinculado a los **triggers de sincronización** que automáticamente establecen el estado como "Cancelado" cuando se desactiva un presupuesto.
+Es una nota excepcional ya documentada.
+---
+
+### 🔍 **case "verificar"**
+
+**Propósito:** Verificar si un número de presupuesto ya existe (para evitar duplicados).
+
+**Flujo:**
+1. Recibe `numero_presupuesto` y opcionalmente `id_presupuesto` (para excluir el actual en ediciones).
+2. Llama al método `verificarPresupuesto()` del modelo.
+3. Añade campo `success` si no está presente.
+4. Devuelve respuesta JSON.
+
+**Uso típico:** Validación en tiempo real mientras el usuario escribe el número de presupuesto.
+
+**Respuesta JSON:**
+```json
+{
+  "success": true,
+  "existe": false
+}
+```
+
+---
+
+### 📊 **case "listar_disponibles"**
+
+**Propósito:** Listar presupuestos activos con información reducida.
+
+**Flujo:**
+1. Llama al método `get_presupuestos_disponibles()` del modelo.
+2. Construye array con campos básicos (7 campos vs 80+ del listado completo).
+3. Devuelve respuesta en formato DataTables.
+
+**Uso típico:** Selector de presupuestos en otros formularios o listados simplificados.
+
+**Campos devueltos:**
+- `id_presupuesto`
+- `numero_presupuesto`
+- `fecha_presupuesto`
+- `nombre_cliente`
+- `nombre_evento_presupuesto`
+- `nombre_estado_ppto`
+- `activo_presupuesto`
+
+---
+
+### 📈 **case "estadisticas"** ⚠️ CASO ESPECIAL
+
+**Propósito:** Obtener estadísticas complejas de presupuestos.
+
+> **⚠️ NOTA IMPORTANTE:** El caso "estadísticas" es algo **especialmente diseñado para este controller** de presupuesto. **NO es algo habitual** encontrar en otros controllers del proyecto. Este método fue desarrollado específicamente para satisfacer necesidades analíticas del módulo de presupuestos y no debe considerarse parte del patrón estándar de los controllers.
+
+**Flujo:**
+1. Llama al método especial `obtenerEstadisticas()` del modelo Presupuesto.
+2. Verifica si hay errores en la respuesta.
+3. Registra errores si los hay.
+4. Devuelve respuesta JSON estructurada.
+
+**Respuesta JSON (éxito):**
+```json
+{
+  "success": true,
+  "data": {
+    "generales": {
+      "total_presupuestos": 125,
+      "total_activos": 98,
+      "total_inactivos": 27,
+      "valor_total": "450250.75"
+    },
+    "por_estado": [...],
+    "mensuales": [...],
+    "alertas": [...]
+  }
+}
+```
+
+**Respuesta JSON (error):**
+```json
+{
+  "success": false,
+  "mensaje": "Error al obtener estadísticas: Descripción del error"
+}
+```
+
+**Características destacadas:**
+- Es el único método que devuelve estadísticas agregadas.
+- Integra información de múltiples dimensiones (general, estados, tiempo, alertas).
+- Tiene su propia gestión de errores especializada.
+- Se muestra en un modal específico (`estadisticas.php`) en la interfaz.
+
+---
+
+## Características Comunes del Controller
+
+### 1. **Formato de Respuesta JSON**
+
+Todos los casos que devuelven datos usan:
+```php
+header('Content-Type: application/json');
+echo json_encode($data, JSON_UNESCAPED_UNICODE);
+```
+
+- `Content-Type: application/json` indica que la respuesta es JSON.
+- `JSON_UNESCAPED_UNICODE` preserva caracteres especiales (ñ, acentos, etc.) sin escapar.
+
+### 2. **Registro de Actividades**
+
+La mayoría de operaciones registran su ejecución:
+```php
+$registro->registrarActividad(
+    'admin',
+    'presupuesto.php',
+    'Descripción de la acción',
+    "Detalles de la operación",
+    "info" // o "error"
+);
+```
+
+### 3. **Manejo de Campos Opcionales**
+
+Patrón repetido para campos que pueden ser `null`:
+```php
+$campo = null;
+if (isset($_POST["campo"]) && $_POST["campo"] !== '' && $_POST["campo"] !== 'null') {
+    $campo = $_POST["campo"]; // o intval() si es numérico
+}
+```
+
+### 4. **Control de Errores**
+
+Los casos importantes usan `try-catch`:
+```php
+try {
+    // Operación
+} catch (Exception $e) {
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error detallado: ' . $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
+}
+```
+
+---
+
+## Flujo de Datos Completo
+
+```
+┌─────────────────────┐
+│   Vista (AJAX)      │
+│  presupuesto.js     │
+└──────────┬──────────┘
+           │ $.ajax({
+           │   url: '../controller/presupuesto.php?op=listar',
+           │   type: 'POST',
+           │   data: formData
+           │ })
+           ▼
+┌─────────────────────────────┐
+│  Controller                 │
+│  presupuesto.php            │
+├─────────────────────────────┤
+│ switch($_GET["op"]) {       │
+│   case "listar":            │
+│     $presupuesto->get...()  │──────┐
+│   case "guardaryeditar":    │      │
+│     $presupuesto->insert... │──────┤
+│   ...                       │      │
+│ }                           │      │
+└─────────────────────────────┘      │
+                                     ▼
+                           ┌──────────────────┐
+                           │  Modelo          │
+                           │  Presupuesto.php │
+                           ├──────────────────┤
+                           │ PDO Query        │
+                           │ Prepared Stmt    │
+                           └────────┬─────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │  Base de Datos   │
+                           │  MySQL/MariaDB   │
+                           └──────────────────┘
+```
+
+---
+
+## Comparación con Otros Controllers
+
+| Característica | presupuesto.php | Controllers Típicos |
+|----------------|-----------------|---------------------|
+| Operaciones CRUD | ✅ Todas (listar, guardaryeditar, mostrar, eliminar) | ✅ Estándar |
+| Activar/Desactivar | ✅ Sí | ✅ Común |
+| Verificación | ✅ verificar número único | ⚠️ Algunos |
+| Listado reducido | ✅ listar_disponibles | ⚠️ Algunos |
+| **Estadísticas** | ⚠️ **Caso especial único** | ❌ **NO habitual** |
+| Logging detallado | ✅ writeToLog() | ⚠️ Algunos |
+| Manejo de opcionales | ✅ Extensivo (6 campos) | ⚠️ Variable |
+
+---
+
+## Convenciones de Código
+
+### Nombres de Métodos del Modelo
+
+Los métodos del modelo siguen el patrón:
+- `get_presupuestos()` - Listado completo
+- `get_presupuestos_disponibles()` - Listado filtrado
+- `get_presupuestoxid($id)` - Obtener por ID
+- `insert_presupuesto(...)` - Insertar
+- `update_presupuesto(...)` - Actualizar
+- `delete_presupuestoxid($id)` - Eliminar
+- `activar_presupuestoxid($id)` - Activar
+- `desactivar_presupuestoxid($id)` - Desactivar (custom)
+- `verificarPresupuesto(...)` - Verificar existencia
+- `obtenerEstadisticas()` - **Método especial** (no estándar)
+
+### Estructura de Respuestas JSON
+
+**Listados (DataTables):**
+```json
+{
+  "draw": 1,
+  "recordsTotal": 100,
+  "recordsFiltered": 100,
+  "data": [...]
+}
+```
+
+**Operaciones (éxito/error):**
+```json
+{
+  "success": true|false,
+  "message": "Mensaje descriptivo",
+  "id_presupuesto": 42  // opcional en INSERT
+}
+```
+
+**Estadísticas:**
+```json
+{
+  "success": true|false,
+  "data": {...}  // o "mensaje" en caso de error
+}
+```
+
+---
+
+## Buenas Prácticas Observadas
+
+### ✅ **Separación de responsabilidades**
+- El controller **no contiene lógica de negocio**, solo coordina.
+- Toda la lógica SQL está en el modelo.
+
+### ✅ **Validación de datos**
+- Campos opcionales se convierten correctamente a `null`.
+- Se valida existencia con `verificarPresupuesto()`.
+
+### ✅ **Manejo de errores**
+- `try-catch` en operaciones críticas.
+- Mensajes de error informativos.
+
+### ✅ **Logging y trazabilidad**
+- Uso de `RegistroActividad` para auditoría.
+- `writeToLog()` para debugging.
+
+### ✅ **Formato de respuesta consistente**
+- Siempre JSON con `JSON_UNESCAPED_UNICODE`.
+- Headers `Content-Type` correctos.
+
+### ✅ **Seguridad**
+- Los datos llegan al modelo donde se usan **prepared statements**.
+- No hay concatenación directa de SQL en el controller.
+
+---
+
+## Aspectos de Mejora Potenciales
+
+### 🔸 **Autenticación y Autorización**
+El código actual usa `'admin'` hardcodeado en los logs:
+```php
+$registro->registrarActividad('admin', ...);
+```
+
+**Mejora sugerida:** Usar sesiones para identificar al usuario real:
+```php
+$registro->registrarActividad($_SESSION['id_usuario'] ?? null, ...);
+```
+
+### 🔸 **Validación de entrada**
+No hay validación explícita de tipos o formatos antes de pasar al modelo.
+
+**Mejora sugerida:** Validar datos críticos antes de llamar al modelo:
+```php
+if (!is_numeric($_POST["id_cliente"])) {
+    echo json_encode(['success' => false, 'message' => 'ID de cliente inválido']);
+    exit;
+}
+```
+
+### 🔸 **Manejo de permisos**
+No hay verificación de permisos por operación.
+
+**Mejora sugerida:** Verificar roles/permisos antes de ejecutar operaciones sensibles.
+
+---
+
+## Resumen
+
+El archivo **presupuesto.php** es un controller que:
+
+1. **Sigue la convención de nomenclatura:** nombre igual al modelo pero en minúsculas.
+2. **Maneja 10 operaciones diferentes** mediante un switch basado en el parámetro `op`.
+3. **Coordina entre vista y modelo** sin contener lógica de negocio.
+4. **Incluye un caso especial "estadísticas"** que NO es habitual en otros controllers.
+5. **Implementa logging y trazabilidad** para auditoría y debugging.
+6. **Maneja correctamente campos opcionales** convirtiéndolos a `null` cuando corresponde.
+7. **Devuelve respuestas JSON consistentes** con encoding UTF-8.
+8. **Usa try-catch** en operaciones críticas para control de errores.
+
+Este controller es representativo de la capa de control en la arquitectura MVC del proyecto, sirviendo como **puente entre las peticiones AJAX de la interfaz y los métodos del modelo**, con la particularidad de tener un método analítico avanzado (`estadisticas`) que es específico de este módulo y no debe considerarse parte del patrón estándar.
+
+---
+
+## Enlaces Relacionados
+
+- [Documentación de Models](models.md) - Estructura y métodos del modelo Presupuesto
+- [Documentación de Conexión](conexion.md) - Sistema de conexión a base de datos
+- [Estructura de Carpetas](estructura_carpetas.md) - Arquitectura general del proyecto

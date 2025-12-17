@@ -569,12 +569,20 @@ $(document).ready(function () {
         event.preventDefault();
 
         let id_elemento = $(this).data('id_elemento');
-        let codigo_elemento = $(this).data('codigo_elemento');
-        console.log("Ver documentos del elemento ID:", id_elemento, "Código:", codigo_elemento);
 
-        // Redirigir a la pantalla de documentos filtrada por este elemento
-        window.location.href = `../MntDocumento_elemento/index.php?id_elemento=${id_elemento}`;
-    });
+        // Leer id_articulo **directamente desde la URL en este momento**
+        const urlParams = new URLSearchParams(window.location.search);
+        const id_articulo = urlParams.get('id_articulo');
+
+        // Generar URL completa
+        let url = `../MntDocumento_elemento/index.php?id_elemento=${id_elemento}`;
+        if (id_articulo) {
+            url += `&id_articulo=${id_articulo}`;
+        }
+        url += '&origen=elementos';
+        
+        window.location.href = url;
+});
     ///////////////////////////////////////
     //     FIN ZONA VER DOCUMENTOS      //
     /////////////////////////////////////
@@ -591,8 +599,17 @@ $(document).ready(function () {
         let codigo_elemento = $(this).data('codigo_elemento');
         console.log("Ver fotos del elemento ID:", id_elemento, "Código:", codigo_elemento);
 
-        // Redirigir a la pantalla de fotos filtrada por este elemento
-        window.location.href = `../MntFoto_elemento/index.php?id_elemento=${id_elemento}`;
+        // Leer id_articulo directamente desde la URL en este momento
+        const urlParams = new URLSearchParams(window.location.search);
+        const id_articulo = urlParams.get('id_articulo');
+
+        // Generar URL completa con id_articulo si existe
+        let url = `../MntFoto_elemento/index.php?id_elemento=${id_elemento}`;
+        if (id_articulo) {
+            url += `&id_articulo=${id_articulo}`;
+        }
+        
+        window.location.href = url;
     });
     ///////////////////////////////////////
     //     FIN ZONA VER FOTOS           //
