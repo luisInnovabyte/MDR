@@ -1,7 +1,7 @@
 <?php
 require_once "../config/conexion.php";
 require_once "../config/funciones.php";
-require_once "../models/TipoDocumento.php";
+require_once "../models/Tipodocumento.php";
 
 $registro = new RegistroActividad();
 $tipoDocumento = new TipoDocumento();
@@ -282,6 +282,30 @@ switch ($_GET["op"]) {
                 'message' => 'Error al activar: ' . $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
+        break;
+
+    case "verificarTipodocumento":
+        $codigo = $_GET["codigo_tipo_documento"] ?? '';
+        $id_tipo_documento = $_GET["id_tipo_documento"] ?? null;
+        
+        if (empty($codigo)) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Código no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+        
+        $resultado = $tipoDocumento->verificarTipoDocumento($codigo, $id_tipo_documento);
+
+        // Asegurar que siempre haya un campo 'success'
+        if (!isset($resultado['success'])) {
+            $resultado['success'] = !isset($resultado['error']);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
         break;
 
     case "verificar":

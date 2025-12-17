@@ -57,6 +57,7 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item"><a href="../MntObservaciones/index.php" class="sub-link">Observaciones generales</a></li>
             <li class="sub-item"><a href="../MntMetodos_pago/index.php" class="sub-link">Métodos de Pago</a></li>
             <li class="sub-item"><a href="../MntFormas_Pago/index.php" class="sub-link">Formas de Pago</a></li>
+            <li class="sub-item"><a href="../MntTipos_documento/index.php" class="sub-link">Tipos de Documento</a></li>
             <li class="sub-item"><a href="../MntEmpresas/index.php" class="sub-link">Empresas</a></li>
 
 
