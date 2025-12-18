@@ -349,6 +349,25 @@
                                     <small class="form-text text-muted">Número de pedido proporcionado por el cliente (si aplica)</small>
                                 </div>
                             </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="p-3 bg-warning bg-opacity-10 border border-warning border-2 rounded">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="aplicar_coeficientes_presupuesto" id="aplicar_coeficientes_presupuesto" checked>
+                                            <label class="form-check-label fw-bold" for="aplicar_coeficientes_presupuesto">
+                                                <i class="fas fa-calculator text-warning me-2"></i>
+                                                Aplicar coeficientes reductores por días
+                                                <i class="bi bi-info-circle text-info ms-2" data-bs-toggle="tooltip" title="Si está activado, se aplicarán los coeficientes reductores según la duración del evento. Si está desactivado, se usará el precio base sin reducciones."></i>
+                                            </label>
+                                            <small class="form-text text-muted d-block mt-2">
+                                                <strong>Activado:</strong> Aplica descuentos automáticos según los días de alquiler.<br>
+                                                <strong>Desactivado:</strong> Usa el precio base sin aplicar coeficientes.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

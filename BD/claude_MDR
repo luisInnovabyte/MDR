@@ -3321,6 +3321,25 @@ ADD COLUMN observaciones_pie_ingles_presupuesto TEXT
     COMMENT 'Observaciones específicas adicionales al pie en inglés'
     AFTER observaciones_pie_presupuesto;
 
+
+
+-- ============================================
+-- ALTER TABLE: presupuesto
+-- Añadir control de aplicación de coeficientes
+-- Fecha: 2024-12-18
+-- Autor: Luis - MDR
+-- ============================================
+ALTER TABLE presupuesto
+ADD COLUMN aplicar_coeficientes_presupuesto BOOLEAN DEFAULT TRUE 
+    COMMENT 'TRUE: aplicar coeficientes reductores por días. FALSE: usar precio base sin reducción'
+    AFTER numero_pedido_cliente_presupuesto;
+
+-- Crear índice para consultas rápidas
+CREATE INDEX idx_aplicar_coeficientes_presupuesto 
+    ON presupuesto(aplicar_coeficientes_presupuesto);
+
+
+
 -- ======================================
 -- Calcular duración del evento en días
 -- ======================================   
@@ -3518,18 +3537,20 @@ END$$
 DELIMITER ;
 
 
-
-
-
-
-
-
-
-
 -- ============================================
 -- Vista: vista_presupuesto_completa
 -- Descripción: Vista completa de presupuestos con todas las relaciones
--- Fecha: Diciembre 2024
+-- Fecha: 2024-12-18
+-- Actualización: Añadido campo aplicar_coeficientes_presupuesto
+-- 
+-- DEPENDENCIAS:
+--   - presupuesto (tabla)
+--   - cliente (tabla)
+--   - contacto_cliente (tabla)
+--   - estado_presupuesto (tabla)
+--   - forma_pago (tabla)
+--   - metodo_pago (tabla)
+--   - metodos_contacto (tabla)
 -- ============================================
 
 DROP VIEW IF EXISTS vista_presupuesto_completa;
@@ -3537,7 +3558,7 @@ DROP VIEW IF EXISTS vista_presupuesto_completa;
 CREATE VIEW vista_presupuesto_completa AS
 SELECT 
     -- =====================================================
-    -- DATOS DEL PRESUPUESTO
+    -- DATOS DEL PRESUPUESTO (tabla principal)
     -- =====================================================
     p.id_presupuesto,
     p.numero_presupuesto,
@@ -3546,16 +3567,12 @@ SELECT
     p.fecha_inicio_evento_presupuesto,
     p.fecha_fin_evento_presupuesto,
     p.numero_pedido_cliente_presupuesto,
+    p.aplicar_coeficientes_presupuesto,          -- ← NUEVO CAMPO
     p.nombre_evento_presupuesto,
     p.direccion_evento_presupuesto,
     p.poblacion_evento_presupuesto,
     p.cp_evento_presupuesto,
     p.provincia_evento_presupuesto,
-    CONCAT_WS(', ',
-        p.direccion_evento_presupuesto,
-        CONCAT(p.cp_evento_presupuesto, ' ', p.poblacion_evento_presupuesto),
-        p.provincia_evento_presupuesto
-    ) AS ubicacion_completa_evento_presupuesto,
     p.observaciones_cabecera_presupuesto,
     p.observaciones_pie_presupuesto,
     p.observaciones_cabecera_ingles_presupuesto,
@@ -3563,8 +3580,6 @@ SELECT
     p.mostrar_obs_familias_presupuesto,
     p.mostrar_obs_articulos_presupuesto,
     p.observaciones_internas_presupuesto,
-    p.id_forma_pago,
-    p.id_metodo,
     p.activo_presupuesto,
     p.created_at_presupuesto,
     p.updated_at_presupuesto,
@@ -3582,48 +3597,25 @@ SELECT
     c.provincia_cliente,
     c.telefono_cliente,
     c.email_cliente,
-    c.web_cliente,
+    
+    -- Dirección de facturación del cliente
     c.nombre_facturacion_cliente,
     c.direccion_facturacion_cliente,
     c.cp_facturacion_cliente,
     c.poblacion_facturacion_cliente,
     c.provincia_facturacion_cliente,
-    CONCAT_WS(', ',
-        c.direccion_cliente,
-        CONCAT(c.cp_cliente, ' ', c.poblacion_cliente),
-        c.provincia_cliente
-    ) AS direccion_completa_cliente,
-    CASE
-        WHEN c.direccion_facturacion_cliente IS NOT NULL THEN
-            CONCAT_WS(', ',
-                c.direccion_facturacion_cliente,
-                CONCAT(c.cp_facturacion_cliente, ' ', c.poblacion_facturacion_cliente),
-                c.provincia_facturacion_cliente
-            )
-        ELSE NULL
-    END AS direccion_facturacion_completa_cliente,
     
     -- =====================================================
-    -- FORMA DE PAGO HABITUAL DEL CLIENTE
-    -- =====================================================
-    c.id_forma_pago_habitual,
-    fph.codigo_pago AS codigo_pago_habitual,
-    fph.nombre_pago AS nombre_pago_habitual,
-    
-    -- =====================================================
-    -- CONTACTO DEL CLIENTE
+    -- DATOS DEL CONTACTO DEL CLIENTE (opcional)
     -- =====================================================
     cc.id_contacto_cliente,
     cc.nombre_contacto_cliente,
     cc.apellidos_contacto_cliente,
-    cc.cargo_contacto_cliente,
     cc.telefono_contacto_cliente,
-    cc.movil_contacto_cliente,
     cc.email_contacto_cliente,
-    CONCAT_WS(' ', cc.nombre_contacto_cliente, cc.apellidos_contacto_cliente) AS nombre_completo_contacto_cliente,
     
     -- =====================================================
-    -- ESTADO DEL PRESUPUESTO
+    -- DATOS DEL ESTADO DEL PRESUPUESTO
     -- =====================================================
     ep.id_estado_ppto,
     ep.codigo_estado_ppto,
@@ -3632,9 +3624,9 @@ SELECT
     ep.orden_estado_ppto,
     
     -- =====================================================
-    -- FORMA DE PAGO DEL PRESUPUESTO
+    -- DATOS DE LA FORMA DE PAGO
     -- =====================================================
-    fp.id_pago,
+    fp.id_pago AS id_forma_pago,
     fp.codigo_pago,
     fp.nombre_pago,
     fp.porcentaje_anticipo_pago,
@@ -3644,27 +3636,55 @@ SELECT
     fp.descuento_pago,
     
     -- =====================================================
-    -- MÉTODO DE PAGO
+    -- DATOS DEL MÉTODO DE PAGO (de forma_pago)
     -- =====================================================
     mp.id_metodo_pago,
     mp.codigo_metodo_pago,
     mp.nombre_metodo_pago,
     
     -- =====================================================
-    -- MÉTODO DE CONTACTO
+    -- DATOS DEL MÉTODO DE CONTACTO
     -- =====================================================
     mc.id_metodo AS id_metodo_contacto,
     mc.nombre AS nombre_metodo_contacto,
     
     -- =====================================================
-    -- TOTAL PRESUPUESTO (calculado desde líneas - pendiente)
+    -- DATOS DE LA FORMA DE PAGO HABITUAL DEL CLIENTE
     -- =====================================================
-    CAST(0 AS DECIMAL(12,2)) AS total_presupuesto,
+    c.id_forma_pago_habitual,
+    fph.nombre_pago AS nombre_forma_pago_habitual_cliente,
     
     -- =====================================================
-    -- CAMPOS CALCULADOS - VALIDEZ
+    -- CAMPOS CALCULADOS - DIRECCIONES
+    -- =====================================================
+    CONCAT_WS(', ',
+        p.direccion_evento_presupuesto,
+        CONCAT(p.cp_evento_presupuesto, ' ', p.poblacion_evento_presupuesto),
+        p.provincia_evento_presupuesto
+    ) AS direccion_completa_evento_presupuesto,
+    
+    CONCAT_WS(', ',
+        c.direccion_cliente,
+        CONCAT(c.cp_cliente, ' ', c.poblacion_cliente),
+        c.provincia_cliente
+    ) AS direccion_completa_cliente,
+    
+    CONCAT_WS(', ',
+        c.direccion_facturacion_cliente,
+        CONCAT(c.cp_facturacion_cliente, ' ', c.poblacion_facturacion_cliente),
+        c.provincia_facturacion_cliente
+    ) AS direccion_facturacion_completa_cliente,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS - NOMBRES COMPLETOS
+    -- =====================================================
+    CONCAT_WS(' ', cc.nombre_contacto_cliente, cc.apellidos_contacto_cliente) AS nombre_completo_contacto,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS - VALIDEZ DEL PRESUPUESTO
     -- =====================================================
     (TO_DAYS(p.fecha_validez_presupuesto) - TO_DAYS(CURDATE())) AS dias_validez_restantes,
+    
     CASE
         WHEN p.fecha_validez_presupuesto IS NULL THEN 'Sin fecha de validez'
         WHEN p.fecha_validez_presupuesto < CURDATE() THEN 'Caducado'
@@ -3677,25 +3697,45 @@ SELECT
     -- CAMPOS CALCULADOS - EVENTO
     -- =====================================================
     ((TO_DAYS(p.fecha_fin_evento_presupuesto) - TO_DAYS(p.fecha_inicio_evento_presupuesto)) + 1) AS duracion_evento_dias,
+    
     (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) AS dias_hasta_inicio_evento,
+    
     (TO_DAYS(p.fecha_fin_evento_presupuesto) - TO_DAYS(CURDATE())) AS dias_hasta_fin_evento,
+    
     CASE
         WHEN p.fecha_inicio_evento_presupuesto IS NULL THEN 'Sin fecha de evento'
-        WHEN p.fecha_fin_evento_presupuesto < CURDATE() THEN 'Evento finalizado'
+        WHEN p.fecha_inicio_evento_presupuesto < CURDATE() AND p.fecha_fin_evento_presupuesto < CURDATE() THEN 'Evento finalizado'
         WHEN p.fecha_inicio_evento_presupuesto <= CURDATE() AND p.fecha_fin_evento_presupuesto >= CURDATE() THEN 'Evento en curso'
-        WHEN p.fecha_inicio_evento_presupuesto = CURDATE() THEN 'Evento inicia hoy'
-        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) <= 7 THEN 'Evento próximo'
+        WHEN p.fecha_inicio_evento_presupuesto = CURDATE() THEN 'Evento HOY'
+        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) = 1 THEN 'Evento MAÑANA'
+        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) <= 7 THEN 'Evento esta semana'
+        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) <= 30 THEN 'Evento este mes'
         ELSE 'Evento futuro'
     END AS estado_evento_presupuesto,
     
     -- =====================================================
-    -- CAMPOS CALCULADOS - PAGOS
+    -- CAMPOS CALCULADOS - PRIORIDAD
     -- =====================================================
     CASE
+        WHEN p.fecha_inicio_evento_presupuesto IS NULL THEN 'Sin prioridad'
+        WHEN p.fecha_inicio_evento_presupuesto = CURDATE() THEN 'HOY'
+        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) = 1 THEN 'MAÑANA'
+        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) <= 7 THEN 'Esta semana'
+        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) <= 15 THEN 'Próximo'
+        WHEN (TO_DAYS(p.fecha_inicio_evento_presupuesto) - TO_DAYS(CURDATE())) <= 30 THEN 'Este mes'
+        ELSE 'Futuro'
+    END AS prioridad_presupuesto,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS - PAGOS
+    -- =====================================================
+    CASE 
+        WHEN fp.id_pago IS NULL THEN 'Sin forma de pago'
         WHEN fp.porcentaje_anticipo_pago = 100.00 THEN 'Pago único'
         WHEN fp.porcentaje_anticipo_pago < 100.00 THEN 'Pago fraccionado'
         ELSE 'Sin forma de pago'
     END AS tipo_pago_presupuesto,
+    
     CASE
         WHEN fp.id_pago IS NULL THEN 'Sin forma de pago asignada'
         WHEN fp.porcentaje_anticipo_pago = 100.00 THEN
@@ -3703,11 +3743,13 @@ SELECT
                 CASE WHEN fp.descuento_pago > 0 THEN CONCAT(' (Dto: ', fp.descuento_pago, '%)') ELSE '' END
             )
         ELSE CONCAT(mp.nombre_metodo_pago, ' - ', fp.porcentaje_anticipo_pago, '% + ', fp.porcentaje_final_pago, '%')
-    END AS descripcion_forma_pago_presupuesto,
+    END AS descripcion_completa_forma_pago,
+    
     CASE
         WHEN fp.dias_anticipo_pago = 0 THEN p.fecha_presupuesto
         ELSE (p.fecha_presupuesto + INTERVAL fp.dias_anticipo_pago DAY)
     END AS fecha_vencimiento_anticipo,
+    
     CASE
         WHEN fp.dias_final_pago = 0 AND p.fecha_fin_evento_presupuesto IS NOT NULL THEN p.fecha_fin_evento_presupuesto
         WHEN fp.dias_final_pago > 0 THEN (p.fecha_presupuesto + INTERVAL fp.dias_final_pago DAY)
@@ -3716,30 +3758,137 @@ SELECT
     END AS fecha_vencimiento_final,
     
     -- =====================================================
-    -- CAMPOS CALCULADOS - ANTIGÜEDAD
+    -- CAMPOS CALCULADOS - INFORMACIÓN ADICIONAL
     -- =====================================================
-    (TO_DAYS(CURDATE()) - TO_DAYS(p.fecha_presupuesto)) AS dias_antiguedad_presupuesto
+    CASE 
+        WHEN c.direccion_facturacion_cliente IS NOT NULL THEN TRUE
+        ELSE FALSE
+    END AS tiene_direccion_facturacion_diferente,
+    
+    (TO_DAYS(CURDATE()) - TO_DAYS(p.fecha_presupuesto)) AS dias_desde_emision,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS - ESTADO GENERAL
+    -- =====================================================
+    CASE
+        WHEN ep.codigo_estado_ppto = 'CANC' THEN 'Cancelado'
+        WHEN ep.codigo_estado_ppto = 'FACT' THEN 'Facturado'
+        WHEN p.fecha_validez_presupuesto < CURDATE() AND ep.codigo_estado_ppto NOT IN ('ACEP', 'RECH', 'CANC', 'FACT') THEN 'Caducado'
+        WHEN p.fecha_inicio_evento_presupuesto < CURDATE() AND p.fecha_fin_evento_presupuesto < CURDATE() THEN 'Evento finalizado'
+        WHEN p.fecha_inicio_evento_presupuesto <= CURDATE() AND p.fecha_fin_evento_presupuesto >= CURDATE() THEN 'Evento en curso'
+        WHEN ep.codigo_estado_ppto = 'ACEP' THEN 'Aceptado - Pendiente evento'
+        ELSE ep.nombre_estado_ppto
+    END AS estado_general_presupuesto
 
 FROM presupuesto p
-INNER JOIN cliente c ON p.id_cliente = c.id_cliente
-LEFT JOIN contacto_cliente cc ON p.id_contacto_cliente = cc.id_contacto_cliente
-INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
-LEFT JOIN forma_pago fp ON p.id_forma_pago = fp.id_pago
-LEFT JOIN metodo_pago mp ON fp.id_metodo_pago = mp.id_metodo_pago
-LEFT JOIN metodos_contacto mc ON p.id_metodo = mc.id_metodo
-LEFT JOIN forma_pago fph ON c.id_forma_pago_habitual = fph.id_pago;
+
+INNER JOIN cliente c 
+    ON p.id_cliente = c.id_cliente
+
+LEFT JOIN contacto_cliente cc 
+    ON p.id_contacto_cliente = cc.id_contacto_cliente
+
+INNER JOIN estado_presupuesto ep 
+    ON p.id_estado_ppto = ep.id_estado_ppto
+
+LEFT JOIN forma_pago fp 
+    ON p.id_forma_pago = fp.id_pago
+
+LEFT JOIN metodo_pago mp 
+    ON fp.id_metodo_pago = mp.id_metodo_pago
+
+LEFT JOIN metodos_contacto mc 
+    ON p.id_metodo = mc.id_metodo
+
+LEFT JOIN forma_pago fph 
+    ON c.id_forma_pago_habitual = fph.id_pago;
+
+
+-- ========================================================
+-- NOTAS DE LA ACTUALIZACIÓN
+-- ========================================================
+
+/*
+CAMBIOS REALIZADOS (2024-12-18):
+
+1. NUEVO CAMPO AÑADIDO:
+   - aplicar_coeficientes_presupuesto (BOOLEAN)
+   - Posición: Después de numero_pedido_cliente_presupuesto
+   - Propósito: Controlar si se aplican coeficientes reductores por días
+
+2. USO DEL NUEVO CAMPO:
+   - TRUE: Aplicar coeficientes reductores según días del evento
+   - FALSE: Usar precio base sin reducción por duración
+   
+3. IMPACTO EN CÁLCULOS:
+   - Este campo debe ser considerado en las vistas que calculan precios
+   - Debe incluirse en los cálculos de líneas de presupuesto
+   - Afecta el orden de cálculo: Precio base → Coeficiente (si aplica) → Descuento
+
+4. ORDEN DE CÁLCULO DE PRECIOS:
+   Paso 1: Precio base del artículo
+   Paso 2: ¿aplicar_coeficientes_presupuesto = TRUE?
+           SÍ → Aplicar coeficiente según días
+           NO → Mantener precio base
+   Paso 3: Aplicar descuento del cliente (si aplica)
+   Paso 4: Precio final
+*/
+
+
+-- ========================================================
+-- CONSULTAS DE EJEMPLO CON EL NUEVO CAMPO
+-- ========================================================
+
+-- 1. Ver presupuestos con/sin coeficientes aplicados
+/*
+SELECT 
+    numero_presupuesto,
+    nombre_cliente,
+    nombre_evento_presupuesto,
+    duracion_evento_dias,
+    aplicar_coeficientes_presupuesto,
+    CASE 
+        WHEN aplicar_coeficientes_presupuesto = TRUE THEN 'Con descuento por días'
+        ELSE 'Precio base sin descuento'
+    END AS tipo_calculo_precio
+FROM vista_presupuesto_completa
+WHERE activo_presupuesto = TRUE
+ORDER BY fecha_presupuesto DESC;
+*/
+
+-- 2. Presupuestos de larga duración sin coeficientes
+/*
+SELECT 
+    numero_presupuesto,
+    nombre_cliente,
+    nombre_evento_presupuesto,
+    duracion_evento_dias,
+    aplicar_coeficientes_presupuesto
+FROM vista_presupuesto_completa
+WHERE activo_presupuesto = TRUE
+  AND duracion_evento_dias >= 5
+  AND aplicar_coeficientes_presupuesto = FALSE
+ORDER BY duracion_evento_dias DESC;
+*/
+
+-- 3. Estadísticas de uso de coeficientes
+/*
+SELECT 
+    aplicar_coeficientes_presupuesto,
+    COUNT(*) as total_presupuestos,
+    AVG(duracion_evento_dias) as promedio_dias,
+    COUNT(CASE WHEN codigo_estado_ppto = 'ACEP' THEN 1 END) as aceptados
+FROM vista_presupuesto_completa
+WHERE activo_presupuesto = TRUE
+GROUP BY aplicar_coeficientes_presupuesto;
+*/
 
 
 
--- El campo total_presupuesto se ha añadido con CAST(0 AS DECIMAL(12,2)) para mantener consistencia con el tipo de datos que usarás cuando implementes la tabla linea_presupuesto. 
--- Cuando tengas esa tabla lista, podrás reemplazar ese valor por una subconsulta como:
-COALESCE(
-    (SELECT SUM(lp.total_linea_ppto) 
-     FROM linea_presupuesto lp 
-     WHERE lp.id_presupuesto = p.id_presupuesto 
-     AND lp.activo_linea_ppto = TRUE),
-    0
-) AS `total_presupuesto`
+
+
+
+
 
 
 

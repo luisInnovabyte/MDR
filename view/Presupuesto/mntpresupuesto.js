@@ -352,6 +352,7 @@ $(document).ready(function () {
                                 <p class="mb-1"><strong><i class="bi bi-file-earmark-code me-1"></i>Número:</strong> ${val(d.numero_presupuesto)}</p>
                                 <p class="mb-1"><strong><i class="bi bi-calendar-event me-1"></i>F. Presupuesto:</strong> ${d.fecha_presupuesto ? formatoFechaEuropeo(d.fecha_presupuesto) : val(null)}</p>
                                 <p class="mb-1"><strong><i class="bi bi-calendar-check me-1"></i>F. Validez:</strong> ${d.fecha_validez_presupuesto ? formatoFechaEuropeo(d.fecha_validez_presupuesto) : val(null)}</p>
+                                <p class="mb-1"><strong><i class="bi bi-calculator me-1"></i>Aplicar Coeficientes:</strong> ${d.aplicar_coeficientes_presupuesto == 1 ? '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Activado</span>' : '<span class="badge bg-warning text-dark"><i class="bi bi-x-circle me-1"></i>Desactivado</span>'}</p>
                               
                             </div>
 

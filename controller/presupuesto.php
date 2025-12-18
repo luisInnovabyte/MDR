@@ -33,6 +33,7 @@ switch ($op) {
                 "fecha_inicio_evento_presupuesto" => $row["fecha_inicio_evento_presupuesto"],
                 "fecha_fin_evento_presupuesto" => $row["fecha_fin_evento_presupuesto"],
                 "numero_pedido_cliente_presupuesto" => $row["numero_pedido_cliente_presupuesto"],
+                "aplicar_coeficientes_presupuesto" => isset($row["aplicar_coeficientes_presupuesto"]) ? (bool)$row["aplicar_coeficientes_presupuesto"] : true,
                 "nombre_evento_presupuesto" => $row["nombre_evento_presupuesto"],
                 
                 // Ubicación del evento (4 campos separados)
@@ -195,6 +196,9 @@ switch ($op) {
                     $fecha_fin_evento_presupuesto = $_POST["fecha_fin_evento_presupuesto"];
                 }
                 
+                // Procesar campo aplicar_coeficientes_presupuesto (boolean)
+                $aplicar_coeficientes_presupuesto = isset($_POST["aplicar_coeficientes_presupuesto"]) ? (bool)$_POST["aplicar_coeficientes_presupuesto"] : true;
+                
                 writeToLog([
                     'id_contacto_cliente' => $id_contacto_cliente,
                     'id_forma_pago' => $id_forma_pago,
@@ -213,6 +217,7 @@ switch ($op) {
                     $fecha_inicio_evento_presupuesto, 
                     $fecha_fin_evento_presupuesto, 
                     $_POST["numero_pedido_cliente_presupuesto"], 
+                    $aplicar_coeficientes_presupuesto, 
                     $_POST["nombre_evento_presupuesto"], 
                     $_POST["direccion_evento_presupuesto"] ?? '', 
                     $_POST["poblacion_evento_presupuesto"] ?? '', 
@@ -282,6 +287,9 @@ switch ($op) {
                     $fecha_fin_evento_presupuesto = $_POST["fecha_fin_evento_presupuesto"];
                 }
                 
+                // Procesar campo aplicar_coeficientes_presupuesto (boolean)
+                $aplicar_coeficientes_presupuesto = isset($_POST["aplicar_coeficientes_presupuesto"]) ? (bool)$_POST["aplicar_coeficientes_presupuesto"] : true;
+                
                 $resultado = $presupuesto->update_presupuesto(
                     $_POST["id_presupuesto"],
                     $_POST["numero_presupuesto"], 
@@ -295,6 +303,7 @@ switch ($op) {
                     $fecha_inicio_evento_presupuesto, 
                     $fecha_fin_evento_presupuesto, 
                     $_POST["numero_pedido_cliente_presupuesto"], 
+                    $aplicar_coeficientes_presupuesto, 
                     $_POST["nombre_evento_presupuesto"], 
                     $_POST["direccion_evento_presupuesto"] ?? '', 
                     $_POST["poblacion_evento_presupuesto"] ?? '', 

@@ -678,6 +678,158 @@
                     </div>
                 </div>
 
+                <!-- Sección: Sistema de Coeficientes Reductores -->
+                <div class="help-section mb-4">
+                    <h6 class="text-primary d-flex align-items-center">
+                        <i class="bi bi-calculator me-2"></i>
+                        Sistema de Coeficientes Reductores por Días
+                    </h6>
+                    
+                    <div class="alert alert-warning">
+                        <p class="mb-3">
+                            <strong>
+                                <i class="bi bi-info-circle me-2"></i>
+                                El sistema permite aplicar descuentos automáticos basados en la duración del alquiler (días)
+                            </strong>
+                        </p>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <strong><i class="bi bi-diagram-3 me-2"></i>¿Cómo Funciona el Sistema?</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2">Los coeficientes reductores se aplican en <strong>dos niveles</strong>:</p>
+                                <ol>
+                                    <li class="mb-2">
+                                        <strong><i class="bi bi-tag me-1"></i>Nivel Familia:</strong> 
+                                        Cada familia de artículos puede tener configurado un coeficiente reductor que se aplica según el número de días de alquiler.
+                                        <ul class="small mt-1">
+                                            <li>Ejemplo: Familia "Carpas" puede tener 10% de descuento para alquileres de 7+ días</li>
+                                            <li>Los coeficientes se configuran en la gestión de familias</li>
+                                        </ul>
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong><i class="bi bi-file-earmark-check me-1"></i>Nivel Presupuesto (Control Maestro):</strong> 
+                                        El campo <strong>"Aplicar Coeficientes"</strong> en el presupuesto actúa como <strong>interruptor maestro</strong>.
+                                        <ul class="small mt-1">
+                                            <li>Este campo se encuentra en el formulario de creación/edición del presupuesto</li>
+                                            <li>Por defecto está <strong>activado</strong> (marcado)</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3 border-danger">
+                            <div class="card-header bg-danger text-white">
+                                <strong><i class="bi bi-exclamation-diamond me-2"></i>Prioridad del Campo "Aplicar Coeficientes"</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-3">
+                                    <strong>⚠️ IMPORTANTE:</strong> El campo <strong>"Aplicar Coeficientes"</strong> del presupuesto tiene 
+                                    <span class="badge bg-danger fs-6">PRIORIDAD ABSOLUTA</span> sobre cualquier configuración de coeficientes en las familias.
+                                </p>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card border-success mb-3">
+                                            <div class="card-header bg-success text-white">
+                                                <i class="bi bi-check-circle me-2"></i><strong>ACTIVADO (por defecto)</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="small mb-2"><i class="bi bi-arrow-right-circle text-success me-1"></i>Los coeficientes reductores <strong>SÍ se aplican</strong></p>
+                                                <p class="small mb-2"><i class="bi bi-calculator text-primary me-1"></i>El sistema calcula descuentos según los coeficientes de cada familia</p>
+                                                <p class="small mb-0"><i class="bi bi-percent text-info me-1"></i>Los precios se reducen automáticamente según días de alquiler</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-warning mb-3">
+                                            <div class="card-header bg-warning text-dark">
+                                                <i class="bi bi-x-circle me-2"></i><strong>DESACTIVADO</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="small mb-2"><i class="bi bi-arrow-right-circle text-danger me-1"></i>Los coeficientes reductores <strong>NO se aplican</strong></p>
+                                                <p class="small mb-2"><i class="bi bi-calculator text-muted me-1"></i>Se usa el precio base sin descuentos por días</p>
+                                                <p class="small mb-0"><i class="bi bi-exclamation-triangle text-warning me-1"></i>Ignora TODAS las configuraciones de coeficientes en familias</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info mb-0">
+                                    <i class="bi bi-lightbulb me-2"></i>
+                                    <strong>Casos de Uso:</strong>
+                                    <ul class="mb-0 mt-2 small">
+                                        <li><strong>Presupuestos especiales:</strong> Desactivar coeficientes para mantener precio fijo independientemente de días</li>
+                                        <li><strong>Clientes VIP:</strong> Precio especial sin aplicar descuentos automáticos</li>
+                                        <li><strong>Promociones personalizadas:</strong> Control total del precio sin depender de coeficientes</li>
+                                        <li><strong>Alquileres cortos:</strong> Evitar descuentos en alquileres de 1-2 días si no corresponde</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-info text-white">
+                                <strong><i class="bi bi-eye me-2"></i>¿Dónde se Ve Este Campo?</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2"><strong>En el Formulario de Presupuesto:</strong></p>
+                                <ul class="small mb-3">
+                                    <li><i class="bi bi-pencil me-1"></i>Checkbox con etiqueta "Aplicar coeficientes reductores por días"</li>
+                                    <li><i class="bi bi-toggle-on text-success me-1"></i>Está <strong>activado por defecto</strong> al crear un nuevo presupuesto</li>
+                                    <li><i class="bi bi-info-circle text-primary me-1"></i>Incluye tooltip explicativo al pasar el cursor</li>
+                                    <li><i class="bi bi-calculator text-warning me-1"></i>Icono de calculadora para identificación rápida</li>
+                                </ul>
+                                
+                                <p class="mb-2"><strong>En la Vista Detallada (al expandir con +):</strong></p>
+                                <ul class="small mb-0">
+                                    <li><i class="bi bi-list-ul me-1"></i>Aparece en la sección "Datos del Presupuesto" (Columna 1)</li>
+                                    <li><span class="badge bg-success me-1"><i class="bi bi-check-circle"></i> Activado</span> = Se aplican coeficientes</li>
+                                    <li><span class="badge bg-warning text-dark me-1"><i class="bi bi-x-circle"></i> Desactivado</span> = No se aplican coeficientes</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card border-success">
+                            <div class="card-header bg-success text-white">
+                                <strong><i class="bi bi-diagram-2 me-2"></i>Flujo de Aplicación de Coeficientes</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex flex-column align-items-start">
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">1</span>
+                                        <strong class="ms-2">Sistema verifica el campo "Aplicar Coeficientes" del presupuesto</strong>
+                                    </div>
+                                    <div class="ms-4 mb-3 small text-muted">
+                                        <i class="bi bi-arrow-return-right me-1"></i>
+                                        Si está <strong>DESACTIVADO</strong> → <span class="badge bg-danger">FIN</span> (usa precio base sin descuento)
+                                    </div>
+                                    
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">2</span>
+                                        <strong class="ms-2">Si está ACTIVADO, busca el coeficiente de la familia del artículo</strong>
+                                    </div>
+                                    <div class="ms-4 mb-3 small text-muted">
+                                        <i class="bi bi-arrow-return-right me-1"></i>
+                                        Verifica si la familia tiene configurado un coeficiente para el número de días
+                                    </div>
+                                    
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">3</span>
+                                        <strong class="ms-2">Aplica el descuento correspondiente según días de alquiler</strong>
+                                    </div>
+                                    <div class="ms-4 small text-muted">
+                                        <i class="bi bi-arrow-return-right me-1"></i>
+                                        Calcula: Precio Final = Precio Base × (1 - Coeficiente)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div><!-- modal-body -->
 
             <!-- Pie del Modal -->

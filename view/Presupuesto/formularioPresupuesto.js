@@ -509,6 +509,7 @@ $(document).ready(function () {
                     $('#fecha_inicio_evento_presupuesto').val(data.fecha_inicio_evento_presupuesto);
                     $('#fecha_fin_evento_presupuesto').val(data.fecha_fin_evento_presupuesto);
                     $('#numero_pedido_cliente_presupuesto').val(data.numero_pedido_cliente_presupuesto);
+                    $('#aplicar_coeficientes_presupuesto').prop('checked', data.aplicar_coeficientes_presupuesto == 1 || data.aplicar_coeficientes_presupuesto === true);
                     $('#nombre_evento_presupuesto').val(data.nombre_evento_presupuesto);
                     $('#direccion_evento_presupuesto').val(data.direccion_evento_presupuesto);
                     $('#poblacion_evento_presupuesto').val(data.poblacion_evento_presupuesto);
@@ -632,6 +633,7 @@ $(document).ready(function () {
         var fecha_inicio_evento_presupuestoR = $('#fecha_inicio_evento_presupuesto').val() || null;
         var fecha_fin_evento_presupuestoR = $('#fecha_fin_evento_presupuesto').val() || null;
         var numero_pedido_cliente_presupuestoR = $('#numero_pedido_cliente_presupuesto').val() || '';
+        var aplicar_coeficientes_presupuestoR = $('#aplicar_coeficientes_presupuesto').is(':checked') ? 1 : 0;
         var nombre_evento_presupuestoR = $('#nombre_evento_presupuesto').val() || '';
         var direccion_evento_presupuestoR = $('#direccion_evento_presupuesto').val() || '';
         var poblacion_evento_presupuestoR = $('#poblacion_evento_presupuesto').val() || '';
@@ -681,6 +683,7 @@ $(document).ready(function () {
             fecha_inicio_evento_presupuestoR,
             fecha_fin_evento_presupuestoR,
             numero_pedido_cliente_presupuestoR,
+            aplicar_coeficientes_presupuestoR,
             nombre_evento_presupuestoR,
             direccion_evento_presupuestoR,
             poblacion_evento_presupuestoR,
@@ -710,6 +713,7 @@ $(document).ready(function () {
         fecha_inicio_evento_presupuesto,
         fecha_fin_evento_presupuesto,
         numero_pedido_cliente_presupuesto,
+        aplicar_coeficientes_presupuesto,
         nombre_evento_presupuesto,
         direccion_evento_presupuesto,
         poblacion_evento_presupuesto,
@@ -751,6 +755,7 @@ $(document).ready(function () {
                         fecha_inicio_evento_presupuesto,
                         fecha_fin_evento_presupuesto,
                         numero_pedido_cliente_presupuesto,
+                        aplicar_coeficientes_presupuesto,
                         nombre_evento_presupuesto,
                         direccion_evento_presupuesto,
                         poblacion_evento_presupuesto,
@@ -797,6 +802,7 @@ $(document).ready(function () {
         fecha_inicio_evento_presupuesto,
         fecha_fin_evento_presupuesto,
         numero_pedido_cliente_presupuesto,
+        aplicar_coeficientes_presupuesto,
         nombre_evento_presupuesto,
         direccion_evento_presupuesto,
         poblacion_evento_presupuesto,
@@ -827,6 +833,7 @@ $(document).ready(function () {
             'fecha_inicio_evento_presupuesto': fecha_inicio_evento_presupuesto,
             'fecha_fin_evento_presupuesto': fecha_fin_evento_presupuesto,
             'numero_pedido_cliente_presupuesto': numero_pedido_cliente_presupuesto,
+            'aplicar_coeficientes_presupuesto': aplicar_coeficientes_presupuesto,
             'nombre_evento_presupuesto': nombre_evento_presupuesto,
             'direccion_evento_presupuesto': direccion_evento_presupuesto,
             'poblacion_evento_presupuesto': poblacion_evento_presupuesto,

@@ -1,0 +1,122 @@
+[
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:09:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa ficticia principal",
+        "mensaje": "Empresa ficticia principal obtenida",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:17"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 0 contactos del cliente ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Presupuesto",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el presupuesto con ID: 5",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Actualizar el presupuesto",
+        "mensaje": "Presupuesto actualizado exitosamente ID: 5",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Metodos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de metodos",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Obtener presupuesto seleccionado",
+        "mensaje": "Presupuesto obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "empresas.php",
+        "actividad": "Obtener empresa ficticia principal",
+        "mensaje": "Empresa ficticia principal obtenida",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 0 contactos del cliente ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Presupuesto",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el presupuesto con ID: 5",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:50"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "presupuesto.php",
+        "actividad": "Actualizar el presupuesto",
+        "mensaje": "Presupuesto actualizado exitosamente ID: 5",
+        "tipo": "info",
+        "fecha_hora": "2025-12-18 14:10:50"
+    }
+]

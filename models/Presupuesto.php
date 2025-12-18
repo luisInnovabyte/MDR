@@ -301,19 +301,19 @@ class Presupuesto
         }
     }
 
-    public function insert_presupuesto($numero_presupuesto, $id_cliente, $id_contacto_cliente, $id_estado_ppto, $id_forma_pago, $id_metodo, $fecha_presupuesto, $fecha_validez_presupuesto, $fecha_inicio_evento_presupuesto, $fecha_fin_evento_presupuesto, $numero_pedido_cliente_presupuesto, $nombre_evento_presupuesto, $direccion_evento_presupuesto, $poblacion_evento_presupuesto, $cp_evento_presupuesto, $provincia_evento_presupuesto, $observaciones_cabecera_presupuesto, $observaciones_cabecera_ingles_presupuesto, $observaciones_pie_presupuesto, $observaciones_pie_ingles_presupuesto, $mostrar_obs_familias_presupuesto, $mostrar_obs_articulos_presupuesto, $observaciones_internas_presupuesto)
+    public function insert_presupuesto($numero_presupuesto, $id_cliente, $id_contacto_cliente, $id_estado_ppto, $id_forma_pago, $id_metodo, $fecha_presupuesto, $fecha_validez_presupuesto, $fecha_inicio_evento_presupuesto, $fecha_fin_evento_presupuesto, $numero_pedido_cliente_presupuesto, $aplicar_coeficientes_presupuesto, $nombre_evento_presupuesto, $direccion_evento_presupuesto, $poblacion_evento_presupuesto, $cp_evento_presupuesto, $provincia_evento_presupuesto, $observaciones_cabecera_presupuesto, $observaciones_cabecera_ingles_presupuesto, $observaciones_pie_presupuesto, $observaciones_pie_ingles_presupuesto, $mostrar_obs_familias_presupuesto, $mostrar_obs_articulos_presupuesto, $observaciones_internas_presupuesto)
     {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
             
             $sql = "INSERT INTO presupuesto (numero_presupuesto, id_cliente, id_contacto_cliente, id_estado_ppto, id_forma_pago, id_metodo, 
                     fecha_presupuesto, fecha_validez_presupuesto, fecha_inicio_evento_presupuesto, fecha_fin_evento_presupuesto, 
-                    numero_pedido_cliente_presupuesto, nombre_evento_presupuesto, direccion_evento_presupuesto, 
+                    numero_pedido_cliente_presupuesto, aplicar_coeficientes_presupuesto, nombre_evento_presupuesto, direccion_evento_presupuesto, 
                     poblacion_evento_presupuesto, cp_evento_presupuesto, provincia_evento_presupuesto, 
                     observaciones_cabecera_presupuesto, observaciones_cabecera_ingles_presupuesto, observaciones_pie_presupuesto, 
                     observaciones_pie_ingles_presupuesto, mostrar_obs_familias_presupuesto, mostrar_obs_articulos_presupuesto, 
                     observaciones_internas_presupuesto, activo_presupuesto, created_at_presupuesto, updated_at_presupuesto) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -365,16 +365,19 @@ class Presupuesto
             }
             
             $stmt->bindValue(11, $numero_pedido_cliente_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(12, $nombre_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(13, $direccion_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(14, $poblacion_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(15, $cp_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(16, $provincia_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(17, $observaciones_cabecera_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(18, $observaciones_pie_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(19, $mostrar_obs_familias_presupuesto, PDO::PARAM_BOOL);
-            $stmt->bindValue(20, $mostrar_obs_articulos_presupuesto, PDO::PARAM_BOOL);
-            $stmt->bindValue(21, $observaciones_internas_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(12, $aplicar_coeficientes_presupuesto, PDO::PARAM_BOOL);
+            $stmt->bindValue(13, $nombre_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(14, $direccion_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(15, $poblacion_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(16, $cp_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(17, $provincia_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(18, $observaciones_cabecera_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(19, $observaciones_cabecera_ingles_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(20, $observaciones_pie_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(21, $observaciones_pie_ingles_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(22, $mostrar_obs_familias_presupuesto, PDO::PARAM_BOOL);
+            $stmt->bindValue(23, $mostrar_obs_articulos_presupuesto, PDO::PARAM_BOOL);
+            $stmt->bindValue(24, $observaciones_internas_presupuesto, PDO::PARAM_STR);
             
             $resultado = $stmt->execute();
             
@@ -402,7 +405,7 @@ class Presupuesto
         }
     }
 
-    public function update_presupuesto($id_presupuesto, $numero_presupuesto, $id_cliente, $id_contacto_cliente, $id_estado_ppto, $id_forma_pago, $id_metodo, $fecha_presupuesto, $fecha_validez_presupuesto, $fecha_inicio_evento_presupuesto, $fecha_fin_evento_presupuesto, $numero_pedido_cliente_presupuesto, $nombre_evento_presupuesto, $direccion_evento_presupuesto, $poblacion_evento_presupuesto, $cp_evento_presupuesto, $provincia_evento_presupuesto, $observaciones_cabecera_presupuesto, $observaciones_cabecera_ingles_presupuesto, $observaciones_pie_presupuesto, $observaciones_pie_ingles_presupuesto, $mostrar_obs_familias_presupuesto, $mostrar_obs_articulos_presupuesto, $observaciones_internas_presupuesto)
+    public function update_presupuesto($id_presupuesto, $numero_presupuesto, $id_cliente, $id_contacto_cliente, $id_estado_ppto, $id_forma_pago, $id_metodo, $fecha_presupuesto, $fecha_validez_presupuesto, $fecha_inicio_evento_presupuesto, $fecha_fin_evento_presupuesto, $numero_pedido_cliente_presupuesto, $aplicar_coeficientes_presupuesto, $nombre_evento_presupuesto, $direccion_evento_presupuesto, $poblacion_evento_presupuesto, $cp_evento_presupuesto, $provincia_evento_presupuesto, $observaciones_cabecera_presupuesto, $observaciones_cabecera_ingles_presupuesto, $observaciones_pie_presupuesto, $observaciones_pie_ingles_presupuesto, $mostrar_obs_familias_presupuesto, $mostrar_obs_articulos_presupuesto, $observaciones_internas_presupuesto)
     {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
@@ -410,7 +413,7 @@ class Presupuesto
             $sql = "UPDATE presupuesto SET numero_presupuesto = ?, id_cliente = ?, id_contacto_cliente = ?, id_estado_ppto = ?, 
                     id_forma_pago = ?, id_metodo = ?, fecha_presupuesto = ?, fecha_validez_presupuesto = ?, 
                     fecha_inicio_evento_presupuesto = ?, fecha_fin_evento_presupuesto = ?, numero_pedido_cliente_presupuesto = ?, 
-                    nombre_evento_presupuesto = ?, direccion_evento_presupuesto = ?, poblacion_evento_presupuesto = ?, 
+                    aplicar_coeficientes_presupuesto = ?, nombre_evento_presupuesto = ?, direccion_evento_presupuesto = ?, poblacion_evento_presupuesto = ?, 
                     cp_evento_presupuesto = ?, provincia_evento_presupuesto = ?, observaciones_cabecera_presupuesto = ?, 
                     observaciones_cabecera_ingles_presupuesto = ?, observaciones_pie_presupuesto = ?, 
                     observaciones_pie_ingles_presupuesto = ?, mostrar_obs_familias_presupuesto = ?, 
@@ -467,19 +470,20 @@ class Presupuesto
             }
             
             $stmt->bindValue(11, $numero_pedido_cliente_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(12, $nombre_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(13, $direccion_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(14, $poblacion_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(15, $cp_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(16, $provincia_evento_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(17, $observaciones_cabecera_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(18, $observaciones_cabecera_ingles_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(19, $observaciones_pie_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(20, $observaciones_pie_ingles_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(21, $mostrar_obs_familias_presupuesto, PDO::PARAM_BOOL);
-            $stmt->bindValue(22, $mostrar_obs_articulos_presupuesto, PDO::PARAM_BOOL);
-            $stmt->bindValue(23, $observaciones_internas_presupuesto, PDO::PARAM_STR);
-            $stmt->bindValue(24, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->bindValue(12, $aplicar_coeficientes_presupuesto, PDO::PARAM_BOOL);
+            $stmt->bindValue(13, $nombre_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(14, $direccion_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(15, $poblacion_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(16, $cp_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(17, $provincia_evento_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(18, $observaciones_cabecera_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(19, $observaciones_cabecera_ingles_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(20, $observaciones_pie_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(21, $observaciones_pie_ingles_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(22, $mostrar_obs_familias_presupuesto, PDO::PARAM_BOOL);
+            $stmt->bindValue(23, $mostrar_obs_articulos_presupuesto, PDO::PARAM_BOOL);
+            $stmt->bindValue(24, $observaciones_internas_presupuesto, PDO::PARAM_STR);
+            $stmt->bindValue(25, $id_presupuesto, PDO::PARAM_INT);
 
             $resultado = $stmt->execute();
             
