@@ -94,6 +94,9 @@ require_once('../../config/template/verificarPermiso.php');
                 <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaElementos" title="Ayuda sobre el módulo">
                     <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
                 </button>
+                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalTecnicoElementos" title="Información técnica">
+                    <i class="bi bi-gear text-secondary" style="font-size: 1.3rem;"></i>
+                </button>
             </div>
         </div>
         
@@ -265,6 +268,16 @@ require_once('../../config/template/verificarPermiso.php');
 
     <!-- #################################### -->
     <!-- FIN MODAL DE AYUDA                   -->
+    <!-- #################################### -->
+
+    <!-- #################################### -->
+    <!-- MODAL TÉCNICO                        -->
+    <!-- #################################### -->
+
+    <?php include_once('tecnico.php') ?>
+
+    <!-- #################################### -->
+    <!-- FIN MODAL TÉCNICO                    -->
     <!-- #################################### -->
 
 

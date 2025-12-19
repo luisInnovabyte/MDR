@@ -2533,6 +2533,210 @@ END$$
 DELIMITER ;
 
 
+-- ========================================================
+-- TRIGGER: Limpiar campos según tipo de propiedad - INSERT
+-- TABLA: elemento
+-- DESCRIPCIÓN: Limpia campos de compra o alquiler según es_propio_elemento
+-- MOMENTO: BEFORE INSERT
+-- ========================================================
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_elemento_limpiar_campos_insert$$
+
+CREATE TRIGGER trg_elemento_limpiar_campos_insert
+BEFORE INSERT ON elemento
+FOR EACH ROW
+BEGIN
+    -- Si el elemento es ALQUILADO (es_propio_elemento = FALSE)
+    -- Vaciar campos de COMPRA
+    IF NEW.es_propio_elemento = FALSE THEN
+        SET NEW.fecha_compra_elemento = NULL;
+        SET NEW.precio_compra_elemento = NULL;
+        SET NEW.fecha_alta_elemento = NULL;
+        SET NEW.id_proveedor_compra_elemento = NULL;
+        SET NEW.fecha_fin_garantia_elemento = NULL;
+        SET NEW.proximo_mantenimiento_elemento = NULL;
+    END IF;
+    
+    -- Si el elemento es PROPIO (es_propio_elemento = TRUE)
+    -- Vaciar campos de ALQUILER
+    IF NEW.es_propio_elemento = TRUE THEN
+        SET NEW.id_proveedor_alquiler_elemento = NULL;
+        SET NEW.precio_dia_alquiler_elemento = NULL;
+        SET NEW.id_forma_pago_alquiler_elemento = NULL;
+        SET NEW.observaciones_alquiler_elemento = NULL;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+-- ========================================================
+-- TRIGGER: Limpiar campos según tipo de propiedad - UPDATE
+-- TABLA: elemento
+-- DESCRIPCIÓN: Limpia campos de compra o alquiler según es_propio_elemento
+-- MOMENTO: BEFORE UPDATE
+-- ========================================================
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_elemento_limpiar_campos_update$$
+
+CREATE TRIGGER trg_elemento_limpiar_campos_update
+BEFORE UPDATE ON elemento
+FOR EACH ROW
+BEGIN
+    -- Si el elemento es ALQUILADO (es_propio_elemento = FALSE)
+    -- Vaciar campos de COMPRA
+    IF NEW.es_propio_elemento = FALSE THEN
+        SET NEW.fecha_compra_elemento = NULL;
+        SET NEW.precio_compra_elemento = NULL;
+        SET NEW.fecha_alta_elemento = NULL;
+        SET NEW.id_proveedor_compra_elemento = NULL;
+        SET NEW.fecha_fin_garantia_elemento = NULL;
+        SET NEW.proximo_mantenimiento_elemento = NULL;
+    END IF;
+    
+    -- Si el elemento es PROPIO (es_propio_elemento = TRUE)
+    -- Vaciar campos de ALQUILER
+    IF NEW.es_propio_elemento = TRUE THEN
+        SET NEW.id_proveedor_alquiler_elemento = NULL;
+        SET NEW.precio_dia_alquiler_elemento = NULL;
+        SET NEW.id_forma_pago_alquiler_elemento = NULL;
+        SET NEW.observaciones_alquiler_elemento = NULL;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+
+-- ========================================================
+-- TRIGGER 1: Sincronizar activo_elemento cuando cambia id_estado_elemento - INSERT
+-- TABLA: elemento
+-- DESCRIPCIÓN: 
+--   - Si id_estado_elemento = 4 → activo_elemento = FALSE
+--   - Si id_estado_elemento ≠ 4 → activo_elemento = TRUE
+-- MOMENTO: BEFORE INSERT
+-- ========================================================
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_elemento_sync_estado_insert$$
+
+CREATE TRIGGER trg_elemento_sync_estado_insert
+BEFORE INSERT ON elemento
+FOR EACH ROW
+BEGIN
+    -- Si el estado es 4 (Dado de baja)
+    IF NEW.id_estado_elemento = 4 THEN
+        SET NEW.activo_elemento = FALSE;
+    ELSE
+        -- Cualquier otro estado
+        SET NEW.activo_elemento = TRUE;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+-- ========================================================
+-- TRIGGER 2: Sincronizar activo_elemento cuando cambia id_estado_elemento - UPDATE
+-- TABLA: elemento
+-- DESCRIPCIÓN: 
+--   - Si id_estado_elemento = 4 → activo_elemento = FALSE
+--   - Si id_estado_elemento ≠ 4 → activo_elemento = TRUE
+-- MOMENTO: BEFORE UPDATE
+-- ========================================================
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_elemento_sync_estado_update$$
+
+CREATE TRIGGER trg_elemento_sync_estado_update
+BEFORE UPDATE ON elemento
+FOR EACH ROW
+BEGIN
+    -- Solo actuar si cambió el id_estado_elemento
+    IF NEW.id_estado_elemento != OLD.id_estado_elemento THEN
+        -- Si el nuevo estado es 4 (Dado de baja)
+        IF NEW.id_estado_elemento = 4 THEN
+            SET NEW.activo_elemento = FALSE;
+        ELSE
+            -- Cualquier otro estado
+            SET NEW.activo_elemento = TRUE;
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+-- ========================================================
+-- TRIGGER 3: Sincronizar id_estado_elemento cuando cambia activo_elemento - INSERT
+-- TABLA: elemento
+-- DESCRIPCIÓN: 
+--   - Si activo_elemento = FALSE → id_estado_elemento = 4 (Dado de baja)
+--   - Si activo_elemento = TRUE → id_estado_elemento = 1 (Disponible)
+-- MOMENTO: BEFORE INSERT
+-- ========================================================
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_elemento_sync_activo_insert$$
+
+CREATE TRIGGER trg_elemento_sync_activo_insert
+BEFORE INSERT ON elemento
+FOR EACH ROW
+BEGIN
+    -- Si se está insertando como inactivo
+    IF NEW.activo_elemento = FALSE THEN
+        SET NEW.id_estado_elemento = 4; -- Dado de baja
+    ELSE
+        -- Si viene activo y el estado no está definido o es inconsistente
+        IF NEW.id_estado_elemento IS NULL OR NEW.id_estado_elemento = 4 THEN
+            SET NEW.id_estado_elemento = 1; -- Disponible
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+-- ========================================================
+-- TRIGGER 4: Sincronizar id_estado_elemento cuando cambia activo_elemento - UPDATE
+-- TABLA: elemento
+-- DESCRIPCIÓN: 
+--   - Si activo_elemento = FALSE → id_estado_elemento = 4 (Dado de baja)
+--   - Si activo_elemento = TRUE → id_estado_elemento = 1 (Disponible)
+-- MOMENTO: BEFORE UPDATE
+-- ========================================================
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_elemento_sync_activo_update$$
+
+CREATE TRIGGER trg_elemento_sync_activo_update
+BEFORE UPDATE ON elemento
+FOR EACH ROW
+BEGIN
+    -- Solo actuar si cambió el activo_elemento
+    IF NEW.activo_elemento != OLD.activo_elemento THEN
+        -- Si se está desactivando
+        IF NEW.activo_elemento = FALSE THEN
+            SET NEW.id_estado_elemento = 4; -- Dado de baja
+        ELSE
+            -- Si se está reactivando
+            SET NEW.id_estado_elemento = 1; -- Disponible
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+
 -- ==========================================================================
 -- YA ESTA - TABLA DE DOCUMENTOS DE ELEMENTOS - con campo boolean de privado
 -- ==========================================================================

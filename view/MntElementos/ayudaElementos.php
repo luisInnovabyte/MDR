@@ -234,6 +234,67 @@
                                                 <li class="mb-1"><span class="badge" style="background-color: #FFC107">Mantenimiento</span> - En mantenimiento programado</li>
                                             </ul>
                                         </div>
+
+                                        <div class="alert alert-success">
+                                            <h6 class="alert-heading">
+                                                <i class="fas fa-magic me-2"></i>Sincronización Automática Estado-Activación
+                                            </h6>
+                                            <p class="mb-2">
+                                                El sistema mantiene <strong>sincronizados automáticamente</strong> el estado del elemento 
+                                                y su activación/desactivación. No necesitas preocuparte por la coherencia, el sistema lo gestiona por ti:
+                                            </p>
+                                            
+                                            <div class="row mt-3">
+                                                <div class="col-md-6">
+                                                    <div class="card bg-light border-0 mb-2">
+                                                        <div class="card-body py-2 px-3">
+                                                            <h6 class="text-primary mb-2">
+                                                                <i class="fas fa-arrow-right me-2"></i>Si cambias el Estado:
+                                                            </h6>
+                                                            <ul class="list-unstyled mb-0 small">
+                                                                <li class="mb-1">
+                                                                    <span class="badge bg-danger me-1">Dado de baja</span>
+                                                                    → El elemento se <strong>desactiva automáticamente</strong>
+                                                                </li>
+                                                                <li class="mb-0">
+                                                                    <span class="badge bg-success me-1">Cualquier otro</span>
+                                                                    → El elemento se <strong>activa automáticamente</strong>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="card bg-light border-0 mb-2">
+                                                        <div class="card-body py-2 px-3">
+                                                            <h6 class="text-info mb-2">
+                                                                <i class="fas fa-arrow-left me-2"></i>Si Activas/Desactivas:
+                                                            </h6>
+                                                            <ul class="list-unstyled mb-0 small">
+                                                                <li class="mb-1">
+                                                                    <i class="fas fa-toggle-off text-danger me-1"></i>
+                                                                    <strong>Desactivar</strong> → Cambia a <span class="badge bg-danger">Dado de baja</span>
+                                                                </li>
+                                                                <li class="mb-0">
+                                                                    <i class="fas fa-toggle-on text-success me-1"></i>
+                                                                    <strong>Activar</strong> → Cambia a <span class="badge bg-success">Disponible</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-3 p-2 bg-white rounded border border-success">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-lightbulb text-warning me-2"></i>
+                                                    <strong>Ejemplo práctico:</strong> Si tienes un elemento "Disponible" y lo desactivas, 
+                                                    automáticamente su estado cambiará a "Dado de baja". Si luego lo reactivas, 
+                                                    volverá a "Disponible". ¡No necesitas cambiar ambos campos manualmente!
+                                                </small>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
