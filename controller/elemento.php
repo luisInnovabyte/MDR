@@ -105,8 +105,28 @@ switch ($op) {
                 // Datos económicos
                 "fecha_compra_elemento" => $row["fecha_compra_elemento"] ?? '',
                 "precio_compra_elemento" => $row["precio_compra_elemento"],
-                "proveedor_compra_elemento" => $row["proveedor_compra_elemento"] ?? '',
                 "fecha_alta_elemento" => $row["fecha_alta_elemento"] ?? '',
+                
+                // Tipo de propiedad y proveedores
+                "es_propio_elemento" => $row["es_propio_elemento"] ?? 1,
+                "id_proveedor_compra_elemento" => $row["id_proveedor_compra_elemento"] ?? null,
+                "codigo_proveedor_compra" => $row["codigo_proveedor_compra"] ?? '',
+                "nombre_proveedor_compra" => $row["nombre_proveedor_compra"] ?? '',
+                "id_proveedor_alquiler_elemento" => $row["id_proveedor_alquiler_elemento"] ?? null,
+                "codigo_proveedor_alquiler" => $row["codigo_proveedor_alquiler"] ?? '',
+                "nombre_proveedor_alquiler" => $row["nombre_proveedor_alquiler"] ?? '',
+                
+                // Datos específicos de alquiler
+                "precio_dia_alquiler_elemento" => $row["precio_dia_alquiler_elemento"] ?? null,
+                "id_forma_pago_alquiler_elemento" => $row["id_forma_pago_alquiler_elemento"] ?? null,
+                "codigo_forma_pago_alquiler" => $row["codigo_forma_pago_alquiler"] ?? '',
+                "nombre_forma_pago_alquiler" => $row["nombre_forma_pago_alquiler"] ?? '',
+                "observaciones_alquiler_elemento" => $row["observaciones_alquiler_elemento"] ?? '',
+                
+                // Campos calculados
+                "tipo_propiedad_elemento" => $row["tipo_propiedad_elemento"] ?? 'PROPIO',
+                "proveedor_principal_elemento" => $row["proveedor_principal_elemento"] ?? '',
+                "estado_configuracion_alquiler" => $row["estado_configuracion_alquiler"] ?? 'N/A',
                 
                 // Garantía y mantenimiento
                 "fecha_fin_garantia_elemento" => $row["fecha_fin_garantia_elemento"] ?? '',
@@ -180,11 +200,18 @@ switch ($op) {
             $altura_elemento = $_POST["altura_elemento"] ?? '';
             $fecha_compra_elemento = $_POST["fecha_compra_elemento"] ?? '';
             $precio_compra_elemento = $_POST["precio_compra_elemento"] ?? 0.00;
-            $proveedor_compra_elemento = $_POST["proveedor_compra_elemento"] ?? '';
             $fecha_alta_elemento = $_POST["fecha_alta_elemento"] ?? '';
             $fecha_fin_garantia_elemento = $_POST["fecha_fin_garantia_elemento"] ?? '';
             $proximo_mantenimiento_elemento = $_POST["proximo_mantenimiento_elemento"] ?? '';
             $observaciones_elemento = $_POST["observaciones_elemento"] ?? '';
+            
+            // Nuevos campos de gestión de alquileres
+            $es_propio_elemento = isset($_POST["es_propio_elemento"]) ? (int)$_POST["es_propio_elemento"] : 1;
+            $id_proveedor_compra_elemento = !empty($_POST["id_proveedor_compra_elemento"]) ? $_POST["id_proveedor_compra_elemento"] : null;
+            $id_proveedor_alquiler_elemento = !empty($_POST["id_proveedor_alquiler_elemento"]) ? $_POST["id_proveedor_alquiler_elemento"] : null;
+            $precio_dia_alquiler_elemento = !empty($_POST["precio_dia_alquiler_elemento"]) ? $_POST["precio_dia_alquiler_elemento"] : null;
+            $id_forma_pago_alquiler_elemento = !empty($_POST["id_forma_pago_alquiler_elemento"]) ? $_POST["id_forma_pago_alquiler_elemento"] : null;
+            $observaciones_alquiler_elemento = $_POST["observaciones_alquiler_elemento"] ?? '';
             
             writeToLog([
                 'action' => 'guardaryeditar_inicio',
@@ -206,11 +233,16 @@ switch ($op) {
                     $altura_elemento,
                     $fecha_compra_elemento,
                     $precio_compra_elemento,
-                    $proveedor_compra_elemento,
                     $fecha_alta_elemento,
                     $fecha_fin_garantia_elemento,
                     $proximo_mantenimiento_elemento,
-                    $observaciones_elemento
+                    $observaciones_elemento,
+                    $es_propio_elemento,
+                    $id_proveedor_compra_elemento,
+                    $id_proveedor_alquiler_elemento,
+                    $precio_dia_alquiler_elemento,
+                    $id_forma_pago_alquiler_elemento,
+                    $observaciones_alquiler_elemento
                 );
 
                 if ($resultado !== false) {
@@ -249,11 +281,16 @@ switch ($op) {
                     $altura_elemento,
                     $fecha_compra_elemento,
                     $precio_compra_elemento,
-                    $proveedor_compra_elemento,
                     $fecha_alta_elemento,
                     $fecha_fin_garantia_elemento,
                     $proximo_mantenimiento_elemento,
-                    $observaciones_elemento
+                    $observaciones_elemento,
+                    $es_propio_elemento,
+                    $id_proveedor_compra_elemento,
+                    $id_proveedor_alquiler_elemento,
+                    $precio_dia_alquiler_elemento,
+                    $id_forma_pago_alquiler_elemento,
+                    $observaciones_alquiler_elemento
                 );
 
                 if ($resultado !== false) {

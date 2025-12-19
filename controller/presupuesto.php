@@ -517,32 +517,41 @@ switch ($op) {
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
         break;
     case "getMaintenanceEvents":
-    $month = $_POST['month'] ?? date('n');
-    $year  = $_POST['year'] ?? date('Y');
 
-    // Llamamos a tu modelo para obtener presupuestos que tengan eventos en ese mes/año
-    $datos = $presupuesto->get_presupuestos_por_mes($month, $year);
+    // Traes EXACTAMENTE lo mismo que el DataTable
+    $datos = $presupuesto->get_presupuestos(); // o el método que uses
 
     $events = [];
+
     foreach ($datos as $row) {
+
+        // Ignorar si no hay fechas
+        if (empty($row["fecha_inicio_evento_presupuesto"]) || empty($row["fecha_fin_evento_presupuesto"])) {
+            continue;
+        }
+
         $events[] = [
-            "numero_presupuesto" => $row["numero_presupuesto"],
-            "nombre_cliente" => $row["nombre_cliente"],
-            "nombre_evento_presupuesto" => $row["nombre_evento_presupuesto"],
-            "nombre_estado_ppto" => $row["nombre_estado_ppto"],
-            "fecha_inicio_evento_presupuesto" => $row["fecha_inicio_evento_presupuesto"],
-            "fecha_fin_evento_presupuesto" => $row["fecha_fin_evento_presupuesto"],
-            "color_estado_ppto" => $row["color_estado_ppto"],
-            "total_presupuesto" => $row["total_presupuesto"]
+            "id"    => $row["id_presupuesto"],
+            "title" => $row["nombre_evento_presupuesto"] . " - " . $row["nombre_cliente"],
+            "start" => $row["fecha_inicio_evento_presupuesto"],
+            "end"   => $row["fecha_fin_evento_presupuesto"],
+            "color" => $row["color_estado_ppto"],
+            "extendedProps" => [
+                "numero_presupuesto" => $row["numero_presupuesto"],
+                "estado" => $row["nombre_estado_ppto"],
+                "prioridad" => $row["prioridad_presupuesto"],
+                "total" => (float)$row["total_presupuesto"]
+            ]
         ];
     }
 
-    header('Content-Type: application/json');
     echo json_encode([
         "status" => "success",
         "data" => $events
     ], JSON_UNESCAPED_UNICODE);
-    break;
+
+    exit;
+
 
 }
 ?>

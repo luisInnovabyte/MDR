@@ -75,7 +75,7 @@ class Elemento
     public function get_elementos_by_estado($id_estado_elemento)
     {
         try {
-            $sql = "SELECT * FROM vista_elemento_completa 
+            $sql = "SELECT * FROM vista_elementos_completa 
                     WHERE id_estado_elemento = ? 
                     ORDER BY codigo_articulo ASC, codigo_elemento ASC";
             $stmt = $this->conexion->prepare($sql);
@@ -98,7 +98,7 @@ class Elemento
     public function get_elementos_disponibles()
     {
         try {
-            $sql = "SELECT * FROM vista_elemento_completa 
+            $sql = "SELECT * FROM vista_elementos_completa 
                     WHERE permite_alquiler_estado_elemento = 1 
                     ORDER BY codigo_articulo ASC, codigo_elemento ASC";
             $stmt = $this->conexion->prepare($sql);
@@ -213,11 +213,16 @@ class Elemento
         $altura_elemento, 
         $fecha_compra_elemento, 
         $precio_compra_elemento, 
-        $proveedor_compra_elemento, 
         $fecha_alta_elemento, 
         $fecha_fin_garantia_elemento, 
         $proximo_mantenimiento_elemento, 
-        $observaciones_elemento
+        $observaciones_elemento,
+        $es_propio_elemento = true,
+        $id_proveedor_compra_elemento = null,
+        $id_proveedor_alquiler_elemento = null,
+        $precio_dia_alquiler_elemento = null,
+        $id_forma_pago_alquiler_elemento = null,
+        $observaciones_alquiler_elemento = null
     ) {
         try {
             // Configurar zona horaria para esta operación
@@ -237,16 +242,21 @@ class Elemento
                         altura_elemento, 
                         fecha_compra_elemento, 
                         precio_compra_elemento, 
-                        proveedor_compra_elemento, 
                         fecha_alta_elemento, 
                         fecha_fin_garantia_elemento, 
                         proximo_mantenimiento_elemento, 
-                        observaciones_elemento, 
+                        observaciones_elemento,
+                        es_propio_elemento,
+                        id_proveedor_compra_elemento,
+                        id_proveedor_alquiler_elemento,
+                        precio_dia_alquiler_elemento,
+                        id_forma_pago_alquiler_elemento,
+                        observaciones_alquiler_elemento, 
                         activo_elemento, 
                         created_at_elemento, 
                         updated_at_elemento
                     ) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -266,11 +276,16 @@ class Elemento
             $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR); 
             $stmt->bindValue(11, $fecha_compra_elemento ?: null, PDO::PARAM_STR); 
             $stmt->bindValue(12, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR); 
-            $stmt->bindValue(13, $proveedor_compra_elemento, PDO::PARAM_STR); 
-            $stmt->bindValue(14, $fecha_alta_elemento ?: null, PDO::PARAM_STR); 
-            $stmt->bindValue(15, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR); 
-            $stmt->bindValue(16, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR); 
-            $stmt->bindValue(17, $observaciones_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(13, $fecha_alta_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(14, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(15, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(16, $observaciones_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(17, (int)$es_propio_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(18, $id_proveedor_compra_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(19, $id_proveedor_alquiler_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(20, $precio_dia_alquiler_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(21, $id_forma_pago_alquiler_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(22, $observaciones_alquiler_elemento, PDO::PARAM_STR); 
                               
             $resultado = $stmt->execute();
             
@@ -312,11 +327,16 @@ class Elemento
         $altura_elemento, 
         $fecha_compra_elemento, 
         $precio_compra_elemento, 
-        $proveedor_compra_elemento, 
         $fecha_alta_elemento, 
         $fecha_fin_garantia_elemento, 
         $proximo_mantenimiento_elemento, 
-        $observaciones_elemento
+        $observaciones_elemento,
+        $es_propio_elemento = true,
+        $id_proveedor_compra_elemento = null,
+        $id_proveedor_alquiler_elemento = null,
+        $precio_dia_alquiler_elemento = null,
+        $id_forma_pago_alquiler_elemento = null,
+        $observaciones_alquiler_elemento = null
     ) {
         try {
             // Configurar zona horaria para esta operación
@@ -335,11 +355,16 @@ class Elemento
                         altura_elemento = ?, 
                         fecha_compra_elemento = ?, 
                         precio_compra_elemento = ?, 
-                        proveedor_compra_elemento = ?, 
                         fecha_alta_elemento = ?, 
                         fecha_fin_garantia_elemento = ?, 
                         proximo_mantenimiento_elemento = ?, 
-                        observaciones_elemento = ?, 
+                        observaciones_elemento = ?,
+                        es_propio_elemento = ?,
+                        id_proveedor_compra_elemento = ?,
+                        id_proveedor_alquiler_elemento = ?,
+                        precio_dia_alquiler_elemento = ?,
+                        id_forma_pago_alquiler_elemento = ?,
+                        observaciones_alquiler_elemento = ?, 
                         updated_at_elemento = NOW() 
                     WHERE id_elemento = ?";
             
@@ -361,12 +386,17 @@ class Elemento
             $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR);
             $stmt->bindValue(11, $fecha_compra_elemento ?: null, PDO::PARAM_STR);
             $stmt->bindValue(12, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR);
-            $stmt->bindValue(13, $proveedor_compra_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(14, $fecha_alta_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(15, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(16, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(17, $observaciones_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(18, $id_elemento, PDO::PARAM_INT); 
+            $stmt->bindValue(13, $fecha_alta_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(14, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(15, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(16, $observaciones_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(17, (int)$es_propio_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(18, $id_proveedor_compra_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(19, $id_proveedor_alquiler_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(20, $precio_dia_alquiler_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(21, $id_forma_pago_alquiler_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(22, $observaciones_alquiler_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(23, $id_elemento, PDO::PARAM_INT);
 
             $resultado = $stmt->execute();
             

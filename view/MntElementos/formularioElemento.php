@@ -197,11 +197,47 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: Datos de Adquisición -->
-                    <div class="card mb-4 border-info">
+                    <!-- SECCIÓN: Tipo de Propiedad -->
+                    <div class="card mb-4 border-dark">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0 tx-bold">
+                                <i class="fas fa-building me-2"></i>Tipo de Propiedad del Equipo
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">¿El equipo es propio de la empresa? <span class="tx-danger">*</span></label>
+                                    <div class="d-flex gap-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="es_propio_elemento" id="es_propio_si" value="1" checked>
+                                            <label class="form-check-label" for="es_propio_si">
+                                                <i class="fas fa-check-circle text-success me-1"></i>
+                                                <strong>SÍ - Equipo Propio</strong>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="es_propio_elemento" id="es_propio_no" value="0">
+                                            <label class="form-check-label" for="es_propio_no">
+                                                <i class="fas fa-handshake text-primary me-1"></i>
+                                                <strong>NO - Equipo Alquilado a Proveedor</strong>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Seleccione "SÍ" si el equipo pertenece a la empresa. Seleccione "NO" si el equipo es alquilado a un proveedor.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: Datos de Adquisición (SOLO EQUIPOS PROPIOS) (SOLO EQUIPOS PROPIOS) -->
+                    <div class="card mb-4 border-info" id="seccion_equipo_propio">
                         <div class="card-header bg-info text-white">
                             <h5 class="mb-0 tx-bold">
-                                <i class="fas fa-shopping-cart me-2"></i>Datos de Adquisición
+                                <i class="fas fa-shopping-cart me-2"></i>Datos de Adquisición (Equipo Propio)
                             </h5>
                         </div>
                         <div class="card-body">
@@ -225,8 +261,8 @@
 
                             <div class="row mb-3">
                                 <div class="col-12">
-                                    <label for="proveedor_compra_elemento" class="form-label">Proveedor de Compra:</label>
-                                    <select class="form-control" name="proveedor_compra_elemento" id="proveedor_compra_elemento">
+                                    <label for="id_proveedor_compra_elemento" class="form-label">Proveedor de Compra:</label>
+                                    <select class="form-control" name="id_proveedor_compra_elemento" id="id_proveedor_compra_elemento">
                                         <option value="">Seleccione un proveedor</option>
                                     </select>
                                     <small class="form-text text-muted">Proveedor que vendió este elemento</small>
@@ -235,11 +271,54 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: Garantía y Mantenimiento -->
-                    <div class="card mb-4 border-warning">
+                    <!-- SECCIÓN: Datos de Alquiler (SOLO EQUIPOS ALQUILADOS) -->
+                    <div class="card mb-4 border-primary" id="seccion_equipo_alquilado" style="display: none;">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0 tx-bold">
+                                <i class="fas fa-handshake me-2"></i>Datos de Alquiler (Equipo Alquilado a Proveedor)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="id_proveedor_alquiler_elemento" class="form-label">Proveedor de Alquiler: <span class="tx-danger">*</span></label>
+                                    <select class="form-control" name="id_proveedor_alquiler_elemento" id="id_proveedor_alquiler_elemento">
+                                        <option value="">Seleccione un proveedor</option>
+                                    </select>
+                                    <small class="form-text text-muted">Proveedor al que alquilamos este equipo</small>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="precio_dia_alquiler_elemento" class="form-label">Precio por Día (€): <span class="tx-danger">*</span></label>
+                                    <input type="number" class="form-control" name="precio_dia_alquiler_elemento" id="precio_dia_alquiler_elemento" min="0" step="0.01" placeholder="0.00">
+                                    <small class="form-text text-muted">Precio diario que pagamos al proveedor</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="id_forma_pago_alquiler_elemento" class="form-label">Forma de Pago:</label>
+                                    <select class="form-control" name="id_forma_pago_alquiler_elemento" id="id_forma_pago_alquiler_elemento">
+                                        <option value="">Seleccione una forma de pago</option>
+                                    </select>
+                                    <small class="form-text text-muted">Condiciones de pago acordadas con el proveedor</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="observaciones_alquiler_elemento" class="form-label">Condiciones de Alquiler:</label>
+                                    <textarea class="form-control" name="observaciones_alquiler_elemento" id="observaciones_alquiler_elemento" rows="3" placeholder="Ej: Mínimo 7 días, incluye seguro, contacto: Juan Pérez, etc."></textarea>
+                                    <small class="form-text text-muted">Condiciones especiales: mínimo de días, restricciones, contacto del proveedor, etc.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: Garantía y Mantenimiento (SOLO EQUIPOS PROPIOS) (SOLO EQUIPOS PROPIOS) -->
+                    <div class="card mb-4 border-warning" id="seccion_garantia_mantenimiento">
                         <div class="card-header bg-warning text-dark">
                             <h5 class="mb-0 tx-bold">
-                                <i class="fas fa-tools me-2"></i>Garantía y Mantenimiento
+                                <i class="fas fa-tools me-2"></i>Garantía y Mantenimiento (Equipo Propio)
                             </h5>
                         </div>
                         <div class="card-body">

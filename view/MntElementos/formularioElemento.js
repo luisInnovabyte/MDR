@@ -12,11 +12,18 @@ let idArticulo = null;
    ========================================= */
 
 $(document).ready(function() {
+    console.log('=== Iniciando formularioElemento.js ===');
+    console.log('jQuery disponible:', typeof jQuery !== 'undefined');
+    
     // Obtener parámetros de URL
     const urlParams = new URLSearchParams(window.location.search);
     modo = urlParams.get('modo') || 'nuevo';
     idElemento = urlParams.get('id');
     idArticulo = urlParams.get('id_articulo');
+    
+    console.log('Modo:', modo);
+    console.log('ID Elemento:', idElemento);
+    console.log('ID Artículo:', idArticulo);
 
     // Validar que id_articulo esté presente
     if (!idArticulo) {
@@ -40,6 +47,11 @@ $(document).ready(function() {
     // Cargar catálogos
     cargarEstadosElemento();
     cargarProveedores();
+    cargarFormasPago();
+
+    // Configurar eventos del tipo de propiedad
+    console.log('Configurando eventos de tipo de propiedad...');
+    configurarEventosTipoPropiedad();
 
     // Configurar datepickers
     configurarDatepickers();
@@ -101,22 +113,28 @@ function configurarModoEdicion(id) {
  * Carga la información del artículo
  */
 function cargarInfoArticulo(id) {
+    console.log('🔄 Cargando información del artículo ID:', id);
     $.ajax({
         url: '../../controller/articulo.php?op=mostrar',
         method: 'POST',
         data: { id_articulo: id },
         dataType: 'json',
         success: function(response) {
+            console.log('✅ Respuesta del artículo:', response);
             if (response && response.nombre_articulo) {
                 $('#nombre-articulo').text(response.nombre_articulo);
                 $('#codigo-articulo').text(response.codigo_articulo || '--');
                 $('#id-articulo').text(id);
+                console.log('✅ Información del artículo cargada correctamente');
             } else {
+                console.warn('⚠️ Respuesta del artículo sin nombre_articulo:', response);
                 $('#nombre-articulo').text('No disponible');
             }
         },
         error: function(xhr, status, error) {
-            console.error('Error al cargar info del artículo:', error);
+            console.error('❌ Error al cargar info del artículo:', error);
+            console.error('❌ Status:', status);
+            console.error('❌ Response:', xhr.responseText);
             $('#nombre-articulo').text('Error al cargar');
         }
     });
@@ -220,7 +238,7 @@ function cargarEstadosElemento() {
 }
 
 /**
- * Carga los proveedores activos en el select
+ * Carga los proveedores activos en ambos selects (compra y alquiler)
  */
 function cargarProveedores() {
     console.log('🔄 Cargando proveedores...');
@@ -230,16 +248,25 @@ function cargarProveedores() {
         dataType: 'json',
         success: function(response) {
             console.log('✅ Respuesta proveedores:', response);
-            const $select = $('#proveedor_compra_elemento');
-            $select.empty();
-            $select.append('<option value="">Seleccione un proveedor</option>');
+            
+            // Llenar select de proveedor de compra (id_proveedor)
+            const $selectCompra = $('#id_proveedor_compra_elemento');
+            $selectCompra.empty();
+            $selectCompra.append('<option value="">Seleccione un proveedor</option>');
+            
+            // Llenar select de proveedor de alquiler (id_proveedor)
+            const $selectAlquiler = $('#id_proveedor_alquiler_elemento');
+            $selectAlquiler.empty();
+            $selectAlquiler.append('<option value="">Seleccione un proveedor</option>');
             
             if (response && response.data && Array.isArray(response.data)) {
                 console.log('📦 Total proveedores recibidos:', response.data.length);
                 response.data.forEach(function(proveedor) {
-                    $select.append(`<option value="${proveedor.nombre_proveedor}">${proveedor.nombre_proveedor}</option>`);
+                    // Usar id_proveedor como value, no nombre_proveedor
+                    $selectCompra.append(`<option value="${proveedor.id_proveedor}">${proveedor.nombre_proveedor}</option>`);
+                    $selectAlquiler.append(`<option value="${proveedor.id_proveedor}">${proveedor.nombre_proveedor}</option>`);
                 });
-                console.log('✅ Proveedores cargados:', response.data.length);
+                console.log('✅ Proveedores cargados en ambos selects:', response.data.length);
             } else {
                 console.warn('⚠️ Estructura de respuesta inesperada:', response);
             }
@@ -250,6 +277,121 @@ function cargarProveedores() {
             console.error('Status:', status);
         }
     });
+}
+
+/**
+ * Carga las formas de pago activas en el select
+ */
+function cargarFormasPago() {
+    console.log('🔄 Cargando formas de pago...');
+    $.ajax({
+        url: '../../controller/formaspago.php?op=listar',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            console.log('✅ Respuesta formas de pago:', response);
+            const $select = $('#id_forma_pago_alquiler_elemento');
+            $select.empty();
+            $select.append('<option value="">Seleccione una forma de pago</option>');
+            
+            if (response && response.data && Array.isArray(response.data)) {
+                console.log('📦 Total formas de pago recibidas:', response.data.length);
+                response.data.forEach(function(formaPago) {
+                    if (formaPago.activo_pago == 1 || formaPago.activo_pago === '1' || formaPago.activo_pago === true) {
+                        $select.append(`<option value="${formaPago.id_pago}">${formaPago.nombre_pago}</option>`);
+                    }
+                });
+                console.log('✅ Formas de pago cargadas');
+            } else {
+                console.warn('⚠️ Estructura de respuesta inesperada:', response);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('❌ Error al cargar formas de pago:', error);
+            console.error('Respuesta:', xhr.responseText);
+            console.error('Status:', status);
+        }
+    });
+}
+
+/**
+ * Configura los eventos para el tipo de propiedad
+ */
+function configurarEventosTipoPropiedad() {
+    console.log('=== Configurando eventos de tipo de propiedad ===');
+    
+    // Verificar que los elementos existan
+    const radioButtons = $('input[name="es_propio_elemento"]');
+    console.log('Radio buttons encontrados:', radioButtons.length);
+    
+    // Evento al cambiar el tipo de propiedad
+    radioButtons.on('change', function() {
+        const esPropio = $(this).val() === '1';
+        console.log('Radio button cambiado - Es Propio:', esPropio);
+        mostrarSeccionesSegunTipo(esPropio);
+    });
+    
+    // Verificar el valor inicial
+    const valorInicial = $('input[name="es_propio_elemento"]:checked').val();
+    console.log('Valor inicial del radio:', valorInicial);
+    
+    // Inicializar con el valor por defecto (Equipo Propio)
+    mostrarSeccionesSegunTipo(true);
+}
+
+/**
+ * Muestra u oculta secciones según el tipo de propiedad
+ */
+function mostrarSeccionesSegunTipo(esPropio) {
+    console.log('=== mostrarSeccionesSegunTipo - Es Propio:', esPropio, '===');
+    
+    if (esPropio) {
+        console.log('Mostrando secciones de EQUIPO PROPIO');
+        
+        // Mostrar secciones de EQUIPO PROPIO
+        $('#seccion_equipo_propio').slideDown(300);
+        $('#seccion_garantia_mantenimiento').slideDown(300);
+        
+        // Ocultar sección de EQUIPO ALQUILADO
+        $('#seccion_equipo_alquilado').slideUp(300);
+        
+        // Hacer campos obligatorios de equipo propio
+        $('#id_proveedor_compra_elemento').prop('required', false); // Opcional
+        
+        // Quitar obligatoriedad de campos de alquiler
+        $('#id_proveedor_alquiler_elemento').prop('required', false);
+        $('#precio_dia_alquiler_elemento').prop('required', false);
+        
+        // Limpiar campos de alquiler
+        $('#id_proveedor_alquiler_elemento').val('');
+        $('#precio_dia_alquiler_elemento').val('');
+        $('#id_forma_pago_alquiler_elemento').val('');
+        $('#observaciones_alquiler_elemento').val('');
+    } else {
+        console.log('Mostrando secciones de EQUIPO ALQUILADO');
+        
+        // Ocultar secciones de EQUIPO PROPIO
+        $('#seccion_equipo_propio').slideUp(300);
+        $('#seccion_garantia_mantenimiento').slideUp(300);
+        
+        // Mostrar sección de EQUIPO ALQUILADO
+        $('#seccion_equipo_alquilado').slideDown(300);
+        
+        // Hacer campos obligatorios de equipo alquilado
+        $('#id_proveedor_alquiler_elemento').prop('required', true);
+        $('#precio_dia_alquiler_elemento').prop('required', true);
+        
+        // Quitar obligatoriedad de campos de equipo propio
+        $('#id_proveedor_compra_elemento').prop('required', false);
+        
+        // Limpiar campos de equipo propio
+        $('#id_proveedor_compra_elemento').val('');
+        $('#fecha_compra_elemento').val('');
+        $('#precio_compra_elemento').val('');
+        $('#fecha_alta_elemento').val('');
+        $('#fecha_fin_garantia_elemento').val('');
+        $('#proximo_mantenimiento_elemento').val('');
+    }
 }
 
 /**
@@ -295,15 +437,26 @@ function cargarDatosElemento(id) {
                 $('#pasillo_columna_elemento').val(data.pasillo_columna_elemento || '');
                 $('#altura_elemento').val(data.altura_elemento || '');
                 
-                // Datos de adquisición
+                // Tipo de propiedad
+                const esPropio = data.es_propio_elemento == 1 || data.es_propio_elemento === '1' || data.es_propio_elemento === true;
+                $(`input[name="es_propio_elemento"][value="${esPropio ? '1' : '0'}"]`).prop('checked', true);
+                mostrarSeccionesSegunTipo(esPropio);
+                
+                // Datos de adquisición (equipo propio)
                 if (data.fecha_compra_elemento) {
                     $('#fecha_compra_elemento').val(formatoFechaEuropeo(data.fecha_compra_elemento));
                 }
                 $('#precio_compra_elemento').val(data.precio_compra_elemento || '');
-                $('#proveedor_compra_elemento').val(data.proveedor_compra_elemento || '');
+                $('#id_proveedor_compra_elemento').val(data.id_proveedor_compra_elemento || '');
                 if (data.fecha_alta_elemento) {
                     $('#fecha_alta_elemento').val(formatoFechaEuropeo(data.fecha_alta_elemento));
                 }
+                
+                // Datos de alquiler (equipo alquilado)
+                $('#id_proveedor_alquiler_elemento').val(data.id_proveedor_alquiler_elemento || '');
+                $('#precio_dia_alquiler_elemento').val(data.precio_dia_alquiler_elemento || '');
+                $('#id_forma_pago_alquiler_elemento').val(data.id_forma_pago_alquiler_elemento || '');
+                $('#observaciones_alquiler_elemento').val(data.observaciones_alquiler_elemento || '');
                 
                 // Garantía y mantenimiento
                 if (data.fecha_fin_garantia_elemento) {
@@ -599,10 +752,29 @@ function guardarElemento() {
     // Validar descripción
     esValido &= validarCampo($('#descripcion_elemento'), validarDescripcion, true);
     
-    // Validar precio si se ingresó
-    const precio = $('#precio_compra_elemento').val().trim();
-    if (precio) {
-        esValido &= validarCampo($('#precio_compra_elemento'), validarPrecio, false);
+    // Validar según tipo de propiedad
+    let esPropio = $('input[name="es_propio_elemento"]:checked').val();
+    
+    if (esPropio === '1') {
+        // Validar precio de compra si se ingresó
+        const precio = $('#precio_compra_elemento').val().trim();
+        if (precio) {
+            esValido &= validarCampo($('#precio_compra_elemento'), validarPrecio, false);
+        }
+    } else {
+        // Validar campos obligatorios de alquiler
+        const proveedorAlquiler = $('#id_proveedor_alquiler_elemento').val();
+        const precioAlquiler = $('#precio_dia_alquiler_elemento').val();
+        
+        if (!proveedorAlquiler) {
+            mostrarError($('#id_proveedor_alquiler_elemento'), 'Debe seleccionar un proveedor de alquiler');
+            esValido = false;
+        }
+        
+        if (!precioAlquiler || parseFloat(precioAlquiler) <= 0) {
+            mostrarError($('#precio_dia_alquiler_elemento'), 'El precio por día debe ser mayor a 0');
+            esValido = false;
+        }
     }
     
     // Validar código de barras (único) - esto se verifica en blur, pero comprobamos que no tenga error
@@ -626,6 +798,25 @@ function guardarElemento() {
     
     // Crear FormData
     const formData = new FormData($('#formElemento')[0]);
+    
+    // IMPORTANTE: Asegurarse de incluir el campo es_propio_elemento
+    // (algunos navegadores no incluyen radio buttons si no están marcados correctamente)
+    esPropio = $('input[name="es_propio_elemento"]:checked').val();
+    formData.set('es_propio_elemento', esPropio || '1');
+    
+    // Si NO es propio (esPropio === '0'), forzar la inclusión de los campos de alquiler
+    if (esPropio === '0') {
+        // Asegurarse de que los campos de alquiler se incluyan explícitamente
+        const idProveedorAlquiler = $('#id_proveedor_alquiler_elemento').val();
+        const precioAlquiler = $('#precio_dia_alquiler_elemento').val();
+        const idFormaPagoAlquiler = $('#id_forma_pago_alquiler_elemento').val();
+        const obsAlquiler = $('#observaciones_alquiler_elemento').val();
+        
+        if (idProveedorAlquiler) formData.set('id_proveedor_alquiler_elemento', idProveedorAlquiler);
+        if (precioAlquiler) formData.set('precio_dia_alquiler_elemento', precioAlquiler);
+        if (idFormaPagoAlquiler) formData.set('id_forma_pago_alquiler_elemento', idFormaPagoAlquiler);
+        if (obsAlquiler) formData.set('observaciones_alquiler_elemento', obsAlquiler);
+    }
     
     // Convertir fechas de formato europeo (dd/mm/yyyy) a formato MySQL (yyyy-mm-dd)
     ['fecha_compra_elemento', 'fecha_alta_elemento', 'fecha_fin_garantia_elemento', 'proximo_mantenimiento_elemento'].forEach(function(campo) {

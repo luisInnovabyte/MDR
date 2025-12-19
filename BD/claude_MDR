@@ -1785,157 +1785,115 @@ CREATE TABLE elemento (
 
 ALTER TABLE elemento DROP INDEX uk_articulo;
 
+
+
 -- ========================================================
--- VISTA COMPLETA DE ELEMENTOS (ACTUALIZADA CON UBICACIÓN DETALLADA)
--- CUIDADO SOLO ACTIVOS
+-- CORRECCIÓN Y AMPLIACIÓN TABLA ELEMENTO
+-- DESCRIPCIÓN: Separar proveedores de compra/alquiler y añadir
+--              campos específicos para gestión de alquileres
+-- FECHA: 2024-12-18
 -- ========================================================
 
-DROP VIEW IF EXISTS vista_elemento_completa;
+ALTER TABLE elemento
 
-CREATE VIEW vista_elemento_completa AS
-SELECT 
-    -- =====================================================
-    -- DATOS DEL ELEMENTO
-    -- =====================================================
-    e.id_elemento,
-    e.codigo_elemento,
-    e.codigo_barras_elemento,
-    e.descripcion_elemento,
-    e.numero_serie_elemento,
-    e.modelo_elemento,
-    
-    -- =====================================================
-    -- UBICACIÓN DETALLADA (3 CAMPOS)
-    -- =====================================================
-    e.nave_elemento,
-    e.pasillo_columna_elemento,
-    e.altura_elemento,
-    
-    -- Ubicación concatenada para visualización rápida
-    CONCAT_WS(' | ', 
-        COALESCE(e.nave_elemento, ''),
-        COALESCE(e.pasillo_columna_elemento, ''),
-        COALESCE(e.altura_elemento, '')
-    ) AS ubicacion_completa_elemento,
-    
-    -- =====================================================
-    -- DATOS DEL ARTÍCULO
-    -- =====================================================
-    a.id_articulo,
-    a.codigo_articulo,
-    a.nombre_articulo,
-    a.name_articulo,
-    a.precio_alquiler_articulo,
-    
-    -- =====================================================
-    -- DATOS DE LA FAMILIA (viene del artículo)
-    -- =====================================================
-    f.id_familia,
-    f.codigo_familia,
-    f.nombre_familia,
-    f.name_familia,
-    
-    -- =====================================================
-    -- DATOS DEL GRUPO (viene de la familia)
-    -- =====================================================
-    g.id_grupo,
-    g.codigo_grupo,
-    g.nombre_grupo,
-    
-    -- =====================================================
-    -- DATOS DE LA MARCA
-    -- =====================================================
-    m.id_marca,
-    m.codigo_marca,
-    m.nombre_marca,
-    
-    -- =====================================================
-    -- DATOS DEL ESTADO
-    -- =====================================================
-    est.id_estado_elemento,
-    est.codigo_estado_elemento,
-    est.descripcion_estado_elemento,
-    est.color_estado_elemento,
-    est.permite_alquiler_estado_elemento,
-    
-    -- =====================================================
-    -- DATOS ECONÓMICOS
-    -- =====================================================
-    e.fecha_compra_elemento,
-    e.precio_compra_elemento,
-    e.proveedor_compra_elemento,
-    e.fecha_alta_elemento,
-    
-    -- =====================================================
-    -- GARANTÍA Y MANTENIMIENTO
-    -- =====================================================
-    e.fecha_fin_garantia_elemento,
-    e.proximo_mantenimiento_elemento,
-    
-    -- Indicadores de vencimientos
-    CASE 
-        WHEN e.fecha_fin_garantia_elemento < CURDATE() THEN 'Vencida'
-        WHEN e.fecha_fin_garantia_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Por vencer'
-        WHEN e.fecha_fin_garantia_elemento > DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Vigente'
-        ELSE 'Sin garantía'
-    END AS estado_garantia_elemento,
-    
-    CASE 
-        WHEN e.proximo_mantenimiento_elemento < CURDATE() THEN 'Atrasado'
-        WHEN e.proximo_mantenimiento_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Próximo'
-        WHEN e.proximo_mantenimiento_elemento > DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Al día'
-        ELSE 'Sin programar'
-    END AS estado_mantenimiento_elemento,
-    
-    -- =====================================================
-    -- OBSERVACIONES
-    -- =====================================================
-    e.observaciones_elemento,
-    
-    -- =====================================================
-    -- ESTADO ACTIVO
-    -- =====================================================
-    e.activo_elemento,
-    
-    -- =====================================================
-    -- TIMESTAMPS
-    -- =====================================================
-    e.created_at_elemento,
-    e.updated_at_elemento,
-    
-    -- =====================================================
-    -- CAMPOS CALCULADOS ADICIONALES
-    -- =====================================================
-    
-    -- Jerarquía completa
-    CONCAT_WS(' > ',
-        COALESCE(g.nombre_grupo, 'Sin grupo'),
-        f.nombre_familia,
-        a.nombre_articulo,
-        e.descripcion_elemento
-    ) AS jerarquia_completa_elemento,
-    
-    -- Antigüedad en días
-    DATEDIFF(CURDATE(), e.fecha_alta_elemento) AS dias_en_servicio_elemento,
-    
-    -- Antigüedad en años (redondeado a 2 decimales)
-    ROUND(DATEDIFF(CURDATE(), e.fecha_alta_elemento) / 365.25, 2) AS anios_en_servicio_elemento
-    
-FROM elemento e
-INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
-INNER JOIN familia f ON a.id_familia = f.id_familia
-LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
-LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
-INNER JOIN estado_elemento est ON e.id_estado_elemento = est.id_estado_elemento
-WHERE e.activo_elemento = TRUE;
+-- =====================================================
+-- PASO 1: ELIMINAR CAMPOS ANTIGUOS/INCORRECTOS
+-- =====================================================
+DROP COLUMN proveedor_compra_elemento
 
+-- =====================================================
+-- PASO 2: AÑADIR CAMPO TIPO DE PROPIEDAD
+-- =====================================================
+ADD COLUMN es_propio_elemento BOOLEAN NOT NULL DEFAULT TRUE
+    COMMENT 'TRUE: Equipo propio de la empresa | FALSE: Equipo alquilado a proveedor'
+    AFTER activo_elemento,
 
+-- =====================================================
+-- PASO 3: PROVEEDOR DE COMPRA (cuando es_propio = TRUE)
+-- =====================================================
+ADD COLUMN id_proveedor_compra_elemento INT UNSIGNED
+    COMMENT 'Proveedor que vendió el elemento (solo si es_propio = TRUE)'
+    AFTER es_propio_elemento,
+
+-- =====================================================
+-- PASO 4: PROVEEDOR DE ALQUILER (cuando es_propio = FALSE)
+-- =====================================================
+ADD COLUMN id_proveedor_alquiler_elemento INT UNSIGNED
+    COMMENT 'Proveedor al que se alquila el elemento (solo si es_propio = FALSE)'
+    AFTER id_proveedor_compra_elemento,
+
+-- =====================================================
+-- PASO 5: DATOS ESPECÍFICOS DEL ALQUILER
+-- =====================================================
+ADD COLUMN precio_dia_alquiler_elemento DECIMAL(10,2)
+    COMMENT 'Precio por día que pagamos al proveedor por alquilar este elemento'
+    AFTER id_proveedor_alquiler_elemento,
+
+ADD COLUMN observaciones_alquiler_elemento TEXT
+    COMMENT 'Condiciones especiales de alquiler: mínimo de días, restricciones, contacto, etc.'
+    AFTER precio_dia_alquiler_elemento,
+
+-- =====================================================
+-- PASO 6: FOREIGN KEYS
+-- =====================================================
+ADD CONSTRAINT fk_elemento_proveedor_compra 
+    FOREIGN KEY (id_proveedor_compra_elemento) 
+    REFERENCES proveedor(id_proveedor) 
+    ON DELETE SET NULL 
+    ON UPDATE CASCADE,
+
+ADD CONSTRAINT fk_elemento_proveedor_alquiler 
+    FOREIGN KEY (id_proveedor_alquiler_elemento) 
+    REFERENCES proveedor(id_proveedor) 
+    ON DELETE SET NULL 
+    ON UPDATE CASCADE,
+
+-- =====================================================
+-- PASO 7: ÍNDICES
+-- =====================================================
+ADD INDEX idx_es_propio_elemento (es_propio_elemento),
+ADD INDEX idx_id_proveedor_compra_elemento (id_proveedor_compra_elemento),
+ADD INDEX idx_id_proveedor_alquiler_elemento (id_proveedor_alquiler_elemento);
 
 
 
 -- ========================================================
--- VISTA COMPLETA DE ELEMENTOS (ACTUALIZADA CON UBICACIÓN DETALLADA)
--- TODOS LOS ELEMENTOS
+-- AMPLIACIÓN TABLA ELEMENTO - Añadir forma de pago del alquiler
+-- DESCRIPCIÓN: Añadir forma de pago cuando el elemento es alquilado
+-- FECHA: 2024-12-18
+-- ========================================================
+
+ALTER TABLE elemento
+
+-- =====================================================
+-- FORMA DE PAGO DEL ALQUILER
+-- =====================================================
+ADD COLUMN id_forma_pago_alquiler_elemento INT UNSIGNED
+    COMMENT 'Forma de pago acordada con el proveedor para el alquiler (solo si es_propio = FALSE)'
+    AFTER precio_dia_alquiler_elemento,
+
+-- =====================================================
+-- FOREIGN KEY FORMA DE PAGO
+-- =====================================================
+ADD CONSTRAINT fk_elemento_forma_pago_alquiler 
+    FOREIGN KEY (id_forma_pago_alquiler_elemento) 
+    REFERENCES forma_pago(id_pago) 
+    ON DELETE SET NULL 
+    ON UPDATE CASCADE,
+
+-- =====================================================
+-- ÍNDICE
+-- =====================================================
+ADD INDEX idx_id_forma_pago_alquiler_elemento (id_forma_pago_alquiler_elemento);
+
+
+
+-- ========================================================
+-- VISTA: vista_elementos_completa (ACTUALIZADA CON FORMA DE PAGO)
+-- DESCRIPCIÓN: Vista completa de TODOS los elementos (activos e inactivos)
+-- DEPENDENCIAS: elemento, articulo, familia, grupo_articulo, marca, 
+--               estado_elemento, proveedor (compra y alquiler), forma_pago
+-- FECHA: 2024-12-18
 -- ========================================================
 
 DROP VIEW IF EXISTS vista_elementos_completa;
@@ -1967,6 +1925,71 @@ SELECT
     ) AS ubicacion_completa_elemento,
     
     -- =====================================================
+    -- INFORMACIÓN DE COMPRA (cuando es propio)
+    -- =====================================================
+    e.fecha_compra_elemento,
+    e.precio_compra_elemento,
+    e.fecha_alta_elemento,
+    
+    -- =====================================================
+    -- GARANTÍA Y MANTENIMIENTO
+    -- =====================================================
+    e.fecha_fin_garantia_elemento,
+    e.proximo_mantenimiento_elemento,
+    
+    e.observaciones_elemento,
+    
+    -- =====================================================
+    -- TIPO DE PROPIEDAD Y PROVEEDORES
+    -- =====================================================
+    e.es_propio_elemento,
+    e.id_proveedor_compra_elemento,
+    e.id_proveedor_alquiler_elemento,
+    
+    -- =====================================================
+    -- DATOS ESPECÍFICOS DE ALQUILER
+    -- =====================================================
+    e.precio_dia_alquiler_elemento,
+    e.id_forma_pago_alquiler_elemento,
+    e.observaciones_alquiler_elemento,
+    
+    -- =====================================================
+    -- DATOS DEL PROVEEDOR DE COMPRA (si existe)
+    -- =====================================================
+    prov_compra.codigo_proveedor AS codigo_proveedor_compra,
+    prov_compra.nombre_proveedor AS nombre_proveedor_compra,
+    prov_compra.telefono_proveedor AS telefono_proveedor_compra,
+    prov_compra.email_proveedor AS email_proveedor_compra,
+    prov_compra.nif_proveedor AS nif_proveedor_compra,
+    
+    -- =====================================================
+    -- DATOS DEL PROVEEDOR DE ALQUILER (si existe)
+    -- =====================================================
+    prov_alquiler.codigo_proveedor AS codigo_proveedor_alquiler,
+    prov_alquiler.nombre_proveedor AS nombre_proveedor_alquiler,
+    prov_alquiler.telefono_proveedor AS telefono_proveedor_alquiler,
+    prov_alquiler.email_proveedor AS email_proveedor_alquiler,
+    prov_alquiler.nif_proveedor AS nif_proveedor_alquiler,
+    prov_alquiler.persona_contacto_proveedor AS persona_contacto_proveedor_alquiler,
+    
+    -- =====================================================
+    -- DATOS DE LA FORMA DE PAGO DEL ALQUILER (si existe)
+    -- =====================================================
+    fp_alquiler.codigo_pago AS codigo_forma_pago_alquiler,
+    fp_alquiler.nombre_pago AS nombre_forma_pago_alquiler,
+    fp_alquiler.porcentaje_anticipo_pago AS porcentaje_anticipo_alquiler,
+    fp_alquiler.dias_anticipo_pago AS dias_anticipo_alquiler,
+    fp_alquiler.porcentaje_final_pago AS porcentaje_final_alquiler,
+    fp_alquiler.dias_final_pago AS dias_final_alquiler,
+    fp_alquiler.descuento_pago AS descuento_forma_pago_alquiler,
+    
+    -- =====================================================
+    -- DATOS DEL MÉTODO DE PAGO DEL ALQUILER (si existe)
+    -- =====================================================
+    mp_alquiler.codigo_metodo_pago AS codigo_metodo_pago_alquiler,
+    mp_alquiler.nombre_metodo_pago AS nombre_metodo_pago_alquiler,
+    
+    -- =====================================================
     -- DATOS DEL ARTÍCULO
     -- =====================================================
     a.id_articulo,
@@ -1998,7 +2021,7 @@ SELECT
     m.nombre_marca,
     
     -- =====================================================
-    -- DATOS DEL ESTADO
+    -- DATOS DEL ESTADO DEL ELEMENTO
     -- =====================================================
     est.id_estado_elemento,
     est.codigo_estado_elemento,
@@ -2007,47 +2030,9 @@ SELECT
     est.permite_alquiler_estado_elemento,
     
     -- =====================================================
-    -- DATOS ECONÓMICOS
-    -- =====================================================
-    e.fecha_compra_elemento,
-    e.precio_compra_elemento,
-    e.proveedor_compra_elemento,
-    e.fecha_alta_elemento,
-    
-    -- =====================================================
-    -- GARANTÍA Y MANTENIMIENTO
-    -- =====================================================
-    e.fecha_fin_garantia_elemento,
-    e.proximo_mantenimiento_elemento,
-    
-    -- Indicadores de vencimientos
-    CASE 
-        WHEN e.fecha_fin_garantia_elemento < CURDATE() THEN 'Vencida'
-        WHEN e.fecha_fin_garantia_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Por vencer'
-        WHEN e.fecha_fin_garantia_elemento > DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Vigente'
-        ELSE 'Sin garantía'
-    END AS estado_garantia_elemento,
-    
-    CASE 
-        WHEN e.proximo_mantenimiento_elemento < CURDATE() THEN 'Atrasado'
-        WHEN e.proximo_mantenimiento_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Próximo'
-        WHEN e.proximo_mantenimiento_elemento > DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Al día'
-        ELSE 'Sin programar'
-    END AS estado_mantenimiento_elemento,
-    
-    -- =====================================================
-    -- OBSERVACIONES
-    -- =====================================================
-    e.observaciones_elemento,
-    
-    -- =====================================================
-    -- ESTADO ACTIVO
+    -- CAMPOS DE CONTROL
     -- =====================================================
     e.activo_elemento,
-    
-    -- =====================================================
-    -- TIMESTAMPS
-    -- =====================================================
     e.created_at_elemento,
     e.updated_at_elemento,
     
@@ -2063,6 +2048,59 @@ SELECT
         e.descripcion_elemento
     ) AS jerarquia_completa_elemento,
     
+    -- Tipo de propiedad (etiqueta legible)
+    CASE 
+        WHEN e.es_propio_elemento = TRUE THEN 'PROPIO'
+        ELSE 'ALQUILADO A PROVEEDOR'
+    END AS tipo_propiedad_elemento,
+    
+    -- Proveedor aplicable según tipo
+    CASE 
+        WHEN e.es_propio_elemento = TRUE THEN prov_compra.nombre_proveedor
+        ELSE prov_alquiler.nombre_proveedor
+    END AS proveedor_principal_elemento,
+    
+    -- Estado de configuración de alquiler
+    CASE 
+        WHEN e.es_propio_elemento = TRUE THEN 'N/A - Equipo propio'
+        WHEN e.id_proveedor_alquiler_elemento IS NULL THEN 'Sin proveedor asignado'
+        WHEN e.precio_dia_alquiler_elemento IS NULL OR e.precio_dia_alquiler_elemento = 0 THEN 'Proveedor asignado - Falta precio'
+        WHEN e.id_forma_pago_alquiler_elemento IS NULL THEN 'Proveedor y precio OK - Falta forma de pago'
+        ELSE 'Completamente configurado'
+    END AS estado_configuracion_alquiler,
+    
+    -- Descripción forma de pago del alquiler
+    CASE 
+        WHEN e.es_propio_elemento = FALSE AND fp_alquiler.id_pago IS NOT NULL THEN
+            CASE 
+                WHEN fp_alquiler.porcentaje_anticipo_pago = 100.00 THEN 
+                    CONCAT(
+                        mp_alquiler.nombre_metodo_pago,
+                        ' - ',
+                        fp_alquiler.nombre_pago,
+                        CASE 
+                            WHEN fp_alquiler.descuento_pago > 0 THEN CONCAT(' (Dto: ', fp_alquiler.descuento_pago, '%)')
+                            ELSE ''
+                        END
+                    )
+                ELSE 
+                    CONCAT(
+                        mp_alquiler.nombre_metodo_pago,
+                        ' - ',
+                        fp_alquiler.porcentaje_anticipo_pago, '% + ',
+                        fp_alquiler.porcentaje_final_pago, '%'
+                    )
+            END
+        ELSE NULL
+    END AS descripcion_forma_pago_alquiler,
+    
+    -- Costo mensual estimado de alquiler (si aplica)
+    CASE 
+        WHEN e.es_propio_elemento = FALSE AND e.precio_dia_alquiler_elemento IS NOT NULL 
+        THEN ROUND(e.precio_dia_alquiler_elemento * 30, 2)
+        ELSE NULL
+    END AS costo_mensual_estimado_alquiler,
+    
     -- Antigüedad en días
     DATEDIFF(CURDATE(), e.fecha_alta_elemento) AS dias_en_servicio_elemento,
     
@@ -2075,7 +2113,390 @@ INNER JOIN familia f ON a.id_familia = f.id_familia
 LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
 LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
 INNER JOIN estado_elemento est ON e.id_estado_elemento = est.id_estado_elemento
+LEFT JOIN proveedor prov_compra ON e.id_proveedor_compra_elemento = prov_compra.id_proveedor
+LEFT JOIN proveedor prov_alquiler ON e.id_proveedor_alquiler_elemento = prov_alquiler.id_proveedor
+LEFT JOIN forma_pago fp_alquiler ON e.id_forma_pago_alquiler_elemento = fp_alquiler.id_pago
+LEFT JOIN metodo_pago mp_alquiler ON fp_alquiler.id_metodo_pago = mp_alquiler.id_metodo_pago;
 
+
+
+-- ========================================================================================
+-- DESACTUALIZADA  ------- VISTA COMPLETA DE ELEMENTOS (ACTUALIZADA CON UBICACIÓN DETALLADA)
+-- CUIDADO SOLO ACTIVOS
+-- =========================================================================================
+
+--DROP VIEW IF EXISTS vista_elemento_completa;
+--
+--CREATE VIEW vista_elemento_completa AS
+--SELECT 
+--    -- =====================================================
+--    -- DATOS DEL ELEMENTO
+--    -- =====================================================
+--    e.id_elemento,
+--    e.codigo_elemento,
+--    e.codigo_barras_elemento,
+--    e.descripcion_elemento,
+--    e.numero_serie_elemento,
+--    e.modelo_elemento,
+--    
+--    -- =====================================================
+--    -- UBICACIÓN DETALLADA (3 CAMPOS)
+--    -- =====================================================
+--    e.nave_elemento,
+--    e.pasillo_columna_elemento,
+--    e.altura_elemento,
+--    
+--    -- Ubicación concatenada para visualización rápida
+--    CONCAT_WS(' | ', 
+--        COALESCE(e.nave_elemento, ''),
+--        COALESCE(e.pasillo_columna_elemento, ''),
+--        COALESCE(e.altura_elemento, '')
+--    ) AS ubicacion_completa_elemento,
+--    
+--    -- =====================================================
+--    -- DATOS DEL ARTÍCULO
+--    -- =====================================================
+--    a.id_articulo,
+--    a.codigo_articulo,
+--    a.nombre_articulo,
+--    a.name_articulo,
+--    a.precio_alquiler_articulo,
+--    
+--    -- =====================================================
+--    -- DATOS DE LA FAMILIA (viene del artículo)
+--    -- =====================================================
+--    f.id_familia,
+--    f.codigo_familia,
+--    f.nombre_familia,
+--    f.name_familia,
+--    
+--    -- =====================================================
+--    -- DATOS DEL GRUPO (viene de la familia)
+--    -- =====================================================
+--    g.id_grupo,
+--    g.codigo_grupo,
+--    g.nombre_grupo,
+--    
+--    -- =====================================================
+--    -- DATOS DE LA MARCA
+--    -- =====================================================
+--    m.id_marca,
+--    m.codigo_marca,
+--    m.nombre_marca,
+--    
+--    -- =====================================================
+--    -- DATOS DEL ESTADO
+--    -- =====================================================
+--    est.id_estado_elemento,
+--    est.codigo_estado_elemento,
+--    est.descripcion_estado_elemento,
+--    est.color_estado_elemento,
+--    est.permite_alquiler_estado_elemento,
+--    
+--    -- =====================================================
+--    -- DATOS ECONÓMICOS
+--    -- =====================================================
+--    e.fecha_compra_elemento,
+--    e.precio_compra_elemento,
+--    e.proveedor_compra_elemento,
+--    e.fecha_alta_elemento,
+--    
+--    -- =====================================================
+--    -- GARANTÍA Y MANTENIMIENTO
+--    -- =====================================================
+--    e.fecha_fin_garantia_elemento,
+--    e.proximo_mantenimiento_elemento,
+--    
+--    -- Indicadores de vencimientos
+--    CASE 
+--        WHEN e.fecha_fin_garantia_elemento < CURDATE() THEN 'Vencida'
+--        WHEN e.fecha_fin_garantia_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Por vencer'
+--        WHEN e.fecha_fin_garantia_elemento > DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Vigente'
+--        ELSE 'Sin garantía'
+--    END AS estado_garantia_elemento,
+--    
+--    CASE 
+--        WHEN e.proximo_mantenimiento_elemento < CURDATE() THEN 'Atrasado'
+--        WHEN e.proximo_mantenimiento_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Próximo'
+--        WHEN e.proximo_mantenimiento_elemento > DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Al día'
+--        ELSE 'Sin programar'
+--    END AS estado_mantenimiento_elemento,
+--    
+--    -- =====================================================
+--    -- OBSERVACIONES
+--    -- =====================================================
+--    e.observaciones_elemento,
+--    
+--    -- =====================================================
+--    -- ESTADO ACTIVO
+--    -- =====================================================
+--    e.activo_elemento,
+--    
+--    -- =====================================================
+--    -- TIMESTAMPS
+--    -- =====================================================
+--    e.created_at_elemento,
+--    e.updated_at_elemento,
+--    
+--    -- =====================================================
+--    -- CAMPOS CALCULADOS ADICIONALES
+--    -- =====================================================
+--    
+--    -- Jerarquía completa
+--    CONCAT_WS(' > ',
+--        COALESCE(g.nombre_grupo, 'Sin grupo'),
+--        f.nombre_familia,
+--        a.nombre_articulo,
+--        e.descripcion_elemento
+--    ) AS jerarquia_completa_elemento,
+--    
+--    -- Antigüedad en días
+--    DATEDIFF(CURDATE(), e.fecha_alta_elemento) AS dias_en_servicio_elemento,
+--    
+--    -- Antigüedad en años (redondeado a 2 decimales)
+--    ROUND(DATEDIFF(CURDATE(), e.fecha_alta_elemento) / 365.25, 2) AS anios_en_servicio_elemento
+--    
+--FROM elemento e
+--INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
+--INNER JOIN familia f ON a.id_familia = f.id_familia
+--LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+--LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
+--INNER JOIN estado_elemento est ON e.id_estado_elemento = est.id_estado_elemento
+--WHERE e.activo_elemento = TRUE;
+
+
+
+
+
+-- ========================================================
+-- VISTA: vista_elementos_completa (ACTUALIZADA CON FORMA DE PAGO)
+-- DESCRIPCIÓN: Vista completa de TODOS los elementos (activos e inactivos)
+-- DEPENDENCIAS: elemento, articulo, familia, grupo_articulo, marca, 
+--               estado_elemento, proveedor (compra y alquiler), forma_pago
+-- FECHA: 2024-12-18
+-- ========================================================
+
+DROP VIEW IF EXISTS vista_elementos_completa;
+
+CREATE VIEW vista_elementos_completa AS
+SELECT 
+    -- =====================================================
+    -- DATOS DEL ELEMENTO
+    -- =====================================================
+    e.id_elemento,
+    e.codigo_elemento,
+    e.codigo_barras_elemento,
+    e.descripcion_elemento,
+    e.numero_serie_elemento,
+    e.modelo_elemento,
+    
+    -- =====================================================
+    -- UBICACIÓN DETALLADA (3 CAMPOS)
+    -- =====================================================
+    e.nave_elemento,
+    e.pasillo_columna_elemento,
+    e.altura_elemento,
+    
+    -- Ubicación concatenada para visualización rápida
+    CONCAT_WS(' | ', 
+        COALESCE(e.nave_elemento, ''),
+        COALESCE(e.pasillo_columna_elemento, ''),
+        COALESCE(e.altura_elemento, '')
+    ) AS ubicacion_completa_elemento,
+    
+    -- =====================================================
+    -- INFORMACIÓN DE COMPRA (cuando es propio)
+    -- =====================================================
+    e.fecha_compra_elemento,
+    e.precio_compra_elemento,
+    e.fecha_alta_elemento,
+    
+    -- =====================================================
+    -- GARANTÍA Y MANTENIMIENTO
+    -- =====================================================
+    e.fecha_fin_garantia_elemento,
+    e.proximo_mantenimiento_elemento,
+    
+    e.observaciones_elemento,
+    
+    -- =====================================================
+    -- TIPO DE PROPIEDAD Y PROVEEDORES
+    -- =====================================================
+    e.es_propio_elemento,
+    e.id_proveedor_compra_elemento,
+    e.id_proveedor_alquiler_elemento,
+    
+    -- =====================================================
+    -- DATOS ESPECÍFICOS DE ALQUILER
+    -- =====================================================
+    e.precio_dia_alquiler_elemento,
+    e.id_forma_pago_alquiler_elemento,
+    e.observaciones_alquiler_elemento,
+    
+    -- =====================================================
+    -- DATOS DEL PROVEEDOR DE COMPRA (si existe)
+    -- =====================================================
+    prov_compra.codigo_proveedor AS codigo_proveedor_compra,
+    prov_compra.nombre_proveedor AS nombre_proveedor_compra,
+    prov_compra.telefono_proveedor AS telefono_proveedor_compra,
+    prov_compra.email_proveedor AS email_proveedor_compra,
+    prov_compra.nif_proveedor AS nif_proveedor_compra,
+    
+    -- =====================================================
+    -- DATOS DEL PROVEEDOR DE ALQUILER (si existe)
+    -- =====================================================
+    prov_alquiler.codigo_proveedor AS codigo_proveedor_alquiler,
+    prov_alquiler.nombre_proveedor AS nombre_proveedor_alquiler,
+    prov_alquiler.telefono_proveedor AS telefono_proveedor_alquiler,
+    prov_alquiler.email_proveedor AS email_proveedor_alquiler,
+    prov_alquiler.nif_proveedor AS nif_proveedor_alquiler,
+    prov_alquiler.persona_contacto_proveedor AS persona_contacto_proveedor_alquiler,
+    
+    -- =====================================================
+    -- DATOS DE LA FORMA DE PAGO DEL ALQUILER (si existe)
+    -- =====================================================
+    fp_alquiler.codigo_pago AS codigo_forma_pago_alquiler,
+    fp_alquiler.nombre_pago AS nombre_forma_pago_alquiler,
+    fp_alquiler.porcentaje_anticipo_pago AS porcentaje_anticipo_alquiler,
+    fp_alquiler.dias_anticipo_pago AS dias_anticipo_alquiler,
+    fp_alquiler.porcentaje_final_pago AS porcentaje_final_alquiler,
+    fp_alquiler.dias_final_pago AS dias_final_alquiler,
+    fp_alquiler.descuento_pago AS descuento_forma_pago_alquiler,
+    
+    -- =====================================================
+    -- DATOS DEL MÉTODO DE PAGO DEL ALQUILER (si existe)
+    -- =====================================================
+    mp_alquiler.codigo_metodo_pago AS codigo_metodo_pago_alquiler,
+    mp_alquiler.nombre_metodo_pago AS nombre_metodo_pago_alquiler,
+    
+    -- =====================================================
+    -- DATOS DEL ARTÍCULO
+    -- =====================================================
+    a.id_articulo,
+    a.codigo_articulo,
+    a.nombre_articulo,
+    a.name_articulo,
+    a.precio_alquiler_articulo,
+    
+    -- =====================================================
+    -- DATOS DE LA FAMILIA (viene del artículo)
+    -- =====================================================
+    f.id_familia,
+    f.codigo_familia,
+    f.nombre_familia,
+    f.name_familia,
+    
+    -- =====================================================
+    -- DATOS DEL GRUPO (viene de la familia)
+    -- =====================================================
+    g.id_grupo,
+    g.codigo_grupo,
+    g.nombre_grupo,
+    
+    -- =====================================================
+    -- DATOS DE LA MARCA
+    -- =====================================================
+    m.id_marca,
+    m.codigo_marca,
+    m.nombre_marca,
+    
+    -- =====================================================
+    -- DATOS DEL ESTADO DEL ELEMENTO
+    -- =====================================================
+    est.id_estado_elemento,
+    est.codigo_estado_elemento,
+    est.descripcion_estado_elemento,
+    est.color_estado_elemento,
+    est.permite_alquiler_estado_elemento,
+    
+    -- =====================================================
+    -- CAMPOS DE CONTROL
+    -- =====================================================
+    e.activo_elemento,
+    e.created_at_elemento,
+    e.updated_at_elemento,
+    
+    -- =====================================================
+    -- CAMPOS CALCULADOS ADICIONALES
+    -- =====================================================
+    
+    -- Jerarquía completa
+    CONCAT_WS(' > ',
+        COALESCE(g.nombre_grupo, 'Sin grupo'),
+        f.nombre_familia,
+        a.nombre_articulo,
+        e.descripcion_elemento
+    ) AS jerarquia_completa_elemento,
+    
+    -- Tipo de propiedad (etiqueta legible)
+    CASE 
+        WHEN e.es_propio_elemento = TRUE THEN 'PROPIO'
+        ELSE 'ALQUILADO A PROVEEDOR'
+    END AS tipo_propiedad_elemento,
+    
+    -- Proveedor aplicable según tipo
+    CASE 
+        WHEN e.es_propio_elemento = TRUE THEN prov_compra.nombre_proveedor
+        ELSE prov_alquiler.nombre_proveedor
+    END AS proveedor_principal_elemento,
+    
+    -- Estado de configuración de alquiler
+    CASE 
+        WHEN e.es_propio_elemento = TRUE THEN 'N/A - Equipo propio'
+        WHEN e.id_proveedor_alquiler_elemento IS NULL THEN 'Sin proveedor asignado'
+        WHEN e.precio_dia_alquiler_elemento IS NULL OR e.precio_dia_alquiler_elemento = 0 THEN 'Proveedor asignado - Falta precio'
+        WHEN e.id_forma_pago_alquiler_elemento IS NULL THEN 'Proveedor y precio OK - Falta forma de pago'
+        ELSE 'Completamente configurado'
+    END AS estado_configuracion_alquiler,
+    
+    -- Descripción forma de pago del alquiler
+    CASE 
+        WHEN e.es_propio_elemento = FALSE AND fp_alquiler.id_pago IS NOT NULL THEN
+            CASE 
+                WHEN fp_alquiler.porcentaje_anticipo_pago = 100.00 THEN 
+                    CONCAT(
+                        mp_alquiler.nombre_metodo_pago,
+                        ' - ',
+                        fp_alquiler.nombre_pago,
+                        CASE 
+                            WHEN fp_alquiler.descuento_pago > 0 THEN CONCAT(' (Dto: ', fp_alquiler.descuento_pago, '%)')
+                            ELSE ''
+                        END
+                    )
+                ELSE 
+                    CONCAT(
+                        mp_alquiler.nombre_metodo_pago,
+                        ' - ',
+                        fp_alquiler.porcentaje_anticipo_pago, '% + ',
+                        fp_alquiler.porcentaje_final_pago, '%'
+                    )
+            END
+        ELSE NULL
+    END AS descripcion_forma_pago_alquiler,
+    
+    -- Costo mensual estimado de alquiler (si aplica)
+    CASE 
+        WHEN e.es_propio_elemento = FALSE AND e.precio_dia_alquiler_elemento IS NOT NULL 
+        THEN ROUND(e.precio_dia_alquiler_elemento * 30, 2)
+        ELSE NULL
+    END AS costo_mensual_estimado_alquiler,
+    
+    -- Antigüedad en días
+    DATEDIFF(CURDATE(), e.fecha_alta_elemento) AS dias_en_servicio_elemento,
+    
+    -- Antigüedad en años (redondeado a 2 decimales)
+    ROUND(DATEDIFF(CURDATE(), e.fecha_alta_elemento) / 365.25, 2) AS anios_en_servicio_elemento
+    
+FROM elemento e
+INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
+INNER JOIN familia f ON a.id_familia = f.id_familia
+LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
+INNER JOIN estado_elemento est ON e.id_estado_elemento = est.id_estado_elemento
+LEFT JOIN proveedor prov_compra ON e.id_proveedor_compra_elemento = prov_compra.id_proveedor
+LEFT JOIN proveedor prov_alquiler ON e.id_proveedor_alquiler_elemento = prov_alquiler.id_proveedor
+LEFT JOIN forma_pago fp_alquiler ON e.id_forma_pago_alquiler_elemento = fp_alquiler.id_pago
+LEFT JOIN metodo_pago mp_alquiler ON fp_alquiler.id_metodo_pago = mp_alquiler.id_metodo_pago;
 
 
 

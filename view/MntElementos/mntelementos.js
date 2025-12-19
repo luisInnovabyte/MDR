@@ -115,12 +115,19 @@ $(document).ready(function () {
             },
             // Columna 8: ubicacion (3 campos concatenados)
             { targets: "ubicacion:name", width: '10%', searchable: true, orderable: true, className: "text-center" },
-            // Columna 9: precio_compra_elemento
+            // Columna 9: precio_compra_elemento (condicional según tipo de propiedad)
             {
                 targets: "precio_compra_elemento:name", width: '8%', orderable: true, searchable: false, className: "text-center",
                 render: function (data, type, row) {
                     if (type === "display") {
-                        return row.precio_compra_elemento ? `${parseFloat(row.precio_compra_elemento).toFixed(2)} €` : '0.00 €';
+                        const esPropio = row.es_propio_elemento == 1;
+                        if (esPropio) {
+                            const precio = row.precio_compra_elemento ? parseFloat(row.precio_compra_elemento).toFixed(2) : '0.00';
+                            return `${precio} €<br><small class="text-muted">Compra</small>`;
+                        } else {
+                            const precio = row.precio_dia_alquiler_elemento ? parseFloat(row.precio_dia_alquiler_elemento).toFixed(2) : '0.00';
+                            return `${precio} €<br><small class="text-muted">Alquiler/día</small>`;
+                        }
                     }
                     return row.precio_compra_elemento;
                 }
@@ -225,21 +232,48 @@ $(document).ready(function () {
 
     var table_e = $table.DataTable($tableConfig);
 
-    // Cargar estados para el filtro
-    cargarEstadosElemento();
+    // Cargar estados en el filtro personalizado después de que DataTables se inicialice
+    table_e.on('init.dt', function() {
+        console.log('🔄 DataTable inicializado, cargando estados en filtro personalizado...');
+        // Cargar inmediatamente ya que el select está fuera de DataTables
+        cargarEstadosElemento();
+    });
 
     function format(d) {
         console.log(d);
+        const esPropio = d.es_propio_elemento == 1;
+        const tipoPropiedad = d.tipo_propiedad_elemento || (esPropio ? 'PROPIO' : 'ALQUILADO A PROVEEDOR');
+        const badgeColor = esPropio ? 'bg-success' : 'bg-info';
 
         return `
             <div class="card border-primary mb-3" style="overflow: visible;">
                 <div class="card-header bg-primary text-white">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-box-seam fs-3 me-2"></i>
-                        <h5 class="card-title mb-0">Detalles del Elemento</h5>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-box-seam fs-3 me-2"></i>
+                            <h5 class="card-title mb-0">Detalles del Elemento</h5>
+                        </div>
+                        <span class="badge ${badgeColor} fs-6">
+                            <i class="bi ${esPropio ? 'bi-building' : 'bi-box-arrow-in-down'} me-1"></i>
+                            ${tipoPropiedad}
+                        </span>
                     </div>
                 </div>
                 <div class="card-body p-0" style="overflow: visible;">
+                    <!-- Alerta con información de precio -->
+                    <div class="alert ${esPropio ? 'alert-success' : 'alert-info'} mb-0 rounded-0 border-0" role="alert">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <strong><i class="bi bi-info-circle me-2"></i>${esPropio ? 'Equipo Propio' : 'Equipo Alquilado'}</strong>
+                            </div>
+                            <div class="text-end">
+                                ${esPropio ? 
+                                    `<strong>Precio de Compra:</strong> ${d.precio_compra_elemento ? parseFloat(d.precio_compra_elemento).toFixed(2) + ' €' : '0.00 €'}` :
+                                    `<strong>Precio Alquiler/día:</strong> ${d.precio_dia_alquiler_elemento ? parseFloat(d.precio_dia_alquiler_elemento).toFixed(2) + ' €/día' : '0.00 €/día'}`
+                                }
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <!-- Columna izquierda -->
                         <div class="col-md-6">
@@ -325,6 +359,7 @@ $(document).ready(function () {
                         <div class="col-md-6">
                             <table class="table table-borderless table-striped table-hover mb-0">
                                 <tbody>
+                                    ${esPropio ? `
                                     <tr>
                                         <th scope="row" class="ps-4 w-40 align-top">
                                             <i class="bi bi-calendar-event me-2"></i>Fecha Compra
@@ -346,7 +381,7 @@ $(document).ready(function () {
                                             <i class="bi bi-shop me-2"></i>Proveedor Compra
                                         </th>
                                         <td class="pe-4">
-                                            ${d.proveedor_compra_elemento || '<span class="text-muted fst-italic">Sin proveedor</span>'}
+                                            ${d.nombre_proveedor_compra || '<span class="text-muted fst-italic">Sin proveedor</span>'}
                                         </td>
                                     </tr>
                                     <tr>
@@ -357,6 +392,41 @@ $(document).ready(function () {
                                             ${d.fecha_alta_elemento ? formatoFechaEuropeo(d.fecha_alta_elemento) : '<span class="text-muted fst-italic">Sin fecha</span>'}
                                         </td>
                                     </tr>
+                                    ` : `
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-currency-euro me-2"></i>Precio Alquiler/día
+                                        </th>
+                                        <td class="pe-4">
+                                            ${d.precio_dia_alquiler_elemento ? parseFloat(d.precio_dia_alquiler_elemento).toFixed(2) + ' €/día' : '0.00 €/día'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-shop me-2"></i>Proveedor Alquiler
+                                        </th>
+                                        <td class="pe-4">
+                                            ${d.nombre_proveedor_alquiler || '<span class="text-muted fst-italic">Sin proveedor</span>'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-credit-card me-2"></i>Forma de Pago
+                                        </th>
+                                        <td class="pe-4">
+                                            ${d.nombre_forma_pago_alquiler || '<span class="text-muted fst-italic">Sin especificar</span>'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-file-text me-2"></i>Condiciones de Alquiler
+                                        </th>
+                                        <td class="pe-4" style="max-width: 300px; word-wrap: break-word; white-space: pre-wrap; overflow-wrap: break-word;">
+                                            ${d.observaciones_alquiler_elemento || '<span class="text-muted fst-italic">Sin observaciones</span>'}
+                                        </td>
+                                    </tr>
+                                    `}
+                                    ${esPropio ? `
                                     <tr>
                                         <th scope="row" class="ps-4 w-40 align-top">
                                             <i class="bi bi-shield-check me-2"></i>Fin Garantía
@@ -378,7 +448,7 @@ $(document).ready(function () {
                                             <i class="bi bi-shield-exclamation me-2"></i>Estado Garantía
                                         </th>
                                         <td class="pe-4">
-                                            ${d.estado_garantia_elemento ? 
+                                            ${d.estado_garantia_elemento && d.estado_garantia_elemento !== 'Sin garantía' ? 
                                                 `<span class="badge ${
                                                     d.estado_garantia_elemento === 'Vigente' ? 'bg-success' :
                                                     d.estado_garantia_elemento === 'Por vencer' ? 'bg-warning text-dark' :
@@ -393,7 +463,7 @@ $(document).ready(function () {
                                             <i class="bi bi-wrench-adjustable me-2"></i>Estado Mantenimiento
                                         </th>
                                         <td class="pe-4">
-                                            ${d.estado_mantenimiento_elemento ? 
+                                            ${d.estado_mantenimiento_elemento && d.estado_mantenimiento_elemento !== 'Sin programar' ? 
                                                 `<span class="badge ${
                                                     d.estado_mantenimiento_elemento === 'Al día' ? 'bg-success' :
                                                     d.estado_mantenimiento_elemento === 'Próximo' ? 'bg-warning text-dark' :
@@ -413,6 +483,7 @@ $(document).ready(function () {
                                                 : '<span class="text-muted fst-italic">Sin calcular</span>'}
                                         </td>
                                     </tr>
+                                    ` : ''}
                                     <tr>
                                         <th scope="row" class="ps-4 w-40 align-top">
                                             <i class="bi bi-chat-text me-2"></i>Observaciones
@@ -466,17 +537,70 @@ $(document).ready(function () {
 
     // Función para cargar estados en el filtro
     function cargarEstadosElemento() {
-        $.get("../../controller/estado_elemento.php?op=listar", function (response) {
-            if (response && response.data) {
-                const $select = $('#elementos_data tfoot select[title="Filtrar por estado"]');
-                $select.empty().append('<option value="">Todos</option>');
+        console.log('🔄 Cargando estados de elemento en filtro personalizado...');
+        
+        $.ajax({
+            url: "../../controller/estado_elemento.php?op=listar",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                console.log('✅ Respuesta recibida:', response);
                 
-                response.data.forEach(function(estado) {
-                    $select.append(`<option value="${estado.descripcion_estado_elemento}">${estado.descripcion_estado_elemento}</option>`);
-                });
+                if (response && response.data) {
+                    // Buscar el select FUERA de DataTables (el que agregamos arriba de la tabla)
+                    const $select = $('#filtro-estado-elemento');
+                    console.log('📍 Select personalizado encontrado:', $select.length);
+                    
+                    if ($select.length === 0) {
+                        console.error('❌ No se encontró el select #filtro-estado-elemento');
+                        return;
+                    }
+                    
+                    // Limpiar y cargar opciones
+                    $select.empty().append('<option value="">Todos los estados</option>');
+                    
+                    let contador = 0;
+                    response.data.forEach(function(estado) {
+                        if (estado.activo_estado_elemento == 1) {
+                            const desc = estado.descripcion_estado_elemento;
+                            $select.append($('<option></option>').val(desc).text(desc));
+                            contador++;
+                        }
+                    });
+                    
+                    console.log(`✅ ${contador} estados cargados en el select personalizado`);
+                    console.log(`📍 Total de opciones: ${$select.find('option').length}`);
+                    
+                    // Conectar el evento change para filtrar la tabla
+                    $select.off('change').on('change', function() {
+                        const val = $(this).val();
+                        console.log('🔍 Filtrando tabla por estado:', val || 'Todos');
+                        
+                        // Filtrar la tabla
+                        table_e.column(7).search(val).draw();
+                        
+                        // Actualizar el mensaje informativo
+                        const $filtroInfo = $('#filtro-info');
+                        if (val) {
+                            $filtroInfo.html(`<strong>Filtrando por estado:</strong> <span class="badge bg-primary">${val}</span>`);
+                        } else {
+                            $filtroInfo.html('Mostrando todos los elementos');
+                        }
+                    });
+                    
+                    console.log('✅ Filtro de estados configurado correctamente');
+                } else {
+                    console.warn('⚠️ No se encontraron datos en la respuesta');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('❌ Error al cargar estados:', error);
+                console.error('Status:', status);
+                console.error('Respuesta:', xhr.responseText);
             }
-        }, 'json');
+        });
     }
+
 
     /////////////////////////////////////
     //   INICIO ZONA DELETE ELEMENTO   //

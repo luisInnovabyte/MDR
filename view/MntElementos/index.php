@@ -174,6 +174,29 @@ require_once('../../config/template/verificarPermiso.php');
                 </div>
             </div>
 
+            <!-- Filtros personalizados -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body py-3">
+                    <div class="row align-items-end">
+                        <div class="col-md-3 col-lg-2">
+                            <label for="filtro-estado-elemento" class="form-label text-muted mb-2" style="font-size: 0.85rem; font-weight: 600;">
+                                <i class="fas fa-filter me-1 text-primary"></i>ESTADO DEL ELEMENTO
+                            </label>
+                            <select id="filtro-estado-elemento" class="form-select form-select-sm shadow-sm border-primary" style="cursor: pointer;">
+                                <option value="">📋 Todos los estados</option>
+                                <!-- Se llenará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-md-9 col-lg-10">
+                            <div class="text-muted" style="font-size: 0.8rem; margin-top: 0.5rem;">
+                                <i class="fas fa-info-circle me-1"></i>
+                                <span id="filtro-info">Mostrando todos los elementos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tabla de elementos -->
             <div class="table-wrapper">
                 <table id="elementos_data" class="table display responsive nowrap">
@@ -208,11 +231,7 @@ require_once('../../config/template/verificarPermiso.php');
                             <th><input type="text" placeholder="Buscar marca" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar modelo" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar n° serie" class="form-control form-control-sm" /></th>
-                            <th>
-                                <select class="form-control form-control-sm" title="Filtrar por estado">
-                                    <option value="">Todos</option>
-                                </select>
-                            </th>
+                            <th><!-- Filtro de estado movido arriba --></th>
                             <th><input type="text" placeholder="Buscar ubicación" class="form-control form-control-sm" /></th>
                             <th></th>
                             <th>

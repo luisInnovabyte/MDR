@@ -145,6 +145,9 @@
                 <span class="legend-item">
                 <span class="legend-color" style="background:#6c757d"></span> Cancelado
                 </span>
+                <span class="legend-item">
+                <span class="legend-color" style="background:#0000ff"></span> Pendiente Revisión
+                </span>
 
             </div><!-- br-section-wrapper -->
         </div><!-- br-pagebody -->
