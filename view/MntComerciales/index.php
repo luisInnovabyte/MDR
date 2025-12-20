@@ -89,7 +89,7 @@
     <div class="br-pageheader">
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="../Dashboard/index.php">Dashboard</a>
-            <span class="breadcrumb-item active">Mantenimiento Responsables atención</span>
+            <span class="breadcrumb-item active">Personal</span>
         </nav>
     </div><!-- br-pageheader -->
 
@@ -97,12 +97,12 @@
         <i class="icon icon ion-ios-bookmarks-outline"></i>
         <div>
             <div class="d-flex align-items-center">
-            <h4>Mantenimiento de Responsables de atención</h4>
+            <h4>Mantenimiento de Personal</h4>
             <button type="button" class="btn btn-link p-0 ms-1" data-toggle="modal" data-target="#modalAyudaComerciales" title="Ayuda sobre el módulo">
                 <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
             </button>
             </div>
-            <p class="mg-b-0">Tabla básica para el mantenimiento de los responsables de atención</p>
+            <p class="mg-b-0">Tabla básica para el mantenimiento del personal</p>
         </div>
     </div><!-- d-flex -->
 
@@ -126,14 +126,14 @@
                     </div>
                 </div>
 
-                <!-- Botón Nuevo Comercial -->
+                <!-- Botón Nuevo Empleado -->
                 <button class="btn btn-oblong btn-outline-primary flex-shrink-0 mt-2 mt-sm-0" id="btnnuevo">
-                    <i class="fas fa-plus-circle me-2"></i>Nuevo Responsable
+                    <i class="fas fa-plus-circle me-2"></i>Nuevo Empleado
                 </button>
             </div>
 
 
-            <!-- Tabla de Comerciales -->
+            <!-- Tabla de Empleados -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-wrapper">
@@ -141,7 +141,7 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Id Responsable</th>
+                                    <th>Id Empleado</th>
                                     <th>Nombre</th>
                                     <th>Apellidos</th>
                                     <th>Movil</th>

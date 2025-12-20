@@ -368,6 +368,30 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="p-3 bg-success bg-opacity-10 border border-success border-2 rounded">
+                                        <label for="descuento_presupuesto" class="form-label fw-bold">
+                                            <i class="fas fa-percent text-success me-2"></i>
+                                            Descuento del presupuesto (%)
+                                            <i class="bi bi-info-circle text-info ms-2" data-bs-toggle="tooltip" title="Porcentaje de descuento aplicado a este presupuesto. Se hereda del descuento habitual del cliente pero puede modificarse."></i>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="descuento_presupuesto" id="descuento_presupuesto" 
+                                                   min="0" max="100" step="0.01" value="0.00" placeholder="0.00">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                        <small class="form-text text-muted d-block mt-2">
+                                            <span id="info_descuento_cliente" class="d-none">
+                                                <i class="fas fa-user text-primary"></i>
+                                                <strong>Descuento habitual del cliente:</strong> <span id="valor_descuento_cliente">0.00</span>%
+                                            </span>
+                                            <span id="mensaje_descuento" class="text-muted">Seleccione un cliente para ver su descuento habitual.</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -566,6 +590,49 @@
     </style>
     
     <script type="text/javascript" src="formularioPresupuesto.js"></script>
+
+    <!-- Botones flotantes para navegación -->
+    <!-- Botón para ir al inicio del formulario -->
+    <button id="scrollToTop" class="btn btn-primary" style="position: fixed; bottom: 140px; right: 30px; z-index: 1000; border-radius: 50%; width: 50px; height: 50px; display: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3);" title="Ir al inicio del formulario">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Botón para ir al final del formulario -->
+    <button id="scrollToBottom" class="btn btn-primary" style="position: fixed; bottom: 80px; right: 30px; z-index: 1000; border-radius: 50%; width: 50px; height: 50px; display: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3);" title="Ir al final del formulario">
+        <i class="fas fa-arrow-down"></i>
+    </button>
+
+    <!-- Script para botones flotantes de navegación -->
+    <script>
+        $(document).ready(function() {
+            // Mostrar/ocultar botones según scroll
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 100) {
+                    $('#scrollToTop').fadeIn();
+                    $('#scrollToBottom').fadeIn();
+                } else {
+                    $('#scrollToTop').fadeOut();
+                    $('#scrollToBottom').fadeOut();
+                }
+            });
+
+            // Hacer scroll al inicio del formulario
+            $('#scrollToTop').click(function() {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 500);
+                return false;
+            });
+
+            // Hacer scroll al final del formulario
+            $('#scrollToBottom').click(function() {
+                $('html, body').animate({
+                    scrollTop: $(document).height()
+                }, 500);
+                return false;
+            });
+        });
+    </script>
 
 </body>
 

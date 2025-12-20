@@ -128,6 +128,42 @@
                                     </div>
                                     <small class="form-text text-muted">El estado se establece automáticamente</small>
                                 </div>
+                                <!-- <div class="col-12 col-md-4">
+                                    <label class="form-label">Coeficientes de descuento:</label>
+                                    <div class="form-check form-switch mt-2">
+                                        <input class="form-check-input" type="checkbox" name="coeficiente_familia" id="coeficiente_familia" checked>
+                                        <label class="form-check-label" for="coeficiente_familia">
+                                            <span id="coeficiente-text">Permite coeficientes</span>
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Si permite aplicar coeficientes de descuento
+                                        <i class="fas fa-question-circle text-info ms-1" 
+                                           data-bs-toggle="tooltip" 
+                                           title="Este control determina si a esta familia se le pueden aplicar coeficientes de descuento. Se arrastrará a los artículos y se podrá modificar en los presupuestos."></i>
+                                    </small>
+                                </div> -->
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">Sistema de descuentos:</label>
+                                    <div class="form-check form-switch mt-2">
+                                        <input class="form-check-input" type="checkbox" name="permite_descuento_familia" id="permite_descuento_familia" checked>
+                                        <label class="form-check-label" for="permite_descuento_familia">
+                                            <span id="descuento-text">Permite descuentos</span>
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-percentage text-success me-1"></i>
+                                        <strong>Activado:</strong> Los artículos de esta familia pueden tener descuentos aplicados.<br>
+                                        <i class="fas fa-ban text-danger me-1"></i>
+                                        <strong>Desactivado:</strong> Los descuentos NO afectan a los artículos de esta familia (Ej: consumibles, servicios especiales).
+                                        <i class="fas fa-question-circle text-info ms-1" 
+                                           data-bs-toggle="tooltip" 
+                                           title="Este control determina si los artículos de esta familia pueden tener descuentos. Si está desactivado, cualquier descuento aplicado al presupuesto no afectará a estos artículos (útil para consumibles, servicios especiales, etc.)."></i>
+                                    </small>
+                                </div>
                                 <div class="col-12 col-md-4">
                                     <label class="form-label">Coeficientes de descuento:</label>
                                     <div class="form-check form-switch mt-2">

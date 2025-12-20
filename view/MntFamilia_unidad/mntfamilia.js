@@ -96,17 +96,22 @@ $(document).ready(function () {
         className: "text-center align-middle",
       }, // Columna 5: COEFICIENTES
       {
+        name: "permite_descuento_familia",
+        data: "permite_descuento_familia",
+        className: "text-center align-middle",
+      }, // Columna 6: DESCUENTOS
+      {
         name: "activo_familia",
         data: "activo_familia",
         className: "text-center align-middle",
-      }, // Columna 6: ESTADO
-      { name: "activar", data: null, className: "text-center align-middle" }, // Columna 7: ACTIVAR/DESACTIVAR
+      }, // Columna 7: ESTADO
+      { name: "activar", data: null, className: "text-center align-middle" }, // Columna 8: ACTIVAR/DESACTIVAR
       {
         name: "editar",
         data: null,
         defaultContent: "",
         className: "text-center align-middle",
-      }, // Columna 8: EDITAR
+      }, // Columna 9: EDITAR
     ], // de las columnas
     columnDefs: [
       // Cuidado que el ordrData puede interferir con el ordenamiento de la tabla
@@ -187,9 +192,25 @@ $(document).ready(function () {
           return row.coeficiente_familia;
         },
       },
+      // Columna 6: permite_descuento_familia
+      {
+        targets: "permite_descuento_familia:name",
+        width: "10%",
+        orderable: true,
+        searchable: true,
+        className: "text-center",
+        render: function (data, type, row) {
+          if (type === "display") {
+            return row.permite_descuento_familia == 1 || row.permite_descuento_familia === true
+              ? '<i class="bi bi-tag-fill text-success fa-2x" title="Permite descuentos"></i>'
+              : '<i class="bi bi-dash-circle text-danger fa-2x" title="No permite descuentos"></i>';
+          }
+          return row.permite_descuento_familia;
+        },
+      },
       // Columna 4: descr_familia
       { targets: 4, className: "text-start" },
-      // Columna 6: activo_familia (Estado)
+      // Columna 7: activo_familia (Estado)
       {
         targets: "activo_familia:name",
         width: "10%",
@@ -205,7 +226,7 @@ $(document).ready(function () {
           return row.activo_familia;
         },
       },
-      // Columna 7: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
+      // Columna 8: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
       {
         targets: "activar:name",
         width: "10%",
@@ -229,7 +250,7 @@ $(document).ready(function () {
           }
         }, // de la function
       }, //
-      // Columna 8: BOTON PARA EDITAR FAMILIA
+      // Columna 9: BOTON PARA EDITAR FAMILIA
       {
         targets: "editar:name",
         width: "10%",

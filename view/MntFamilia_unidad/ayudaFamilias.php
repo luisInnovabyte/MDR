@@ -164,6 +164,54 @@
                             </div>
                         </div>
 
+                        <!-- Campo Sistema de Descuentos -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingDescuentos">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDescuentos" aria-expanded="false" aria-controls="collapseDescuentos">
+                                    <i class="bi bi-tag-fill me-2"></i>
+                                    Sistema de Descuentos
+                                </button>
+                            </h2>
+                            <div id="collapseDescuentos" class="accordion-collapse collapse" aria-labelledby="headingDescuentos" data-bs-parent="#accordionCampos">
+                                <div class="accordion-body">
+                                    <strong>Campo de configuración.</strong> Controla si los artículos de esta familia pueden recibir descuentos.
+                                    <br><strong>Valores:</strong> 
+                                    <ul class="mt-2 mb-2">
+                                        <li><i class="bi bi-tag-fill text-success me-1"></i><strong>Permite descuentos (Activado):</strong> Los artículos de esta familia SÍ pueden tener descuentos aplicados en presupuestos</li>
+                                        <li><i class="bi bi-dash-circle text-danger me-1"></i><strong>No permite descuentos (Desactivado):</strong> Los descuentos NO afectan a los artículos de esta familia</li>
+                                    </ul>
+                                    <strong>Casos de uso comunes:</strong>
+                                    <div class="alert alert-info mt-2 mb-2 py-2">
+                                        <small>
+                                            <strong>Desactivar descuentos para:</strong>
+                                            <ul class="mb-0 mt-1">
+                                                <li><strong>Consumibles:</strong> Pilas, cables desechables, cinta adhesiva, etc.</li>
+                                                <li><strong>Servicios especiales:</strong> Seguros obligatorios, certificaciones, permisos</li>
+                                                <li><strong>Productos con precio fijo:</strong> Licencias de software, tasas administrativas</li>
+                                                <li><strong>Artículos ya con precio reducido:</strong> Productos en oferta permanente</li>
+                                            </ul>
+                                        </small>
+                                    </div>
+                                    <strong>¿Cómo funciona?</strong>
+                                    <div class="alert alert-warning mt-2 mb-0 py-2">
+                                        <small>
+                                            <i class="bi bi-info-circle me-1"></i>Cuando se aplica un descuento general a un presupuesto:
+                                            <ul class="mb-0 mt-1">
+                                                <li>✅ Los artículos con descuentos ACTIVADOS recibirán el descuento</li>
+                                                <li>❌ Los artículos con descuentos DESACTIVADOS mantendrán su precio original</li>
+                                            </ul>
+                                            <strong class="d-block mt-2">Ejemplo práctico:</strong>
+                                            Si aplicas un 10% de descuento al presupuesto:
+                                            <ul class="mb-0 mt-1">
+                                                <li>Altavoces (descuento activado): 1000€ → 900€ ✓</li>
+                                                <li>Pilas AA (descuento desactivado): 50€ → 50€ (sin cambio)</li>
+                                            </ul>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Campo Grupo de Artículo -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingGrupo">

@@ -1,6 +1,6 @@
 <!-- ---------------------- -->
-    <!--   Comprobar permisos     -->
-    <!-- ---------------------- -->
+<!--   Comprobar permisos     -->
+<!-- ---------------------- -->
 <?php $moduloActual = 'usuarios'; ?>
 <?php require_once('../../config/template/verificarPermiso.php'); ?>
 
@@ -81,22 +81,61 @@
     <div class="br-pageheader">
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="../Dashboard/index.php">Dashboard</a>
-            <span class="breadcrumb-item active">Mantenimiento Familias</span>
+            <a class="breadcrumb-item" href="../MntClientes/index.php">Clientes</a>
+            <span class="breadcrumb-item active">Ubicaciones del Cliente</span>
         </nav>
     </div><!-- br-pageheader -->
     
     <div class="br-pagetitle">
-        <div class="d-flex align-items-center">
-            <h4 class="mb-0 me-2">Mantenimiento de Familias</h4>
-            <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaFamilias" title="Ayuda sobre el módulo">
-                <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
-            </button>
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center">
+                <h4 class="mb-0 me-2">Ubicaciones del Cliente</h4>
+                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaUbicaciones" title="Ayuda sobre el módulo">
+                    <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
+                </button>
+            </div>
         </div>
-        <br>
-        <!-- <div class="mt-2">
-            <p class="mg-b-0">Tabla básica para el mantenimiento de familias</p>
-        </div> -->
-    </div><!-- d-flex -->
+        
+        <!-- Info del cliente -->
+        <div class="mt-2 mb-3" id="info-cliente">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);">
+                <div class="card-body py-3 px-4">
+                    <div class="row align-items-center">
+                        <!-- Icono principal -->
+                        <div class="col-auto">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 60px; height: 60px; background-color: rgba(255,255,255,0.15);">
+                                <i class="bi bi-person-circle text-white" style="font-size: 1.8rem;"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Información del cliente -->
+                        <div class="col">
+                            <div class="text-white-50 mb-1" style="font-size: 0.85rem; font-weight: 500;">
+                                <i class="bi bi-info-circle me-1"></i>Cliente actual
+                            </div>
+                            <h5 class="mb-2 fw-bold text-white" id="nombre-cliente">
+                                Cargando...
+                            </h5>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-white-50" style="font-size: 0.9rem;">
+                                    <i class="bi bi-hash me-1"></i>ID:
+                                    <span id="id-cliente" class="badge bg-white text-dark ms-1 fw-semibold">--</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de acción (opcional) -->
+                        <div class="col-auto d-none d-md-block">
+                            <a href="../MntClientes/index.php" class="btn btn-light btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i>Volver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- br-pagetitle -->
 
     <div class="br-pagebody">
         <div class="br-section-wrapper">
@@ -119,28 +158,35 @@
                     </div>
                 </div>
 
-                <!-- Botón Nueva Familia -->
-                <a href="formularioFamilia.php?modo=nuevo" class="btn btn-oblong btn-outline-primary flex-shrink-0 mt-2 mt-sm-0">
-                    <i class="fas fa-plus-circle me-2"></i>Nueva Familia 
-                </a>
+                <!-- Botones de acción -->
+                <div class="d-flex gap-2">
+                    <a href="formularioUbicacion.php?modo=nuevo&id_cliente=<?php echo $_GET['id_cliente'] ?? ''; ?>" class="btn btn-oblong btn-outline-primary flex-shrink-0">
+                        <i class="fas fa-plus-circle me-2"></i>Nueva Ubicación
+                    </a>
+                    <a href="../MntClientes/index.php" class="btn btn-oblong btn-outline-secondary flex-shrink-0">
+                        <i class="fas fa-arrow-left me-2"></i>Volver a Clientes
+                    </a>
+                </div>
             </div>
 
-                     <!-- Tabla de familias -->
+            <!-- Tabla de ubicaciones -->
             <div class="table-wrapper">
-                <table id="familias_data" class="table display responsive nowrap">
+                <table id="ubicaciones_data" class="table display responsive nowrap">
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Id familia</th>
-                            <th>Código familia</th>
-                            <th>Nombre familia</th>
-                            <th>Unidad</th>
-                            <th>Coeficientes</th>
-                            <th>Descuentos</th>
-                            <!-- <th>Descripción familia</th> -->
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Población</th>
+                            <th>Provincia</th>
+                            <th>País</th>
+                            <th>Contacto</th>
+                            <th>Teléfono</th>
+                            <th>Principal</th>
                             <th>Estado</th>
                             <th>Act./Desac.</th>
-                            <th>Edit.</th>
+                            <th>Editar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -150,24 +196,20 @@
                         <tr>
                             <th></th>
                             <th class="d-none"><input type="text" placeholder="Buscar ID" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Buscar código" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Buscar nombre familia" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Buscar unidad" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar nombre" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar dirección" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar población" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar provincia" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar país" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar contacto" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar teléfono" class="form-control form-control-sm" /></th>
                             <th>
-                                <select class="form-control form-control-sm" title="Filtrar por coeficientes">
+                                <select class="form-control form-control-sm" title="Filtrar por principal">
                                     <option value="">Todos</option>
-                                    <option value="1">Permite coeficientes</option>
-                                    <option value="0">No permite</option>
+                                    <option value="1">Principal</option>
+                                    <option value="0">No principal</option>
                                 </select>
                             </th>
-                            <th>
-                                <select class="form-control form-control-sm" title="Filtrar por descuentos">
-                                    <option value="">Todos</option>
-                                    <option value="1">Permite descuentos</option>
-                                    <option value="0">No permite</option>
-                                </select>
-                            </th>
-                            <!-- <th><input type="text" placeholder="Buscar descripción" class="form-control form-control-sm" /></th> -->
                             <th>
                                 <select class="form-control form-control-sm" title="Filtrar por estado">
                                     <option value="">Todos los estados</option>
@@ -188,49 +230,16 @@
         <?php include_once('../../config/template/mainFooter.php') ?>
     </footer>
 </div><!-- br-mainpanel -->
-        <!-- ------------------------- -->
-        <!--   END mainFooter.php      -->
-        <!-- ------------------------- -->
 
-    </div><!-- br-mainpanel -->
-    <!-- ########## END: MAIN PANEL ########## -->
+    <!-- #################################### -->
+    <!-- MODAL DE AYUDA                       -->
+    <!-- #################################### -->
 
-    <!-- *********************************** -->
-    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
-    <!--        DE LA PROPIA TABLA           -->
-    <!--        columDef                     -->
-    <!-- *********************************** -->
+    <?php include_once('ayudaUbicaciones.php') ?>
 
-    <?php //include_once('detalleProductoBra.php') ?>
-    <!-- Se ha sustituido por el formulario independiente -->
-
-    <!-- *********************************** -->
-    <!--                FIN                  -->
-    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
-    <!--        DE LA PROPIA TABLA           -->
-    <!--             columDef                -->
-    <!-- *********************************** -->
-
-
-    <!-- *********************************** -->
-    <!-- MODAL REMOVIDO - AHORA USA FORMULARIO INDEPENDIENTE -->
-    <!-- *********************************** -->
-
-
-
-<!-- *************************************** -->
-    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
-    <!--             AYUDA                   -->
-    <!-- *********************************** -->
-
-    <?php include_once('ayudaFamilias.php') ?>
-
-
-    <!-- *********************************** -->
-    <!--                FIN                  -->
-    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
-    <!--               AYUDA                 -->
-    <!-- *********************************** -->
+    <!-- #################################### -->
+    <!-- FIN MODAL DE AYUDA                   -->
+    <!-- #################################### -->
 
 
     <!-- ----------------------- -->
@@ -243,7 +252,7 @@
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
-    <script type="text/javascript" src="mntfamilia.js"></script>
+    <script type="text/javascript" src="mntclientes_ubicaciones.js"></script>
 
 </body>
 

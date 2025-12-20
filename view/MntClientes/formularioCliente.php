@@ -349,6 +349,64 @@ try {
                         </div>
                     </div>
 
+                    <!-- SECCIÓN: Descuento del Cliente -->
+                    <div class="card mb-4 border-warning">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0 tx-bold">
+                                <i class="fas fa-percent me-2"></i>Descuento Habitual del Cliente
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Información:</strong> Porcentaje de descuento habitual acordado con este cliente. Se aplicará automáticamente en los presupuestos.
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <label for="porcentaje_descuento_cliente" class="form-label">
+                                        Porcentaje de Descuento (%)
+                                    </label>
+                                    <div class="input-group">
+                                        <input 
+                                            type="number" 
+                                            class="form-control" 
+                                            name="porcentaje_descuento_cliente" 
+                                            id="porcentaje_descuento_cliente" 
+                                            min="0" 
+                                            max="100" 
+                                            step="0.01" 
+                                            value="0.00"
+                                            placeholder="0.00">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Valor entre 0.00 y 100.00. Ejemplo: 10.00 = 10% de descuento
+                                    </small>
+                                    <div class="invalid-feedback small-invalid-feedback">
+                                        El porcentaje debe estar entre 0.00 y 100.00
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">Estado del Descuento</label>
+                                    <div id="info-descuento-cliente" class="mt-2">
+                                        <div class="alert alert-secondary mb-0">
+                                            <h6 class="alert-heading mb-2">
+                                                <i class="fas fa-tag me-2"></i>
+                                                <span id="categoria-descuento">Sin descuento</span>
+                                            </h6>
+                                            <p class="mb-0 small">
+                                                <strong>Descuento aplicado:</strong> 
+                                                <span id="valor-descuento-display">0.00%</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SECCIÓN: Observaciones -->
                     <div class="card mb-4 border-secondary">
                         <div class="card-header bg-secondary text-white">
@@ -471,6 +529,18 @@ try {
                         </div>
                         
                         <div class="col-12">
+                            <h6 class="text-primary"><i class="fas fa-credit-card me-2"></i>Forma de Pago y Descuento</h6>
+                            <p><strong>Configuración comercial del cliente.</strong></p>
+                            <ul class="list-unstyled ms-3">
+                                <li><i class="fas fa-credit-card text-success me-2"></i>Forma de Pago: Método habitual del cliente (opcional)</li>
+                                <li><i class="fas fa-percent text-warning me-2"></i>Descuento: Porcentaje acordado entre 0% y 100%</li>
+                                <li><i class="fas fa-info-circle text-info me-2"></i>El descuento se aplicará automáticamente en presupuestos</li>
+                                <li><i class="fas fa-tags text-warning me-2"></i>Categorías: Sin descuento (0%), Bajo (≤5%), Medio (≤15%), Alto (>15%)</li>
+                            </ul>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-12">
                             <h6 class="text-primary"><i class="fas fa-phone me-2"></i>Información de Contacto y Observaciones</h6>
                             <p><strong>Medios de comunicación y notas adicionales.</strong></p>
                             <ul class="list-unstyled ms-3">
@@ -489,6 +559,17 @@ try {
         </div>
     </div>
 
+    <!-- Botones flotantes para navegación -->
+    <!-- Botón para ir al inicio del formulario -->
+    <button id="scrollToTop" class="btn btn-primary" style="position: fixed; bottom: 140px; right: 30px; z-index: 1000; border-radius: 50%; width: 50px; height: 50px; display: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3);" title="Ir al inicio del formulario">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Botón para ir al final del formulario -->
+    <button id="scrollToBottom" class="btn btn-primary" style="position: fixed; bottom: 80px; right: 30px; z-index: 1000; border-radius: 50%; width: 50px; height: 50px; display: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3);" title="Ir al final del formulario">
+        <i class="fas fa-arrow-down"></i>
+    </button>
+
     <!-- ----------------------- -->
     <!--       mainJs.php        -->
     <!-- ----------------------- -->
@@ -500,6 +581,38 @@ try {
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
     <script type="text/javascript" src="formularioCliente.js"></script>
+
+    <!-- Script para botones flotantes de navegación -->
+    <script>
+        $(document).ready(function() {
+            // Mostrar/ocultar botones según scroll
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    $('#scrollToTop').fadeIn();
+                    $('#scrollToBottom').fadeIn();
+                } else {
+                    $('#scrollToTop').fadeOut();
+                    $('#scrollToBottom').fadeOut();
+                }
+            });
+
+            // Hacer scroll al inicio del formulario
+            $('#scrollToTop').click(function() {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 800);
+                return false;
+            });
+
+            // Hacer scroll al final del formulario
+            $('#scrollToBottom').click(function() {
+                $('html, body').animate({
+                    scrollTop: $(document).height()
+                }, 800);
+                return false;
+            });
+        });
+    </script>
 
 </body>
 

@@ -146,6 +146,44 @@
                                         <li><i class="bi bi-map-fill me-2"></i>Provincia de facturación</li>
                                     </ul>
                                 </div>
+
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-success">
+                                        <i class="bi bi-percent me-2"></i>Descuento Habitual del Cliente
+                                    </h6>
+                                    <p class="small mb-2">
+                                        Configure un porcentaje de descuento habitual para este cliente (0.00% - 100.00%).
+                                    </p>
+                                    
+                                    <div class="alert alert-info py-2 mb-2">
+                                        <small>
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            <strong>Categorías de descuento:</strong>
+                                        </small>
+                                        <ul class="list-unstyled small mb-0 mt-2">
+                                            <li><span class="badge bg-secondary me-2">0%</span> Sin descuento</li>
+                                            <li><span class="badge bg-info me-2">≤ 5%</span> Descuento bajo</li>
+                                            <li><span class="badge bg-warning me-2">≤ 15%</span> Descuento medio</li>
+                                            <li><span class="badge bg-success me-2">&gt; 15%</span> Descuento alto</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="alert alert-warning py-2 mb-2">
+                                        <small>
+                                            <i class="bi bi-exclamation-triangle me-1"></i>
+                                            <strong>Aplicación del descuento:</strong>
+                                            El descuento solo se aplicará en las familias de productos donde se haya señalado que se pueden aplicar descuentos.
+                                        </small>
+                                    </div>
+
+                                    <div class="alert alert-primary py-2">
+                                        <small>
+                                            <i class="bi bi-file-earmark-text me-1"></i>
+                                            <strong>En presupuestos:</strong>
+                                            Este valor se mostrará automáticamente en la cabecera de los presupuestos del cliente y podrá ser modificado si es necesario.
+                                        </small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

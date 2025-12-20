@@ -204,17 +204,18 @@ class Familia
 //     nombre_familia VARCHAR(100) NOT NULL,
 //     descr_familia VARCHAR(255),
 //     activo_familia BOOLEAN DEFAULT TRUE,
+//     permite_descuento_familia BOOLEAN NOT NULL DEFAULT TRUE,
 //     created_at_familia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //     updated_at_familia TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-    public function insert_familia($nombre_familia, $codigo_familia, $name_familia, $descr_familia, $imagen_familia = '', $id_unidad_familia = null)
+    public function insert_familia($nombre_familia, $codigo_familia, $name_familia, $descr_familia, $imagen_familia = '', $id_unidad_familia = null, $permite_descuento_familia = true)
     {
         try {
 
-            $sql = "INSERT INTO familia (codigo_familia, nombre_familia, name_familia, descr_familia, activo_familia, imagen_familia, id_unidad_familia, created_at_familia, updated_at_familia) 
-                                 VALUES (?, ?, ?, ?, 1, ?, ?, NOW(), NOW())";
+            $sql = "INSERT INTO familia (codigo_familia, nombre_familia, name_familia, descr_familia, activo_familia, imagen_familia, id_unidad_familia, permite_descuento_familia, created_at_familia, updated_at_familia) 
+                                 VALUES (?, ?, ?, ?, 1, ?, ?, ?, NOW(), NOW())";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $codigo_familia, PDO::PARAM_STR); // Se enlaza el valor del codigo
             $stmt->bindValue(2, $nombre_familia, PDO::PARAM_STR); // Se enlaza el valor del nombre
@@ -222,6 +223,7 @@ class Familia
             $stmt->bindValue(4, $descr_familia, PDO::PARAM_STR); // Se enlaza el valor de la descripción
             $stmt->bindValue(5, $imagen_familia, PDO::PARAM_STR); // Se enlaza el valor de la imagen
             $stmt->bindValue(6, $id_unidad_familia, $id_unidad_familia === null ? PDO::PARAM_NULL : PDO::PARAM_INT); // Se enlaza el valor de la unidad de familia
+            $stmt->bindValue(7, $permite_descuento_familia, PDO::PARAM_BOOL); // Se enlaza el valor de permite descuento
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId(); // Se obtiene el ID del ultimo insertado
 
@@ -259,14 +261,15 @@ class Familia
 //     nombre_familia VARCHAR(100) NOT NULL,
 //     descr_familia VARCHAR(255),
 //     activo_familia BOOLEAN DEFAULT TRUE,
+//     permite_descuento_familia BOOLEAN NOT NULL DEFAULT TRUE,
 //     created_at_familia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //     updated_at_familia TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
     
-    public function update_familia($id_familia, $nombre_familia, $codigo_familia, $name_familia, $descr_familia, $imagen_familia = '', $id_unidad_familia = null){
+    public function update_familia($id_familia, $nombre_familia, $codigo_familia, $name_familia, $descr_familia, $imagen_familia = '', $id_unidad_familia = null, $permite_descuento_familia = true){
         try {
-            $sql = "UPDATE familia SET nombre_familia = ?, codigo_familia = ?, name_familia = ?, descr_familia = ?, imagen_familia = ?, id_unidad_familia = ?, 
+            $sql = "UPDATE familia SET nombre_familia = ?, codigo_familia = ?, name_familia = ?, descr_familia = ?, imagen_familia = ?, id_unidad_familia = ?, permite_descuento_familia = ?, 
             updated_at_familia = NOW() WHERE id_familia = ?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $nombre_familia, PDO::PARAM_STR);
@@ -275,7 +278,8 @@ class Familia
             $stmt->bindValue(4, $descr_familia, PDO::PARAM_STR);
             $stmt->bindValue(5, $imagen_familia, PDO::PARAM_STR);
             $stmt->bindValue(6, $id_unidad_familia, $id_unidad_familia === null ? PDO::PARAM_NULL : PDO::PARAM_INT); // Se enlaza el valor de la unidad de familia
-            $stmt->bindValue(7, $id_familia, PDO::PARAM_INT);
+            $stmt->bindValue(7, $permite_descuento_familia, PDO::PARAM_BOOL); // Se enlaza el valor de permite descuento
+            $stmt->bindValue(8, $id_familia, PDO::PARAM_INT);
 
             $stmt->execute();
 

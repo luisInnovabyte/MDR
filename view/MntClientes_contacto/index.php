@@ -98,22 +98,38 @@
         
         <!-- Info del cliente -->
         <div class="mt-2 mb-3" id="info-cliente">
-            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
-                <div class="card-body py-4 px-5">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center flex-grow-1">
-                            <div class="me-4" style="color: #6c757d;">
-                                <i class="bi bi-building" style="font-size: 2.2rem;"></i>
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #2980b9 0%, #6dd5fa 100%);">
+                <div class="card-body py-3 px-4">
+                    <div class="row align-items-center">
+                        <!-- Icono principal -->
+                        <div class="col-auto">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 60px; height: 60px; background-color: rgba(255,255,255,0.15);">
+                                <i class="bi bi-person-circle text-white" style="font-size: 1.8rem;"></i>
                             </div>
-                            <div class="flex-grow-1">
-                                <div class="text-muted mb-2" style="font-size: 0.95rem;">Cliente actual</div>
-                                <h5 class="mb-2 fw-bold" style="color: #495057;">
-                                    <span id="nombre-cliente">Cargando...</span>
-                                </h5>
-                                <p class="mb-0 text-muted">
-                                    ID: <span id="id-cliente" class="badge bg-secondary ms-1">--</span>
-                                </p>
+                        </div>
+                        
+                        <!-- Información del cliente -->
+                        <div class="col">
+                            <div class="text-white-50 mb-1" style="font-size: 0.85rem; font-weight: 500;">
+                                <i class="bi bi-info-circle me-1"></i>Cliente actual
                             </div>
+                            <h5 class="mb-2 fw-bold text-white" id="nombre-cliente">
+                                Cargando...
+                            </h5>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-white-50" style="font-size: 0.9rem;">
+                                    <i class="bi bi-hash me-1"></i>ID:
+                                    <span id="id-cliente" class="badge bg-white text-dark ms-1 fw-semibold">--</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de acción (opcional) -->
+                        <div class="col-auto d-none d-md-block">
+                            <a href="../MntClientes/index.php" class="btn btn-light btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i>Volver
+                            </a>
                         </div>
                     </div>
                 </div>

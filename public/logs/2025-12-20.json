@@ -1,0 +1,138 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-20 00:59:21"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-20 00:59:21"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Error al obtener eventos de garantía: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 00:59:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Error al obtener eventos de garantía: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:00:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Error al obtener eventos de garantía: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:00:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Error al obtener eventos de garantía: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:00:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Error al obtener eventos de garantía: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:00:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Error al obtener eventos de garantía: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:00:07"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getMaintenanceEvents",
+        "mensaje": "Error al obtener eventos de mantenimiento: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:01:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getMaintenanceEvents",
+        "mensaje": "Error al obtener eventos de mantenimiento: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:01:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getMaintenanceEvents",
+        "mensaje": "Error al obtener eventos de mantenimiento: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:01:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getMaintenanceEvents",
+        "mensaje": "Error al obtener eventos de mantenimiento: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 01:02:19"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-20 08:07:59"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-20 08:07:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "tipodocumento.php",
+        "actividad": "Listar tipos de documento",
+        "mensaje": "Tipos de documento listados correctamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-20 08:13:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Error al obtener eventos de garantía: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 08:16:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Error al obtener eventos de garantía: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_elemento_completa' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-20 08:16:13"
+    }
+]

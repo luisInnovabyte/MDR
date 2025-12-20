@@ -157,65 +157,261 @@
         </footer>
     </div><!-- br-mainpanel -->
     <!-- ########## END: MAIN PANEL ########## -->
-
-   <!-- MODAL DETALLE DE PRESUPUESTO -->
+<!-- MODAL DETALLE DE PRESUPUESTO COMPLETO -->
 <div class="modal fade" id="modalDetalleElemento" tabindex="-1" role="dialog" aria-labelledby="modalDetalleElementoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalDetalleElementoLabel">
-                    <i class="fas fa-info-circle me-2"></i>
+    <div class="modal-dialog modal-custom" role="document">
+        <div class="modal-content shadow-lg border-0">
+
+            <!-- Header con gradiente -->
+            <div class="modal-header bg-gradient-primary text-white border-0">
+                <h5 class="modal-title font-weight-bold" id="modalDetalleElementoLabel">
+                    <i class="fas fa-file-invoice-dollar mr-2"></i>
                     Detalle del Presupuesto
                 </h5>
-                <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"   onclick="$('#modalDetalleElemento').modal('hide')">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+
+            <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
                 <div class="container-fluid">
 
-                    <!-- Información del presupuesto -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="font-weight-bold">Número:</label>
-                            <p id="modalNumeroPresupuesto" class="mb-2"></p>
+                    <!-- SECCIÓN PRESUPUESTO -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-header bg-light border-bottom">
+                            <h6 class="mb-0 text-primary font-weight-bold">
+                                <i class="fas fa-calculator mr-2"></i>Información del Presupuesto
+                            </h6>
                         </div>
-                        <div class="col-md-6">
-                            <label class="font-weight-bold">Cliente:</label>
-                            <p id="modalClientePresupuesto" class="mb-2"></p>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-3" style="display: none;">
+                                    <label class="text-muted small mb-1">ID:</label>
+                                    <div class="font-weight-semibold" id="modalIdPresupuesto"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Número:</label>
+                                    <div class="font-weight-semibold" id="modalNumeroPresupuesto"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Fecha:</label>
+                                    <div class="font-weight-semibold" id="modalFechaPresupuesto"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Validez:</label>
+                                    <div class="font-weight-semibold" id="modalFechaValidezPresupuesto"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Estado validez:</label>
+                                    <div class="font-weight-semibold" id="modalEstadoValidezPresupuesto"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Prioridad:</label>
+                                    <div class="font-weight-semibold" id="modalPrioridadPresupuesto"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Total:</label>
+                                    <div class="font-weight-bold text-success h5 mb-0" id="modalImportePresupuesto"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Código estado:</label>
+                                    <div class="font-weight-semibold" id="modalCodigoEstado"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Nombre estado:</label>
+                                    <div class="font-weight-semibold" id="modalNombreEstado"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Evento -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="font-weight-bold">Nombre Evento:</label>
-                            <p id="modalNombreEvento" class="mb-2"></p>
+                    <!-- SECCIÓN EVENTO -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-header bg-light border-bottom">
+                            <h6 class="mb-0 text-primary font-weight-bold">
+                                <i class="fas fa-calendar-alt mr-2"></i>Información del Evento
+                            </h6>
                         </div>
-                        <div class="col-md-6">
-                            <label class="font-weight-bold">Estado:</label>
-                            <p id="modalEstadoPresupuesto" class="mb-2"></p>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="text-muted small mb-1">Nombre:</label>
+                                    <div class="font-weight-semibold" id="modalNombreEvento"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Inicio:</label>
+                                    <div class="font-weight-semibold" id="modalFechaInicioEvento"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Fin:</label>
+                                    <div class="font-weight-semibold" id="modalFechaFinEvento"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Duración (días):</label>
+                                    <div class="font-weight-semibold" id="modalDuracionEvento"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Estado evento:</label>
+                                    <div class="font-weight-semibold" id="modalEstadoEvento"></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="text-muted small mb-1">Dirección:</label>
+                                    <div class="font-weight-semibold" id="modalDireccionEvento"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">CP:</label>
+                                    <div class="font-weight-semibold" id="modalCpEvento"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Población:</label>
+                                    <div class="font-weight-semibold" id="modalPoblacionEvento"></div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="text-muted small mb-1">Provincia:</label>
+                                    <div class="font-weight-semibold" id="modalProvinciaEvento"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Importe -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="font-weight-bold">Importe:</label>
-                            <p id="modalImportePresupuesto" class="mb-2"></p>
+                    <!-- SECCIÓN CLIENTE -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-header bg-light border-bottom">
+                            <h6 class="mb-0 text-primary font-weight-bold">
+                                <i class="fas fa-building mr-2"></i>Información del Cliente
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-3" style="display: none;">
+                                    <label class="text-muted small mb-1">ID Cliente:</label>
+                                    <div class="font-weight-semibold" id="modalIdCliente"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Código:</label>
+                                    <div class="font-weight-semibold" id="modalCodigoCliente"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Nombre:</label>
+                                    <div class="font-weight-semibold" id="modalNombreCliente"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">NIF:</label>
+                                    <div class="font-weight-semibold" id="modalNifCliente"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Teléfono:</label>
+                                    <div class="font-weight-semibold" id="modalTelefonoCliente"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Email:</label>
+                                    <div class="font-weight-semibold" id="modalEmailCliente"></div>
+                                </div>
+                                <div class="col-md-7 mb-3">
+                                    <label class="text-muted small mb-1">Dirección:</label>
+                                    <div class="font-weight-semibold" id="modalDireccionCliente"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN CONTACTO -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-header bg-light border-bottom">
+                            <h6 class="mb-0 text-primary font-weight-bold">
+                                <i class="fas fa-user mr-2"></i>Persona de Contacto
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Nombre:</label>
+                                    <div class="font-weight-semibold" id="modalNombreContacto"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Teléfono:</label>
+                                    <div class="font-weight-semibold" id="modalTelefonoContacto"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Cargo:</label>
+                                    <div class="font-weight-semibold" id="modalCargoContacto"></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="text-muted small mb-1">Email:</label>
+                                    <div class="font-weight-semibold" id="modalEmailContacto"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN PAGO -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-header bg-light border-bottom">
+                            <h6 class="mb-0 text-primary font-weight-bold">
+                                <i class="fas fa-credit-card mr-2"></i>Condiciones de Pago
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Tipo pago:</label>
+                                    <div class="font-weight-semibold" id="modalTipoPago"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Forma pago:</label>
+                                    <div class="font-weight-semibold" id="modalFormaPago"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Vencimiento anticipo:</label>
+                                    <div class="font-weight-semibold" id="modalFechaVencimientoAnticipo"></div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="text-muted small mb-1">Vencimiento final:</label>
+                                    <div class="font-weight-semibold" id="modalFechaVencimientoFinal"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN OBSERVACIONES -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-header bg-light border-bottom">
+                            <h6 class="mb-0 text-primary font-weight-bold">
+                                <i class="fas fa-sticky-note mr-2"></i>Observaciones
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="text-muted small mb-1">Cabecera:</label>
+                                    <div class="p-2 bg-light rounded" id="modalObsCabecera"></div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="text-muted small mb-1">Pie:</label>
+                                    <div class="p-2 bg-light rounded" id="modalObsPie"></div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="text-muted small mb-1">Internas:</label>
+                                    <div class="p-2 bg-light rounded" id="modalObsInternas"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cerrar
+
+            <div class="modal-footer border-top bg-light">
+                <button type="button" class="btn bg-primary btn-secondary px-4" onclick="$('#modalDetalleElemento').modal('hide')">
+                    <i class="fas fa-times mr-2"></i>Cerrar
                 </button>
             </div>
+
         </div>
     </div>
 </div>
+
 
     <!-- ----------------------- -->
     <!--       mainJs.php        -->
@@ -224,7 +420,7 @@
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
-    
+
     <script src="js/calendario.js"></script>
 </body>
 </html>

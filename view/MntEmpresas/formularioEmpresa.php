@@ -526,6 +526,49 @@
     <!-- ------------------------- -->
     <script type="text/javascript" src="formularioEmpresa.js"></script>
 
+    <!-- Botones flotantes para navegación -->
+    <!-- Botón para ir al inicio del formulario -->
+    <button id="scrollToTop" class="btn btn-primary" style="position: fixed; bottom: 140px; right: 30px; z-index: 1000; border-radius: 50%; width: 50px; height: 50px; display: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3);" title="Ir al inicio del formulario">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Botón para ir al final del formulario -->
+    <button id="scrollToBottom" class="btn btn-primary" style="position: fixed; bottom: 80px; right: 30px; z-index: 1000; border-radius: 50%; width: 50px; height: 50px; display: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3);" title="Ir al final del formulario">
+        <i class="fas fa-arrow-down"></i>
+    </button>
+
+    <!-- Script para botones flotantes de navegación -->
+    <script>
+        $(document).ready(function() {
+            // Mostrar/ocultar botones según scroll
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    $('#scrollToTop').fadeIn();
+                    $('#scrollToBottom').fadeIn();
+                } else {
+                    $('#scrollToTop').fadeOut();
+                    $('#scrollToBottom').fadeOut();
+                }
+            });
+
+            // Hacer scroll al inicio del formulario
+            $('#scrollToTop').click(function() {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 800);
+                return false;
+            });
+
+            // Hacer scroll al final del formulario
+            $('#scrollToBottom').click(function() {
+                $('html, body').animate({
+                    scrollTop: $(document).height()
+                }, 800);
+                return false;
+            });
+        });
+    </script>
+
 </body>
 
 </html>

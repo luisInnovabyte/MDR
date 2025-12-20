@@ -1,0 +1,91 @@
+-- ========================================================
+-- TABLA: cliente_ubicacion
+-- DESCRIPCIÓN: Ubicaciones habituales de eventos/instalaciones por cliente
+--              Relación 1:N (un cliente puede tener múltiples ubicaciones)
+-- FECHA: 2024-12-19
+-- ========================================================
+
+CREATE TABLE cliente_ubicacion (
+    id_ubicacion INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    -- =====================================================
+    -- RELACIÓN CON CLIENTE
+    -- =====================================================
+    id_cliente INT UNSIGNED NOT NULL
+        COMMENT 'Cliente propietario de esta ubicación',
+    
+    -- =====================================================
+    -- IDENTIFICACIÓN DE LA UBICACIÓN
+    -- =====================================================
+    nombre_ubicacion VARCHAR(255) NOT NULL
+        COMMENT 'Nombre identificativo: "Teatro Municipal", "Auditorio Central", etc.',
+    
+    -- =====================================================
+    -- DIRECCIÓN COMPLETA
+    -- =====================================================
+    direccion_ubicacion VARCHAR(255)
+        COMMENT 'Calle, número, piso, etc.',
+    
+    codigo_postal_ubicacion VARCHAR(10),
+    
+    poblacion_ubicacion VARCHAR(100),
+    
+    provincia_ubicacion VARCHAR(100),
+    
+    pais_ubicacion VARCHAR(100) DEFAULT 'España'
+        COMMENT 'País de la ubicación',
+    
+    -- =====================================================
+    -- INFORMACIÓN DE CONTACTO EN LA UBICACIÓN
+    -- =====================================================
+    persona_contacto_ubicacion VARCHAR(255)
+        COMMENT 'Persona de contacto en esta ubicación específica',
+    
+    telefono_contacto_ubicacion VARCHAR(50)
+        COMMENT 'Teléfono de contacto en la ubicación',
+    
+    email_contacto_ubicacion VARCHAR(255)
+        COMMENT 'Email de contacto en la ubicación',
+    
+    -- =====================================================
+    -- INFORMACIÓN ADICIONAL
+    -- =====================================================
+    observaciones_ubicacion TEXT
+        COMMENT 'Notas operativas: "Acceso calle trasera", "Ascensor limitado", "Horario carga 8-10h", etc.',
+    
+    -- =====================================================
+    -- CONFIGURACIÓN
+    -- =====================================================
+    es_principal_ubicacion BOOLEAN DEFAULT FALSE
+        COMMENT 'TRUE: Ubicación por defecto del cliente | FALSE: Ubicación secundaria',
+    
+    -- =====================================================
+    -- CONTROL
+    -- =====================================================
+    activo_ubicacion BOOLEAN DEFAULT TRUE
+        COMMENT 'TRUE: Ubicación activa | FALSE: Ubicación desactivada',
+    
+    created_at_ubicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    updated_at_ubicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- =====================================================
+    -- RESTRICCIONES DE CLAVE FORÁNEA
+    -- =====================================================
+    CONSTRAINT fk_ubicacion_cliente FOREIGN KEY (id_cliente) 
+        REFERENCES cliente(id_cliente) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    -- =====================================================
+    -- ÍNDICES
+    -- =====================================================
+    INDEX idx_id_cliente_ubicacion (id_cliente),
+    INDEX idx_nombre_ubicacion (nombre_ubicacion),
+    INDEX idx_poblacion_ubicacion (poblacion_ubicacion),
+    INDEX idx_provincia_ubicacion (provincia_ubicacion),
+    INDEX idx_es_principal_ubicacion (es_principal_ubicacion),
+    INDEX idx_activo_ubicacion (activo_ubicacion)
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 
+COMMENT='Ubicaciones habituales de eventos para cada cliente';

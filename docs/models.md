@@ -2,7 +2,7 @@
 
 ## 🎯 Introducción
 
-Los **modelos** son clases PHP que encapsulan toda la lógica de acceso a datos. Cada modelo representa una entidad del sistema (tabla de base de datos) y proporciona métodos para realizar operaciones CRUD y consultas especializadas.
+Los **models** son clases PHP que encapsulan toda la lógica de acceso a datos. Cada modelo representa una entidad del sistema (tabla de base de datos) y proporciona métodos para realizar operaciones CRUD y consultas especializadas.
 
 ---
 

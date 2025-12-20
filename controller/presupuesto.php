@@ -34,6 +34,7 @@ switch ($op) {
                 "fecha_fin_evento_presupuesto" => $row["fecha_fin_evento_presupuesto"],
                 "numero_pedido_cliente_presupuesto" => $row["numero_pedido_cliente_presupuesto"],
                 "aplicar_coeficientes_presupuesto" => isset($row["aplicar_coeficientes_presupuesto"]) ? (bool)$row["aplicar_coeficientes_presupuesto"] : true,
+                "descuento_presupuesto" => $row["descuento_presupuesto"] ?? 0.00,
                 "nombre_evento_presupuesto" => $row["nombre_evento_presupuesto"],
                 
                 // Ubicación del evento (4 campos separados)
@@ -64,6 +65,7 @@ switch ($op) {
                 "nif_cliente" => $row["nif_cliente"],
                 "telefono_cliente" => $row["telefono_cliente"],
                 "email_cliente" => $row["email_cliente"],
+                "porcentaje_descuento_cliente" => $row["porcentaje_descuento_cliente"] ?? 0.00,
                 
                 // Dirección principal del cliente
                 "direccion_cliente" => $row["direccion_cliente"],
@@ -138,6 +140,12 @@ switch ($op) {
                 "fecha_vencimiento_anticipo" => $row["fecha_vencimiento_anticipo"] ?? null,
                 "fecha_vencimiento_final" => $row["fecha_vencimiento_final"] ?? null,
                 
+                // Campos calculados - Descuentos
+                "comparacion_descuento" => $row["comparacion_descuento"] ?? null,
+                "estado_descuento_presupuesto" => $row["estado_descuento_presupuesto"] ?? null,
+                "aplica_descuento_presupuesto" => isset($row["aplica_descuento_presupuesto"]) ? (bool)$row["aplica_descuento_presupuesto"] : false,
+                "diferencia_descuento" => $row["diferencia_descuento"] ?? 0.00,
+                
                 // Campos calculados - Información adicional
                 "tiene_direccion_facturacion_diferente" => isset($row["tiene_direccion_facturacion_diferente"]) ? (bool)$row["tiene_direccion_facturacion_diferente"] : false,
                 "dias_desde_emision" => $row["dias_desde_emision"] ?? null,
@@ -199,6 +207,9 @@ switch ($op) {
                 // Procesar campo aplicar_coeficientes_presupuesto (boolean)
                 $aplicar_coeficientes_presupuesto = isset($_POST["aplicar_coeficientes_presupuesto"]) ? (bool)$_POST["aplicar_coeficientes_presupuesto"] : true;
                 
+                // Procesar campo descuento_presupuesto (decimal)
+                $descuento_presupuesto = isset($_POST["descuento_presupuesto"]) && $_POST["descuento_presupuesto"] !== '' ? floatval($_POST["descuento_presupuesto"]) : 0.00;
+                
                 writeToLog([
                     'id_contacto_cliente' => $id_contacto_cliente,
                     'id_forma_pago' => $id_forma_pago,
@@ -218,6 +229,7 @@ switch ($op) {
                     $fecha_fin_evento_presupuesto, 
                     $_POST["numero_pedido_cliente_presupuesto"], 
                     $aplicar_coeficientes_presupuesto, 
+                    $descuento_presupuesto, 
                     $_POST["nombre_evento_presupuesto"], 
                     $_POST["direccion_evento_presupuesto"] ?? '', 
                     $_POST["poblacion_evento_presupuesto"] ?? '', 
@@ -290,6 +302,9 @@ switch ($op) {
                 // Procesar campo aplicar_coeficientes_presupuesto (boolean)
                 $aplicar_coeficientes_presupuesto = isset($_POST["aplicar_coeficientes_presupuesto"]) ? (bool)$_POST["aplicar_coeficientes_presupuesto"] : true;
                 
+                // Procesar campo descuento_presupuesto (decimal)
+                $descuento_presupuesto = isset($_POST["descuento_presupuesto"]) && $_POST["descuento_presupuesto"] !== '' ? floatval($_POST["descuento_presupuesto"]) : 0.00;
+                
                 $resultado = $presupuesto->update_presupuesto(
                     $_POST["id_presupuesto"],
                     $_POST["numero_presupuesto"], 
@@ -304,6 +319,7 @@ switch ($op) {
                     $fecha_fin_evento_presupuesto, 
                     $_POST["numero_pedido_cliente_presupuesto"], 
                     $aplicar_coeficientes_presupuesto, 
+                    $descuento_presupuesto, 
                     $_POST["nombre_evento_presupuesto"], 
                     $_POST["direccion_evento_presupuesto"] ?? '', 
                     $_POST["poblacion_evento_presupuesto"] ?? '', 
@@ -519,38 +535,101 @@ switch ($op) {
     case "getMaintenanceEvents":
 
     // Traes EXACTAMENTE lo mismo que el DataTable
-    $datos = $presupuesto->get_presupuestos(); // o el método que uses
+   $datos = $presupuesto->get_presupuestos();
 
-    $events = [];
+$events = [];
 
-    foreach ($datos as $row) {
+foreach ($datos as $row) {
 
-        // Ignorar si no hay fechas
-        if (empty($row["fecha_inicio_evento_presupuesto"]) || empty($row["fecha_fin_evento_presupuesto"])) {
-            continue;
-        }
-
-        $events[] = [
-            "id"    => $row["id_presupuesto"],
-            "title" => $row["nombre_evento_presupuesto"] . " - " . $row["nombre_cliente"],
-            "start" => $row["fecha_inicio_evento_presupuesto"],
-            "end"   => $row["fecha_fin_evento_presupuesto"],
-            "color" => $row["color_estado_ppto"],
-            "extendedProps" => [
-                "numero_presupuesto" => $row["numero_presupuesto"],
-                "estado" => $row["nombre_estado_ppto"],
-                "prioridad" => $row["prioridad_presupuesto"],
-                "total" => (float)$row["total_presupuesto"]
-            ]
-        ];
+    // Ignorar si no hay fechas de evento
+    if (
+        empty($row["fecha_inicio_evento_presupuesto"]) ||
+        empty($row["fecha_fin_evento_presupuesto"])
+    ) {
+        continue;
     }
 
-    echo json_encode([
-        "status" => "success",
-        "data" => $events
-    ], JSON_UNESCAPED_UNICODE);
+    $events[] = [
+        "id"    => (int)$row["id_presupuesto"],
 
-    exit;
+        // Título visible en el calendario
+        "title" => $row["nombre_evento_presupuesto"] . " - " . $row["nombre_cliente"],
+
+        "start" => $row["fecha_inicio_evento_presupuesto"],
+        "end"   => $row["fecha_fin_evento_presupuesto"],
+
+        "color" => $row["color_estado_ppto"],
+
+        // 🔥 AQUÍ VA TODA LA CHICHA
+        "extendedProps" => [
+
+            // ===== PRESUPUESTO =====
+            "id_presupuesto"              => (int)$row["id_presupuesto"],
+            "numero_presupuesto"          => $row["numero_presupuesto"],
+            "fecha_presupuesto"           => $row["fecha_presupuesto"],
+            "fecha_validez_presupuesto"   => $row["fecha_validez_presupuesto"],
+            "estado_validez_presupuesto"  => $row["estado_validez_presupuesto"],
+            "prioridad_presupuesto"       => $row["prioridad_presupuesto"],
+            "total_presupuesto"           => (float)$row["total_presupuesto"],
+
+            // ===== ESTADO =====
+            "id_estado_ppto"     => (int)$row["id_estado_ppto"],
+            "codigo_estado"      => $row["codigo_estado_ppto"],
+            "nombre_estado"      => $row["nombre_estado_ppto"],
+            "color_estado"       => $row["color_estado_ppto"],
+
+            // ===== EVENTO =====
+            "nombre_evento"      => $row["nombre_evento_presupuesto"],
+            "fecha_inicio_evento"=> $row["fecha_inicio_evento_presupuesto"],
+            "fecha_fin_evento"   => $row["fecha_fin_evento_presupuesto"],
+            "duracion_evento"    => (int)$row["duracion_evento_dias"],
+            "estado_evento"      => $row["estado_evento_presupuesto"],
+
+            "direccion_evento"   => $row["direccion_evento_presupuesto"],
+            "cp_evento"          => $row["cp_evento_presupuesto"],
+            "poblacion_evento"   => $row["poblacion_evento_presupuesto"],
+            "provincia_evento"   => $row["provincia_evento_presupuesto"],
+
+            // ===== CLIENTE =====
+            "id_cliente"         => (int)$row["id_cliente"],
+            "codigo_cliente"     => $row["codigo_cliente"],
+            "nombre_cliente"     => $row["nombre_cliente"],
+            "nif_cliente"        => $row["nif_cliente"],
+            "telefono_cliente"   => $row["telefono_cliente"],
+            "email_cliente"      => $row["email_cliente"],
+            "direccion_cliente"  => $row["direccion_completa_cliente"],
+
+            // ===== CONTACTO =====
+            "nombre_contacto"    => $row["nombre_completo_contacto"],
+            "telefono_contacto"  => $row["telefono_contacto_cliente"],
+            "email_contacto"     => $row["email_contacto_cliente"],
+            "cargo_contacto"     => $row["cargo_contacto_cliente"],
+
+            // ===== PAGO =====
+            "tipo_pago"          => $row["tipo_pago_presupuesto"],
+            "forma_pago"         => $row["descripcion_completa_forma_pago"],
+            "fecha_vencimiento_anticipo" => $row["fecha_vencimiento_anticipo"],
+            "fecha_vencimiento_final"    => $row["fecha_vencimiento_final"],
+
+            // ===== OBSERVACIONES =====
+            "obs_cabecera"       => $row["observaciones_cabecera_presupuesto"],
+            "obs_pie"            => $row["observaciones_pie_presupuesto"],
+            "obs_internas"       => $row["observaciones_internas_presupuesto"],
+
+            // ===== FLAGS =====
+            "activo"             => (bool)$row["activo_presupuesto"],
+            "tiene_facturacion_diferente" => (bool)$row["tiene_direccion_facturacion_diferente"]
+        ]
+    ];
+}
+
+echo json_encode([
+    "status" => "success",
+    "data"   => $events
+], JSON_UNESCAPED_UNICODE);
+
+exit;
+
 
 
 }

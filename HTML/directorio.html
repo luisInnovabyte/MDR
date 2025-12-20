@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio de Documentación</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #0d6efd;
+            border-bottom: 3px solid #0d6efd;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .table {
+            margin-top: 20px;
+        }
+        
+        .table thead {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .table thead th {
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+        
+        .doc-name {
+            font-family: 'Courier New', monospace;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+        
+        .doc-image {
+            max-width: 200px;
+            height: auto;
+            border: 2px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .doc-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .modal-body img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .badge {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-book"></i> 
+                Directorio de Documentación - MarkDown -
+            </h1>
+            <span class="badge bg-primary">12 documentos</span>
+        </div>
+        
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">
+                        <i class="fas fa-file-alt"></i> Archivo
+                    </th>
+                    <th style="width: 50%;">
+                        <i class="fas fa-info-circle"></i> Descripción
+                    </th>
+                    <th style="width: 30%;">
+                        <i class="fas fa-image"></i> Previsualización
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="doc-name">arribaabajo.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Botones flotantes de navegación</strong>
+                        <p class="mb-1 text-muted">
+                            Botones flotantes para ir al inicio o fin de la página. 
+                            Implementación completa con animaciones y posicionamiento fijo.
+                        </p>
+                        <span class="badge bg-success">UI/UX</span>
+                        <span class="badge bg-info">JavaScript</span>
+                    </td>
+                    <td class="text-center">
+                        <img 
+                            src="img/arriba_abajo_preview.png" 
+                            alt="Preview botones flotantes" 
+                            class="doc-image"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalArribaAbajo"
+                            title="Click para ampliar"
+                        >
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">cabecera_informacion.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Cabecera de información con gradiente</strong>
+                        <p class="mb-1 text-muted">
+                            Componente visual tipo "card" con gradiente de colores que muestra información destacada del contexto actual (artículo, cliente, empresa, etc.). Diseñado para proporcionar contexto visual inmediato al usuario sobre el registro con el que está trabajando.
+                        </p>
+                        <span class="badge bg-primary">UI/UX</span>
+                        <span class="badge bg-warning text-dark">CSS</span>
+                        <span class="badge bg-secondary">HTML</span>
+                    </td>
+                    <td class="text-center">
+                        <img 
+                            src="img/cabecera_informacion.png" 
+                            alt="Preview cabecera de información" 
+                            class="doc-image"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalCabeceraInfo"
+                            title="Click para ampliar"
+                        >
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">campo_boton_editar_nuevo.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Campo Select con Botones Nuevo/Editar</strong>
+                        <p class="mb-1 text-muted">
+                            Este documento describe la implementación de un componente de interfaz de usuario que combina un campo &lt;select&gt; con botones de acción (Nuevo/Editar) integrados, diseñado específicamente para permitir la gestión CRUD de entidades relacionadas sin abandonar el formulario principal.
+                        </p>
+                        <span class="badge bg-primary">UI/UX</span>
+                        <span class="badge bg-info">JavaScript</span>
+                        <span class="badge bg-success">CRUD</span>
+                    </td>
+                    <td class="text-center">
+                        <img 
+                            src="img/campo_boton_editar_nuevo.png" 
+                            alt="Preview campo select con botones" 
+                            class="doc-image"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalCampoBoton"
+                            title="Click para ampliar"
+                        >
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">desbordamiento_columna.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Solución desbordamiento de columnas</strong>
+                        <p class="mb-1 text-muted">
+                            Los campos de texto largo en las observaciones se desbordaban de la columna asignada (Columna 2) y se superponían con la tercera columna, rompiendo el layout de 3 columnas del diseño.
+                        </p>
+                        <span class="badge bg-danger">Bug Fix</span>
+                        <span class="badge bg-warning text-dark">CSS</span>
+                        <span class="badge bg-secondary">Layout</span>
+                    </td>
+                    <td class="text-center">
+                        <img 
+                            src="img/desbordamiento_columna.png" 
+                            alt="Preview desbordamiento de columna" 
+                            class="doc-image"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalDesbordamiento"
+                            title="Click para ampliar"
+                        >
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">readme-03.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>03 - Backend PHP</strong>
+                        <p class="mb-1 text-muted">
+                            Documentación completa de la arquitectura backend MVC con PHP puro y MySQL
+                        </p>
+                        <span class="badge bg-dark">PHP</span>
+                        <span class="badge bg-info">MVC</span>
+                        <span class="badge bg-primary">MySQL</span>
+                        <span class="badge bg-success">Documentación</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="text-muted" style="padding: 40px 20px;">
+                            <i class="fas fa-book" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">estructura_carpetas.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Estructura de Carpetas del Proyecto</strong>
+                        <p class="mb-1 text-muted">
+                            Patrón arquitectónico MVC con una clara separación de responsabilidades, facilitando el mantenimiento y la escalabilidad.
+                        </p>
+                        <span class="badge bg-secondary">MVC</span>
+                        <span class="badge bg-info">Arquitectura</span>
+                        <span class="badge bg-dark">PHP</span>
+                        <span class="badge bg-success">Escalabilidad</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="text-muted" style="padding: 40px 20px;">
+                            <i class="fas fa-folder-tree" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">generar_tabla.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                        <br>
+                        <span class="badge bg-warning text-dark mt-1">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Ejecutar en Claude Project
+                        </span>
+                    </td>
+                    <td>
+                        <strong>Generador de Tablas SQL</strong>
+                        <p class="mb-1 text-muted">
+                            Prompt optimizado para solicitar la creación de tablas siguiendo los estándares del proyecto Implementation Lab. <strong>Requisito</strong>: Este prompt está diseñado para usarse dentro de un proyecto Claude que tenga cargada la documentación de estándares de base de datos.
+                        </p>
+                        <span class="badge bg-primary">SQL</span>
+                        <span class="badge bg-info">Prompt</span>
+                        <span class="badge bg-warning text-dark">Claude</span>
+                        <span class="badge bg-danger">Requisitos</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="text-muted" style="padding: 40px 20px;">
+                            <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem; opacity: 0.6;"></i>
+                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Requiere Claude Project</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">vistas.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Vistas SQL del Proyecto</strong>
+                        <p class="mb-1 text-muted">
+                            Las <strong>vistas SQL</strong> en el proyecto MDR son consultas almacenadas que combinan datos de múltiples tablas relacionadas, proporcionando una capa de abstracción que simplifica las consultas desde los modelos PHP. Todas las vistas siguen patrones consistentes de diseño y nomenclatura.
+                        </p>
+                        <span class="badge bg-primary">SQL</span>
+                        <span class="badge bg-info">Vistas</span>
+                        <span class="badge bg-success">MySQL</span>
+                        <span class="badge bg-secondary">Abstracción</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="text-muted" style="padding: 40px 20px;">
+                            <i class="fas fa-layer-group" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">disparadores.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Disparadores (Triggers) SQL</strong>
+                        <p class="mb-1 text-muted">
+                            Los <strong>disparadores (triggers)</strong> son objetos de base de datos que se ejecutan automáticamente en respuesta a eventos específicos en una tabla. En el proyecto MDR, los triggers se utilizan para mantener la integridad de datos, sincronizar estados, generar códigos automáticos y validar reglas de negocio.
+                        </p>
+                        <span class="badge bg-primary">SQL</span>
+                        <span class="badge bg-warning text-dark">Triggers</span>
+                        <span class="badge bg-success">MySQL</span>
+                        <span class="badge bg-danger">Automatización</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="text-muted" style="padding: 40px 20px;">
+                            <i class="fas fa-bolt" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">conexion_bd.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Conexión a Base de Datos PDO</strong>
+                        <p class="mb-1 text-muted">
+                            Los proyectos utilizan un sistema de conexión a base de datos basado en <strong>PDO (PHP Data Objects)</strong> con configuración externa mediante archivo JSON. Esta arquitectura proporciona seguridad, flexibilidad y facilidad de mantenimiento.
+                        </p>
+                        <span class="badge bg-dark">PHP</span>
+                        <span class="badge bg-primary">PDO</span>
+                        <span class="badge bg-success">MySQL</span>
+                        <span class="badge bg-warning text-dark">Seguridad</span>
+                        <span class="badge bg-info">JSON</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="text-muted" style="padding: 40px 20px;">
+                            <i class="fas fa-database" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">models.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Modelos (Models) - Patrón MVC</strong>
+                        <p class="mb-1 text-muted">
+                            Los <strong>models</strong> son clases PHP que encapsulan toda la lógica de acceso a datos. Cada modelo representa una entidad del sistema (tabla de base de datos) y proporciona métodos para realizar operaciones CRUD y consultas especializadas.
+                        </p>
+                        <span class="badge bg-dark">PHP</span>
+                        <span class="badge bg-info">MVC</span>
+                        <span class="badge bg-success">CRUD</span>
+                        <span class="badge bg-primary">PDO</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="text-muted" style="padding: 40px 20px;">
+                            <i class="fas fa-file-code" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
+                        </div>
+                    </td>
+                </tr>                <tr>
+                    <td>
+                        <span class="doc-name">controller.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 19/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Controllers - Patrón MVC</strong>
+                        <p class="mb-1 text-muted">
+                            Los controllers en la arquitectura MVC son responsables de <strong>recibir las peticiones del cliente</strong> (normalmente AJAX desde las vistas), <strong>procesarlas</strong>, <strong>invocar los métodos correspondientes del modelo</strong>, y <strong>devolver las respuestas en formato JSON</strong>.
+                        </p>
+                        <span class="badge bg-dark">PHP</span>
+                        <span class="badge bg-info">MVC</span>
+                        <span class="badge bg-warning text-dark">AJAX</span>
+                        <span class="badge bg-secondary">JSON</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="text-muted" style="padding: 40px 20px;">
+                            <i class="fas fa-file-code" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
+                        </div>
+                    </td>
+                </tr>            </tbody>
+        </table>
+        
+        <div class="mt-4">
+            <p class="text-muted">
+                <i class="fas fa-info-circle"></i> 
+                <strong>Nota:</strong> Haz click en las imágenes para ampliarlas.
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal para ampliar imagen -->
+    <div class="modal fade" id="modalArribaAbajo" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">
+                        <i class="fas fa-arrows-alt-v"></i> 
+                        arribaabajo.md - Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="img/arriba_abajo_preview.png" alt="Botones flotantes" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <a href="../docs/arribaabajo.md" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-file-code"></i> Ver documentación completa
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cabecera_informacion.md -->
+    <div class="modal fade" id="modalCabeceraInfo" tabindex="-1" aria-labelledby="modalCabeceraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCabeceraLabel">
+                        <i class="fas fa-palette"></i> 
+                        cabecera_informacion.md - Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="img/cabecera_informacion.png" alt="Cabecera de información" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <a href="../docs/cabecera_informacion.md" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-file-code"></i> Ver documentación completa
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para campo_boton_editar_nuevo.md -->
+    <div class="modal fade" id="modalCampoBoton" tabindex="-1" aria-labelledby="modalCampoBotonLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCampoBotonLabel">
+                        <i class="fas fa-edit"></i> 
+                        campo_boton_editar_nuevo.md - Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="img/campo_boton_editar_nuevo.png" alt="Campo select con botones" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <a href="../docs/campo_boton_editar_nuevo.md" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-file-code"></i> Ver documentación completa
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para desbordamiento_columna.md -->
+    <div class="modal fade" id="modalDesbordamiento" tabindex="-1" aria-labelledby="modalDesbordamientoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDesbordamientoLabel">
+                        <i class="fas fa-columns"></i> 
+                        desbordamiento_columna.md - Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="img/desbordamiento_columna.png" alt="Desbordamiento de columna" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <a href="../docs/desbordamiento_columna.md" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-file-code"></i> Ver documentación completa
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

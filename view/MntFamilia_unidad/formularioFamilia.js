@@ -109,6 +109,15 @@ $(document).ready(function () {
         }
     });
 
+    // Manejar cambio en el switch de permite descuento
+    $('#permite_descuento_familia').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#descuento-text').text('Permite descuentos').removeClass('text-danger').addClass('text-success');
+        } else {
+            $('#descuento-text').text('No permite descuentos').removeClass('text-success').addClass('text-danger');
+        }
+    });
+
     // Función para obtener parámetros de la URL
     function getUrlParameter(name) {
         name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -171,6 +180,9 @@ $(document).ready(function () {
                     // Configurar el checkbox de coeficiente
                     $('#coeficiente_familia').prop('checked', data.coeficiente_familia == 1);
                     
+                    // Configurar el checkbox de permite descuento
+                    $('#permite_descuento_familia').prop('checked', data.permite_descuento_familia !== 0);
+                    
                     // Actualizar texto del estado según el valor actual
                     if (data.activo_familia == 1) {
                         $('#estado-text').text('Familia Activa').removeClass('text-danger').addClass('text-success');
@@ -183,6 +195,13 @@ $(document).ready(function () {
                         $('#coeficiente-text').text('Permite coeficientes').removeClass('text-danger').addClass('text-success');
                     } else {
                         $('#coeficiente-text').text('No permite coeficientes').removeClass('text-success').addClass('text-danger');
+                    }
+                    
+                    // Actualizar texto del permite descuento según el valor actual
+                    if (data.permite_descuento_familia !== 0) {
+                        $('#descuento-text').text('Permite descuentos').removeClass('text-danger').addClass('text-success');
+                    } else {
+                        $('#descuento-text').text('No permite descuentos').removeClass('text-success').addClass('text-danger');
                     }
                     
                     // Actualizar contador de caracteres si existe descripción
@@ -268,6 +287,9 @@ $(document).ready(function () {
         
         // El coeficiente se toma del checkbox
         var coeficiente_familiaR = $('#coeficiente_familia').is(':checked') ? 1 : 0;
+        
+        // El permite descuento se toma del checkbox
+        var permite_descuento_familiaR = $('#permite_descuento_familia').is(':checked') ? 1 : 0;
 
         // Validar el formulario
         if (!formValidator.validateForm(event)) {
@@ -276,10 +298,10 @@ $(document).ready(function () {
         }
         
         // Verificar familia primero
-        verificarFamiliaExistente(id_familiaR, codigo_familiaR, name_familiaR, nombre_familiaR, descr_familiaR, activo_familiaR, id_grupo_R, id_unidad_familiaR, coeficiente_familiaR, observaciones_presupuesto_familiaR, observations_budget_familiaR, orden_obs_familiaR);
+        verificarFamiliaExistente(id_familiaR, codigo_familiaR, name_familiaR, nombre_familiaR, descr_familiaR, activo_familiaR, id_grupo_R, id_unidad_familiaR, coeficiente_familiaR, observaciones_presupuesto_familiaR, observations_budget_familiaR, orden_obs_familiaR, permite_descuento_familiaR);
     });
 
-    function verificarFamiliaExistente(id_familia, codigo_familia, name_familia, nombre_familia, descr_familia, activo_familia, id_grupo, id_unidad_familia, coeficiente_familia, observaciones_presupuesto_familia, observations_budget_familia, orden_obs_familia) {
+    function verificarFamiliaExistente(id_familia, codigo_familia, name_familia, nombre_familia, descr_familia, activo_familia, id_grupo, id_unidad_familia, coeficiente_familia, observaciones_presupuesto_familia, observations_budget_familia, orden_obs_familia, permite_descuento_familia) {
         $.ajax({
             url: "../../controller/familia_unidad.php?op=verificarFamilia",
             type: "GET",
@@ -299,7 +321,7 @@ $(document).ready(function () {
                 if (response.existe) {
                     mostrarErrorFamiliaExistente(nombre_familia);
                 } else {
-                    guardarFamilia(id_familia, codigo_familia, name_familia, nombre_familia, descr_familia, activo_familia, id_grupo, id_unidad_familia, coeficiente_familia, observaciones_presupuesto_familia, observations_budget_familia, orden_obs_familia);
+                    guardarFamilia(id_familia, codigo_familia, name_familia, nombre_familia, descr_familia, activo_familia, id_grupo, id_unidad_familia, coeficiente_familia, observaciones_presupuesto_familia, observations_budget_familia, orden_obs_familia, permite_descuento_familia);
                 }
             },
             error: function(xhr, status, error) {
@@ -319,7 +341,7 @@ $(document).ready(function () {
         });
     }
 
-    function guardarFamilia(id_familia, codigo_familia, name_familia, nombre_familia, descr_familia, activo_familia, id_grupo, id_unidad_familia, coeficiente_familia, observaciones_presupuesto_familia, observations_budget_familia, orden_obs_familia) {
+    function guardarFamilia(id_familia, codigo_familia, name_familia, nombre_familia, descr_familia, activo_familia, id_grupo, id_unidad_familia, coeficiente_familia, observaciones_presupuesto_familia, observations_budget_familia, orden_obs_familia, permite_descuento_familia) {
         // Mostrar indicador de carga
         $('#btnSalvarFamilia').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
         
@@ -331,6 +353,7 @@ $(document).ready(function () {
         formData.append('descr_familia', descr_familia);
         formData.append('activo_familia', activo_familia);
         formData.append('coeficiente_familia', coeficiente_familia);
+        formData.append('permite_descuento_familia', permite_descuento_familia);
         formData.append('id_grupo', id_grupo || '');
         formData.append('id_unidad_familia', id_unidad_familia || '');
         formData.append('observaciones_presupuesto_familia', observaciones_presupuesto_familia);
@@ -406,6 +429,7 @@ $(document).ready(function () {
             id_grupo: $('#id_grupo').val(),
             id_unidad_familia: $('#id_unidad_familia').val(),
             coeficiente_familia: $('#coeficiente_familia').is(':checked'),
+            permite_descuento_familia: $('#permite_descuento_familia').is(':checked'),
             observaciones_presupuesto_familia: $('#observaciones_presupuesto_familia').val(),
             observations_budget_familia: $('#observations_budget_familia').val(),
             orden_obs_familia: $('#orden_obs_familia').val()
@@ -425,6 +449,7 @@ $(document).ready(function () {
             $('#id_grupo').val() !== formOriginalValues.id_grupo ||
             $('#id_unidad_familia').val() !== formOriginalValues.id_unidad_familia ||
             $('#coeficiente_familia').is(':checked') !== formOriginalValues.coeficiente_familia ||
+            $('#permite_descuento_familia').is(':checked') !== formOriginalValues.permite_descuento_familia ||
             $('#observaciones_presupuesto_familia').val() !== formOriginalValues.observaciones_presupuesto_familia ||
             $('#observations_budget_familia').val() !== formOriginalValues.observations_budget_familia ||
             $('#orden_obs_familia').val() !== formOriginalValues.orden_obs_familia ||

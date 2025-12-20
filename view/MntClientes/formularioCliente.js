@@ -80,6 +80,11 @@ $(document).ready(function () {
                         $('#id_forma_pago_habitual').trigger('change');
                     }
                     
+                    // Porcentaje de descuento del cliente
+                    $('#porcentaje_descuento_cliente').val(data.porcentaje_descuento_cliente || '0.00');
+                    // Actualizar indicador visual del descuento
+                    $('#porcentaje_descuento_cliente').trigger('input');
+                    
                     // Configurar el campo activo_cliente (solo lectura en formulario)
                     // Campo oculto con el valor real para envío
                     $('#activo_cliente_hidden').val(data.activo_cliente);
@@ -181,6 +186,9 @@ $(document).ready(function () {
         // Forma de pago habitual
         var id_forma_pago_habitualR = $('#id_forma_pago_habitual').val();
         
+        // Porcentaje de descuento del cliente
+        var porcentaje_descuento_clienteR = $('#porcentaje_descuento_cliente').val() || '0.00';
+        
         // Obtener el estado del cliente
         var activo_clienteR;
         if (id_clienteR) {
@@ -198,10 +206,10 @@ $(document).ready(function () {
         }
         
         // Verificar cliente primero
-        verificarClienteExistente(id_clienteR, codigo_clienteR, nombre_clienteR, nif_clienteR, direccion_clienteR, cp_clienteR, poblacion_clienteR, provincia_clienteR, telefono_clienteR, email_clienteR, web_clienteR, fax_clienteR, nombre_facturacion_clienteR, direccion_facturacion_clienteR, cp_facturacion_clienteR, poblacion_facturacion_clienteR, provincia_facturacion_clienteR, id_forma_pago_habitualR, observaciones_clienteR, activo_clienteR);
+        verificarClienteExistente(id_clienteR, codigo_clienteR, nombre_clienteR, nif_clienteR, direccion_clienteR, cp_clienteR, poblacion_clienteR, provincia_clienteR, telefono_clienteR, email_clienteR, web_clienteR, fax_clienteR, nombre_facturacion_clienteR, direccion_facturacion_clienteR, cp_facturacion_clienteR, poblacion_facturacion_clienteR, provincia_facturacion_clienteR, id_forma_pago_habitualR, porcentaje_descuento_clienteR, observaciones_clienteR, activo_clienteR);
     });
 
-    function verificarClienteExistente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, observaciones_cliente, activo_cliente) {
+    function verificarClienteExistente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, activo_cliente) {
         console.log('🔍 Verificando cliente:', { codigo: codigo_cliente, nombre: nombre_cliente, nif: nif_cliente, id: id_cliente });
         
         $.ajax({
@@ -221,7 +229,7 @@ $(document).ready(function () {
                 if (response.existe === false) {
                     // No existe, podemos guardar
                     console.log('✅ Cliente no existe, procediendo a guardar');
-                    guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, observaciones_cliente, activo_cliente);
+                    guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, activo_cliente);
                 } else {
                     // Ya existe
                     console.log('❌ Cliente ya existe');
@@ -246,7 +254,7 @@ $(document).ready(function () {
         });
     }
 
-    function guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, observaciones_cliente, activo_cliente) {
+    function guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, activo_cliente) {
         // Mostrar indicador de carga
         $('#btnSalvarCliente').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
         
@@ -270,6 +278,7 @@ $(document).ready(function () {
         formData.append('poblacion_facturacion_cliente', poblacion_facturacion_cliente);
         formData.append('provincia_facturacion_cliente', provincia_facturacion_cliente);
         formData.append('id_forma_pago_habitual', id_forma_pago_habitual || '');
+        formData.append('porcentaje_descuento_cliente', porcentaje_descuento_cliente || '0.00');
         formData.append('observaciones_cliente', observaciones_cliente);
         formData.append('activo_cliente', activo_cliente);
         
@@ -447,6 +456,58 @@ $(document).ready(function () {
             
             $('#info-forma-pago').slideDown();
         }
+    });
+
+    // ========================================================
+    // ACTUALIZAR INDICADOR DE DESCUENTO DEL CLIENTE
+    // ========================================================
+    $('#porcentaje_descuento_cliente').on('input', function() {
+        const valor = parseFloat($(this).val()) || 0;
+        
+        // Validar rango 0-100
+        if (valor < 0) {
+            $(this).val('0.00');
+            return;
+        }
+        if (valor > 100) {
+            $(this).val('100.00');
+            return;
+        }
+        
+        // Actualizar display del valor
+        $('#valor-descuento-display').text(valor.toFixed(2) + '%');
+        
+        // Determinar categoría y actualizar estilo
+        let categoria = '';
+        let alertClass = '';
+        
+        if (valor === 0) {
+            categoria = 'Sin descuento';
+            alertClass = 'alert-secondary';
+        } else if (valor > 0 && valor <= 5) {
+            categoria = 'Descuento bajo';
+            alertClass = 'alert-info';
+        } else if (valor > 5 && valor <= 15) {
+            categoria = 'Descuento medio';
+            alertClass = 'alert-warning';
+        } else if (valor > 15) {
+            categoria = 'Descuento alto';
+            alertClass = 'alert-success';
+        }
+        
+        // Actualizar texto de categoría
+        $('#categoria-descuento').text(categoria);
+        
+        // Actualizar clases del alert
+        const alertDiv = $('#info-descuento-cliente .alert');
+        alertDiv.removeClass('alert-secondary alert-info alert-warning alert-success');
+        alertDiv.addClass(alertClass);
+    });
+
+    // Validar formato al salir del campo
+    $('#porcentaje_descuento_cliente').on('blur', function() {
+        const valor = parseFloat($(this).val()) || 0;
+        $(this).val(valor.toFixed(2));
     });
 
     /////////////////////////////////////////

@@ -56,6 +56,11 @@ switch ($_GET["op"]) {
                 "created_at_cliente" => $row["created_at_cliente"],
                 "updated_at_cliente" => $row["updated_at_cliente"],
                 
+                // Sistema de descuentos
+                "porcentaje_descuento_cliente" => $row["porcentaje_descuento_cliente"] ?? 0.00,
+                "categoria_descuento_cliente" => $row["categoria_descuento_cliente"] ?? 'Sin descuento',
+                "tiene_descuento_cliente" => isset($row["tiene_descuento_cliente"]) ? (bool)$row["tiene_descuento_cliente"] : false,
+                
                 // Datos de la forma de pago habitual
                 "id_forma_pago_habitual" => $row["id_forma_pago_habitual"],
                 "codigo_pago" => $row["codigo_pago"] ?? null,
@@ -121,6 +126,12 @@ switch ($_GET["op"]) {
                     'tipo' => gettype($id_forma_pago)
                 ]);
                 
+                // Procesar porcentaje_descuento_cliente (valor por defecto 0.00)
+                $porcentaje_descuento = 0.00;
+                if (isset($_POST["porcentaje_descuento_cliente"]) && $_POST["porcentaje_descuento_cliente"] !== '') {
+                    $porcentaje_descuento = floatval($_POST["porcentaje_descuento_cliente"]);
+                }
+                
                 $resultado = $cliente->insert_cliente(
                     $_POST["codigo_cliente"], 
                     $_POST["nombre_cliente"], 
@@ -139,6 +150,7 @@ switch ($_GET["op"]) {
                     $_POST["poblacion_facturacion_cliente"], 
                     $_POST["provincia_facturacion_cliente"],
                     $id_forma_pago,
+                    $porcentaje_descuento,
                     $_POST["observaciones_cliente"]
                 );
                 
@@ -172,6 +184,12 @@ switch ($_GET["op"]) {
                     $id_forma_pago = intval($_POST["id_forma_pago_habitual"]);
                 }
                 
+                // Procesar porcentaje_descuento_cliente (valor por defecto 0.00)
+                $porcentaje_descuento = 0.00;
+                if (isset($_POST["porcentaje_descuento_cliente"]) && $_POST["porcentaje_descuento_cliente"] !== '') {
+                    $porcentaje_descuento = floatval($_POST["porcentaje_descuento_cliente"]);
+                }
+                
                 $resultado = $cliente->update_cliente(
                     $_POST["id_cliente"],
                     $_POST["codigo_cliente"], 
@@ -191,6 +209,7 @@ switch ($_GET["op"]) {
                     $_POST["poblacion_facturacion_cliente"], 
                     $_POST["provincia_facturacion_cliente"],
                     $id_forma_pago,
+                    $porcentaje_descuento,
                     $_POST["observaciones_cliente"]
                 );
                 

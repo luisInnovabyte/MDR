@@ -80,11 +80,13 @@ $(document).ready(function () {
             { name: 'nif_cliente', data: 'nif_cliente', className: "text-center align-middle"  }, // Columna 4: NIF_CLIENTE
             { name: 'telefono_cliente', data: 'telefono_cliente', className: "text-center align-middle"  }, // Columna 5: TELEFONO_CLIENTE
             { name: 'email_cliente', data: 'email_cliente', className: "text-center align-middle"  }, // Columna 6: EMAIL_CLIENTE
-            { name: 'cantidad_contactos', data: 'cantidad_contactos', className: "text-center align-middle"  }, // Columna 7: CANTIDAD_CONTACTOS
-            { name: 'activo_cliente', data: 'activo_cliente', className: "text-center align-middle"  }, // Columna 8: ESTADO
-            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 9: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 10: EDITAR
-            { name: 'formulario', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 11: FORMULARIO
+            { name: 'porcentaje_descuento_cliente', data: 'porcentaje_descuento_cliente', className: "text-center align-middle"  }, // Columna 7: DESCUENTO
+            { name: 'cantidad_contactos', data: 'cantidad_contactos', className: "text-center align-middle"  }, // Columna 8: CANTIDAD_CONTACTOS
+            { name: 'activo_cliente', data: 'activo_cliente', className: "text-center align-middle"  }, // Columna 9: ESTADO
+            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 10: ACTIVAR/DESACTIVAR
+            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 11: EDITAR
+            { name: 'formulario', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 12: FORMULARIO
+            { name: 'ubicaciones', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 13: UBICACIONES
             
         ], // de las columnas
         columnDefs: [
@@ -104,7 +106,36 @@ $(document).ready(function () {
             { targets: "telefono_cliente:name", width: '12%', searchable: true, orderable: true, className: "text-center" },
             // Columna 6: email_cliente
             { targets: "email_cliente:name", width: '15%', searchable: true, orderable: true, className: "text-center" },
-             // Columna 7: cantidad_contactos
+            // Columna 7: porcentaje_descuento_cliente
+            {
+                targets: "porcentaje_descuento_cliente:name", width: '8%', orderable: true, searchable: false, className: "text-center",
+                render: function (data, type, row) {
+                    if (type === "display") {
+                        var descuento = parseFloat(data) || 0;
+                        var badgeClass = 'bg-secondary';
+                        var icon = 'bi-dash-circle';
+                        
+                        if (descuento > 0) {
+                            if (descuento <= 5) {
+                                badgeClass = 'bg-info';
+                                icon = 'bi-percent';
+                            } else if (descuento <= 15) {
+                                badgeClass = 'bg-warning';
+                                icon = 'bi-percent';
+                            } else {
+                                badgeClass = 'bg-success';
+                                icon = 'bi-percent';
+                            }
+                        }
+                        
+                        return `<span class="badge ${badgeClass} fs-6">
+                                    <i class="bi ${icon} me-1"></i>${descuento.toFixed(2)}%
+                                </span>`;
+                    }
+                    return parseFloat(data) || 0;
+                }
+            },
+             // Columna 8: cantidad_contactos
             {
                 targets: "cantidad_contactos:name", width: '8%', orderable: true, searchable: false, className: "text-center",
                 render: function (data, type, row) {
@@ -118,7 +149,7 @@ $(document).ready(function () {
                     return parseInt(data) || 0;
                 }
             },
-            // Columna 8: activo_cliente
+            // Columna 9: activo_cliente
             {
                 targets: "activo_cliente:name", width: '8%', orderable: true, searchable: true, className: "text-center",
                 render: function (data, type, row) {
@@ -128,7 +159,7 @@ $(document).ready(function () {
                     return row.activo_cliente;
                 }
             },
-            // Columna 8: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
+            // Columna 10: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
             {   
                 targets: "activar:name", width: '8%', searchable: false, orderable: false, class: "text-center",
                 render: function (data, type, row) {
@@ -147,7 +178,7 @@ $(document).ready(function () {
                             </button>`}
                 } // de la function
             },// 
-            // Columna 9: BOTON PARA EDITAR CLIENTE
+            // Columna 11: BOTON PARA EDITAR CLIENTE
             {   
                 targets: "editar:name", width: '8%', searchable: false, orderable: false, class: "text-center",
                 render: function (data, type, row) {
@@ -159,7 +190,7 @@ $(document).ready(function () {
                              </button>`
                 } // de la function
             },
-            // Columna 10: BOTON PARA CONTACTOS CLIENTE
+            // Columna 12: BOTON PARA CONTACTOS CLIENTE
             {   
                 targets: "formulario:name", width: '8%', searchable: false, orderable: false, class: "text-center",
                 render: function (data, type, row) {
@@ -170,8 +201,19 @@ $(document).ready(function () {
                              <i class="fas fa-users"></i>
                              </button>`
                 } // de la function
+            },
+            // Columna 13: BOTON PARA UBICACIONES CLIENTE
+            {   
+                targets: "ubicaciones:name", width: '8%', searchable: false, orderable: false, class: "text-center",
+                render: function (data, type, row) {
+                    // botón para ir a las ubicaciones del cliente
+                    return `<a href="../MntClientes_ubicaciones/index.php?id_cliente=${row.id_cliente}" 
+                             class="btn btn-primary btn-sm" data-toggle="tooltip-primary" data-placement="top" title="Ubicaciones">
+                             <i class="bi bi-geo-alt-fill"></i>
+                             </a>`
+                } // de la function
             }
-             // De la columna 10
+             // De la columna 13
         ], // de la columnDefs
         ajax: {
             url: '../../controller/cliente.php?op=listar',

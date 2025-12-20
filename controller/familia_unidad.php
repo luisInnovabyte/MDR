@@ -175,7 +175,7 @@ switch ($_GET["op"]) {
                 "nombre_unidad" => $row["nombre_unidad"] ?? null,
                 "simbolo_unidad" => $row["simbolo_unidad"] ?? null,
                 "descr_unidad" => $row["descr_unidad"] ?? null,
-                "activo_familia" => $row["activo_familia"],
+                "activo_familia" => $row["activo_familia"],                "permite_descuento_familia" => $row["permite_descuento_familia"] ?? true,                "permite_descuento_familia" => $row["permite_descuento_familia"] ?? true,
                 "created_at_familia" => $row["created_at_familia"],
                 "updated_at_familia" => $row["updated_at_familia"]
             );
@@ -216,6 +216,7 @@ switch ($_GET["op"]) {
                 "simbolo_unidad" => $row["simbolo_unidad"] ?? null,
                 "descr_unidad" => $row["descr_unidad"] ?? null,
                 "activo_familia" => $row["activo_familia"],
+                "permite_descuento_familia" => $row["permite_descuento_familia"] ?? true,
                 "created_at_familia" => $row["created_at_familia"],
                 "updated_at_familia" => $row["updated_at_familia"]
             );
@@ -249,6 +250,7 @@ switch ($_GET["op"]) {
                 $observaciones_presupuesto_familia = $_POST["observaciones_presupuesto_familia"] ?? '';
                 $observations_budget_familia = $_POST["observations_budget_familia"] ?? '';
                 $orden_obs_familia = isset($_POST["orden_obs_familia"]) ? (int)$_POST["orden_obs_familia"] : 100;
+                $permite_descuento_familia = isset($_POST["permite_descuento_familia"]) ? (bool)$_POST["permite_descuento_familia"] : true;
                 
                 // Log de información recibida
                 writeToLog([
@@ -295,7 +297,8 @@ switch ($_GET["op"]) {
                     $id_grupo,
                     $observaciones_presupuesto_familia,
                     $orden_obs_familia,
-                    $observations_budget_familia
+                    $observations_budget_familia,
+                    $permite_descuento_familia
                 );                    if ($resultado !== false) {
                         $registro->registrarActividad(
                             'admin',
@@ -330,7 +333,8 @@ switch ($_GET["op"]) {
                         $id_grupo,
                         $observaciones_presupuesto_familia,
                         $orden_obs_familia,
-                        $observations_budget_familia
+                        $observations_budget_familia,
+                        $permite_descuento_familia
                     );
         
                     if ($resultado !== false) {

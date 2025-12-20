@@ -330,18 +330,18 @@ $(document).ready(function () {
         const val = (value) => value !== null && value !== undefined && value !== '' ? value : '<span class="text-muted">-</span>';
         
         return `
-            <div class="card border-primary mb-3" style="overflow: visible;">
+            <div class="card border-primary mb-3">
                 <div class="card-header bg-primary text-white">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-file-earmark-text-fill fs-3 me-2"></i>
                         <h5 class="card-title mb-0">Detalles del Presupuesto</h5>
                     </div>
                 </div>
-                <div class="card-body p-3" style="overflow: visible;">
+                <div class="card-body p-3">
                     <div class="row">
                         
                         <!-- ========== COLUMNA 1 ========== -->
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="overflow-x: auto; overflow-y: visible;">
                             
                             <!-- DATOS DEL PRESUPUESTO -->
                             <h6 class="text-primary border-bottom pb-2 mb-3">
@@ -353,6 +353,12 @@ $(document).ready(function () {
                                 <p class="mb-1"><strong><i class="bi bi-calendar-event me-1"></i>F. Presupuesto:</strong> ${d.fecha_presupuesto ? formatoFechaEuropeo(d.fecha_presupuesto) : val(null)}</p>
                                 <p class="mb-1"><strong><i class="bi bi-calendar-check me-1"></i>F. Validez:</strong> ${d.fecha_validez_presupuesto ? formatoFechaEuropeo(d.fecha_validez_presupuesto) : val(null)}</p>
                                 <p class="mb-1"><strong><i class="bi bi-calculator me-1"></i>Aplicar Coeficientes:</strong> ${d.aplicar_coeficientes_presupuesto == 1 ? '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Activado</span>' : '<span class="badge bg-warning text-dark"><i class="bi bi-x-circle me-1"></i>Desactivado</span>'}</p>
+                                <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>Descuento (%):</strong> 
+                                    <span class="badge bg-success">${parseFloat(d.descuento_presupuesto || 0).toFixed(2)}%</span>
+                                    ${d.porcentaje_descuento_cliente && parseFloat(d.descuento_presupuesto || 0) !== parseFloat(d.porcentaje_descuento_cliente || 0) ? 
+                                        '<small class="text-muted ms-1">(Cliente: ' + parseFloat(d.porcentaje_descuento_cliente || 0).toFixed(2) + '%)</small>' : 
+                                        ''}
+                                </p>
                               
                             </div>
 
@@ -362,7 +368,7 @@ $(document).ready(function () {
                             </h6>
                             <div class="mb-3">
                                 <p class="mb-1"><strong><i class="bi bi-pin-map me-1"></i>Ubicación:</strong></p>
-                                <p class="ms-3 text-muted small">${val(d.ubicacion_completa_evento_presupuesto)}</p>
+                                <p class="ms-3 text-muted small" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">${val(d.ubicacion_completa_evento_presupuesto)}</p>
                                   <p class="mb-1"><strong><i class="bi bi-calendar3 me-1"></i>F. Inicio Evento:</strong> ${d.fecha_inicio_evento_presupuesto ? formatoFechaEuropeo(d.fecha_inicio_evento_presupuesto) : val(null)}</p>
                                 <p class="mb-1"><strong><i class="bi bi-calendar3 me-1"></i>F. Fin Evento:</strong> ${d.fecha_fin_evento_presupuesto ? formatoFechaEuropeo(d.fecha_fin_evento_presupuesto) : val(null)}</p>
                             </div>
@@ -373,14 +379,14 @@ $(document).ready(function () {
                             </h6>
                             <div class="mb-3">
                                 <p class="mb-1"><strong><i class="bi bi-building me-1"></i>Dirección:</strong></p>
-                                <p class="ms-3 text-muted small">${val(d.direccion_completa_cliente)}</p>
+                                <p class="ms-3 text-muted small" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">${val(d.direccion_completa_cliente)}</p>
                                 <p class="mb-1"><strong><i class="bi bi-receipt me-1"></i>Dir. Facturación:</strong></p>
-                                <p class="ms-3 text-muted small">${val(d.direccion_facturacion_completa_cliente)}</p>
+                                <p class="ms-3 text-muted small" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">${val(d.direccion_facturacion_completa_cliente)}</p>
                             </div>
                         </div>
 
                         <!-- ========== COLUMNA 2 ========== -->
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="overflow-x: auto; overflow-y: visible;">
                             
                             <!-- OBSERVACIONES -->
                             <h6 class="text-warning border-bottom pb-2 mb-3">
@@ -388,19 +394,19 @@ $(document).ready(function () {
                             </h6>
                             <div class="mb-3">
                                 <p class="mb-1"><strong><i class="bi bi-file-text me-1"></i>Obs. Cabecera:</strong></p>
-                                <p class="ms-3 text-muted small">${val(d.observaciones_cabecera_presupuesto)}</p>
+                                <p class="ms-3 text-muted small" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">${val(d.observaciones_cabecera_presupuesto)}</p>
                                 
                                 <p class="mb-1"><strong><i class="bi bi-translate me-1"></i>Obs. Cabecera (Inglés):</strong></p>
-                                <p class="ms-3 text-muted small">${val(d.observaciones_cabecera_ingles_presupuesto)}</p>
+                                <p class="ms-3 text-muted small" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">${val(d.observaciones_cabecera_ingles_presupuesto)}</p>
                                 
                                 <p class="mb-1"><strong><i class="bi bi-file-text me-1"></i>Obs. Pie:</strong></p>
-                                <p class="ms-3 text-muted small">${val(d.observaciones_pie_presupuesto)}</p>
+                                <p class="ms-3 text-muted small" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">${val(d.observaciones_pie_presupuesto)}</p>
                                 
                                 <p class="mb-1"><strong><i class="bi bi-translate me-1"></i>Obs. Pie (Inglés):</strong></p>
-                                <p class="ms-3 text-muted small">${val(d.observaciones_pie_ingles_presupuesto)}</p>
+                                <p class="ms-3 text-muted small" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">${val(d.observaciones_pie_ingles_presupuesto)}</p>
                                 
                                 <p class="mb-1"><strong><i class="bi bi-lock me-1"></i>Obs. Internas:</strong></p>
-                                <p class="ms-3 text-muted small">${val(d.observaciones_internas_presupuesto)}</p>
+                                <p class="ms-3 text-muted small" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">${val(d.observaciones_internas_presupuesto)}</p>
 
                                 <p class="mb-1"><strong><i class="bi bi-eye me-1"></i>Mostrar Obs. Familias:</strong> ${d.mostrar_obs_familias_presupuesto == 1 ? '<span class="badge bg-success">Sí</span>' : '<span class="badge bg-secondary">No</span>'}</p>
                                 <p class="mb-1"><strong><i class="bi bi-eye me-1"></i>Mostrar Obs. Artículos:</strong> ${d.mostrar_obs_articulos_presupuesto == 1 ? '<span class="badge bg-success">Sí</span>' : '<span class="badge bg-secondary">No</span>'}</p>
@@ -425,7 +431,7 @@ $(document).ready(function () {
                         </div>
 
                         <!-- ========== COLUMNA 3 ========== -->
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="overflow-x: auto; overflow-y: visible;">
                             
                             <!-- DATOS DEL ESTADO -->
                             <h6 class="text-danger border-bottom pb-2 mb-3">

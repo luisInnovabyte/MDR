@@ -46,7 +46,7 @@ class Familia
         try {
             // Usar consulta directa con JOINs para incluir todos los campos de familia
             $sql = "SELECT f.id_familia, f.codigo_familia, f.nombre_familia, f.name_familia, 
-                    f.descr_familia, f.imagen_familia, f.activo_familia, f.coeficiente_familia,
+                    f.descr_familia, f.imagen_familia, f.activo_familia, f.permite_descuento_familia, f.coeficiente_familia,
                     f.observaciones_presupuesto_familia, f.observations_budget_familia, f.orden_obs_familia,
                     f.id_unidad_familia, f.id_grupo, f.created_at_familia, f.updated_at_familia,
                     u.nombre_unidad, u.simbolo_unidad, u.descr_unidad,
@@ -83,7 +83,7 @@ class Familia
         try {
             // Usar consulta directa con JOINs para incluir todos los campos de familia
             $sql = "SELECT f.id_familia, f.codigo_familia, f.nombre_familia, f.name_familia, 
-                    f.descr_familia, f.imagen_familia, f.activo_familia, f.coeficiente_familia,
+                    f.descr_familia, f.imagen_familia, f.activo_familia, f.permite_descuento_familia, f.coeficiente_familia,
                     f.observaciones_presupuesto_familia, f.observations_budget_familia, f.orden_obs_familia,
                     f.id_unidad_familia, f.id_grupo, f.created_at_familia, f.updated_at_familia,
                     u.nombre_unidad, u.simbolo_unidad, u.descr_unidad,
@@ -121,7 +121,7 @@ class Familia
         try {
             // Usar consulta directa con JOINs para incluir todos los campos de familia
             $sql = "SELECT f.id_familia, f.codigo_familia, f.nombre_familia, f.name_familia, 
-                    f.descr_familia, f.imagen_familia, f.activo_familia, f.coeficiente_familia,
+                    f.descr_familia, f.imagen_familia, f.activo_familia, f.permite_descuento_familia, f.coeficiente_familia,
                     f.observaciones_presupuesto_familia, f.observations_budget_familia, f.orden_obs_familia,
                     f.id_unidad_familia, f.id_grupo, f.created_at_familia, f.updated_at_familia,
                     u.nombre_unidad, u.simbolo_unidad, u.descr_unidad,
@@ -247,19 +247,20 @@ class Familia
 //     nombre_familia VARCHAR(100) NOT NULL,
 //     descr_familia VARCHAR(255),
 //     activo_familia BOOLEAN DEFAULT TRUE,
+//     permite_descuento_familia BOOLEAN NOT NULL DEFAULT TRUE,
 //     created_at_familia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //     updated_at_familia TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-    public function insert_familia($nombre_familia, $codigo_familia, $name_familia, $descr_familia, $imagen_familia = '', $id_unidad_familia, $coeficiente_familia = 1, $id_grupo = null, $observaciones_presupuesto_familia = '', $orden_obs_familia = 100, $observations_budget_familia = '')
+    public function insert_familia($nombre_familia, $codigo_familia, $name_familia, $descr_familia, $imagen_familia = '', $id_unidad_familia, $coeficiente_familia = 1, $id_grupo = null, $observaciones_presupuesto_familia = '', $orden_obs_familia = 100, $observations_budget_familia = '', $permite_descuento_familia = true)
     {
         try {
             // Establecer zona horaria Madrid antes de la consulta
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
 
-            $sql = "INSERT INTO familia (codigo_familia, nombre_familia, name_familia, descr_familia, activo_familia, imagen_familia, observaciones_presupuesto_familia, orden_obs_familia, coeficiente_familia, created_at_familia, updated_at_familia, id_unidad_familia, id_grupo, observations_budget_familia) 
-                                 VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)";
+            $sql = "INSERT INTO familia (codigo_familia, nombre_familia, name_familia, descr_familia, activo_familia, imagen_familia, observaciones_presupuesto_familia, orden_obs_familia, coeficiente_familia, created_at_familia, updated_at_familia, id_unidad_familia, id_grupo, observations_budget_familia, permite_descuento_familia) 
+                                 VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?)";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $codigo_familia, PDO::PARAM_STR); // Se enlaza el valor del codigo
             $stmt->bindValue(2, $nombre_familia, PDO::PARAM_STR); // Se enlaza el valor del nombre
@@ -272,6 +273,7 @@ class Familia
             $stmt->bindValue(9, $id_unidad_familia, $id_unidad_familia === null ? PDO::PARAM_NULL : PDO::PARAM_INT); // Se enlaza el valor de la unidad
             $stmt->bindValue(10, $id_grupo, $id_grupo === null ? PDO::PARAM_NULL : PDO::PARAM_INT); // Se enlaza el valor del grupo
             $stmt->bindValue(11, $observations_budget_familia, PDO::PARAM_STR); // Se enlaza el valor de las observaciones en inglés
+            $stmt->bindValue(12, $permite_descuento_familia, PDO::PARAM_BOOL); // Se enlaza el valor de permite descuento
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId(); // Se obtiene el ID del ultimo insertado
 
@@ -309,18 +311,19 @@ class Familia
 //     nombre_familia VARCHAR(100) NOT NULL,
 //     descr_familia VARCHAR(255),
 //     activo_familia BOOLEAN DEFAULT TRUE,
+//     permite_descuento_familia BOOLEAN NOT NULL DEFAULT TRUE,
 //     created_at_familia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //     updated_at_familia TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-    public function update_familia($id_familia, $nombre_familia, $codigo_familia, $name_familia, $descr_familia, $imagen_familia = '', $id_unidad_familia, $coeficiente_familia = 1, $id_grupo = null, $observaciones_presupuesto_familia = '', $orden_obs_familia = 100, $observations_budget_familia = ''){
+    public function update_familia($id_familia, $nombre_familia, $codigo_familia, $name_familia, $descr_familia, $imagen_familia = '', $id_unidad_familia, $coeficiente_familia = 1, $id_grupo = null, $observaciones_presupuesto_familia = '', $orden_obs_familia = 100, $observations_budget_familia = '', $permite_descuento_familia = true){
         try {
             // Establecer zona horaria Madrid antes de la consulta
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
             
             $sql = "UPDATE familia SET nombre_familia = ?, codigo_familia = ?, name_familia = ?, descr_familia = ?, imagen_familia = ?, 
-            observaciones_presupuesto_familia = ?, orden_obs_familia = ?, coeficiente_familia = ?, updated_at_familia = NOW(), id_unidad_familia = ?, id_grupo = ?, observations_budget_familia = ? WHERE id_familia = ?";
+            observaciones_presupuesto_familia = ?, orden_obs_familia = ?, coeficiente_familia = ?, updated_at_familia = NOW(), id_unidad_familia = ?, id_grupo = ?, observations_budget_familia = ?, permite_descuento_familia = ? WHERE id_familia = ?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $nombre_familia, PDO::PARAM_STR);
             $stmt->bindValue(2, $codigo_familia, PDO::PARAM_STR);
@@ -333,7 +336,8 @@ class Familia
             $stmt->bindValue(9, $id_unidad_familia, $id_unidad_familia === null ? PDO::PARAM_NULL : PDO::PARAM_INT); // Unidad de familia
             $stmt->bindValue(10, $id_grupo, $id_grupo === null ? PDO::PARAM_NULL : PDO::PARAM_INT); // Grupo de artículo
             $stmt->bindValue(11, $observations_budget_familia, PDO::PARAM_STR); // Nuevo campo: observaciones en inglés
-            $stmt->bindValue(12, $id_familia, PDO::PARAM_INT); // ID de familia
+            $stmt->bindValue(12, $permite_descuento_familia, PDO::PARAM_BOOL); // Nuevo campo: permite descuento
+            $stmt->bindValue(13, $id_familia, PDO::PARAM_INT); // ID de familia
 
             $stmt->execute();
 

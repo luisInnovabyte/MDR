@@ -151,8 +151,8 @@ class CalendarioPresupuestos {
     
     isToday(date) {
         return date.getDate() === this.today.getDate() &&
-               date.getMonth() === this.today.getMonth() &&
-               date.getFullYear() === this.today.getFullYear();
+            date.getMonth() === this.today.getMonth() &&
+            date.getFullYear() === this.today.getFullYear();
     }
     
     formatDate(date) {
@@ -246,54 +246,87 @@ Total: ${evento.extendedProps.total || 0}
 
 // Método para mostrar detalles del presupuesto
 showEventDetails(evento) {
-    document.getElementById('modalNumeroPresupuesto').textContent = evento.extendedProps.numero_presupuesto || '-';
-    
-    // Extraer nombre evento y cliente del title
-    const [nombreEvento, nombreCliente] = (evento.title || '').split(' - ');
-    document.getElementById('modalNombreEvento').textContent = nombreEvento || '-';
-    document.getElementById('modalClientePresupuesto').textContent = nombreCliente || '-';
-    
-    document.getElementById('modalEstadoPresupuesto').textContent = evento.extendedProps.estado || '-';
-    document.getElementById('modalImportePresupuesto').textContent = evento.extendedProps.total || 0;
-
-    // Mostrar el modal (Bootstrap 4 y 5)
-    const modal = document.getElementById('modalDetalleElemento');
-    if (typeof bootstrap !== 'undefined') {
-        const bsModal = new bootstrap.Modal(modal);
-        bsModal.show();
-    } else if (typeof $?.fn.modal !== 'undefined') {
-        $('#modalDetalleElemento').modal('show');
-    }
-
-    const estadoEl = document.getElementById('modalEstadoPresupuesto');
-    estadoEl.textContent = evento.extendedProps.estado || '-';
-    estadoEl.className = ''; // Limpiar clases previas
-
-    switch ((evento.extendedProps.estado || '').toLowerCase()) {
-        case 'aprobado':
-            estadoEl.classList.add('estado-aprobado');
-            break;
-        case 'rechazado':
-            estadoEl.classList.add('estado-rechazado');
-            break;
-        case 'en proceso':
-            estadoEl.classList.add('estado-en-proceso');
-            break;
-        case 'esperando respuesta':
-            estadoEl.classList.add('estado-esperando');
-            break;
-        case 'pendiente revisión':
-            estadoEl.classList.add('estado-pendiente');
-            break;
-        case 'cancelado':
-            estadoEl.classList.add('estado-cancelado');
-            break;
-}
 
     console.log('Detalles del presupuesto:', evento);
-}
+
+    const p = evento.extendedProps || {};
+
+    
+
+document.getElementById('modalIdPresupuesto').textContent = p.id_presupuesto || '-';
+document.getElementById('modalNumeroPresupuesto').textContent = p.numero_presupuesto || '-';
+document.getElementById('modalFechaPresupuesto').textContent = p.fecha_presupuesto || '-';
+document.getElementById('modalFechaValidezPresupuesto').textContent = p.fecha_validez_presupuesto || '-';
+document.getElementById('modalEstadoValidezPresupuesto').textContent = p.estado_validez_presupuesto || '-';
+document.getElementById('modalPrioridadPresupuesto').textContent = p.prioridad_presupuesto || '-';
+document.getElementById('modalImportePresupuesto').textContent = (p.total_presupuesto ?? 0) + ' €';
+document.getElementById('modalCodigoEstado').textContent = p.codigo_estado || '-';
+document.getElementById('modalNombreEstado').textContent = p.nombre_estado || '-';
+
+// Evento
+document.getElementById('modalNombreEvento').textContent = p.nombre_evento || '-';
+document.getElementById('modalFechaInicioEvento').textContent = p.fecha_inicio_evento || '-';
+document.getElementById('modalFechaFinEvento').textContent = p.fecha_fin_evento || '-';
+document.getElementById('modalDuracionEvento').textContent = p.duracion_evento || '-';
+document.getElementById('modalEstadoEvento').textContent = p.estado_evento || '-';
+document.getElementById('modalDireccionEvento').textContent = p.direccion_evento || '-';
+document.getElementById('modalCpEvento').textContent = p.cp_evento || '-';
+document.getElementById('modalPoblacionEvento').textContent = p.poblacion_evento || '-';
+document.getElementById('modalProvinciaEvento').textContent = p.provincia_evento || '-';
+
+// Cliente
+document.getElementById('modalIdCliente').textContent = p.id_cliente || '-';
+document.getElementById('modalCodigoCliente').textContent = p.codigo_cliente || '-';
+document.getElementById('modalNombreCliente').textContent = p.nombre_cliente || '-';
+document.getElementById('modalNifCliente').textContent = p.nif_cliente || '-';
+document.getElementById('modalTelefonoCliente').textContent = p.telefono_cliente || '-';
+document.getElementById('modalEmailCliente').textContent = p.email_cliente || '-';
+document.getElementById('modalDireccionCliente').textContent = p.direccion_cliente || '-';
+
+// Contacto
+document.getElementById('modalNombreContacto').textContent = p.nombre_contacto || '-';
+document.getElementById('modalTelefonoContacto').textContent = p.telefono_contacto || '-';
+document.getElementById('modalEmailContacto').textContent = p.email_contacto || '-';
+document.getElementById('modalCargoContacto').textContent = p.cargo_contacto || '-';
+
+// Pago
+document.getElementById('modalTipoPago').textContent = p.tipo_pago || '-';
+document.getElementById('modalFormaPago').textContent = p.forma_pago || '-';
+document.getElementById('modalFechaVencimientoAnticipo').textContent = p.fecha_vencimiento_anticipo || '-';
+document.getElementById('modalFechaVencimientoFinal').textContent = p.fecha_vencimiento_final || '-';
+
+// Observaciones
+document.getElementById('modalObsCabecera').textContent = p.obs_cabecera || '-';
+document.getElementById('modalObsPie').textContent = p.obs_pie || '-';
+document.getElementById('modalObsInternas').textContent = p.obs_internas || '-';
+
+// Abrir modal
+$('#modalDetalleElemento').modal('show');
+
+
+    // CLASES DE ESTADO
+    const estadoEl = document.getElementById('modalEstadoPresupuesto');
+    if (estadoEl) {
+        estadoEl.className = 'estado-badge';
+
+        switch ((p.estado || '').toLowerCase()) {
+            case 'aprobado': estadoEl.classList.add('estado-aprobado'); break;
+            case 'rechazado': estadoEl.classList.add('estado-rechazado'); break;
+            case 'en proceso': estadoEl.classList.add('estado-en-proceso'); break;
+            case 'esperando respuesta': estadoEl.classList.add('estado-esperando'); break;
+            case 'pendiente revisión': estadoEl.classList.add('estado-pendiente'); break;
+            case 'cancelado': estadoEl.classList.add('estado-cancelado'); break;
+        }
+    }
+
+    // ABRIR MODAL → Bootstrap 4
+    $('#modalDetalleElemento').modal('show');
+
+    console.log('✅ Modal abierto');
 }
 
+
+}
 
 // Inicializar el calendario cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
@@ -301,4 +334,5 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Hacer disponible globalmente para debugging
     window.calendario = calendario;
+
 });

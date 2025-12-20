@@ -405,11 +405,35 @@ $(document).ready(function () {
             data: { id_cliente: idCliente },
             dataType: "json",
             success: function(data) {
+                // Cargar forma de pago habitual
                 if (data && data.id_forma_pago_habitual) {
                     $('#id_forma_pago').val(data.id_forma_pago_habitual);
                     console.log('✓ Forma de pago habitual cargada:', data.id_forma_pago_habitual);
                 } else {
                     console.log('ℹ Cliente sin forma de pago habitual configurada');
+                }
+                
+                // Cargar descuento habitual del cliente
+                if (data && typeof data.porcentaje_descuento_cliente !== 'undefined') {
+                    var descuentoCliente = parseFloat(data.porcentaje_descuento_cliente) || 0.00;
+                    
+                    // Si estamos creando un nuevo presupuesto, heredar el descuento del cliente
+                    if (!$('#id_presupuesto').val()) {
+                        $('#descuento_presupuesto').val(descuentoCliente.toFixed(2));
+                    }
+                    
+                    // Mostrar información del descuento del cliente
+                    $('#valor_descuento_cliente').text(descuentoCliente.toFixed(2));
+                    $('#info_descuento_cliente').removeClass('d-none');
+                    $('#mensaje_descuento').addClass('d-none');
+                    
+                    console.log('✓ Descuento del cliente cargado:', descuentoCliente + '%');
+                } else {
+                    // Sin descuento
+                    $('#valor_descuento_cliente').text('0.00');
+                    $('#info_descuento_cliente').removeClass('d-none');
+                    $('#mensaje_descuento').addClass('d-none');
+                    console.log('ℹ Cliente sin descuento configurado');
                 }
             },
             error: function(xhr, status, error) {
@@ -510,6 +534,19 @@ $(document).ready(function () {
                     $('#fecha_fin_evento_presupuesto').val(data.fecha_fin_evento_presupuesto);
                     $('#numero_pedido_cliente_presupuesto').val(data.numero_pedido_cliente_presupuesto);
                     $('#aplicar_coeficientes_presupuesto').prop('checked', data.aplicar_coeficientes_presupuesto == 1 || data.aplicar_coeficientes_presupuesto === true);
+                    
+                    // Cargar descuento del presupuesto
+                    var descuentoPpto = parseFloat(data.descuento_presupuesto) || 0.00;
+                    $('#descuento_presupuesto').val(descuentoPpto.toFixed(2));
+                    
+                    // Cargar descuento del cliente para mostrar comparación
+                    if (typeof data.porcentaje_descuento_cliente !== 'undefined') {
+                        var descuentoCliente = parseFloat(data.porcentaje_descuento_cliente) || 0.00;
+                        $('#valor_descuento_cliente').text(descuentoCliente.toFixed(2));
+                        $('#info_descuento_cliente').removeClass('d-none');
+                        $('#mensaje_descuento').addClass('d-none');
+                    }
+                    
                     $('#nombre_evento_presupuesto').val(data.nombre_evento_presupuesto);
                     $('#direccion_evento_presupuesto').val(data.direccion_evento_presupuesto);
                     $('#poblacion_evento_presupuesto').val(data.poblacion_evento_presupuesto);
@@ -634,6 +671,7 @@ $(document).ready(function () {
         var fecha_fin_evento_presupuestoR = $('#fecha_fin_evento_presupuesto').val() || null;
         var numero_pedido_cliente_presupuestoR = $('#numero_pedido_cliente_presupuesto').val() || '';
         var aplicar_coeficientes_presupuestoR = $('#aplicar_coeficientes_presupuesto').is(':checked') ? 1 : 0;
+        var descuento_presupuestoR = parseFloat($('#descuento_presupuesto').val()) || 0.00;
         var nombre_evento_presupuestoR = $('#nombre_evento_presupuesto').val() || '';
         var direccion_evento_presupuestoR = $('#direccion_evento_presupuesto').val() || '';
         var poblacion_evento_presupuestoR = $('#poblacion_evento_presupuesto').val() || '';
@@ -684,6 +722,7 @@ $(document).ready(function () {
             fecha_fin_evento_presupuestoR,
             numero_pedido_cliente_presupuestoR,
             aplicar_coeficientes_presupuestoR,
+            descuento_presupuestoR,
             nombre_evento_presupuestoR,
             direccion_evento_presupuestoR,
             poblacion_evento_presupuestoR,
@@ -714,6 +753,7 @@ $(document).ready(function () {
         fecha_fin_evento_presupuesto,
         numero_pedido_cliente_presupuesto,
         aplicar_coeficientes_presupuesto,
+        descuento_presupuesto,
         nombre_evento_presupuesto,
         direccion_evento_presupuesto,
         poblacion_evento_presupuesto,
@@ -756,6 +796,7 @@ $(document).ready(function () {
                         fecha_fin_evento_presupuesto,
                         numero_pedido_cliente_presupuesto,
                         aplicar_coeficientes_presupuesto,
+                        descuento_presupuesto,
                         nombre_evento_presupuesto,
                         direccion_evento_presupuesto,
                         poblacion_evento_presupuesto,
@@ -803,6 +844,7 @@ $(document).ready(function () {
         fecha_fin_evento_presupuesto,
         numero_pedido_cliente_presupuesto,
         aplicar_coeficientes_presupuesto,
+        descuento_presupuesto,
         nombre_evento_presupuesto,
         direccion_evento_presupuesto,
         poblacion_evento_presupuesto,
@@ -834,6 +876,7 @@ $(document).ready(function () {
             'fecha_fin_evento_presupuesto': fecha_fin_evento_presupuesto,
             'numero_pedido_cliente_presupuesto': numero_pedido_cliente_presupuesto,
             'aplicar_coeficientes_presupuesto': aplicar_coeficientes_presupuesto,
+            'descuento_presupuesto': descuento_presupuesto,
             'nombre_evento_presupuesto': nombre_evento_presupuesto,
             'direccion_evento_presupuesto': direccion_evento_presupuesto,
             'poblacion_evento_presupuesto': poblacion_evento_presupuesto,

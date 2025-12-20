@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayuda - Mantenimiento de Métodos</title>
+    <title>Ayuda - Mantenimiento de Personal</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,7 @@
 <!-- Botón para abrir el modal (demo) -->
 
 
-<!-- Modal de Ayuda para Mantenimiento de Métodos -->
+<!-- Modal de Ayuda para Mantenimiento de Personal -->
 <div class="modal fade" id="modalAyudaComerciales" tabindex="-1" role="dialog" aria-labelledby="modalAyudaComercialesLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -22,7 +22,7 @@
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title d-flex align-items-center" id="modalAyudaComercialLabel">
                     <i class="bi bi-question-circle-fill mr-2" style="font-size: 1.4rem;"></i>
-                    Ayuda - Mantenimiento de Responsables
+                    Ayuda - Mantenimiento de Personal
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar" style="opacity:1;">
                     <span aria-hidden="true">&times;</span>
@@ -35,12 +35,16 @@
                 <!-- Sección: Introducción -->
                 <div class="mb-4">
                     <h6 class="text-primary d-flex align-items-center">
-                        <i class="bi bi-chat-dots-fill mr-2"></i> ¿Qué es el Mantenimiento de Responsables?
+                        <i class="bi bi-chat-dots-fill mr-2"></i> ¿Qué es el Mantenimiento de Personal?
                     </h6>
                     <p class="text-muted">
-                        El mantenimiento de responsables permite gestionar toda la información relacionada con los agentes o asesores del sistema. Incluye crear, actualizar, activar, desactivar y organizar los datos de cada responsable, 
-                        garantizando un control preciso sobre quién puede atender, registrar o gestionar clientes y llamadas.
+                        El <strong>Mantenimiento de Personal</strong> permite gestionar toda la información del personal de la empresa que tendrá acceso al sistema.
+                        En esta pantalla podrá dar de alta a empleados, asignarles un usuario para acceder a la aplicación, y mantener actualizados sus datos de contacto.
                     </p>
+                    <div class="alert alert-info small">
+                        <i class="bi bi-info-circle mr-2"></i>
+                        <strong>Importante:</strong> Cada empleado debe tener un usuario único asignado para poder acceder al sistema con sus credenciales.
+                    </div>
                 </div>
 
                 <!-- Sección: Campos -->
@@ -75,19 +79,101 @@
                             <div class="card-header" role="tab" id="headingNombre">
                                 <h5 class="mb-0">
                                     <a class="collapsed d-flex align-items-center" data-toggle="collapse" href="#collapseNombre" aria-expanded="false" aria-controls="collapseNombre">
-                                        <i class="bi bi-tag-fill mr-2"></i> Nombre
+                                        <i class="bi bi-person-fill mr-2"></i> Nombre
                                     </a>
                                 </h5>
                             </div>
                             <div id="collapseNombre" class="collapse" role="tabpanel" aria-labelledby="headingNombre" data-parent="#accordionCampos">
                                 <div class="card-body">
-                                    <strong>Campo obligatorio.</strong> Nombre del Responsable
-                                    <br>
-                                   
-                                    <strong>Uso:</strong> Identificación clara del canal en todo el sistema
-                                    <br><strong>Validaciones:</strong> Texto alfanumérico, mínimo 3 caracteres, máximo 50
-                                    <br><strong>Unicidad:</strong> Cada nombre debe ser único en el sistema
-                                    <br><strong>Recomendación:</strong> Use nombres descriptivos y profesionales
+                                    <strong>Campo obligatorio.</strong> Nombre del empleado.
+                                    <br><strong>Formato:</strong> Solo letras y espacios
+                                    <br><strong>Validaciones:</strong> Mínimo 3 caracteres, máximo 50 caracteres
+                                    <br><strong>Uso:</strong> Identificación del empleado junto con los apellidos
+                                    <br><strong>Recomendación:</strong> Escribir el nombre completo sin abreviaturas
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Apellidos -->
+                        <div class="card">
+                            <div class="card-header" role="tab" id="headingApellidos">
+                                <h5 class="mb-0">
+                                    <a class="collapsed d-flex align-items-center" data-toggle="collapse" href="#collapseApellidos" aria-expanded="false" aria-controls="collapseApellidos">
+                                        <i class="bi bi-person-badge-fill mr-2"></i> Apellidos
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseApellidos" class="collapse" role="tabpanel" aria-labelledby="headingApellidos" data-parent="#accordionCampos">
+                                <div class="card-body">
+                                    <strong>Campo obligatorio.</strong> Apellidos del empleado.
+                                    <br><strong>Formato:</strong> Solo letras y espacios
+                                    <br><strong>Validaciones:</strong> Mínimo 3 caracteres, máximo 50 caracteres
+                                    <br><strong>Uso:</strong> Complementa el nombre para la identificación completa
+                                    <br><strong>Recomendación:</strong> Incluir ambos apellidos cuando sea posible
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Móvil -->
+                        <div class="card">
+                            <div class="card-header" role="tab" id="headingMovil">
+                                <h5 class="mb-0">
+                                    <a class="collapsed d-flex align-items-center" data-toggle="collapse" href="#collapseMovil" aria-expanded="false" aria-controls="collapseMovil">
+                                        <i class="bi bi-phone-fill mr-2"></i> Móvil
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseMovil" class="collapse" role="tabpanel" aria-labelledby="headingMovil" data-parent="#accordionCampos">
+                                <div class="card-body">
+                                    <strong>Campo obligatorio.</strong> Número de teléfono móvil del empleado.
+                                    <br><strong>Formato:</strong> Solo números
+                                    <br><strong>Validaciones:</strong> Máximo 14 posiciones (incluye prefijo internacional)
+                                    <br><strong>Uso:</strong> Contacto directo y urgente con el empleado
+                                    <br><strong>Ejemplo:</strong> 625123456 o +34625123456
+                                    <br><strong>Recomendación:</strong> Incluir prefijo internacional si trabaja en el extranjero
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div class="card">
+                            <div class="card-header" role="tab" id="headingTelefono">
+                                <h5 class="mb-0">
+                                    <a class="collapsed d-flex align-items-center" data-toggle="collapse" href="#collapseTelefono" aria-expanded="false" aria-controls="collapseTelefono">
+                                        <i class="bi bi-telephone-fill mr-2"></i> Teléfono
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseTelefono" class="collapse" role="tabpanel" aria-labelledby="headingTelefono" data-parent="#accordionCampos">
+                                <div class="card-body">
+                                    <strong>Campo obligatorio.</strong> Número de teléfono fijo del empleado.
+                                    <br><strong>Formato:</strong> Solo números
+                                    <br><strong>Validaciones:</strong> Máximo 14 posiciones
+                                    <br><strong>Uso:</strong> Teléfono alternativo o de oficina
+                                    <br><strong>Ejemplo:</strong> 918123456
+                                    <br><strong>Nota:</strong> Puede ser el mismo número que el móvil si no tiene teléfono fijo
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Usuario Asignado -->
+                        <div class="card">
+                            <div class="card-header" role="tab" id="headingUsuario">
+                                <h5 class="mb-0">
+                                    <a class="collapsed d-flex align-items-center" data-toggle="collapse" href="#collapseUsuario" aria-expanded="false" aria-controls="collapseUsuario">
+                                        <i class="bi bi-person-check-fill mr-2"></i> Usuario Asignado
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseUsuario" class="collapse" role="tabpanel" aria-labelledby="headingUsuario" data-parent="#accordionCampos">
+                                <div class="card-body">
+                                    <strong>Campo obligatorio.</strong> Usuario del sistema asignado al empleado.
+                                    <br><strong>Tipo:</strong> Lista desplegable (select)
+                                    <br><strong>Función:</strong> Vincula al empleado con su cuenta de acceso al sistema
+                                    <br><strong>Uso:</strong> Define qué credenciales utilizará el empleado para iniciar sesión
+                                    <br><strong>Importante:</strong> Un usuario solo puede estar asignado a un empleado a la vez
+                                    <br><strong>Opciones:</strong> Se muestran solo usuarios disponibles (no asignados a otros empleados)
+                                    <br><strong>Recomendación:</strong> Verificar que el usuario seleccionado corresponde al empleado correcto
                                 </div>
                             </div>
                         </div>
@@ -103,16 +189,13 @@
                             </div>
                             <div id="collapseEstado" class="collapse" role="tabpanel" aria-labelledby="headingEstado" data-parent="#accordionCampos">
                                 <div class="card-body">
-                                    <strong>Campo obligatorio.</strong> Indica si el método está disponible para usar.
+                                    <strong>Campo de sistema.</strong> Indica si el empleado está activo en el sistema.
                                     <br><strong>Estados posibles:</strong>
                                     <ul class="mt-2 mb-2">
-                                        <li><i class="bi bi-check-circle text-success"></i> <strong>Activo (✓):</strong> Método disponible para selección en formularios</li>
-                                        <li><i class="bi bi-x-circle text-danger"></i> <strong>Inactivo (✗):</strong> Método deshabilitado, no aparece en opciones</li>
+                                        <li><i class="bi bi-check-circle text-success"></i> <strong>Activo (✓):</strong> Empleado en plantilla, puede acceder al sistema</li>
+                                        <li><i class="bi bi-x-circle text-danger"></i> <strong>Inactivo (✗):</strong> Empleado dado de baja, sin acceso al sistema</li>
                                     </ul>
-                                    <strong>Uso:</strong> Controlar qué canales están disponibles operativamente
-                                    <br><strong>Ejemplo práctico:</strong> Si deja de usar un canal, desactívelo sin eliminarlo
-                                    <br><strong>Impacto:</strong> Los métodos inactivos no aparecen en formularios de contactos ni llamadas
-                                    <br><strong>Reversible:</strong> Puede reactivarse en cualquier momento
+                                    <br><strong>Nota:</strong> Al desactivar un empleado, su usuario también queda deshabilitado automáticamente
                                 </div>
                             </div>
                         </div>
@@ -129,17 +212,13 @@
                             </div>
                             <div id="collapseActDes" class="collapse" role="tabpanel" aria-labelledby="headingActDes" data-parent="#accordionCampos">
                                 <div class="card-body">
-                                    <strong>Control de disponibilidad.</strong> Cambia el estado del método entre activo e inactivo.
-                                    <br><strong>Botón rojo (🗑️):</strong> Desactivar método - deja de estar disponible en el sistema
-                                    <br><strong>Método activo:</strong> Aparece como opción en formularios de contactos, llamadas y comunicaciones
-                                    <br><strong>Método inactivo:</strong> Oculto de opciones pero conserva histórico de uso
-                                    <br><strong>Uso común:</strong>
-                                    <ul class="mt-2 mb-0">
-                                        <li>Desactivar canales que la empresa dejó de usar</li>
-                                        <li>Deshabilitar temporalmente un método por mantenimiento</li>
-                                        <li>Activar nuevos canales cuando estén operativos</li>
-                                    </ul>
-                                    <br><strong>Seguridad:</strong> Los registros históricos con métodos inactivos se mantienen intactos
+                                    <strong>Control de disponibilidad.</strong> Cambia el estado del empleado entre activo e inactivo.
+                                    <br><strong>Botón rojo (🗑️):</strong> Desactivar empleado - bloquea su acceso al sistema
+                                    <br><strong>Empleado activo:</strong> Puede iniciar sesión y trabajar normalmente en la aplicación
+                                    <br><strong>Empleado inactivo:</strong> Sin acceso al sistema, pero mantiene histórico de actividades
+                                    <br><strong>Uso común:</strong> Dar de baja temporal o permanente a empleados
+                                    <br><strong>Seguridad:</strong> No se eliminan datos, solo se deshabilita el acceso
+                                    <br><strong>Importante:</strong> El usuario vinculado también se desactiva automáticamente
                                 </div>
                             </div>
                         </div>
@@ -155,18 +234,18 @@
                             </div>
                             <div id="collapseEdit" class="collapse" role="tabpanel" aria-labelledby="headingEdit" data-parent="#accordionCampos">
                                 <div class="card-body">
-                                    <strong>Acción de modificación.</strong> Permite editar los datos del método de contacto.
+                                    <strong>Acción de modificación.</strong> Permite editar los datos del empleado.
                                     <br><strong>Botón azul (✏️):</strong> Abre el formulario de edición con datos precargados
                                     <br><strong>Campos editables:</strong>
                                     <ul class="mt-2 mb-0">
-                                        <li>Nombre del método</li>
-                                        <li>Estado (activo/inactivo)</li>
-                                        <li>Icono o imagen representativa</li>
-                                        <li>Descripción detallada</li>
-                                        <li>Configuraciones adicionales</li>
+                                        <li>Nombre</li>
+                                        <li>Apellidos</li>
+                                        <li>Móvil</li>
+                                        <li>Teléfono</li>
+                                        <li>Usuario asignado</li>
                                     </ul>
-                                    <br><strong>Uso común:</strong> Actualizar nombres, cambiar iconos, corregir descripciones
-                                    <br><strong>Importante:</strong> Los cambios afectan la visualización pero no modifican registros históricos
+                                    <br><strong>Uso común:</strong> Actualizar datos de contacto, cambiar usuario asignado
+                                    <br><strong>Importante:</strong> Si cambia el usuario, el anterior quedará disponible para asignar a otro empleado
                                 </div>
                             </div>
                         </div>
@@ -174,46 +253,47 @@
                     </div>
                 </div>
 
-                <!-- Sección: Métodos Predefinidos -->
+                <!-- Sección: Flujo de Trabajo -->
                 <div class="mb-4">
                     <h6 class="text-primary d-flex align-items-center">
-                        <i class="bi bi-list-check mr-2"></i>
-                        Métodos de Contacto Comunes
+                        <i class="bi bi-diagram-3-fill mr-2"></i>
+                        Flujo de Trabajo Recomendado
                     </h6>
+                    <div class="alert alert-light border">
+                        <ol class="mb-0">
+                            <li><strong>Crear el usuario:</strong> Primero debe existir el usuario en el sistema (tabla de usuarios)</li>
+                            <li><strong>Registrar empleado:</strong> Complete todos los datos personales y de contacto</li>
+                            <li><strong>Asignar usuario:</strong> Vincule el usuario creado con el empleado</li>
+                            <li><strong>Verificar acceso:</strong> El empleado ya puede iniciar sesión con sus credenciales</li>
+                            <li><strong>Mantener actualizado:</strong> Revise periódicamente los datos de contacto</li>
+                        </ol>
+                    </div>
+                    
+                    <h6 class="text-secondary mt-3">Relación con el Sistema de Usuarios</h6>
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered">
                             <thead class="thead-light">
                                 <tr>
-                                    <th>Método</th>
-                                    <th>Icono</th>
+                                    <th>Concepto</th>
                                     <th>Descripción</th>
-                                    <th>Uso Típico</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Correo Electrónico</td>
-                                    <td class="text-center">📧</td>
-                                    <td>Email corporativo o personal</td>
-                                    <td>Comunicaciones formales, documentación</td>
+                                    <td><strong>Personal</strong></td>
+                                    <td>Datos personales y de contacto del empleado (nombre, apellidos, teléfonos)</td>
                                 </tr>
                                 <tr>
-                                    <td>Llamada Telefónica</td>
-                                    <td class="text-center">📞</td>
-                                    <td>Contacto telefónico directo</td>
-                                    <td>Seguimientos urgentes, negociaciones</td>
+                                    <td><strong>Usuario</strong></td>
+                                    <td>Credenciales de acceso al sistema (username, password, permisos)</td>
                                 </tr>
                                 <tr>
-                                    <td>WhatsApp Business</td>
-                                    <td class="text-center">💬</td>
-                                    <td>Mensajería instantánea</td>
-                                    <td>Consultas rápidas, confirmaciones</td>
+                                    <td><strong>Vinculación</strong></td>
+                                    <td>Cada empleado debe tener un usuario único asignado para acceder</td>
                                 </tr>
                                 <tr>
-                                    <td>Presencia en tienda</td>
-                                    <td class="text-center">👤</td>
-                                    <td>Visita física del cliente</td>
-                                    <td>Atención personalizada, demostraciones</td>
+                                    <td><strong>Unicidad</strong></td>
+                                    <td>Un usuario solo puede estar asignado a un empleado a la vez</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -230,7 +310,7 @@
                         <div class="col-md-6">
                             <h6 class="text-secondary">Búsqueda General:</h6>
                             <p class="text-muted small">
-                                Use el campo de búsqueda superior para encontrar métodos por nombre o descripción.
+                                Use el campo de búsqueda superior para encontrar empleados por nombre, apellidos o teléfono.
                             </p>
                         </div>
                         <div class="col-md-6">
@@ -242,13 +322,13 @@
                         <div class="col-md-6">
                             <h6 class="text-secondary">Filtro por Estado:</h6>
                             <p class="text-muted small">
-                                Filtre para ver solo métodos activos, inactivos o todos según necesidad.
+                                Filtre para ver solo empleados activos, inactivos o todos según necesidad.
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-secondary">Limpiar Filtros:</h6>
+                            <h6 class="text-secondary">Búsqueda por Usuario:</h6>
                             <p class="text-muted small">
-                                Use el botón "Limpiar Filtros" para restablecer la vista a todos los métodos.
+                                Localice rápidamente qué empleado tiene asignado un usuario específico.
                             </p>
                         </div>
                     </div>
@@ -269,7 +349,7 @@
                                         Copiar al Portapapeles
                                     </h6>
                                     <p class="card-text small text-muted mb-0">
-                                        Copia el listado de métodos en formato texto para compartir o documentar.
+                                        Copia el listado de empleados en formato texto para compartir o documentar.
                                     </p>
                                 </div>
                             </div>
@@ -282,7 +362,7 @@
                                         Exportar a Excel
                                     </h6>
                                     <p class="card-text small text-muted mb-0">
-                                        Descarga un archivo Excel (.xlsx) con la configuración de métodos.
+                                        Descarga un archivo Excel (.xlsx) con el directorio de personal y sus contactos.
                                     </p>
                                 </div>
                             </div>
@@ -295,7 +375,7 @@
                                         Exportar a PDF
                                     </h6>
                                     <p class="card-text small text-muted mb-0">
-                                        Genera un documento PDF con el catálogo de métodos disponibles.
+                                        Genera un documento PDF con el listado completo de personal.
                                     </p>
                                 </div>
                             </div>
@@ -308,7 +388,7 @@
                                         Imprimir
                                     </h6>
                                     <p class="card-text small text-muted mb-0">
-                                        Imprime directamente la tabla de métodos con formato optimizado.
+                                        Imprime directamente la tabla de empleados con formato optimizado.
                                     </p>
                                 </div>
                             </div>
@@ -337,41 +417,21 @@
                                         <i class="bi bi-plus-circle text-success" style="font-size: 1.5rem;"></i>
                                     </td>
                                     <td>Expandir Detalles</td>
-                                    <td>Muestra descripción completa y configuración del método</td>
+                                    <td>Muestra información adicional del empleado (usuario asignado, etc.)</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-check-circle text-success" style="font-size: 1.5rem;"></i>
                                     </td>
-                                    <td>Método Activo</td>
-                                    <td>El método está disponible para usar en el sistema</td>
+                                    <td>Empleado Activo</td>
+                                    <td>El empleado está en plantilla y puede acceder al sistema</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-x-circle text-danger" style="font-size: 1.5rem;"></i>
                                     </td>
-                                    <td>Método Inactivo</td>
-                                    <td>El método está deshabilitado y no aparece en opciones</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">📧</td>
-                                    <td>Icono Correo Electrónico</td>
-                                    <td>Representación visual del método email</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">📞</td>
-                                    <td>Icono Llamada Telefónica</td>
-                                    <td>Representación visual del método teléfono</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">💬</td>
-                                    <td>Icono WhatsApp Business</td>
-                                    <td>Representación visual del método WhatsApp</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">👤</td>
-                                    <td>Icono Presencial</td>
-                                    <td>Representación visual del método presencial</td>
+                                    <td>Empleado Inactivo</td>
+                                    <td>El empleado está de baja y no tiene acceso al sistema</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
@@ -379,8 +439,8 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </td>
-                                    <td>Desactivar Método</td>
-                                    <td>Deshabilita el método sin eliminarlo del sistema</td>
+                                    <td>Desactivar Empleado</td>
+                                    <td>Da de baja al empleado sin eliminar sus datos del sistema</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
@@ -388,8 +448,15 @@
                                             <i class="fa-solid fa-edit"></i>
                                         </button>
                                     </td>
-                                    <td>Editar Método</td>
-                                    <td>Permite modificar nombre, icono y configuración</td>
+                                    <td>Editar Empleado</td>
+                                    <td>Permite modificar datos personales, contacto y usuario asignado</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="bi bi-person-check" style="font-size: 1.5rem;"></i>
+                                    </td>
+                                    <td>Usuario Asignado</td>
+                                    <td>Indica que el empleado tiene un usuario vinculado para acceder</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -408,14 +475,29 @@
                             Mejores Prácticas
                         </h6>
                         <ul class="mb-0">
-                            <li><strong>Nombres claros:</strong> Use nombres descriptivos y profesionales para cada método</li>
-                            <li><strong>Iconos distintivos:</strong> Asigne iconos reconocibles que faciliten la identificación visual</li>
-                            <li><strong>Revise periódicamente:</strong> Desactive métodos que ya no utilice para mantener el catálogo limpio</li>
-                            <li><strong>No elimine métodos:</strong> Desactive en lugar de eliminar para conservar el historial</li>
-                            <li><strong>Documente cambios:</strong> Use el campo de descripción para justificar configuraciones</li>
-                            <li><strong>Active según capacidad:</strong> Solo active métodos que realmente pueda gestionar operativamente</li>
-                            <li><strong>Consistencia:</strong> Mantenga coherencia en la nomenclatura de métodos similares</li>
-                            <li><strong>Capacitación:</strong> Asegúrese de que el equipo conozca todos los métodos activos</li>
+                            <li><strong>Datos completos:</strong> Asegúrese de registrar todos los datos de contacto del empleado</li>
+                            <li><strong>Usuario único:</strong> Verifique que cada usuario esté asignado a un solo empleado</li>
+                            <li><strong>Actualización periódica:</strong> Revise y actualice los números de teléfono regularmente</li>
+                            <li><strong>No elimine:</strong> Use la desactivación en lugar de eliminar para conservar el histórico</li>
+                            <li><strong>Validación de datos:</strong> Verifique que los números de teléfono sean correctos antes de guardar</li>
+                            <li><strong>Bajas temporales:</strong> Desactive empleados en ausencia prolongada y reactive al regreso</li>
+                            <li><strong>Seguridad:</strong> Al desactivar un empleado, su usuario se bloquea automáticamente</li>
+                            <li><strong>Cambio de usuario:</strong> Si reasigna un usuario, el anterior queda libre para otro empleado</li>
+                            <li><strong>Nombres completos:</strong> Use nombres y apellidos completos sin abreviaturas</li>
+                            <li><strong>Coordinación:</strong> Coordine con IT para crear usuarios antes de dar de alta empleados</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-exclamation-triangle mr-2"></i>
+                            Advertencias Importantes
+                        </h6>
+                        <ul class="mb-0">
+                            <li>Un usuario solo puede estar asignado a un empleado a la vez</li>
+                            <li>Al desactivar un empleado, pierde inmediatamente el acceso al sistema</li>
+                            <li>Los datos históricos (presupuestos, actividades) se mantienen aunque el empleado esté inactivo</li>
+                            <li>Verifique dos veces antes de cambiar el usuario asignado de un empleado</li>
                         </ul>
                     </div>
                 </div>

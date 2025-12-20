@@ -57,9 +57,6 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item"><a href="../MntObservaciones/index.php" class="sub-link">Observaciones generales</a></li>
             <li class="sub-item"><a href="../MntMetodos_pago/index.php" class="sub-link">Métodos de Pago</a></li>
             <li class="sub-item"><a href="../MntFormas_Pago/index.php" class="sub-link">Formas de Pago</a></li>
-            <li class="sub-item"><a href="../MntTipos_documento/index.php" class="sub-link">Tipos de Documento</a></li>
-            <li class="sub-item"><a href="../Documento/index.php" class="sub-link">Documentos</a></li>
-            <li class="sub-item"><a href="../Documento/index_tecnico.php" class="sub-link">Gestor Documental</a></li>
             <li class="sub-item"><a href="../MntEmpresas/index.php" class="sub-link">Empresas</a></li>
 
 
@@ -128,8 +125,8 @@ function puedeVerMenu($idRol, $modulo) {
             <span class="menu-item-label">Clientes-Proveedores</span>
         </a>
         <ul class="br-menu-sub">
-            <li class="sub-item"><a href="../MntProveedores/index.php" class="sub-link">Proveedores</a></li>
             <li class="sub-item"><a href="../MntClientes/index.php" class="sub-link">Clientes</a></li>
+            <li class="sub-item"><a href="../MntProveedores/index.php" class="sub-link">Proveedores</a></li>
         </ul>
     </li>
 
@@ -143,7 +140,18 @@ function puedeVerMenu($idRol, $modulo) {
         </ul>
     </li>
 
-   
+    <li class="br-menu-item">
+        <a href="#" class="br-menu-link with-sub">
+            <i class="menu-item-icon icon ion-ios-people tx-24"></i>
+            <span class="menu-item-label">Gestor Documental</span>
+        </a>
+        <ul class="br-menu-sub">
+            <li class="sub-item"><a href="../MntTipos_documento/index.php" class="sub-link">Tipos de Documento</a></li>
+            <li class="sub-item"><a href="../Documento/index.php" class="sub-link">Mto. Gestor Documental</a></li>
+            <li class="sub-item"><a href="../Documento/index_tecnico.php" class="sub-link">Gestor Documental técnicos</a></li>
+            
+        </ul>
+    </li>   
 
     <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
     <li class="br-menu-item">
@@ -158,9 +166,6 @@ function puedeVerMenu($idRol, $modulo) {
         <!-- assets/Reunion/sistema-gestion-explicacion.html -->
     </li>
     <?php endif; ?>
-
-
-
 
      <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
     <li class="br-menu-item">
@@ -193,6 +198,12 @@ function puedeVerMenu($idRol, $modulo) {
         <!-- </ul> -->
     <!-- </li> -->
     <!-- <?php endif; ?> -->
+
+
+
+
+
+
 
     <?php if (isset($_SESSION['sesion_iniciada']) && $_SESSION['sesion_iniciada'] === true): ?>
     <li class="br-menu-item">

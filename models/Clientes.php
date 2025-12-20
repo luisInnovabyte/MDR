@@ -22,6 +22,7 @@ require_once '../config/funciones.php'; // ✅ Se incluye correctamente el archi
 //     poblacion_facturacion_cliente VARCHAR(100),
 //     provincia_facturacion_cliente VARCHAR(100),
 //     id_forma_pago_habitual INT UNSIGNED,
+//     porcentaje_descuento_cliente DECIMAL(5,2) NOT NULL DEFAULT 0.00,
 //     observaciones_cliente TEXT,
 //     activo_cliente BOOLEAN DEFAULT TRUE,
 //     created_at_cliente TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -224,17 +225,17 @@ class Clientes
     }
 
 
-    public function insert_cliente($codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $observaciones_cliente)
+    public function insert_cliente($codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $porcentaje_descuento_cliente = 0.00, $observaciones_cliente)
     {
         try {
             // Establecer zona horaria Madrid antes de la consulta
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
             
-            $sql = "INSERT INTO cliente (codigo_cliente, nombre_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, 
-            nif_cliente, telefono_cliente, fax_cliente, web_cliente, email_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, 
-            cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual,
+            $sql = "INSERT INTO cliente (codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, 
+            telefono_cliente, fax_cliente, web_cliente, email_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, 
+            cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente,
             observaciones_cliente, activo_cliente, created_at_cliente, updated_at_cliente) 
-                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -244,11 +245,11 @@ class Clientes
                               
             $stmt->bindValue(1, $codigo_cliente, PDO::PARAM_STR); 
             $stmt->bindValue(2, $nombre_cliente, PDO::PARAM_STR); 
-            $stmt->bindValue(3, $direccion_cliente, PDO::PARAM_STR); 
-            $stmt->bindValue(4, $cp_cliente, PDO::PARAM_STR); 
-            $stmt->bindValue(5, $poblacion_cliente, PDO::PARAM_STR); 
-            $stmt->bindValue(6, $provincia_cliente, PDO::PARAM_STR); 
-            $stmt->bindValue(7, $nif_cliente, PDO::PARAM_STR); 
+            $stmt->bindValue(3, $nif_cliente, PDO::PARAM_STR); 
+            $stmt->bindValue(4, $direccion_cliente, PDO::PARAM_STR); 
+            $stmt->bindValue(5, $cp_cliente, PDO::PARAM_STR); 
+            $stmt->bindValue(6, $poblacion_cliente, PDO::PARAM_STR); 
+            $stmt->bindValue(7, $provincia_cliente, PDO::PARAM_STR); 
             $stmt->bindValue(8, $telefono_cliente, PDO::PARAM_STR); 
             $stmt->bindValue(9, $fax_cliente, PDO::PARAM_STR); 
             $stmt->bindValue(10, $web_cliente, PDO::PARAM_STR); 
@@ -266,7 +267,10 @@ class Clientes
                 $stmt->bindValue(17, null, PDO::PARAM_NULL);
             }
             
-            $stmt->bindValue(18, $observaciones_cliente, PDO::PARAM_STR); 
+            // Porcentaje de descuento (siempre se envía, con valor por defecto 0.00)
+            $stmt->bindValue(18, $porcentaje_descuento_cliente, PDO::PARAM_STR);
+            
+            $stmt->bindValue(19, $observaciones_cliente, PDO::PARAM_STR); 
                               
             $resultado = $stmt->execute();
             
@@ -298,12 +302,12 @@ class Clientes
     }
 
 
-    public function update_cliente($id_cliente, $codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $observaciones_cliente){
+    public function update_cliente($id_cliente, $codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $porcentaje_descuento_cliente = 0.00, $observaciones_cliente){
         try {
             // Establecer zona horaria Madrid antes de la consulta
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
             
-            $sql = "UPDATE cliente SET codigo_cliente = ?, nombre_cliente = ?, direccion_cliente = ?, cp_cliente = ?, poblacion_cliente = ?, provincia_cliente = ?, nif_cliente = ?, telefono_cliente = ?, fax_cliente = ?, web_cliente = ?, email_cliente = ?, nombre_facturacion_cliente = ?, direccion_facturacion_cliente = ?, cp_facturacion_cliente = ?, poblacion_facturacion_cliente = ?, provincia_facturacion_cliente = ?, id_forma_pago_habitual = ?, observaciones_cliente = ?, updated_at_cliente = NOW() WHERE id_cliente = ?";
+            $sql = "UPDATE cliente SET codigo_cliente = ?, nombre_cliente = ?, nif_cliente = ?, direccion_cliente = ?, cp_cliente = ?, poblacion_cliente = ?, provincia_cliente = ?, telefono_cliente = ?, fax_cliente = ?, web_cliente = ?, email_cliente = ?, nombre_facturacion_cliente = ?, direccion_facturacion_cliente = ?, cp_facturacion_cliente = ?, poblacion_facturacion_cliente = ?, provincia_facturacion_cliente = ?, id_forma_pago_habitual = ?, porcentaje_descuento_cliente = ?, observaciones_cliente = ?, updated_at_cliente = NOW() WHERE id_cliente = ?";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -313,11 +317,11 @@ class Clientes
             
             $stmt->bindValue(1, $codigo_cliente, PDO::PARAM_STR);
             $stmt->bindValue(2, $nombre_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(3, $direccion_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(4, $cp_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(5, $poblacion_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(6, $provincia_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(7, $nif_cliente, PDO::PARAM_STR);
+            $stmt->bindValue(3, $nif_cliente, PDO::PARAM_STR);
+            $stmt->bindValue(4, $direccion_cliente, PDO::PARAM_STR);
+            $stmt->bindValue(5, $cp_cliente, PDO::PARAM_STR);
+            $stmt->bindValue(6, $poblacion_cliente, PDO::PARAM_STR);
+            $stmt->bindValue(7, $provincia_cliente, PDO::PARAM_STR);
             $stmt->bindValue(8, $telefono_cliente, PDO::PARAM_STR);
             $stmt->bindValue(9, $fax_cliente, PDO::PARAM_STR);
             $stmt->bindValue(10, $web_cliente, PDO::PARAM_STR);
@@ -335,8 +339,11 @@ class Clientes
                 $stmt->bindValue(17, null, PDO::PARAM_NULL);
             }
             
-            $stmt->bindValue(18, $observaciones_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(19, $id_cliente, PDO::PARAM_INT); 
+            // Porcentaje de descuento (siempre se envía, con valor por defecto 0.00)
+            $stmt->bindValue(18, $porcentaje_descuento_cliente, PDO::PARAM_STR);
+            
+            $stmt->bindValue(19, $observaciones_cliente, PDO::PARAM_STR);
+            $stmt->bindValue(20, $id_cliente, PDO::PARAM_INT); 
 
             $resultado = $stmt->execute();
             
