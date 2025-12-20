@@ -97,12 +97,12 @@
         <i class="icon icon ion-ios-bookmarks-outline"></i>
         <div>
             <div class="d-flex align-items-center">
-            <h4>Mantenimiento de Personal</h4>
+            <h4>Mantenimiento de Empleados</h4>
             <button type="button" class="btn btn-link p-0 ms-1" data-toggle="modal" data-target="#modalAyudaComerciales" title="Ayuda sobre el módulo">
                 <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
             </button>
             </div>
-            <p class="mg-b-0">Tabla básica para el mantenimiento del personal</p>
+            <p class="mg-b-0">Tabla básica para el mantenimiento de empleados</p>
         </div>
     </div><!-- d-flex -->
 

@@ -1,7 +1,7 @@
 <!-- ---------------------- -->
 <!--   Comprobar permisos     -->
 <!-- ---------------------- -->
-<?php $moduloActual = 'usuarios'; ?>
+<?php $moduloActual = 'area_tecnica'; ?>
 <?php require_once('../../config/template/verificarPermiso.php'); ?>
 
 <!DOCTYPE html>

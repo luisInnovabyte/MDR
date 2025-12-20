@@ -534,8 +534,12 @@ switch ($op) {
         break;
     case "getMaintenanceEvents":
 
-    // Traes EXACTAMENTE lo mismo que el DataTable
-   $datos = $presupuesto->get_presupuestos();
+    // Obtener mes y año de los parámetros
+    $month = isset($_POST['month']) ? intval($_POST['month']) : date('n');
+    $year = isset($_POST['year']) ? intval($_POST['year']) : date('Y');
+    
+    // Usar el método que filtra por mes y año
+    $datos = $presupuesto->get_presupuestos_por_mes($month, $year);
 
 $events = [];
 

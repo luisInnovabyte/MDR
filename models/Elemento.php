@@ -546,33 +546,55 @@ class Elemento
     public function getWarrantyEvents($month, $year)
     {
         try {
+            // Verificar primero si la vista existe, sino usar consulta directa
             $sql = "SELECT 
-                        id_elemento,
-                        codigo_elemento,
-                        descripcion_elemento,
-                        modelo_elemento,
-                        numero_serie_elemento,
-                        fecha_fin_garantia_elemento,
-                        estado_garantia_elemento,
-                        nombre_articulo,
-                        nombre_familia,
-                        nombre_marca,
-                        nombre_grupo,
-                        nave_elemento,
-                        pasillo_columna_elemento,
-                        altura_elemento
-                    FROM vista_elemento_completa
-                    WHERE fecha_fin_garantia_elemento IS NOT NULL
-                    AND MONTH(fecha_fin_garantia_elemento) = :month
-                    AND YEAR(fecha_fin_garantia_elemento) = :year
-                    ORDER BY fecha_fin_garantia_elemento";
+                        e.id_elemento,
+                        e.codigo_elemento,
+                        e.descripcion_elemento,
+                        e.modelo_elemento,
+                        e.numero_serie_elemento,
+                        e.fecha_fin_garantia_elemento,
+                        CASE 
+                            WHEN e.fecha_fin_garantia_elemento < CURDATE() THEN 'Vencida'
+                            WHEN e.fecha_fin_garantia_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Por vencer'
+                            WHEN e.fecha_fin_garantia_elemento > DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'Vigente'
+                            ELSE 'Sin garantía'
+                        END AS estado_garantia_elemento,
+                        a.nombre_articulo,
+                        f.nombre_familia,
+                        m.nombre_marca,
+                        g.nombre_grupo,
+                        e.nave_elemento,
+                        e.pasillo_columna_elemento,
+                        e.altura_elemento
+                    FROM elemento e
+                    INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
+                    INNER JOIN familia f ON a.id_familia = f.id_familia
+                    LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+                    LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
+                    WHERE e.fecha_fin_garantia_elemento IS NOT NULL
+                    AND e.activo_elemento = 1
+                    AND MONTH(e.fecha_fin_garantia_elemento) = :month
+                    AND YEAR(e.fecha_fin_garantia_elemento) = :year
+                    ORDER BY e.fecha_fin_garantia_elemento";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':month', $month, PDO::PARAM_INT);
             $stmt->bindParam(':year', $year, PDO::PARAM_INT);
             $stmt->execute();
             
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Log para debugging
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'getWarrantyEvents',
+                "Consulta ejecutada: Mes=$month, Año=$year, Registros encontrados: " . count($resultados),
+                "info"
+            );
+            
+            return $resultados;
             
         } catch (PDOException $e) {
             $this->registro->registrarActividad(
@@ -589,33 +611,55 @@ class Elemento
     public function getMaintenanceEvents($month, $year)
     {
         try {
+            // Consulta directa a las tablas con cálculo de estado
             $sql = "SELECT 
-                        id_elemento,
-                        codigo_elemento,
-                        descripcion_elemento,
-                        modelo_elemento,
-                        numero_serie_elemento,
-                        proximo_mantenimiento_elemento,
-                        estado_mantenimiento_elemento,
-                        nombre_articulo,
-                        nombre_familia,
-                        nombre_marca,
-                        nombre_grupo,
-                        nave_elemento,
-                        pasillo_columna_elemento,
-                        altura_elemento
-                    FROM vista_elemento_completa
-                    WHERE proximo_mantenimiento_elemento IS NOT NULL
-                    AND MONTH(proximo_mantenimiento_elemento) = :month
-                    AND YEAR(proximo_mantenimiento_elemento) = :year
-                    ORDER BY proximo_mantenimiento_elemento";
+                        e.id_elemento,
+                        e.codigo_elemento,
+                        e.descripcion_elemento,
+                        e.modelo_elemento,
+                        e.numero_serie_elemento,
+                        e.proximo_mantenimiento_elemento,
+                        CASE 
+                            WHEN e.proximo_mantenimiento_elemento < CURDATE() THEN 'Atrasado'
+                            WHEN e.proximo_mantenimiento_elemento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Próximo'
+                            WHEN e.proximo_mantenimiento_elemento > DATE_ADD(CURDATE(), INTERVAL 15 DAY) THEN 'Al día'
+                            ELSE 'Sin programar'
+                        END AS estado_mantenimiento_elemento,
+                        a.nombre_articulo,
+                        f.nombre_familia,
+                        m.nombre_marca,
+                        g.nombre_grupo,
+                        e.nave_elemento,
+                        e.pasillo_columna_elemento,
+                        e.altura_elemento
+                    FROM elemento e
+                    INNER JOIN articulo a ON e.id_articulo_elemento = a.id_articulo
+                    INNER JOIN familia f ON a.id_familia = f.id_familia
+                    LEFT JOIN grupo_articulo g ON f.id_grupo = g.id_grupo
+                    LEFT JOIN marca m ON e.id_marca_elemento = m.id_marca
+                    WHERE e.proximo_mantenimiento_elemento IS NOT NULL
+                    AND e.activo_elemento = 1
+                    AND MONTH(e.proximo_mantenimiento_elemento) = :month
+                    AND YEAR(e.proximo_mantenimiento_elemento) = :year
+                    ORDER BY e.proximo_mantenimiento_elemento";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':month', $month, PDO::PARAM_INT);
             $stmt->bindParam(':year', $year, PDO::PARAM_INT);
             $stmt->execute();
             
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Log para debugging
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'getMaintenanceEvents',
+                "Consulta ejecutada: Mes=$month, Año=$year, Registros encontrados: " . count($resultados),
+                "info"
+            );
+            
+            return $resultados;
             
         } catch (PDOException $e) {
             $this->registro->registrarActividad(

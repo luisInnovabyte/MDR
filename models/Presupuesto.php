@@ -787,30 +787,19 @@ class Presupuesto
     public function get_presupuestos_por_mes($month, $year)
     {
         try {
-            $sql = "SELECT 
-                        p.id_presupuesto,
-                        p.numero_presupuesto,
-                        p.nombre_evento_presupuesto,
-                        p.fecha_inicio_evento_presupuesto,
-                        p.fecha_fin_evento_presupuesto,
-                        p.total_presupuesto,
-                        c.nombre_cliente,
-                        CONCAT(c.nombre_cliente, ' ', COALESCE(c.apellido_cliente, '')) AS nombre_completo_cliente,
-                        ep.nombre_estado_ppto,
-                        ep.color_estado_ppto
-                    FROM presupuesto p
-                    INNER JOIN cliente c ON p.id_cliente = c.id_cliente
-                    INNER JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
-                    WHERE p.activo_presupuesto = 1
+            // Usar la vista completa para tener todos los campos necesarios para el calendario
+            $sql = "SELECT * 
+                    FROM vista_presupuesto_completa
+                    WHERE activo_presupuesto = 1
                     AND (
-                        (MONTH(p.fecha_inicio_evento_presupuesto) = ? AND YEAR(p.fecha_inicio_evento_presupuesto) = ?)
+                        (MONTH(fecha_inicio_evento_presupuesto) = ? AND YEAR(fecha_inicio_evento_presupuesto) = ?)
                         OR 
-                        (MONTH(p.fecha_fin_evento_presupuesto) = ? AND YEAR(p.fecha_fin_evento_presupuesto) = ?)
+                        (MONTH(fecha_fin_evento_presupuesto) = ? AND YEAR(fecha_fin_evento_presupuesto) = ?)
                         OR
-                        (p.fecha_inicio_evento_presupuesto <= LAST_DAY(CONCAT(?, '-', ?, '-01'))
-                         AND p.fecha_fin_evento_presupuesto >= CONCAT(?, '-', LPAD(?, 2, '0'), '-01'))
+                        (fecha_inicio_evento_presupuesto <= LAST_DAY(CONCAT(?, '-', ?, '-01'))
+                         AND fecha_fin_evento_presupuesto >= CONCAT(?, '-', LPAD(?, 2, '0'), '-01'))
                     )
-                    ORDER BY p.fecha_inicio_evento_presupuesto ASC";
+                    ORDER BY fecha_inicio_evento_presupuesto ASC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $month, PDO::PARAM_INT);
@@ -824,6 +813,14 @@ class Presupuesto
             $stmt->execute();
             
             $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $this->registro->registrarActividad(
+                'system',
+                'Presupuesto',
+                'get_presupuestos_por_mes',
+                "Presupuestos obtenidos para mes $month/$year: " . count($resultado) . " registros",
+                'info'
+            );
             
             return $resultado;
             

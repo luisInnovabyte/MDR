@@ -38,6 +38,11 @@ class CalendarioMantenimientos {
         document.getElementById('btnToday').addEventListener('click', () => {
             this.goToToday();
         });
+        
+        // Botón exportar PDF
+        document.getElementById('btnExportPDF').addEventListener('click', () => {
+            this.exportToPDF();
+        });
     }
     
     previousMonth() {
@@ -352,6 +357,51 @@ class CalendarioMantenimientos {
         }
         
         console.log('Detalles del evento:', evento);
+    }
+    
+    exportToPDF() {
+        // Obtener mes y año actuales del calendario
+        const month = this.currentMonth + 1; // JavaScript months are 0-indexed
+        const year = this.currentYear;
+        const monthName = this.monthNames[this.currentMonth];
+        
+        // Mostrar indicador de carga
+        const btnExport = document.getElementById('btnExportPDF');
+        const originalHTML = btnExport.innerHTML;
+        btnExport.disabled = true;
+        btnExport.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generando...';
+        
+        // Crear formulario para enviar datos
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '../../controller/informe_mantenimiento.php?op=generar_pdf';
+        form.target = '_blank';
+        
+        // Agregar campos ocultos
+        const monthInput = document.createElement('input');
+        monthInput.type = 'hidden';
+        monthInput.name = 'month';
+        monthInput.value = month;
+        form.appendChild(monthInput);
+        
+        const yearInput = document.createElement('input');
+        yearInput.type = 'hidden';
+        yearInput.name = 'year';
+        yearInput.value = year;
+        form.appendChild(yearInput);
+        
+        // Agregar formulario al DOM, enviarlo y eliminarlo
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+        
+        // Restaurar botón después de un breve delay
+        setTimeout(() => {
+            btnExport.disabled = false;
+            btnExport.innerHTML = originalHTML;
+        }, 1000);
+        
+        console.log(`Exportando PDF de mantenimientos para ${monthName} ${year}`);
     }
 }
 

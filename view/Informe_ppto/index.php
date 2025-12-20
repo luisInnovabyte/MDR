@@ -110,6 +110,12 @@
                                 Hoy
                             </button>
                         </div>
+                        <div class="col-auto ms-auto">
+                            <button type="button" class="btn btn-info btn-sm" id="btnExportPDF">
+                                <i class="fas fa-file-pdf me-1"></i>
+                                Exportar PDF
+                            </button>
+                        </div>
                     </div>
                 </div>
 

@@ -73,21 +73,23 @@
         <div class="br-pageheader">
             <nav class="breadcrumb pd-0 mg-0 tx-12">
                 <a class="breadcrumb-item" href="index.php">Home</a>
-                <a class="breadcrumb-item active" href="#">Clientes-Proveedores</a>
+                <a class="breadcrumb-item active" href="#">Gestor Documental</a>
             </nav>
         </div><!-- br-pageheader -->
         
         <div class="br-pagetitle">
-            <i class="fa fa-users tx-24"></i>
+            <i class="icon ion-ios-folder tx-24"></i>
             <div>
-                <h4>Clientes y Proveedores</h4>
-                <p class="mg-b-0">Accesos directos a la gestión de clientes y proveedores</p>
+                <h4>Gestor Documental</h4>
+                <p class="mg-b-0">Gestión de tipos de documentos y archivos del sistema</p>
             </div>
-            <div class="mg-l-auto">
+
+             <div class="mg-l-auto">
                 <a href="index.php" class="btn btn-secondary btn-oblong tx-11 tx-uppercase tx-mont tx-medium">
                     <i class="fa fa-arrow-left mg-r-10"></i> Volver al Dashboard
                 </a>
             </div>
+            
         </div><!-- d-flex -->
 
         <!-- ----------------------- -->
@@ -97,49 +99,58 @@
         <div class="br-pagebody">
             <div class="br-section-wrapper">
 
-                <!-- Sección: Clientes y Proveedores -->
+                <!-- Sección: Gestor Documental -->
                 <div class="row mg-b-30">
                     <div class="col-12">
                         <h5 class="tx-gray-800 mg-b-20">
-                            <i class="fa fa-handshake"></i> Gestión de Contactos - Clientes y Proveedores
+                            <i class="fa fa-folder-open"></i> Módulos de Documentación
                         </h5>
                     </div>
                 </div>
 
-                <div class="row row-sm justify-content-center">
-
-                
-                    <!-- Clientes -->
-                    <div class="col-lg-3 col-md-4 col-sm-6 mg-b-20">
-                        <div class="card shadow-base bd-0 text-center" style="cursor: pointer; transition: all 0.3s; border-radius: 8px;" 
-                             onclick="window.location.href='../MntClientes/index.php'"
+                <div class="row row-sm">
+                    
+                    <!-- Tipos de Documento -->
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
+                             onclick="window.location.href='../MntTipos_documento/index.php'"
                              onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
-                            <div class="card-body pd-30">
-                                <i class="fa fa-user-friends tx-60 tx-success mg-b-15"></i>
-                                <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Clientes</h5>
-                                <p class="tx-12 tx-gray-500 mg-b-0">Gestión de clientes</p>
+                            <div class="card-body pd-25 d-flex flex-column justify-content-center">
+                                <i class="fa fa-tags tx-50 tx-primary mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Tipos de Documento</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Categorías de documentos</p>
                             </div>
                         </div>
                     </div>
 
-
-
-                    <!-- Proveedores -->
-                    <div class="col-lg-3 col-md-4 col-sm-6 mg-b-20">
-                        <div class="card shadow-base bd-0 text-center" style="cursor: pointer; transition: all 0.3s; border-radius: 8px;" 
-                             onclick="window.location.href='../MntProveedores/index.php'"
+                    <!-- Mto. Gestor Documental -->
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
+                             onclick="window.location.href='../Documento/index.php'"
                              onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
-                            <div class="card-body pd-30">
-                                <i class="fa fa-truck tx-60 tx-primary mg-b-15"></i>
-                                <h5 class="tx-uppercase tx-13 tx-spacing-1 tx-semibold mg-b-10">Proveedores</h5>
-                                <p class="tx-12 tx-gray-500 mg-b-0">Gestión de proveedores</p>
+                            <div class="card-body pd-25 d-flex flex-column justify-content-center">
+                                <i class="fa fa-folder-open tx-50 tx-success mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Mto. Gestor Documental</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de documentos</p>
                             </div>
                         </div>
                     </div>
 
-                 
+                    <!-- Gestor Documental técnicos -->
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
+                             onclick="window.location.href='../Documento/index_tecnico.php'"
+                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                            <div class="card-body pd-25 d-flex flex-column justify-content-center">
+                                <i class="fa fa-hard-hat tx-50 tx-warning mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Gestor Documental técnicos</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Documentación técnica</p>
+                            </div>
+                        </div>
+                    </div>
 
                 </div><!-- row -->
 

@@ -8,13 +8,15 @@ function puedeVerMenu($idRol, $modulo) {
     // 2: GESTOR
     // 3: ADMIN
     // 4: COMERCIAL
+    // 5: TÉCNICO
     $permisos = [
         'usuarios'       => [2, 3],                  // Porque rol 2 y 3 pueden acceder
         'logs'           => [2, 3],                  // Lo mismo
         'mantenimientos' => [2, 3, 4],
         'llamadas'       => [2, 3, 4],
         'comerciales'    => [3],                      // Solo admin
-        'dashboard'      => [2, 3, 4],                      // Solo admin
+        'dashboard'      => [2, 3, 4],
+        'area_tecnica'   => [2, 3, 5],               // Gestor, Admin y Técnico
         // Otros módulos que tengas, según corresponda
     ];
     return in_array($idRol, $permisos[$modulo] ?? []);
@@ -63,7 +65,6 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
                     <i class="fa fa-phone"></i> LLAMADAS
             </li>
-            <li class="sub-item"><a href="../MntContactos/index.php" class="sub-link">Contactos</a></li>
             <li class="sub-item"><a href="../MntMetodosContacto/index.php" class="sub-link">Métodos Contacto</a></li>
             <li class="sub-item"><a href="../MntEstadosLlamada/index.php" class="sub-link">Estados Llamada</a></li>
             
@@ -71,15 +72,15 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
                 📦 ARTÍCULOS
             </li>
-<!--             
-            <li class="sub-item"><a href="../MntFamilia/index.php" class="sub-link">Familias</a></li> -->
-            
-            <li class="sub-item"><a href="../MntEstados_elemento/index.php" class="sub-link">Estados elementos</a></li>
-            <li class="sub-item"><a href="../MntGrupo_articulo/index.php" class="sub-link">Grupo</a></li>
-            <li class="sub-item"><a href="../MntFamilia_unidad/index.php" class="sub-link">Familias</a></li>
+            <!--             
+                <li class="sub-item"><a href="../MntFamilia/index.php" class="sub-link">Familias</a></li> -->
+                
+                <li class="sub-item"><a href="../MntEstados_elemento/index.php" class="sub-link">Estados elementos</a></li>
+                <li class="sub-item"><a href="../MntGrupo_articulo/index.php" class="sub-link">Grupo</a></li>
+                <li class="sub-item"><a href="../MntFamilia_unidad/index.php" class="sub-link">Familias</a></li>
             <li class="sub-item"><a href="../MntMarca/index.php" class="sub-link">Marcas</a></li>
             <li class="sub-item"><a href="../MntArticulos/index.php" class="sub-link">Artículos</a></li>
-            <li class="sub-item"><a href="../MntElementos_consulta/index.php" class="sub-link">Elementos - consulta</a></li>
+            
             
             
             <!-- <li class="sub-item"><a href="../MntFamilia_plus/index.php" class="sub-link">Familias Plus</a></li> -->
@@ -91,6 +92,7 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
                 📦 USUARIOS-ROLES
             </li>
+            <li class="sub-item"><a href="../MntComerciales/index.php" class="sub-link">Empleados</a></li>
             <li class="sub-item"><a href="../Usuarios/index.php" class="sub-link">Usuarios</a></li>
             <li class="sub-item"><a href="../MntRoles/index.php" class="sub-link">Roles</a></li>
          
@@ -101,19 +103,19 @@ function puedeVerMenu($idRol, $modulo) {
 
 
 
-  
-
+    
+    
     <?php if (puedeVerMenu($idRolUsuario, 'llamadas')): ?>
-    <li class="br-menu-item">
-        <a href="#" class="br-menu-link with-sub">
-            <i class="menu-item-icon icon ion-ios-telephone tx-24"></i>
-            <span class="menu-item-label">Llamadas</span>
-        </a>
-        <ul class="br-menu-sub">
-            <li class="sub-item"><a href="../MntLlamadas/index.php" class="sub-link">Llamadas</a></li>
-            <!-- <li class="sub-item"><a href="../MntAdjuntosLlamadas/index.php" class="sub-link">Adjuntos Llamadas</a></li> -->
-             <li class="sub-item"><a href="../MntComerciales/index.php" class="sub-link">Responsables atención</a></li>
-                      <li class="sub-item"><a href="../MntComercialesVacaciones/index.php" class="sub-link">Responsables Vacaciones</a></li>
+        <li class="br-menu-item">
+            <a href="#" class="br-menu-link with-sub">
+                <i class="menu-item-icon icon ion-ios-telephone tx-24"></i>
+                <span class="menu-item-label">Llamadas</span>
+            </a>
+            <ul class="br-menu-sub">
+                <li class="sub-item"><a href="../MntLlamadas/index.php" class="sub-link">Llamadas</a></li>
+                <li class="sub-item"><a href="../MntContactos/index.php" class="sub-link">Contactos</a></li>
+                <!-- <li class="sub-item"><a href="../MntAdjuntosLlamadas/index.php" class="sub-link">Adjuntos Llamadas</a></li> -->
+                <li class="sub-item"><a href="../MntComercialesVacaciones/index.php" class="sub-link">Vacaciones</a></li>
         </ul>
     </li>
     <?php endif; ?>
@@ -132,7 +134,7 @@ function puedeVerMenu($idRol, $modulo) {
 
    <li class="br-menu-item">
         <a href="#" class="br-menu-link with-sub">
-            <i class="menu-item-icon icon ion-ios-people tx-24"></i>
+            <i class="menu-item-icon icon ion-ios-calculator tx-24"></i>
             <span class="menu-item-label">Presupuestos</span>
         </a>
         <ul class="br-menu-sub">
@@ -142,7 +144,7 @@ function puedeVerMenu($idRol, $modulo) {
 
     <li class="br-menu-item">
         <a href="#" class="br-menu-link with-sub">
-            <i class="menu-item-icon icon ion-ios-people tx-24"></i>
+            <i class="menu-item-icon icon ion-ios-folder tx-24"></i>
             <span class="menu-item-label">Gestor Documental</span>
         </a>
         <ul class="br-menu-sub">
@@ -170,7 +172,7 @@ function puedeVerMenu($idRol, $modulo) {
      <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
     <li class="br-menu-item">
         <a href="#" class="br-menu-link with-sub">
-            <i class="menu-item-icon icon ion-ios-paper tx-24"></i>
+            <i class="menu-item-icon icon ion-ios-calendar tx-24"></i>
             <span class="menu-item-label">Informes</span>
         </a>
         <ul class="br-menu-sub">
@@ -199,10 +201,34 @@ function puedeVerMenu($idRol, $modulo) {
     <!-- </li> -->
     <!-- <?php endif; ?> -->
 
-
-
-
-
+ <?php if (puedeVerMenu($idRolUsuario, 'area_tecnica')): ?>
+    <li class="br-menu-item">
+        <a href="#" class="br-menu-link with-sub">
+            <i class="menu-item-icon icon ion-wrench tx-24"></i>
+            <span class="menu-item-label">Área Técnica</span>
+        </a>
+        <ul class="br-menu-sub">
+            
+            <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
+                📊 CONSULTAS
+            </li>
+            <li class="sub-item"><a href="../MntElementos_consulta/index.php" class="sub-link">Consulta de Elementos</a></li>
+            <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantías</a></li>
+            <li class="sub-item"><a href="../Consulta_Mantenimientos/index.php" class="sub-link">Consulta Mantenimientos</a></li>
+            
+            <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
+                📁 DOCUMENTACIÓN
+            </li>
+            <li class="sub-item"><a href="../Documento/index_tecnico.php" class="sub-link">Gestor Documental Técnico</a></li>
+            
+            <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
+                📋 INFORMES
+            </li>
+            <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendario Garantías</a></li>
+            <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendario Mantenimientos</a></li>
+        </ul>
+    </li>
+    <?php endif; ?>
 
 
     <?php if (isset($_SESSION['sesion_iniciada']) && $_SESSION['sesion_iniciada'] === true): ?>

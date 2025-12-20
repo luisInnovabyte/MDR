@@ -22,7 +22,7 @@
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title d-flex align-items-center" id="modalAyudaComercialLabel">
                     <i class="bi bi-question-circle-fill mr-2" style="font-size: 1.4rem;"></i>
-                    Ayuda - Mantenimiento de Personal
+                    Ayuda - Mantenimiento de Empleados
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar" style="opacity:1;">
                     <span aria-hidden="true">&times;</span>
@@ -35,10 +35,10 @@
                 <!-- Sección: Introducción -->
                 <div class="mb-4">
                     <h6 class="text-primary d-flex align-items-center">
-                        <i class="bi bi-chat-dots-fill mr-2"></i> ¿Qué es el Mantenimiento de Personal?
+                        <i class="bi bi-chat-dots-fill mr-2"></i> ¿Qué es el Mantenimiento de Empleados?
                     </h6>
                     <p class="text-muted">
-                        El <strong>Mantenimiento de Personal</strong> permite gestionar toda la información del personal de la empresa que tendrá acceso al sistema.
+                        El <strong>Mantenimiento de Empleados</strong> permite gestionar toda la información del personal de la empresa que tendrá acceso al sistema.
                         En esta pantalla podrá dar de alta a empleados, asignarles un usuario para acceder a la aplicación, y mantener actualizados sus datos de contacto.
                     </p>
                     <div class="alert alert-info small">

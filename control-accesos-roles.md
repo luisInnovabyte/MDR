@@ -21,6 +21,7 @@ CREATE TABLE `roles` (
 - **2**: Gestor
 - **3**: Administrador
 - **4**: Comercial
+- **5**: Técnico ✨ **(Nuevo)** - Acceso al Área Técnica
 
 ### Tabla `usuarios`
 
@@ -102,6 +103,7 @@ function puedeVerMenu($idRol, $modulo) {
         'llamadas'       => [2, 3, 4],       // Gestor, Admin y Comercial
         'comerciales'    => [3],             // Solo Admin
         'dashboard'      => [2, 3, 4],       // Gestor, Admin y Comercial
+        'area_tecnica'   => [2, 3, 5],       // Gestor, Admin y Técnico ✨
     ];
     return in_array($idRol, $permisos[$modulo] ?? []);
 }
@@ -144,9 +146,10 @@ if (!isset($moduloActual)) {
 $idRol = $_SESSION['id_rol'] ?? null;
 
 // Permisos por rol
-$permisosPorRol = [
-    2 => ['usuarios', 'logs', 'mantenimientos', 'llamadas', 'dashboard'], // Gestor
-    3 => ['usuarios', 'logs', 'mantenimientos', 'comerciales', 'llamadas', 'dashboard'], // Admin
+$permisosPorRol = [, 'area_tecnica'], // Gestor
+    3 => ['usuarios', 'logs', 'mantenimientos', 'comerciales', 'llamadas', 'dashboard', 'area_tecnica'], // Admin
+    4 => ['llamadas', 'mantenimientos', 'dashboard'], // Comercial
+    5 => ['area_tecnica', 'elementos_consulta', 'documentos_tecnico', 'consultas_tecnico', 'informes_tecnico'], // Técnico ✨amadas', 'dashboard'], // Admin
     4 => ['llamadas', 'mantenimientos', 'dashboard'], // Comercial
 ];
 
@@ -169,17 +172,18 @@ if (!isset($permisosPorRol[$idRol]) || !in_array($moduloActual, $permisosPorRol[
 ```
 
 ## 📊 Matriz de Permisos Actual
-
-| Módulo           | Empleado (1) | Gestor (2) | Admin (3) | Comercial (4) |
-|------------------|--------------|------------|-----------|---------------|
-| Dashboard        | ❌           | ✅         | ✅        | ✅            |
-| Usuarios         | ❌           | ✅         | ✅        | ❌            |
-| Roles            | ❌           | ✅         | ✅        | ❌            |
-| Logs             | ❌           | ✅         | ✅        | ❌            |
-| Mantenimientos   | ❌           | ✅         | ✅        | ✅            |
-| Llamadas         | ❌           | ✅         | ✅        | ✅            |
-| Comerciales      | ❌           | ❌         | ✅        | ❌            |
-| Clientes/Proveedores | ✅      | ✅         | ✅        | ✅            |
+ Técnico (5) ✨ |
+|------------------|--------------|------------|-----------|---------------|----------------|
+| Dashboard        | ❌           | ✅         | ✅        | ✅            | ❌             |
+| Usuarios         | ❌           | ✅         | ✅        | ❌            | ❌             |
+| Roles            | ❌           | ✅         | ✅        | ❌            | ❌             |
+| Logs             | ❌           | ✅         | ✅        | ❌            | ❌             |
+| Mantenimientos   | ❌           | ✅         | ✅        | ✅            | ❌             |
+| Llamadas         | ❌           | ✅         | ✅        | ✅            | ❌             |
+| Comerciales      | ❌           | ❌         | ✅        | ❌            | ❌             |
+| Clientes/Proveedores | ✅      | ✅         | ✅        | ✅            | ❌             |
+| Informes         | ❌           | ✅         | ✅        | ❌            | ❌             |
+| **Área Técnica** ✨ | ❌       | ✅         | ✅        | ❌            | ✅            |
 | Informes         | ❌           | ✅         | ✅        | ❌            |
 
 ## 🔄 Flujo Completo de Verificación
@@ -256,14 +260,64 @@ require_once('../../config/template/verificarPermiso.php');
    - Sin sesión → `view/Home/index.php`
    - Sin permiso → `view/Home/accesoDenegado.php`
 
-## 🔍 Ejemplo Práctico: Rol Comercial
+## 🔍 Ejemplos Prácticos por Rol
+
+### Rol Comercial (ID 4)
 
 Un usuario con `id_rol = 4` (Comercial):
 
 - ✅ **Puede acceder a**: Dashboard, Llamadas, Mantenimientos
-- ❌ **NO puede acceder a**: Usuarios, Logs, Comerciales, Informes
+- ❌ **NO puede acceder a**: Usuarios, Logs, Comerciales, Informes, Área Técnica
 - 🔒 Si intenta acceder directamente a `view/Usuarios/index.php` → Redirigido a `accesoDenegado.php`
+
+### Rol Técnico (ID 5) ✨ **(Nuevo)**
+
+Un usuario con `id_rol = 5` (Técnico):
+
+- ✅ **Puede acceder a**: 
+  - Consulta de Elementos (solo lectura)
+  - Estados de Elementos
+  - Documentos de Elementos
+  - Fotos de Elementos
+  - Consulta de Garantías
+  - Consulta de Mantenimientos
+  - Gestor Documental Técnico
+  - Informes técnicos (Calendario Garantías y Mantenimientos)
+  
+- ❌ **NO puede acceder a**: Dashboard, Usuarios, Logs, Mantenimientos generales, Llamadas, Comerciales, Presupuestos
+- 🔒 Acceso restringido únicamente al Área Técnica mediante `$moduloActual = 'area_tecnica'`
+
+## 🛠️ Módulos del Área Técnica
+
+El nuevo módulo **Área Técnica** incluye las siguientes pantallas:
+
+| Pantalla | Ruta | Descripción | Permisos |
+|----------|------|-------------|----------|
+| **Consulta de Elementos** | `view/MntElementos_consulta/index.php` | Vista de solo lectura de todos los elementos | Técnico, Gestor, Admin |
+| **Estados de Elementos** | `view/MntEstados_elemento/index.php` | Gestión de estados de elementos | Técnico, Gestor, Admin |
+| **Documentos de Elementos** | `view/MntDocumento_elemento/index.php` | Gestión de documentación técnica | Técnico, Gestor, Admin |
+| **Fotos de Elementos** | `view/MntFoto_elemento/index.php` | Gestión de fotografías de elementos | Técnico, Gestor, Admin |
+| **Consulta Garantías** | `view/Consulta_Garantias/index.php` | Vista de consulta de garantías vigentes | Técnico, Gestor, Admin |
+| **Consulta Mantenimientos** | `view/Consulta_Mantenimientos/index.php` | Vista de consulta de mantenimientos programados | Técnico, Gestor, Admin |
+| **Gestor Documental Técnico** | `view/Documento/index_tecnico.php` | Gestor de documentos técnicos (manuales, certificados) | Técnico, Gestor, Admin |
+| **Calendario Garantías** | `view/Informe_vigencia/index.php` | Calendario de garantías | Técnico, Gestor, Admin |
+| **Calendario Mantenimientos** | `view/Informe_mantenimiento/index.php` | Calendario de mantenimientos | Técnico, Gestor, Admin |
+
+### Configuración de Permisos en Vistas del Área Técnica
+
+Todas las vistas del área técnica deben incluir:
+
+```php
+<?php $moduloActual = 'area_tecnica'; ?>
+<?php require_once('../../config/template/verificarPermiso.php'); ?>
+```
 
 ## 📅 Última Actualización
 
-Sistema documentado en su estado actual al **1 de diciembre de 2025**.
+Sistema documentado y actualizado con el **Rol Técnico** el **20 de diciembre de 2025**.
+
+### Cambios recientes:
+- ✨ Agregado rol **Técnico (ID 5)** con acceso al Área Técnica
+- 🔧 Creada sección **Área Técnica** en el menú principal
+- 📋 Actualizados permisos en 9 vistas específicas para técnicos
+- 📝 Actualizada matriz de permisos y documentación completa

@@ -29,10 +29,12 @@ $idRol = $_SESSION['id_rol'] ?? null;
 // 2: GESTOR
 // 3: ADMIN
 // 4: COMERCIAL
+// 5: TÉCNICO
 $permisosPorRol = [
-    2 => ['usuarios', 'logs', 'mantenimientos', 'llamadas', 'dashboard'], // Gestor (ejemplo)
-    3 => ['usuarios', 'logs', 'mantenimientos', 'comerciales', 'llamadas', 'dashboard'], // Administrador: todo
+    2 => ['usuarios', 'logs', 'mantenimientos', 'llamadas', 'dashboard', 'area_tecnica', 'elementos_consulta', 'documentos_tecnico', 'consultas_tecnico', 'informes_tecnico'], // Gestor (ejemplo)
+    3 => ['usuarios', 'logs', 'mantenimientos', 'comerciales', 'llamadas', 'dashboard', 'area_tecnica', 'elementos_consulta', 'documentos_tecnico', 'consultas_tecnico', 'informes_tecnico'], // Administrador: todo
     4 => ['llamadas', 'mantenimientos', 'dashboard'], // Comercial
+    5 => ['area_tecnica', 'elementos_consulta', 'documentos_tecnico', 'consultas_tecnico', 'informes_tecnico'], // Técnico
 ];
 
 // Validar que el rol tenga permiso para el módulo actual

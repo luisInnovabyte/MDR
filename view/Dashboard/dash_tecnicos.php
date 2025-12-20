@@ -1,7 +1,7 @@
     <!-- ---------------------- -->
     <!--   Comprobar permisos     -->
     <!-- ---------------------- -->
-<?php $moduloActual = 'llamadas'; ?>
+<?php $moduloActual = 'area_tecnica'; ?>
 <?php require_once('../../config/template/verificarPermiso.php'); ?>
 
 <!DOCTYPE html>
@@ -73,15 +73,15 @@
         <div class="br-pageheader">
             <nav class="breadcrumb pd-0 mg-0 tx-12">
                 <a class="breadcrumb-item" href="index.php">Dashboard</a>
-                <a class="breadcrumb-item active" href="#">Llamadas</a>
+                <a class="breadcrumb-item active" href="#">Área Técnica</a>
             </nav>
         </div><!-- br-pageheader -->
         
         <div class="br-pagetitle">
-            <i class="icon ion-ios-telephone tx-24"></i>
+            <i class="icon ion-wrench tx-24"></i>
             <div>
-                <h4>Gestión de Llamadas</h4>
-                <p class="mg-b-0">Registro y seguimiento de llamadas, contactos y vacaciones</p>
+                <h4>Área Técnica</h4>
+                <p class="mg-b-0">Consultas, documentación e informes técnicos</p>
             </div>
 
              <div class="mg-l-auto">
@@ -99,55 +99,123 @@
         <div class="br-pagebody">
             <div class="br-section-wrapper">
 
-                <!-- Sección: Llamadas -->
+                <!-- Sección 1: CONSULTAS -->
                 <div class="row mg-b-30">
                     <div class="col-12">
                         <h5 class="tx-gray-800 mg-b-20">
-                            <i class="icon ion-ios-telephone"></i> Módulos de Llamadas
+                            <i class="fa fa-chart-bar"></i> Consultas
                         </h5>
                     </div>
                 </div>
 
                 <div class="row row-sm">
                     
-                    <!-- Llamadas -->
+                    <!-- Consulta de Elementos -->
                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
                         <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
-                             onclick="window.location.href='../MntLlamadas/index.php'"
+                             onclick="window.location.href='../MntElementos_consulta/index.php'"
                              onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
                             <div class="card-body pd-25 d-flex flex-column justify-content-center">
-                                <i class="fa fa-phone tx-50 tx-primary mg-b-10"></i>
-                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Llamadas</h6>
-                                <p class="tx-11 tx-gray-500 mg-b-0">Registro y seguimiento</p>
+                                <i class="fa fa-search tx-50 tx-primary mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Consulta de Elementos</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Búsqueda de elementos</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Contactos -->
+                    <!-- Consulta Garantías -->
                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
                         <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
-                             onclick="window.location.href='../MntContactos/index.php'"
+                             onclick="window.location.href='../Consulta_Garantias/index.php'"
                              onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
                             <div class="card-body pd-25 d-flex flex-column justify-content-center">
-                                <i class="fa fa-address-book tx-50 tx-success mg-b-10"></i>
-                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Contactos</h6>
-                                <p class="tx-11 tx-gray-500 mg-b-0">Agenda de contactos</p>
+                                <i class="fa fa-shield-alt tx-50 tx-success mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Consulta Garantías</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de garantías</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Vacaciones -->
+                    <!-- Consulta Mantenimientos -->
                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
                         <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
-                             onclick="window.location.href='../MntComercialesVacaciones/index.php'"
+                             onclick="window.location.href='../Consulta_Mantenimientos/index.php'"
                              onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
                             <div class="card-body pd-25 d-flex flex-column justify-content-center">
-                                <i class="fa fa-calendar-times tx-50 tx-warning mg-b-10"></i>
-                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Vacaciones</h6>
-                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de vacaciones</p>
+                                <i class="fa fa-tools tx-50 tx-warning mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Consulta Mantenimientos</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Gestión de mantenimientos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- row -->
+
+                <!-- Sección 2: DOCUMENTACIÓN -->
+                <div class="row mg-b-30 mg-t-40">
+                    <div class="col-12">
+                        <h5 class="tx-gray-800 mg-b-20">
+                            <i class="fa fa-folder-open"></i> Documentación
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row row-sm">
+                    
+                    <!-- Gestor Documental Técnico -->
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
+                             onclick="window.location.href='../Documento/index_tecnico.php'"
+                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                            <div class="card-body pd-25 d-flex flex-column justify-content-center">
+                                <i class="fa fa-file-alt tx-50 tx-info mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Gestor Documental Técnico</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Documentos técnicos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- row -->
+
+                <!-- Sección 3: INFORMES -->
+                <div class="row mg-b-30 mg-t-40">
+                    <div class="col-12">
+                        <h5 class="tx-gray-800 mg-b-20">
+                            <i class="fa fa-clipboard-list"></i> Informes
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row row-sm">
+                    
+                    <!-- Calendario Garantías -->
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
+                             onclick="window.location.href='../Informe_vigencia/index.php'"
+                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                            <div class="card-body pd-25 d-flex flex-column justify-content-center">
+                                <i class="fa fa-calendar-check tx-50 tx-purple mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Calendario Garantías</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Planificación garantías</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendario Mantenimientos -->
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mg-b-20">
+                        <div class="card shadow-base bd-0 text-center h-100" style="cursor: pointer; transition: all 0.3s; border-radius: 8px; min-height: 180px;" 
+                             onclick="window.location.href='../Informe_mantenimiento/index.php'"
+                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                            <div class="card-body pd-25 d-flex flex-column justify-content-center">
+                                <i class="fa fa-calendar-alt tx-50 tx-danger mg-b-10"></i>
+                                <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-semibold mg-b-5">Calendario Mantenimientos</h6>
+                                <p class="tx-11 tx-gray-500 mg-b-0">Planificación mantenimientos</p>
                             </div>
                         </div>
                     </div>

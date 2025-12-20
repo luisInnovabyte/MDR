@@ -38,6 +38,11 @@ class CalendarioPresupuestos {
         document.getElementById('btnToday').addEventListener('click', () => {
             this.goToToday();
         });
+        
+        // Botón exportar PDF
+        document.getElementById('btnExportPDF').addEventListener('click', () => {
+            this.exportToPDF();
+        });
     }
     
     previousMonth() {
@@ -325,6 +330,38 @@ $('#modalDetalleElemento').modal('show');
     console.log('✅ Modal abierto');
 }
 
+    /**
+     * Exportar calendario a PDF
+     */
+    exportToPDF() {
+        console.log('Exportando a PDF...');
+        
+        // Crear formulario temporal para enviar datos via POST
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '../../controller/informe_presupuestos.php?op=generar_pdf';
+        form.target = '_blank'; // Abrir en nueva pestaña
+        
+        // Añadir campos del mes y año actual
+        const monthInput = document.createElement('input');
+        monthInput.type = 'hidden';
+        monthInput.name = 'month';
+        monthInput.value = this.currentDate.getMonth() + 1; // JavaScript usa 0-11
+        form.appendChild(monthInput);
+        
+        const yearInput = document.createElement('input');
+        yearInput.type = 'hidden';
+        yearInput.name = 'year';
+        yearInput.value = this.currentDate.getFullYear();
+        form.appendChild(yearInput);
+        
+        // Añadir formulario al DOM, enviarlo y eliminarlo
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+        
+        console.log('✅ Formulario enviado para generar PDF');
+    }
 
 }
 

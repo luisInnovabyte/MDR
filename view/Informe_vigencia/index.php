@@ -1,7 +1,7 @@
 <!-- ---------------------- -->
     <!--   Comprobar permisos     -->
     <!-- ---------------------- -->
-<?php $moduloActual = 'usuarios'; ?>
+<?php $moduloActual = 'area_tecnica'; ?>
 <?php require_once('../../config/template/verificarPermiso.php'); ?>
 
 <!DOCTYPE html>
@@ -108,6 +108,12 @@
                             <button type="button" class="btn btn-outline-primary btn-sm" id="btnToday">
                                 <i class="fas fa-calendar-day me-1"></i>
                                 Hoy
+                            </button>
+                        </div>
+                        <div class="col-auto ms-auto">
+                            <button type="button" class="btn btn-danger btn-sm" id="btnExportPDF">
+                                <i class="fas fa-file-pdf me-1"></i>
+                                Exportar PDF
                             </button>
                         </div>
                     </div>
