@@ -11,6 +11,12 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     
+    <!-- Marked.js para renderizar Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- GitHub Markdown CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown.min.css">
+    
     <style>
         body {
             background-color: #f8f9fa;
@@ -88,7 +94,7 @@
                 <i class="fas fa-book"></i> 
                 Directorio de Documentación - MarkDown -
             </h1>
-            <span class="badge bg-primary">12 documentos</span>
+            <span class="badge bg-primary">14 documentos</span>
         </div>
         
         <table class="table table-bordered table-hover">
@@ -220,6 +226,66 @@
                 </tr>
                 <tr>
                     <td>
+                        <span class="doc-name">impresion_pdf.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 20/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Exportación a PDF/Impresión</strong>
+                        <p class="mb-1 text-muted">
+                            Guía completa para implementar la funcionalidad de exportación a PDF en informes y listados del sistema MDR ERP Manager
+                        </p>
+                        <span class="badge bg-primary">PDF</span>
+                        <span class="badge bg-info">Informes</span>
+                        <span class="badge bg-success">Exportación</span>
+                    </td>
+                    <td class="text-center">
+                        <img 
+                            src="img/impresion_pdf.png" 
+                            alt="Preview exportación PDF" 
+                            class="doc-image"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalImpresionPDF"
+                            title="Click para ampliar"
+                        >
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="doc-name">IMPLEMENTACION_AREA_TECNICA.md</span>
+                        <br>
+                        <small class="text-muted">
+                            <i class="far fa-calendar-alt"></i> 20/12/2025
+                        </small>
+                    </td>
+                    <td>
+                        <strong>Implementación del Área Técnica</strong>
+                        <p class="mb-1 text-muted">
+                            Se ha implementado un nuevo <strong>módulo de Área Técnica</strong> con su propio rol de usuario y sección en el menú principal. Esta implementación permite una mejor organización de las funcionalidades técnicas del sistema.
+                        </p>
+                        <p class="mb-1 text-muted" style="font-size: 0.9rem;">
+                            <i class="fas fa-info-circle"></i> Para comprender el sistema de control de usuarios, consultar <code>control-accesos-roles.md</code>
+                        </p>
+                        <span class="badge bg-success">Implementación</span>
+                        <span class="badge bg-primary">Roles</span>
+                        <span class="badge bg-info">Permisos</span>
+                        <span class="badge bg-warning">Área Técnica</span>
+                    </td>
+                    <td class="text-center">
+                        <img 
+                            src="img/implementacion_area_tecnica.png" 
+                            alt="Preview Implementación Área Técnica" 
+                            class="doc-image"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalImplementacionAreaTecnica"
+                            title="Click para ampliar"
+                        >
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <span class="doc-name">readme-03.md</span>
                         <br>
                         <small class="text-muted">
@@ -237,10 +303,10 @@
                         <span class="badge bg-success">Documentación</span>
                     </td>
                     <td class="text-center">
-                        <div class="text-muted" style="padding: 40px 20px;">
-                            <i class="fas fa-book" style="font-size: 3rem; opacity: 0.3;"></i>
-                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
-                        </div>
+                        <button onclick="verMarkdown('readme-03.md', '03 - Backend PHP')" class="btn btn-md-viewer" style="margin-top: 20px;">
+                            <i class="fas fa-eye"></i><br>
+                            Ver documentación
+                        </button>
                     </td>
                 </tr>
                 <tr>
@@ -262,10 +328,10 @@
                         <span class="badge bg-success">Escalabilidad</span>
                     </td>
                     <td class="text-center">
-                        <div class="text-muted" style="padding: 40px 20px;">
-                            <i class="fas fa-folder-tree" style="font-size: 3rem; opacity: 0.3;"></i>
-                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
-                        </div>
+                        <button onclick="verMarkdown('estructura_carpetas.md', 'Estructura de Carpetas del Proyecto')" class="btn btn-md-viewer" style="margin-top: 20px;">
+                            <i class="fas fa-eye"></i><br>
+                            Ver documentación
+                        </button>
                     </td>
                 </tr>
                 <tr>
@@ -291,10 +357,13 @@
                         <span class="badge bg-danger">Requisitos</span>
                     </td>
                     <td class="text-center">
-                        <div class="text-muted" style="padding: 40px 20px;">
-                            <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem; opacity: 0.6;"></i>
-                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Requiere Claude Project</p>
-                        </div>
+                        <button onclick="verMarkdown('generar_tabla.md', 'Generador de Tablas SQL')" class="btn btn-md-viewer" style="margin-top: 20px;">
+                            <i class="fas fa-eye"></i><br>
+                            Ver documentación
+                        </button>
+                        <p class="mb-0 mt-2 text-warning" style="font-size: 0.75rem;">
+                            <i class="fas fa-exclamation-triangle"></i> Requiere Claude Project
+                        </p>
                     </td>
                 </tr>
                 <tr>
@@ -316,10 +385,10 @@
                         <span class="badge bg-secondary">Abstracción</span>
                     </td>
                     <td class="text-center">
-                        <div class="text-muted" style="padding: 40px 20px;">
-                            <i class="fas fa-layer-group" style="font-size: 3rem; opacity: 0.3;"></i>
-                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
-                        </div>
+                        <button onclick="verMarkdown('vistas.md', 'Vistas SQL del Proyecto')" class="btn btn-md-viewer" style="margin-top: 20px;">
+                            <i class="fas fa-eye"></i><br>
+                            Ver documentación
+                        </button>
                     </td>
                 </tr>
                 <tr>
@@ -341,10 +410,10 @@
                         <span class="badge bg-danger">Automatización</span>
                     </td>
                     <td class="text-center">
-                        <div class="text-muted" style="padding: 40px 20px;">
-                            <i class="fas fa-bolt" style="font-size: 3rem; opacity: 0.3;"></i>
-                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
-                        </div>
+                        <button onclick="verMarkdown('disparadores.md', 'Disparadores (Triggers) SQL')" class="btn btn-md-viewer" style="margin-top: 20px;">
+                            <i class="fas fa-eye"></i><br>
+                            Ver documentación
+                        </button>
                     </td>
                 </tr>
                 <tr>
@@ -367,10 +436,10 @@
                         <span class="badge bg-info">JSON</span>
                     </td>
                     <td class="text-center">
-                        <div class="text-muted" style="padding: 40px 20px;">
-                            <i class="fas fa-database" style="font-size: 3rem; opacity: 0.3;"></i>
-                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
-                        </div>
+                        <button onclick="verMarkdown('conexion_bd.md', 'Conexión a Base de Datos PDO')" class="btn btn-md-viewer" style="margin-top: 20px;">
+                            <i class="fas fa-eye"></i><br>
+                            Ver documentación
+                        </button>
                     </td>
                 </tr>
                 <tr>
@@ -392,10 +461,10 @@
                         <span class="badge bg-primary">PDO</span>
                     </td>
                     <td class="text-center">
-                        <div class="text-muted" style="padding: 40px 20px;">
-                            <i class="fas fa-file-code" style="font-size: 3rem; opacity: 0.3;"></i>
-                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
-                        </div>
+                        <button onclick="verMarkdown('models.md', 'Modelos (Models) - Patrón MVC')" class="btn btn-md-viewer" style="margin-top: 20px;">
+                            <i class="fas fa-eye"></i><br>
+                            Ver documentación
+                        </button>
                     </td>
                 </tr>                <tr>
                     <td>
@@ -416,10 +485,10 @@
                         <span class="badge bg-secondary">JSON</span>
                     </td>
                     <td class="text-center">
-                        <div class="text-muted" style="padding: 40px 20px;">
-                            <i class="fas fa-file-code" style="font-size: 3rem; opacity: 0.3;"></i>
-                            <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sin previsualización</p>
-                        </div>
+                        <button onclick="verMarkdown('controller.md', 'Controllers - Patrón MVC')" class="btn btn-md-viewer" style="margin-top: 20px;">
+                            <i class="fas fa-eye"></i><br>
+                            Ver documentación
+                        </button>
                     </td>
                 </tr>            </tbody>
         </table>
@@ -447,8 +516,11 @@
                     <img src="img/arriba_abajo_preview.png" alt="Botones flotantes" class="img-fluid">
                 </div>
                 <div class="modal-footer">
-                    <a href="../docs/arribaabajo.md" class="btn btn-primary" target="_blank">
-                        <i class="fas fa-file-code"></i> Ver documentación completa
+                    <button onclick="verMarkdown('arribaabajo.md', 'Documentación arribaabajo.md')" class="btn btn-md-viewer" data-bs-dismiss="modal">
+                        <i class="fas fa-eye"></i> Ver documentación renderizada
+                    </button>
+                    <a href="../docs/arribaabajo.md" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-download"></i> Descargar archivo
                     </a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
@@ -471,8 +543,11 @@
                     <img src="img/cabecera_informacion.png" alt="Cabecera de información" class="img-fluid">
                 </div>
                 <div class="modal-footer">
-                    <a href="../docs/cabecera_informacion.md" class="btn btn-primary" target="_blank">
-                        <i class="fas fa-file-code"></i> Ver documentación completa
+                    <button onclick="verMarkdown('cabecera_informacion.md', 'Documentación cabecera_informacion.md')" class="btn btn-md-viewer" data-bs-dismiss="modal">
+                        <i class="fas fa-eye"></i> Ver documentación renderizada
+                    </button>
+                    <a href="../docs/cabecera_informacion.md" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-download"></i> Descargar archivo
                     </a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
@@ -495,8 +570,11 @@
                     <img src="img/campo_boton_editar_nuevo.png" alt="Campo select con botones" class="img-fluid">
                 </div>
                 <div class="modal-footer">
-                    <a href="../docs/campo_boton_editar_nuevo.md" class="btn btn-primary" target="_blank">
-                        <i class="fas fa-file-code"></i> Ver documentación completa
+                    <button onclick="verMarkdown('campo_boton_editar_nuevo.md', 'Documentación campo_boton_editar_nuevo.md')" class="btn btn-md-viewer" data-bs-dismiss="modal">
+                        <i class="fas fa-eye"></i> Ver documentación renderizada
+                    </button>
+                    <a href="../docs/campo_boton_editar_nuevo.md" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-download"></i> Descargar archivo
                     </a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
@@ -519,8 +597,94 @@
                     <img src="img/desbordamiento_columna.png" alt="Desbordamiento de columna" class="img-fluid">
                 </div>
                 <div class="modal-footer">
-                    <a href="../docs/desbordamiento_columna.md" class="btn btn-primary" target="_blank">
-                        <i class="fas fa-file-code"></i> Ver documentación completa
+                    <button onclick="verMarkdown('desbordamiento_columna.md', 'Documentación desbordamiento_columna.md')" class="btn btn-md-viewer" data-bs-dismiss="modal">
+                        <i class="fas fa-eye"></i> Ver documentación renderizada
+                    </button>
+                    <a href="../docs/desbordamiento_columna.md" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-download"></i> Descargar archivo
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para impresion_pdf.md -->
+    <div class="modal fade" id="modalImpresionPDF" tabindex="-1" aria-labelledby="modalImpresionPDFLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalImpresionPDFLabel">
+                        <i class="fas fa-file-pdf"></i> 
+                        impresion_pdf.md - Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="img/impresion_pdf.png" alt="Exportación a PDF" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <button onclick="verMarkdown('impresion_pdf.md', 'Documentación impresion_pdf.md')" class="btn btn-md-viewer" data-bs-dismiss="modal">
+                        <i class="fas fa-eye"></i> Ver documentación renderizada
+                    </button>
+                    <a href="../docs/impresion_pdf.md" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-download"></i> Descargar archivo
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para IMPLEMENTACION_AREA_TECNICA.md -->
+    <div class="modal fade" id="modalImplementacionAreaTecnica" tabindex="-1" aria-labelledby="modalImplementacionAreaTecnicaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalImplementacionAreaTecnicaLabel">
+                        <i class="fas fa-tools"></i> 
+                        IMPLEMENTACION_AREA_TECNICA.md - Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="img/implementacion_area_tecnica.png" alt="Implementación Área Técnica" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <button onclick="verMarkdown('IMPLEMENTACION_AREA_TECNICA.md', 'Implementación Área Técnica')" class="btn btn-md-viewer" data-bs-dismiss="modal">
+                        <i class="fas fa-eye"></i> Ver documentación renderizada
+                    </button>
+                    <a href="../docs/IMPLEMENTACION_AREA_TECNICA.md" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-download"></i> Descargar archivo
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para visualizar Markdown -->
+    <div class="modal fade" id="modalMarkdownViewer" tabindex="-1" aria-labelledby="modalMarkdownViewerLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalMarkdownViewerLabel">
+                        <i class="fas fa-file-code"></i> 
+                        <span id="markdownFileName"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="markdownModalBody">
+                    <div class="spinner-container" id="markdownSpinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                    <div id="markdownContent" class="markdown-body" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <a id="markdownDownloadLink" href="#" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-download"></i> Descargar archivo original
                     </a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
@@ -530,5 +694,52 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para visualizar Markdown -->
+    <script>
+        function verMarkdown(archivoMd, titulo) {
+            // Actualizar título del modal
+            document.getElementById('markdownFileName').textContent = titulo || archivoMd;
+            
+            // Actualizar enlace de descarga
+            document.getElementById('markdownDownloadLink').href = '../docs/' + archivoMd;
+            
+            // Mostrar spinner y ocultar contenido
+            document.getElementById('markdownSpinner').style.display = 'flex';
+            document.getElementById('markdownContent').style.display = 'none';
+            
+            // Abrir modal
+            const modal = new bootstrap.Modal(document.getElementById('modalMarkdownViewer'));
+            modal.show();
+            
+            // Cargar y renderizar el archivo Markdown
+            fetch('../docs/' + archivoMd)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar el archivo: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(markdown => {
+                    // Renderizar Markdown a HTML
+                    const html = marked.parse(markdown);
+                    
+                    // Mostrar contenido y ocultar spinner
+                    document.getElementById('markdownContent').innerHTML = html;
+                    document.getElementById('markdownSpinner').style.display = 'none';
+                    document.getElementById('markdownContent').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('markdownContent').innerHTML = 
+                        '<div class="alert alert-danger" role="alert">' +
+                        '<i class="fas fa-exclamation-triangle"></i> ' +
+                        '<strong>Error al cargar el archivo:</strong> ' + error.message +
+                        '</div>';
+                    document.getElementById('markdownSpinner').style.display = 'none';
+                    document.getElementById('markdownContent').style.display = 'block';
+                });
+        }
+    </script>
 </body>
 </html>
