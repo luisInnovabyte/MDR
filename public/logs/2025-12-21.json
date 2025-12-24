@@ -1,0 +1,122 @@
+[
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 11:46:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 11:46:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 4 contactos del cliente ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 11:46:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 11:46:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "cliente.php",
+        "actividad": "Obtener cliente seleccionado",
+        "mensaje": "Cliente obtenido exitosamente ",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 11:46:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Clientes_contacto",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el contacto cliente con ID: 6",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 11:47:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Actualizar contacto cliente",
+        "mensaje": "Contacto cliente actualizado exitosamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 11:47:01"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "clientes_contacto.php",
+        "actividad": "Listar contactos por cliente",
+        "mensaje": "Se listaron 4 contactos del cliente ID: 4",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 11:47:01"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 19:59:37"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 19:59:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "tipodocumento.php",
+        "actividad": "Listar tipos de documento",
+        "mensaje": "Tipos de documento listados correctamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 19:59:46"
+    },
+    {
+        "usuario": "system",
+        "pantalla": "Presupuesto",
+        "actividad": "get_presupuestos_por_mes",
+        "mensaje": "Presupuestos obtenidos para mes 12\/2025: 5 registros",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 19:59:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=12, Año=2025, Registros encontrados: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 20:00:07"
+    },
+    {
+        "usuario": "system",
+        "pantalla": "Presupuesto",
+        "actividad": "get_presupuestos_por_mes",
+        "mensaje": "Presupuestos obtenidos para mes 12\/2025: 5 registros",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 20:00:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-12-21 20:02:42"
+    }
+]

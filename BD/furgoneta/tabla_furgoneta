@@ -1,0 +1,105 @@
+
+-- ========================================================
+-- TABLA: furgoneta (CORREGIDA - SIN DATOS REDUNDANTES)
+-- DESCRIPCIÓN: Gestión de vehículos de la empresa (furgonetas)
+-- FECHA: 2024-12-20
+-- ========================================================
+
+CREATE TABLE furgoneta (
+    id_furgoneta INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    -- =====================================================
+    -- IDENTIFICACIÓN DEL VEHÍCULO
+    -- =====================================================
+    matricula_furgoneta VARCHAR(20) NOT NULL UNIQUE
+        COMMENT 'Matrícula del vehículo',
+    
+    marca_furgoneta VARCHAR(100)
+        COMMENT 'Marca del vehículo (Renault, Mercedes, Ford, etc.)',
+    
+    modelo_furgoneta VARCHAR(100)
+        COMMENT 'Modelo del vehículo (Master, Sprinter, Transit, etc.)',
+    
+    anio_furgoneta INT
+        COMMENT 'Año de fabricación',
+    
+    numero_bastidor_furgoneta VARCHAR(50)
+        COMMENT 'Número de bastidor/chasis (VIN)',
+    
+    -- =====================================================
+    -- CONFIGURACIÓN DE MANTENIMIENTO
+    -- =====================================================
+    kilometros_entre_revisiones_furgoneta INT UNSIGNED DEFAULT 10000
+        COMMENT 'Kilómetros entre revisiones preventivas (ej: 10000 km)',
+    
+    -- =====================================================
+    -- ITV Y SEGUROS
+    -- =====================================================
+    fecha_proxima_itv_furgoneta DATE
+        COMMENT 'Fecha de vencimiento de la ITV',
+    
+    fecha_vencimiento_seguro_furgoneta DATE
+        COMMENT 'Fecha de vencimiento del seguro',
+    
+    compania_seguro_furgoneta VARCHAR(255)
+        COMMENT 'Compañía aseguradora',
+    
+    numero_poliza_seguro_furgoneta VARCHAR(100)
+        COMMENT 'Número de póliza del seguro',
+    
+    -- =====================================================
+    -- CAPACIDAD Y CARACTERÍSTICAS
+    -- =====================================================
+    capacidad_carga_kg_furgoneta DECIMAL(10,2)
+        COMMENT 'Capacidad de carga en kilogramos',
+    
+    capacidad_carga_m3_furgoneta DECIMAL(10,2)
+        COMMENT 'Capacidad de carga en metros cúbicos',
+    
+    -- =====================================================
+    -- CONSUMO Y COMBUSTIBLE
+    -- =====================================================
+    tipo_combustible_furgoneta VARCHAR(50)
+        COMMENT 'Tipo de combustible (Diesel, Gasolina, Eléctrico, Híbrido)',
+    
+    consumo_medio_furgoneta DECIMAL(5,2)
+        COMMENT 'Consumo medio en L/100km',
+    
+    -- =====================================================
+    -- MANTENIMIENTO
+    -- =====================================================
+    taller_habitual_furgoneta VARCHAR(255)
+        COMMENT 'Taller donde se realizan los mantenimientos habitualmente',
+    
+    telefono_taller_furgoneta VARCHAR(50)
+        COMMENT 'Teléfono del taller habitual',
+    
+    -- =====================================================
+    -- ESTADO Y OBSERVACIONES
+    -- =====================================================
+    estado_furgoneta ENUM('operativa', 'taller', 'baja') DEFAULT 'operativa'
+        COMMENT 'Estado actual del vehículo',
+    
+    observaciones_furgoneta TEXT
+        COMMENT 'Observaciones generales sobre el vehículo',
+    
+    -- =====================================================
+    -- CONTROL
+    -- =====================================================
+    activo_furgoneta BOOLEAN DEFAULT TRUE
+        COMMENT 'TRUE: Vehículo activo | FALSE: Vehículo dado de baja',
+    
+    created_at_furgoneta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    updated_at_furgoneta TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- =====================================================
+    -- ÍNDICES
+    -- =====================================================
+    INDEX idx_matricula_furgoneta (matricula_furgoneta),
+    INDEX idx_estado_furgoneta (estado_furgoneta),
+    INDEX idx_activo_furgoneta (activo_furgoneta),
+    INDEX idx_fecha_proxima_itv (fecha_proxima_itv_furgoneta)
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 
+COMMENT='Vehículos de la empresa (furgonetas de transporte)';

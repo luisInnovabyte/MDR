@@ -1,0 +1,97 @@
+-- ========================================================
+-- TABLA: furgoneta_mantenimiento
+-- DESCRIPCIÓN: Historial de mantenimientos, reparaciones e ITV
+-- FECHA: 2024-12-20
+-- ========================================================
+
+CREATE TABLE furgoneta_mantenimiento (
+    id_mantenimiento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    -- =====================================================
+    -- RELACIÓN CON FURGONETA
+    -- =====================================================
+    id_furgoneta INT UNSIGNED NOT NULL
+        COMMENT 'Furgoneta a la que pertenece este mantenimiento',
+    
+    -- =====================================================
+    -- DATOS DEL MANTENIMIENTO
+    -- =====================================================
+    fecha_mantenimiento DATE NOT NULL
+        COMMENT 'Fecha en que se realizó el mantenimiento',
+    
+    tipo_mantenimiento ENUM('revision', 'reparacion', 'itv', 'neumaticos', 'otros') NOT NULL
+        COMMENT 'Tipo de mantenimiento realizado',
+    
+    descripcion_mantenimiento TEXT NOT NULL
+        COMMENT 'Descripción detallada del trabajo realizado',
+    
+    kilometraje_mantenimiento INT UNSIGNED
+        COMMENT 'Kilometraje del vehículo en el momento del mantenimiento',
+    
+    -- =====================================================
+    -- DATOS ECONÓMICOS
+    -- =====================================================
+    costo_mantenimiento DECIMAL(10,2) DEFAULT 0.00
+        COMMENT 'Coste total del mantenimiento/reparación',
+    
+    numero_factura_mantenimiento VARCHAR(100)
+        COMMENT 'Número de factura del taller',
+    
+    -- =====================================================
+    -- TALLER
+    -- =====================================================
+    taller_mantenimiento VARCHAR(255)
+        COMMENT 'Nombre del taller que realizó el trabajo',
+    
+    telefono_taller_mantenimiento VARCHAR(50)
+        COMMENT 'Teléfono del taller',
+    
+    direccion_taller_mantenimiento VARCHAR(255)
+        COMMENT 'Dirección del taller',
+    
+    -- =====================================================
+    -- RESULTADO (para ITV)
+    -- =====================================================
+    resultado_itv ENUM('favorable', 'desfavorable', 'negativa')
+        COMMENT 'Resultado de la ITV (solo si tipo_mantenimiento = itv)',
+    
+    fecha_proxima_itv DATE
+        COMMENT 'Nueva fecha de ITV (si aplica)',
+    
+    -- =====================================================
+    -- INFORMACIÓN ADICIONAL
+    -- =====================================================
+    garantia_hasta_mantenimiento DATE
+        COMMENT 'Fecha hasta la que cubre la garantía del trabajo',
+    
+    observaciones_mantenimiento TEXT
+        COMMENT 'Observaciones adicionales sobre el mantenimiento',
+    
+    -- =====================================================
+    -- CONTROL
+    -- =====================================================
+    activo_mantenimiento BOOLEAN DEFAULT TRUE
+        COMMENT 'TRUE: Registro activo | FALSE: Registro anulado',
+    
+    created_at_mantenimiento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    updated_at_mantenimiento TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- =====================================================
+    -- RESTRICCIONES DE CLAVE FORÁNEA
+    -- =====================================================
+    CONSTRAINT fk_mantenimiento_furgoneta FOREIGN KEY (id_furgoneta) 
+        REFERENCES furgoneta(id_furgoneta) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    -- =====================================================
+    -- ÍNDICES
+    -- =====================================================
+    INDEX idx_id_furgoneta_mantenimiento (id_furgoneta),
+    INDEX idx_fecha_mantenimiento (fecha_mantenimiento),
+    INDEX idx_tipo_mantenimiento (tipo_mantenimiento),
+    INDEX idx_activo_mantenimiento (activo_mantenimiento)
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 
+COMMENT='Historial de mantenimientos y reparaciones de furgonetas';

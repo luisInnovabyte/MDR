@@ -1,0 +1,458 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 08:49:27"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 08:49:27"
+    },
+    {
+        "usuario": "system",
+        "pantalla": "Presupuesto",
+        "actividad": "get_presupuestos_por_mes",
+        "mensaje": "Presupuestos obtenidos para mes 12\/2025: 5 registros",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:30:50"
+    },
+    {
+        "usuario": "system",
+        "pantalla": "Presupuesto",
+        "actividad": "get_presupuestos_por_mes",
+        "mensaje": "Presupuestos obtenidos para mes 12\/2025: 5 registros",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:30:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "informe_presupuestos.php",
+        "actividad": "generar_pdf",
+        "mensaje": "PDF de presupuestos generado para Diciembre 2025 - Total registros: 5, Importe: 0.00€",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:30:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=12, Año=2025, Registros encontrados: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:31:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=12, Año=2025, Registros encontrados: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:31:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "informe_garantias.php",
+        "actividad": "generar_pdf",
+        "mensaje": "PDF de garantías generado para Diciembre 2025 - Total registros: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:31:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=1, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:26"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=2, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=3, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=4, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=5, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=6, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=5, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=4, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Elemento",
+        "actividad": "getWarrantyEvents",
+        "mensaje": "Consulta ejecutada: Mes=3, Año=2026, Registros encontrados: 0",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:30"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Llamadas",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de llamadas",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Contactos",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de contactos con fecha de visita cerrada",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Vacaciones",
+        "actividad": "Consulta",
+        "mensaje": "Se consultó el listado de vacaciones",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 09:32:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "insert_furgoneta",
+        "mensaje": "Furgoneta creada con ID: 1 - Matrícula: 123-ABC",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 10:09:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Furgoneta guardada exitosamente con ID: 1 - Matrícula: 123-ABC",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 10:09:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 10:10:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 10:16:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 10:16:24"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "update_furgoneta",
+        "mensaje": "Furgoneta actualizada ID: 1 - Matrícula: 123-ABC",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 10:16:42"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Furgoneta actualizada exitosamente ID: 1 - Matrícula: 123-ABC",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 10:16:42"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 11:48:27"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 11:48:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "delete_furgonetaxid",
+        "mensaje": "Furgoneta desactivada ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:00:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "eliminar",
+        "mensaje": "Furgoneta eliminada exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:00:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "estadisticas",
+        "mensaje": "Estadísticas obtenidas correctamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:00:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "activar_furgonetaxid",
+        "mensaje": "Furgoneta activada ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:00:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "activar",
+        "mensaje": "Furgoneta activada exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:00:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "estadisticas",
+        "mensaje": "Estadísticas obtenidas correctamente",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:00:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "insert_furgoneta",
+        "mensaje": "Furgoneta creada con ID: 2 - Matrícula: ABCD - 1254444",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:02:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Furgoneta guardada exitosamente con ID: 2 - Matrícula: ABCD - 1254444",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:02:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:35:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 2",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:35:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "update_furgoneta",
+        "mensaje": "Furgoneta actualizada ID: 2 - Matrícula: ABCD - 1254444",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:35:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Furgoneta actualizada exitosamente ID: 2 - Matrícula: ABCD - 1254444",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:35:39"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:35:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "update_furgoneta",
+        "mensaje": "Furgoneta actualizada ID: 1 - Matrícula: 123-ABC",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:36:10"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Furgoneta actualizada exitosamente ID: 1 - Matrícula: 123-ABC",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 12:36:10"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 17:42:35"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 17:42:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "insert_furgoneta",
+        "mensaje": "Furgoneta creada con ID: 3 - Matrícula: SDFSDFSDFSDF",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 19:01:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Furgoneta guardada exitosamente con ID: 3 - Matrícula: SDFSDFSDFSDF",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 19:01:18"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 19:01:27"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 3",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 19:01:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 19:08:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta",
+        "actividad": "update_furgoneta",
+        "mensaje": "Furgoneta actualizada ID: 1 - Matrícula: 123-ABC",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 19:34:19"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Furgoneta actualizada exitosamente ID: 1 - Matrícula: 123-ABC",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 19:34:19"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 19:59:11"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 20:06:56"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 20:06:56"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-23 20:09:53"
+    }
+]

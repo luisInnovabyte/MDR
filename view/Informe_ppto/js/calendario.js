@@ -257,11 +257,10 @@ showEventDetails(evento) {
     const p = evento.extendedProps || {};
 
     
-
 document.getElementById('modalIdPresupuesto').textContent = p.id_presupuesto || '-';
 document.getElementById('modalNumeroPresupuesto').textContent = p.numero_presupuesto || '-';
-document.getElementById('modalFechaPresupuesto').textContent = p.fecha_presupuesto || '-';
-document.getElementById('modalFechaValidezPresupuesto').textContent = p.fecha_validez_presupuesto || '-';
+document.getElementById('modalFechaPresupuesto').textContent = formatearFechaES(p.fecha_presupuesto);
+document.getElementById('modalFechaValidezPresupuesto').textContent = formatearFechaES(p.fecha_validez_presupuesto);
 document.getElementById('modalEstadoValidezPresupuesto').textContent = p.estado_validez_presupuesto || '-';
 document.getElementById('modalPrioridadPresupuesto').textContent = p.prioridad_presupuesto || '-';
 document.getElementById('modalImportePresupuesto').textContent = (p.total_presupuesto ?? 0) + ' €';
@@ -270,8 +269,8 @@ document.getElementById('modalNombreEstado').textContent = p.nombre_estado || '-
 
 // Evento
 document.getElementById('modalNombreEvento').textContent = p.nombre_evento || '-';
-document.getElementById('modalFechaInicioEvento').textContent = p.fecha_inicio_evento || '-';
-document.getElementById('modalFechaFinEvento').textContent = p.fecha_fin_evento || '-';
+document.getElementById('modalFechaInicioEvento').textContent = formatearFechaES(p.fecha_inicio_evento);
+document.getElementById('modalFechaFinEvento').textContent = formatearFechaES(p.fecha_fin_evento);
 document.getElementById('modalDuracionEvento').textContent = p.duracion_evento || '-';
 document.getElementById('modalEstadoEvento').textContent = p.estado_evento || '-';
 document.getElementById('modalDireccionEvento').textContent = p.direccion_evento || '-';
@@ -297,13 +296,14 @@ document.getElementById('modalCargoContacto').textContent = p.cargo_contacto || 
 // Pago
 document.getElementById('modalTipoPago').textContent = p.tipo_pago || '-';
 document.getElementById('modalFormaPago').textContent = p.forma_pago || '-';
-document.getElementById('modalFechaVencimientoAnticipo').textContent = p.fecha_vencimiento_anticipo || '-';
-document.getElementById('modalFechaVencimientoFinal').textContent = p.fecha_vencimiento_final || '-';
+document.getElementById('modalFechaVencimientoAnticipo').textContent = formatearFechaES(p.fecha_vencimiento_anticipo);
+document.getElementById('modalFechaVencimientoFinal').textContent = formatearFechaES(p.fecha_vencimiento_final);
 
 // Observaciones
 document.getElementById('modalObsCabecera').textContent = p.obs_cabecera || '-';
 document.getElementById('modalObsPie').textContent = p.obs_pie || '-';
 document.getElementById('modalObsInternas').textContent = p.obs_internas || '-';
+
 
 // Abrir modal
 $('#modalDetalleElemento').modal('show');
@@ -373,3 +373,11 @@ document.addEventListener('DOMContentLoaded', function() {
     window.calendario = calendario;
 
 });
+
+// Función para formatear fecha en formato español (DD/MM/AAAA)
+
+function formatearFechaES(fecha) {
+    if (!fecha) return '-';
+    const f = new Date(fecha);
+    return f.toLocaleDateString('es-ES');
+}
