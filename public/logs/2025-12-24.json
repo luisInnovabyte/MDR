@@ -1,0 +1,338 @@
+[
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_registros_por_furgoneta",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:10:00"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:13:15"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:13:23"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:13:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_ultimo_registro",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:13:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:13:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "insert_registro_km",
+        "mensaje": "Registro de kilometraje creado con ID: 1 - Furgoneta: 1 - KM: 1200",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:14:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Registro de kilometraje guardado exitosamente con ID: 1 - Furgoneta ID: 1 - KM: 1200",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:14:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:14:13"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:17:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_registros_por_furgoneta",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:17:40"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_registros_por_furgoneta",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:17:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:17:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_ultimo_registro",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:17:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:17:57"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "insert_registro_km",
+        "mensaje": "Registro de kilometraje creado con ID: 2 - Furgoneta: 1 - KM: 15000",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:18:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Registro de kilometraje guardado exitosamente con ID: 2 - Furgoneta ID: 1 - KM: 15000",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:18:09"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:18:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_registros_por_furgoneta",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:18:11"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:19:35"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:19:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_registros_por_furgoneta",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:19:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 0 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:19:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_ultimo_registro",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:19:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:19:38"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "insert_registro_km",
+        "mensaje": "Intento de registrar kilometraje inferior al actual. Actual: 15000, Nuevo: 12500",
+        "tipo": "warning",
+        "fecha_hora": "2025-12-24 13:19:54"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "insert_registro_km",
+        "mensaje": "Intento de registrar kilometraje inferior al actual. Actual: 15000, Nuevo: 12500",
+        "tipo": "warning",
+        "fecha_hora": "2025-12-24 13:19:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "insert_registro_km",
+        "mensaje": "Intento de registrar kilometraje inferior al actual. Actual: 15000, Nuevo: 12500",
+        "tipo": "warning",
+        "fecha_hora": "2025-12-24 13:20:06"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "get_ultimo_registro",
+        "mensaje": "Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'toldos_db.vista_kilometraje_completo' doesn't exist",
+        "tipo": "error",
+        "fecha_hora": "2025-12-24 13:21:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:21:16"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "insert_registro_km",
+        "mensaje": "Intento de registrar kilometraje inferior al actual. Actual: 15000, Nuevo: 1200",
+        "tipo": "warning",
+        "fecha_hora": "2025-12-24 13:21:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Furgoneta_registro_kilometraje",
+        "actividad": "insert_registro_km",
+        "mensaje": "Registro de kilometraje creado con ID: 3 - Furgoneta: 1 - KM: 16000",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:24:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "guardaryeditar",
+        "mensaje": "Registro de kilometraje guardado exitosamente con ID: 3 - Furgoneta ID: 1 - KM: 16000",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:24:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:25:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:25:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 3 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:25:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:25:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:25:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 3 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:25:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:27:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:27:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 0 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-24 13:27:02"
+    }
+]

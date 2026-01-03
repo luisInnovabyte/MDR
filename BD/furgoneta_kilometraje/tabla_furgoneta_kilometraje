@@ -1,0 +1,55 @@
+-- ========================================================
+-- TABLA: furgoneta_registro_kilometraje
+-- DESCRIPCIÓN: Registro histórico de lecturas de kilometraje
+-- FECHA: 2024-12-20
+-- ========================================================
+
+CREATE TABLE furgoneta_registro_kilometraje (
+    id_registro_km INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    -- =====================================================
+    -- RELACIÓN CON FURGONETA
+    -- =====================================================
+    id_furgoneta INT UNSIGNED NOT NULL
+        COMMENT 'Furgoneta a la que pertenece este registro',
+    
+    -- =====================================================
+    -- DATOS DEL REGISTRO
+    -- =====================================================
+    fecha_registro_km DATE NOT NULL
+        COMMENT 'Fecha en que se realizó la lectura',
+    
+    kilometraje_registrado_km INT UNSIGNED NOT NULL
+        COMMENT 'Kilometraje leído en el cuentakilómetros',
+    
+    -- =====================================================
+    -- INFORMACIÓN ADICIONAL
+    -- =====================================================
+    tipo_registro_km ENUM('manual', 'revision', 'itv', 'evento') DEFAULT 'manual'
+        COMMENT 'Origen del registro: manual, revisión, ITV, evento',
+    
+    observaciones_registro_km TEXT
+        COMMENT 'Observaciones sobre este registro específico',
+    
+    -- =====================================================
+    -- CONTROL
+    -- =====================================================
+    created_at_registro_km TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- =====================================================
+    -- RESTRICCIONES DE CLAVE FORÁNEA
+    -- =====================================================
+    CONSTRAINT fk_registro_km_furgoneta FOREIGN KEY (id_furgoneta) 
+        REFERENCES furgoneta(id_furgoneta) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    -- =====================================================
+    -- ÍNDICES
+    -- =====================================================
+    INDEX idx_id_furgoneta_registro (id_furgoneta),
+    INDEX idx_fecha_registro_km (fecha_registro_km),
+    INDEX idx_tipo_registro_km (tipo_registro_km)
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 
+COMMENT='Registro histórico de kilometraje de furgonetas';

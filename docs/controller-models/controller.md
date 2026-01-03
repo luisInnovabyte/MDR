@@ -1078,6 +1078,6 @@ Este controller es representativo de la capa de control en la arquitectura MVC d
 
 ## Enlaces Relacionados
 
-- [Documentación de Models](models.md) - Estructura y métodos del modelo Presupuesto
-- [Documentación de Conexión](conexion.md) - Sistema de conexión a base de datos
-- [Estructura de Carpetas](estructura_carpetas.md) - Arquitectura general del proyecto
+- [Documentación de Models](./models.md) - Estructura y métodos del modelo Presupuesto
+- [Documentación de Prompt Models](./prompt_models.md) - Cómo generar modelos
+- [Documentación de Prompt Controller](./prompt_controller.md) - Cómo generar controllers

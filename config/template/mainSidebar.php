@@ -60,7 +60,11 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item"><a href="../MntMetodos_pago/index.php" class="sub-link">Métodos de Pago</a></li>
             <li class="sub-item"><a href="../MntFormas_Pago/index.php" class="sub-link">Formas de Pago</a></li>
             <li class="sub-item"><a href="../MntEmpresas/index.php" class="sub-link">Empresas</a></li>
+<<<<<<< HEAD
             <li class="sub-item"><a href="../_MntFamilia_unidad_datatables/index.php" class="sub-link">Empresas</a></li>
+=======
+            <li class="sub-item"><a href="../MntFurgonetas/index.php" class="sub-link">Furgonetas</a></li>
+>>>>>>> furgoneta
 
 
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
@@ -86,8 +90,6 @@ function puedeVerMenu($idRol, $modulo) {
             
             <!-- <li class="sub-item"><a href="../MntFamilia_plus/index.php" class="sub-link">Familias Plus</a></li> -->
             <!-- <li class="sub-item"><a href="../MntFamilia_unidad_datatables/index.php" class="sub-link">Familias datatables</a></li> -->
-
-
 
  
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">

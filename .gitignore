@@ -14,6 +14,25 @@ Thumbs.db
 BD/Importacion_BD_VerI/**/*.accdb
 *.accdb
 
+<<<<<<< HEAD
 # Claude AI files
 CLAUDE.md
 .claude/
+=======
+# Archivos de Claude
+CLAUDE.md
+.claude/
+
+# IDEs y editores
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+*~
+
+# Logs del sistema
+public/logs/
+public/logs/*.json
+*.log
+>>>>>>> furgoneta

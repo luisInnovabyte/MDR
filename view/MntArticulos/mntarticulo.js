@@ -60,6 +60,11 @@ $(document).ready(function () {
   ///////////////////////////////////
   var datatable_articulosConfig = {
     processing: true,
+    scrollX: true, // Habilita el desplazamiento horizontal
+    scrollCollapse: true, // Permite que la tabla se ajuste al contenedor y que el scroll se oculte cuando no es necesario
+    fixedColumns: {
+      left: 2  // Fija columnas: control (0), id_articulo oculto (1) 
+    },
     layout: {
       bottomEnd: {
         paging: {

@@ -1,0 +1,58 @@
+-- ========================================================
+-- VISTA 3: Mantenimientos con información completa
+-- ========================================================
+CREATE OR REPLACE VIEW vista_mantenimiento_completo AS
+SELECT 
+    m.id_mantenimiento,
+    m.id_furgoneta,
+    m.fecha_mantenimiento,
+    m.tipo_mantenimiento,
+    m.descripcion_mantenimiento,
+    m.kilometraje_mantenimiento,
+    m.costo_mantenimiento,
+    m.numero_factura_mantenimiento,
+    m.taller_mantenimiento,
+    m.telefono_taller_mantenimiento,
+    m.direccion_taller_mantenimiento,
+    m.resultado_itv,
+    m.fecha_proxima_itv,
+    m.garantia_hasta_mantenimiento,
+    m.observaciones_mantenimiento,
+    m.activo_mantenimiento,
+    m.created_at_mantenimiento,
+    m.updated_at_mantenimiento,
+    
+    -- Datos de la furgoneta
+    f.matricula_furgoneta,
+    f.marca_furgoneta,
+    f.modelo_furgoneta,
+    f.anio_furgoneta,
+    f.estado_furgoneta,
+    
+    -- Estado de la garantía
+    CASE 
+        WHEN m.garantia_hasta_mantenimiento IS NULL THEN 'SIN_GARANTIA'
+        WHEN m.garantia_hasta_mantenimiento < CURDATE() THEN 'GARANTIA_VENCIDA'
+        WHEN DATEDIFF(m.garantia_hasta_mantenimiento, CURDATE()) <= 30 THEN 'GARANTIA_PROXIMA'
+        ELSE 'GARANTIA_VIGENTE'
+    END AS estado_garantia,
+    
+    -- Días desde el mantenimiento
+    DATEDIFF(CURDATE(), m.fecha_mantenimiento) AS dias_desde_mantenimiento,
+    
+    -- Kilómetros recorridos desde este mantenimiento
+    CASE 
+        WHEN (SELECT MAX(kilometraje_registrado_km) 
+              FROM furgoneta_registro_kilometraje 
+              WHERE id_furgoneta = m.id_furgoneta) IS NOT NULL
+        AND m.kilometraje_mantenimiento IS NOT NULL
+        THEN (SELECT MAX(kilometraje_registrado_km) 
+              FROM furgoneta_registro_kilometraje 
+              WHERE id_furgoneta = m.id_furgoneta) - m.kilometraje_mantenimiento
+        ELSE NULL
+    END AS km_desde_mantenimiento
+
+FROM furgoneta_mantenimiento m
+INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
+WHERE m.activo_mantenimiento = 1
+ORDER BY m.fecha_mantenimiento DESC;
