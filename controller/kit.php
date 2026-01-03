@@ -52,11 +52,19 @@ if (!$op) {
 switch ($op) {
 
     case "listar":
+        // DEBUG: Log del parámetro recibido
+        $id_articulo_maestro = $_GET["id_articulo_maestro"] ?? null;
+        error_log("=== DEBUG CONTROLLER KIT ===");
+        error_log("id_articulo_maestro recibido: " . var_export($id_articulo_maestro, true));
+        error_log("GET completo: " . print_r($_GET, true));
+        
         // Verificar si se proporciona un filtro por artículo maestro
         if (isset($_GET["id_articulo_maestro"]) && !empty($_GET["id_articulo_maestro"])) {
             $datos = $kit->get_kits_by_articulo_maestro($_GET["id_articulo_maestro"]);
+            error_log("Registros obtenidos: " . count($datos));
         } else {
             $datos = $kit->get_kits();
+            error_log("Usando get_kits() - sin filtro");
         }
         
         $data = array();

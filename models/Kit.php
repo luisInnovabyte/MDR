@@ -68,7 +68,21 @@ class Kit
             $stmt->bindValue(1, $id_articulo_maestro, PDO::PARAM_INT);
             $stmt->execute();
 
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // DEBUG: Logging
+            $logMsg = sprintf(
+                "get_kits_by_articulo_maestro - ID: %s, Registros encontrados: %d",
+                $id_articulo_maestro,
+                count($resultado)
+            );
+            $this->registro->registrarActividad('admin', 'Kit', 'get_kits_by_articulo_maestro', $logMsg, 'info');
+            
+            // DEBUG adicional: Log de la consulta
+            error_log("SQL ejecutado: $sql con ID: $id_articulo_maestro");
+            error_log("Resultados: " . print_r($resultado, true));
+
+            return $resultado;
         } catch (PDOException $e) {
             $this->registro->registrarActividad(
                 'admin',

@@ -60,7 +60,7 @@ $(document).ready(function () {
             { name: 'precio_articulo_componente', data: 'precio_articulo_componente', className: "text-center" }, // Columna 5: PRECIO UNITARIO
             { name: 'subtotal_componente', data: 'subtotal_componente', className: "text-center" }, // Columna 6: SUBTOTAL
             { name: 'activo_kit', data: 'activo_kit', className: "text-center" }, // Columna 7: ACTIVO
-            { name: 'eliminar', data: null, className: "text-center" }, // Columna 8: ELIMINAR
+            { name: 'activar', data: null, className: "text-center" }, // Columna 8: ACTIVAR/DESACTIVAR
             { name: 'editar', data: null, defaultContent: '', className: "text-center" }  // Columna 9: EDITAR
         ],
         columnDefs: [
@@ -116,14 +116,23 @@ $(document).ready(function () {
                     return data;
                 }
             },
-            // Columna 8: BOTON PARA ELIMINAR COMPONENTE
+            // Columna 8: BOTON PARA ACTIVAR/DESACTIVAR COMPONENTE
             {
-                targets: "eliminar:name", width: '8%', searchable: false, orderable: false, class: "text-center",
+                targets: "activar:name", width: '8%', searchable: false, orderable: false, class: "text-center",
                 render: function (data, type, row) {
-                    return `<button type="button" class="btn btn-danger btn-sm eliminarComponente" data-bs-toggle="tooltip" data-placement="top" title="Eliminar componente" 
-                             data-id_kit="${row.id_kit}" data-nombre="${row.nombre_articulo_componente}"> 
+                    if (row.activo_kit == 1) {
+                        // Permitir desactivar el componente
+                        return `<button type="button" class="btn btn-danger btn-sm desacKit" data-bs-toggle="tooltip-primary" data-placement="top" title="Desactivar" data-original-title="Tooltip on top" 
+                             data-id_kit="${row.id_kit}"> 
                              <i class="fa-solid fa-trash"></i>
                              </button>`;
+                    } else {
+                        // Permitir activar de nuevo el componente
+                        return `<button class="btn btn-success btn-sm activarKit" data-bs-toggle="tooltip-primary" data-placement="top" title="Activar" data-original-title="Tooltip on top" 
+                             data-id_kit="${row.id_kit}">
+                             <i class="bi bi-hand-thumbs-up-fill"></i>
+                            </button>`;
+                    }
                 }
             },
             // Columna 9: BOTON PARA EDITAR COMPONENTE
@@ -141,11 +150,22 @@ $(document).ready(function () {
             url: '../../controller/kit.php?op=listar',
             type: 'GET',
             data: function() {
+                console.log('===== DEBUG AJAX REQUEST =====');
+                console.log('id_articulo_maestro enviado:', idArticuloMaestro);
+                console.log('URL base:', '../../controller/kit.php?op=listar');
+                console.log('==============================');
                 return {
                     id_articulo_maestro: idArticuloMaestro
                 };
             },
-            dataSrc: 'data',
+            dataSrc: function(json) {
+                console.log('===== DEBUG DATOS RECIBIDOS =====');
+                console.log('JSON completo:', json);
+                console.log('Total registros:', json.data ? json.data.length : 0);
+                console.log('Datos:', json.data);
+                console.log('================================');
+                return json.data || [];
+            },
             error: function (xhr, error, code) {
                 console.error('Error al cargar componentes del kit:', error);
                 console.error('Código:', code);
@@ -503,58 +523,80 @@ $(document).ready(function () {
         });
     });
 
-    // Evento: Eliminar componente
-    $(document).on('click', '.eliminarComponente', function() {
-        const idKit = $(this).data('id_kit');
-        const nombreComponente = $(this).data('nombre');
-        
+    /////////////////////////////////////
+    //   INICIO ZONA DESACTIVAR KIT    //
+    ///////////////////////////////////
+    function desacKit(id) {
         Swal.fire({
-            title: '¿Estás seguro?',
-            text: `¿Deseas eliminar el componente "${nombreComponente}" del KIT?`,
-            icon: 'warning',
+            title: 'Desactivar',
+            html: `¿Desea desactivar el componente con ID ${id}?<br><br><small class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>Esto desactivará este componente del KIT</small>`,
+            icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: '../../controller/kit.php?op=eliminar',
-                    type: 'POST',
-                    data: { id_kit: idKit },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Eliminado',
-                                text: response.message,
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                            table.ajax.reload();
-                            actualizarTotalesKit(idArticuloMaestro);
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message
-                            });
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error al eliminar:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Error de comunicación con el servidor'
-                        });
-                    }
+                $.post("../../controller/kit.php?op=desactivar", { id_kit: id }, function (data) {
+                    table.ajax.reload();
+                    actualizarTotalesKit(idArticuloMaestro);
+                    Swal.fire(
+                        'Desactivado',
+                        'El componente ha sido desactivado',
+                        'success'
+                    )
                 });
             }
-        });
+        })
+    }
+
+    // CAPTURAR EL CLICK EN EL BOTÓN DE DESACTIVAR
+    $(document).on('click', '.desacKit', function (event) {
+        event.preventDefault();
+        let id = $(this).data('id_kit');
+        desacKit(id);
     });
+    ////////////////////////////////////
+    //   FIN ZONA DESACTIVAR KIT      //
+    //////////////////////////////////
+
+    ///////////////////////////////////////
+    //   INICIO ZONA ACTIVAR KIT         //
+    /////////////////////////////////////
+    function activarKit(id) {
+        Swal.fire({
+            title: 'Activar',
+            text: `¿Desea activar el componente con ID ${id}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post("../../controller/kit.php?op=activar", { id_kit: id }, function (data) {
+                    table.ajax.reload();
+                    actualizarTotalesKit(idArticuloMaestro);
+                    Swal.fire(
+                        'Activado',
+                        'El componente ha sido activado',
+                        'success'
+                    )
+                });
+            }
+        })
+    }
+
+    // CAPTURAR EL CLICK EN EL BOTÓN DE ACTIVAR
+    $(document).on('click', '.activarKit', function (event) {
+        event.preventDefault();
+        let id = $(this).data('id_kit');
+        console.log("id kit:",id);
+        activarKit(id);
+    });
+    ////////////////////////////////////
+    //   FIN ZONA ACTIVAR KIT         //
+    //////////////////////////////////
 
     // Inicializar tooltips
     $('[data-bs-toggle="tooltip"]').tooltip();

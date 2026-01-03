@@ -5790,5 +5790,4 @@ SELECT
 
 FROM kit k
 INNER JOIN articulo am ON k.id_articulo_maestro = am.id_articulo
-INNER JOIN articulo ac ON k.id_articulo_componente = ac.id_articulo
-WHERE k.activo_kit = 1;
+INNER JOIN articulo ac ON k.id_articulo_componente = ac.id_articulo;

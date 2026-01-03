@@ -60,11 +60,7 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item"><a href="../MntMetodos_pago/index.php" class="sub-link">Métodos de Pago</a></li>
             <li class="sub-item"><a href="../MntFormas_Pago/index.php" class="sub-link">Formas de Pago</a></li>
             <li class="sub-item"><a href="../MntEmpresas/index.php" class="sub-link">Empresas</a></li>
-<<<<<<< HEAD
             <li class="sub-item"><a href="../_MntFamilia_unidad_datatables/index.php" class="sub-link">Empresas</a></li>
-=======
-            <li class="sub-item"><a href="../MntFurgonetas/index.php" class="sub-link">Furgonetas</a></li>
->>>>>>> furgoneta
 
 
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
@@ -158,6 +154,25 @@ function puedeVerMenu($idRol, $modulo) {
         </ul>
     </li>   
 
+
+    <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
+    <li class="br-menu-item">
+        <a href="#" class="br-menu-link with-sub">
+            <i class="menu-item-icon icon ion-ios-paper tx-24"></i>
+            <span class="menu-item-label">Vehículos</span>
+        </a>
+        <ul class="br-menu-sub">
+            <li class="sub-item"><a href="../MntFurgonetas/index.php" class="sub-link">Vehículos</a></li>
+            
+        </ul>
+        <!-- assets/Reunion/sistema-gestion-explicacion.html -->
+    </li>
+    <?php endif; ?>
+
+
+
+
+
     <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
     <li class="br-menu-item">
         <a href="#" class="br-menu-link with-sub">
@@ -171,6 +186,11 @@ function puedeVerMenu($idRol, $modulo) {
         <!-- assets/Reunion/sistema-gestion-explicacion.html -->
     </li>
     <?php endif; ?>
+
+
+
+
+
 
      <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
     <li class="br-menu-item">

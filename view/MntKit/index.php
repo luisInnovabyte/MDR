@@ -170,7 +170,7 @@ require_once('../../config/template/verificarPermiso.php');
                             <th>Precio Unitario</th>
                             <th>Subtotal</th>
                             <th>Estado</th>
-                            <th>Eliminar</th>
+                            <th>ACT./DESAC.</th>
                             <th>Editar</th>
                         </tr>
                     </thead>
@@ -193,7 +193,7 @@ require_once('../../config/template/verificarPermiso.php');
                                     <option value="0">Inactivo</option>
                                 </select>
                             </th>
-                            <th></th>
+                            <th class="d-none"><input type="text" placeholder="NO Buscar" class="form-control form-control-sm" /></th>
                             <th></th>
                         </tr>
                     </tfoot>
