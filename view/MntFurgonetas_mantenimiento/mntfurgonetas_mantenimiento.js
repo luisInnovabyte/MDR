@@ -446,15 +446,23 @@ $(document).ready(function () {
 
     // Función para cargar información de la furgoneta
     function cargarInfoFurgoneta(id_furgoneta) {
-        $.post("../../controller/furgoneta.php?op=mostrar", { id_furgoneta: id_furgoneta }, function (data) {
-            if (data) {
-                $('#matricula-furgoneta').text(data.matricula_furgoneta || 'Sin matrícula');
-                $('#marca-furgoneta').text(data.marca_furgoneta || '');
-                $('#modelo-furgoneta').text(data.modelo_furgoneta || '');
+        $.ajax({
+            url: '../../controller/furgoneta.php?op=mostrar',
+            type: 'POST',
+            data: { id_furgoneta: id_furgoneta },
+            dataType: 'json',
+            success: function (data) {
+                if (data) {
+                    const nombreFurgoneta = data.matricula_furgoneta + ' - ' + data.marca_furgoneta + ' ' + data.modelo_furgoneta;
+                    $('#nombre-furgoneta').text(nombreFurgoneta);
+                    $('#id-furgoneta').text(data.id_furgoneta || id_furgoneta);
+                    document.title = 'Mantenimiento - ' + nombreFurgoneta;
+                }
+            },
+            error: function () {
+                $('#nombre-furgoneta').text('Error al cargar información');
                 $('#id-furgoneta').text(id_furgoneta);
             }
-        }, 'json').fail(function() {
-            $('#matricula-furgoneta').text('Error al cargar');
         });
     }
 
