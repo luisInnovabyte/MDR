@@ -1,0 +1,66 @@
+-- ========================================================
+-- VISTA 2: Registro de kilometraje con información de furgoneta
+-- ========================================================
+CREATE OR REPLACE VIEW vista_kilometraje_completo AS
+SELECT 
+    rk.id_registro_km,
+    rk.id_furgoneta,
+    rk.fecha_registro_km,
+    rk.kilometraje_registrado_km,
+    rk.tipo_registro_km,
+    rk.observaciones_registro_km,
+    rk.created_at_registro_km,
+    
+    -- Datos de la furgoneta
+    f.matricula_furgoneta,
+    f.marca_furgoneta,
+    f.modelo_furgoneta,
+    f.estado_furgoneta,
+    
+    -- Cálculo de kilómetros recorridos desde el registro anterior
+    (rk.kilometraje_registrado_km - 
+     COALESCE((SELECT kilometraje_registrado_km 
+               FROM furgoneta_registro_kilometraje 
+               WHERE id_furgoneta = rk.id_furgoneta 
+               AND fecha_registro_km < rk.fecha_registro_km 
+               ORDER BY fecha_registro_km DESC 
+               LIMIT 1), 0)) AS km_recorridos,
+    
+    -- Días transcurridos desde el registro anterior
+    DATEDIFF(rk.fecha_registro_km,
+             COALESCE((SELECT fecha_registro_km 
+                       FROM furgoneta_registro_kilometraje 
+                       WHERE id_furgoneta = rk.id_furgoneta 
+                       AND fecha_registro_km < rk.fecha_registro_km 
+                       ORDER BY fecha_registro_km DESC 
+                       LIMIT 1), rk.fecha_registro_km)) AS dias_transcurridos,
+    
+    -- Promedio diario de kilómetros
+    CASE 
+        WHEN DATEDIFF(rk.fecha_registro_km,
+                     COALESCE((SELECT fecha_registro_km 
+                               FROM furgoneta_registro_kilometraje 
+                               WHERE id_furgoneta = rk.id_furgoneta 
+                               AND fecha_registro_km < rk.fecha_registro_km 
+                               ORDER BY fecha_registro_km DESC 
+                               LIMIT 1), rk.fecha_registro_km)) > 0
+        THEN (rk.kilometraje_registrado_km - 
+              COALESCE((SELECT kilometraje_registrado_km 
+                        FROM furgoneta_registro_kilometraje 
+                        WHERE id_furgoneta = rk.id_furgoneta 
+                        AND fecha_registro_km < rk.fecha_registro_km 
+                        ORDER BY fecha_registro_km DESC 
+                        LIMIT 1), 0)) / 
+             DATEDIFF(rk.fecha_registro_km,
+                     COALESCE((SELECT fecha_registro_km 
+                               FROM furgoneta_registro_kilometraje 
+                               WHERE id_furgoneta = rk.id_furgoneta 
+                               AND fecha_registro_km < rk.fecha_registro_km 
+                               ORDER BY fecha_registro_km DESC 
+                               LIMIT 1), rk.fecha_registro_km))
+        ELSE 0
+    END AS km_promedio_diario
+
+FROM furgoneta_registro_kilometraje rk
+INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
+ORDER BY rk.fecha_registro_km DESC;

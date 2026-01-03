@@ -5,6 +5,7 @@
 $moduloActual = 'mantenimientos';
 require_once('../../config/template/verificarPermiso.php');
 
+// Prueba de documento
 // Inicializar variables por defecto
 $totalFurgonetas = 0;
 $totalOperativas = 0;
@@ -291,6 +292,8 @@ try {
                                 <th>Activo</th>
                                 <th>Act./Desac.</th>
                                 <th>Editar</th>
+                                <th>Mantenimiento</th>
+                                <th>Kilometraje</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -334,6 +337,8 @@ try {
                                         <option value="0">Inactivo</option>
                                     </select>
                                 </th>
+                                <th></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                             </tr>

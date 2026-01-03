@@ -36,15 +36,8 @@ class Furgoneta_mantenimiento
     public function get_mantenimientos()
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.activo_mantenimiento = 1
-                    ORDER BY m.fecha_mantenimiento DESC";
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    ORDER BY fecha_mantenimiento DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
@@ -68,14 +61,9 @@ class Furgoneta_mantenimiento
     public function get_todos_mantenimientos()
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    ORDER BY m.fecha_mantenimiento DESC";
+            // Nota: La vista solo muestra activos, aquí usamos tabla directa
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    ORDER BY fecha_mantenimiento DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
@@ -99,14 +87,8 @@ class Furgoneta_mantenimiento
     public function get_mantenimientoxid($id_mantenimiento)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.id_mantenimiento = ?";
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    WHERE id_mantenimiento = ?";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_mantenimiento, PDO::PARAM_INT);
@@ -131,16 +113,9 @@ class Furgoneta_mantenimiento
     public function get_mantenimientos_por_furgoneta($id_furgoneta)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.id_furgoneta = ?
-                    AND m.activo_mantenimiento = 1
-                    ORDER BY m.fecha_mantenimiento DESC";
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    WHERE id_furgoneta = ?
+                    ORDER BY fecha_mantenimiento DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_furgoneta, PDO::PARAM_INT);
@@ -165,16 +140,9 @@ class Furgoneta_mantenimiento
     public function get_ultimo_mantenimiento($id_furgoneta)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.id_furgoneta = ?
-                    AND m.activo_mantenimiento = 1
-                    ORDER BY m.fecha_mantenimiento DESC
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    WHERE id_furgoneta = ?
+                    ORDER BY fecha_mantenimiento DESC
                     LIMIT 1";
             
             $stmt = $this->conexion->prepare($sql);
@@ -470,17 +438,10 @@ class Furgoneta_mantenimiento
     public function get_mantenimientos_por_tipo($id_furgoneta, $tipo_mantenimiento)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.id_furgoneta = ?
-                    AND m.tipo_mantenimiento = ?
-                    AND m.activo_mantenimiento = 1
-                    ORDER BY m.fecha_mantenimiento DESC";
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    WHERE id_furgoneta = ?
+                    AND tipo_mantenimiento = ?
+                    ORDER BY fecha_mantenimiento DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_furgoneta, PDO::PARAM_INT);
@@ -506,17 +467,10 @@ class Furgoneta_mantenimiento
     public function get_historial_itv($id_furgoneta)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.id_furgoneta = ?
-                    AND m.tipo_mantenimiento = 'itv'
-                    AND m.activo_mantenimiento = 1
-                    ORDER BY m.fecha_mantenimiento DESC";
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    WHERE id_furgoneta = ?
+                    AND tipo_mantenimiento = 'itv'
+                    ORDER BY fecha_mantenimiento DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_furgoneta, PDO::PARAM_INT);
@@ -541,17 +495,10 @@ class Furgoneta_mantenimiento
     public function get_ultima_itv($id_furgoneta)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.id_furgoneta = ?
-                    AND m.tipo_mantenimiento = 'itv'
-                    AND m.activo_mantenimiento = 1
-                    ORDER BY m.fecha_mantenimiento DESC
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    WHERE id_furgoneta = ?
+                    AND tipo_mantenimiento = 'itv'
+                    ORDER BY fecha_mantenimiento DESC
                     LIMIT 1";
             
             $stmt = $this->conexion->prepare($sql);
@@ -577,17 +524,10 @@ class Furgoneta_mantenimiento
     public function get_mantenimientos_por_fecha($id_furgoneta, $fecha_inicio, $fecha_fin)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.id_furgoneta = ?
-                    AND m.fecha_mantenimiento BETWEEN ? AND ?
-                    AND m.activo_mantenimiento = 1
-                    ORDER BY m.fecha_mantenimiento DESC";
+            $sql = "SELECT * FROM vista_mantenimiento_completo
+                    WHERE id_furgoneta = ?
+                    AND fecha_mantenimiento BETWEEN ? AND ?
+                    ORDER BY fecha_mantenimiento DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_furgoneta, PDO::PARAM_INT);
@@ -659,19 +599,13 @@ class Furgoneta_mantenimiento
     public function get_mantenimientos_con_garantia($id_furgoneta)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta,
-                        DATEDIFF(m.garantia_hasta_mantenimiento, CURDATE()) AS dias_garantia_restantes
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.id_furgoneta = ?
-                    AND m.garantia_hasta_mantenimiento IS NOT NULL
-                    AND m.garantia_hasta_mantenimiento >= CURDATE()
-                    AND m.activo_mantenimiento = 1
-                    ORDER BY m.garantia_hasta_mantenimiento ASC";
+            $sql = "SELECT *,
+                        DATEDIFF(garantia_hasta_mantenimiento, CURDATE()) AS dias_garantia_restantes
+                    FROM vista_mantenimiento_completo
+                    WHERE id_furgoneta = ?
+                    AND garantia_hasta_mantenimiento IS NOT NULL
+                    AND garantia_hasta_mantenimiento >= CURDATE()
+                    ORDER BY garantia_hasta_mantenimiento ASC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_furgoneta, PDO::PARAM_INT);
@@ -738,19 +672,13 @@ class Furgoneta_mantenimiento
     public function get_garantias_proximas_vencer($dias = 30)
     {
         try {
-            $sql = "SELECT 
-                        m.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta,
-                        DATEDIFF(m.garantia_hasta_mantenimiento, CURDATE()) AS dias_garantia_restantes
-                    FROM furgoneta_mantenimiento m
-                    INNER JOIN furgoneta f ON m.id_furgoneta = f.id_furgoneta
-                    WHERE m.garantia_hasta_mantenimiento IS NOT NULL
-                    AND m.garantia_hasta_mantenimiento >= CURDATE()
-                    AND m.garantia_hasta_mantenimiento <= DATE_ADD(CURDATE(), INTERVAL ? DAY)
-                    AND m.activo_mantenimiento = 1
-                    ORDER BY m.garantia_hasta_mantenimiento ASC";
+            $sql = "SELECT *,
+                        DATEDIFF(garantia_hasta_mantenimiento, CURDATE()) AS dias_garantia_restantes
+                    FROM vista_mantenimiento_completo
+                    WHERE garantia_hasta_mantenimiento IS NOT NULL
+                    AND garantia_hasta_mantenimiento >= CURDATE()
+                    AND garantia_hasta_mantenimiento <= DATE_ADD(CURDATE(), INTERVAL ? DAY)
+                    ORDER BY garantia_hasta_mantenimiento ASC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $dias, PDO::PARAM_INT);

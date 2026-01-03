@@ -83,6 +83,11 @@ session_start();
 <link rel="stylesheet" href="../../public/css/filtros.css">
 
 
+<!-- CSS - para la fijar columnas del datatables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css">
+
+
+
 <style>
     /* Para centrar la tabla */
     div.dt-container {

@@ -36,13 +36,7 @@ class Furgoneta_registro_kilometraje
     public function get_registros_km()
     {
         try {
-            $sql = "SELECT 
-                        rk.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_registro_kilometraje rk
-                    INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
+            $sql = "SELECT * from vista_kilometraje_completo
                     ORDER BY rk.fecha_registro_km DESC";
             
             $stmt = $this->conexion->prepare($sql);
@@ -67,14 +61,8 @@ class Furgoneta_registro_kilometraje
     public function get_registro_kmxid($id_registro_km)
     {
         try {
-            $sql = "SELECT 
-                        rk.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_registro_kilometraje rk
-                    INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
-                    WHERE rk.id_registro_km = ?";
+            $sql = "SELECT * from vista_kilometraje_completo
+                    WHERE id_registro_km = ?";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_registro_km, PDO::PARAM_INT);
@@ -99,15 +87,9 @@ class Furgoneta_registro_kilometraje
     public function get_registros_por_furgoneta($id_furgoneta)
     {
         try {
-            $sql = "SELECT 
-                        rk.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_registro_kilometraje rk
-                    INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
-                    WHERE rk.id_furgoneta = ?
-                    ORDER BY rk.fecha_registro_km DESC";
+            $sql = "SELECT * from vista_kilometraje_completo
+                    WHERE id_furgoneta = ?
+                    ORDER BY fecha_registro_km DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_furgoneta, PDO::PARAM_INT);
@@ -132,15 +114,9 @@ class Furgoneta_registro_kilometraje
     public function get_ultimo_registro($id_furgoneta)
     {
         try {
-            $sql = "SELECT 
-                        rk.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_registro_kilometraje rk
-                    INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
-                    WHERE rk.id_furgoneta = ?
-                    ORDER BY rk.fecha_registro_km DESC, rk.kilometraje_registrado_km DESC
+            $sql = "SELECT * from vista_kilometraje_completo
+                    WHERE id_furgoneta = ?
+                    ORDER BY fecha_registro_km DESC, kilometraje_registrado_km DESC
                     LIMIT 1";
             
             $stmt = $this->conexion->prepare($sql);
@@ -320,56 +296,15 @@ class Furgoneta_registro_kilometraje
     }
 
     // =====================================================
-    // MÉTODO 8: Eliminar registro
-    // =====================================================
-    public function delete_registro_kmxid($id_registro_km)
-    {
-        try {
-            $sql = "DELETE FROM furgoneta_registro_kilometraje 
-                    WHERE id_registro_km = ?";
-            
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(1, $id_registro_km, PDO::PARAM_INT);
-            $stmt->execute();
-            
-            $this->registro->registrarActividad(
-                'admin',
-                'Furgoneta_registro_kilometraje',
-                'delete_registro_kmxid',
-                "Registro eliminado ID: $id_registro_km",
-                'info'
-            );
-            
-            return $stmt->rowCount() > 0;
-            
-        } catch (PDOException $e) {
-            $this->registro->registrarActividad(
-                'admin',
-                'Furgoneta_registro_kilometraje',
-                'delete_registro_kmxid',
-                "Error: " . $e->getMessage(),
-                'error'
-            );
-            return false;
-        }
-    }
-
-    // =====================================================
     // MÉTODO 9: Obtener registros por tipo
     // =====================================================
     public function get_registros_por_tipo($id_furgoneta, $tipo_registro)
     {
         try {
-            $sql = "SELECT 
-                        rk.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_registro_kilometraje rk
-                    INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
-                    WHERE rk.id_furgoneta = ?
-                    AND rk.tipo_registro_km = ?
-                    ORDER BY rk.fecha_registro_km DESC";
+            $sql = "SELECT * from vista_kilometraje_completo
+                    WHERE id_furgoneta = ?
+                    AND tipo_registro_km = ?
+                    ORDER BY fecha_registro_km DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_furgoneta, PDO::PARAM_INT);
@@ -395,13 +330,7 @@ class Furgoneta_registro_kilometraje
     public function get_registros_por_fecha($id_furgoneta, $fecha_inicio, $fecha_fin)
     {
         try {
-            $sql = "SELECT 
-                        rk.*,
-                        f.matricula_furgoneta,
-                        f.marca_furgoneta,
-                        f.modelo_furgoneta
-                    FROM furgoneta_registro_kilometraje rk
-                    INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
+            $sql = "SELECT * from vista_kilometraje_completo
                     WHERE rk.id_furgoneta = ?
                     AND rk.fecha_registro_km BETWEEN ? AND ?
                     ORDER BY rk.fecha_registro_km DESC";

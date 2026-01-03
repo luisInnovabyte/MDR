@@ -105,9 +105,18 @@ switch ($_GET["op"]) {
                 "tipo_mantenimiento" => $row["tipo_mantenimiento"],
                 "descripcion_mantenimiento" => $row["descripcion_mantenimiento"],
                 "kilometraje_mantenimiento" => $row["kilometraje_mantenimiento"] ?? '',
-                "costo_mantenimiento" => $row["costo_mantenimiento"],
+                "costo_mantenimiento" => $row["costo_mantenimiento"] ?? '0.00',
+                "numero_factura_mantenimiento" => $row["numero_factura_mantenimiento"] ?? '',
                 "taller_mantenimiento" => $row["taller_mantenimiento"] ?? '',
-                "resultado_itv" => $row["resultado_itv"] ?? ''
+                "telefono_taller_mantenimiento" => $row["telefono_taller_mantenimiento"] ?? '',
+                "direccion_taller_mantenimiento" => $row["direccion_taller_mantenimiento"] ?? '',
+                "resultado_itv" => $row["resultado_itv"] ?? '',
+                "fecha_proxima_itv" => $row["fecha_proxima_itv"] ?? '',
+                "garantia_hasta_mantenimiento" => $row["garantia_hasta_mantenimiento"] ?? '',
+                "observaciones_mantenimiento" => $row["observaciones_mantenimiento"] ?? '',
+                "activo_mantenimiento" => $row["activo_mantenimiento"],
+                "created_at_mantenimiento" => $row["created_at_mantenimiento"],
+                "updated_at_mantenimiento" => $row["updated_at_mantenimiento"]
             );
         }
 

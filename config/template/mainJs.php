@@ -92,6 +92,10 @@
 <script src="https://cdn.datatables.net/rowgroup/1.5.1/js/dataTables.rowGroup.min.js"></script>
 <script src="https://cdn.datatables.net/rowgroup/1.5.1/js/rowGroup.dataTables.min.js"></script>
 
+<!-- JS (después de DataTables) - PARA FIJAR COLUMNAS -->
+<script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+
+
 
 <script>
     /////////////////////////////////////

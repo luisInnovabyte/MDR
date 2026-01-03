@@ -45,16 +45,38 @@ switch ($_GET["op"]) {
         break;
 
     case "listar_por_furgoneta":
-        if (empty($_POST["id_furgoneta"])) {
+        $id_furgoneta = $_REQUEST["id_furgoneta"] ?? $_GET["id_furgoneta"] ?? $_POST["id_furgoneta"] ?? null;
+        
+        if (empty($id_furgoneta)) {
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'message' => 'ID de furgoneta es requerido'
+                'message' => 'ID de furgoneta es requerido',
+                'data' => []
             ], JSON_UNESCAPED_UNICODE);
             break;
         }
 
-        $datos = $registroKm->get_registros_por_furgoneta($_POST["id_furgoneta"]);
+        // Log para debugging
+        $registro->registrarActividad(
+            'admin',
+            'furgoneta_registro_kilometraje.php',
+            'listar_por_furgoneta',
+            "Consultando registros para furgoneta ID: $id_furgoneta",
+            'info'
+        );
+
+        $datos = $registroKm->get_registros_por_furgoneta($id_furgoneta);
+        
+        // Log del resultado
+        $registro->registrarActividad(
+            'admin',
+            'furgoneta_registro_kilometraje.php',
+            'listar_por_furgoneta',
+            "Registros encontrados: " . count($datos) . " para furgoneta ID: $id_furgoneta",
+            'info'
+        );
+        
         $data = array();
         
         foreach ($datos as $row) {
@@ -63,6 +85,9 @@ switch ($_GET["op"]) {
                 "id_furgoneta" => $row["id_furgoneta"],
                 "fecha_registro_km" => $row["fecha_registro_km"],
                 "kilometraje_registrado_km" => $row["kilometraje_registrado_km"],
+                "km_recorridos" => $row["km_recorridos"] ?? 0,
+                "dias_transcurridos" => $row["dias_transcurridos"] ?? 0,
+                "km_promedio_diario" => $row["km_promedio_diario"] ?? 0,
                 "tipo_registro_km" => $row["tipo_registro_km"] ?? 'manual',
                 "observaciones_registro_km" => $row["observaciones_registro_km"] ?? '',
                 "created_at_registro_km" => $row["created_at_registro_km"]
@@ -70,7 +95,7 @@ switch ($_GET["op"]) {
         }
 
         $results = array(
-            "draw" => 1,
+            "draw" => intval($_REQUEST['draw'] ?? 1),
             "recordsTotal" => count($data),
             "recordsFiltered" => count($data),
             "data" => $data
@@ -110,7 +135,23 @@ switch ($_GET["op"]) {
                 $observaciones
             );
 
-            if ($resultado !== false && is_numeric($resultado)) {
+            // Verificar si es un array con error (validación de kilometraje)
+            if (is_array($resultado) && isset($resultado['error'])) {
+                $registro->registrarActividad(
+                    'admin',
+                    'furgoneta_registro_kilometraje.php',
+                    'guardaryeditar',
+                    "Error de validación: " . $resultado['error'] . " - Furgoneta ID: " . $_POST["id_furgoneta"] . " - KM intentado: " . $_POST["kilometraje_registrado_km"] . " - KM actual: " . ($resultado['kilometraje_actual'] ?? 'N/A'),
+                    'warning'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => $resultado['error'],
+                    'kilometraje_actual' => $resultado['kilometraje_actual'] ?? 0
+                ], JSON_UNESCAPED_UNICODE);
+            } else if ($resultado !== false && is_numeric($resultado)) {
                 $registro->registrarActividad(
                     'admin',
                     'furgoneta_registro_kilometraje.php',
@@ -126,11 +167,19 @@ switch ($_GET["op"]) {
                     'id_registro_km' => $resultado
                 ], JSON_UNESCAPED_UNICODE);
             } else {
-                // El resultado puede contener un mensaje de error (validación de KM)
+                // Error de base de datos
+                $registro->registrarActividad(
+                    'admin',
+                    'furgoneta_registro_kilometraje.php',
+                    'guardaryeditar',
+                    "Error al insertar registro - Furgoneta ID: " . $_POST["id_furgoneta"] . " - KM: " . $_POST["kilometraje_registrado_km"] . " - Resultado: " . print_r($resultado, true),
+                    'error'
+                );
+
                 header('Content-Type: application/json');
                 echo json_encode([
                     'success' => false,
-                    'message' => is_string($resultado) ? $resultado : 'Error al insertar el registro de kilometraje'
+                    'message' => 'Error al insertar el registro de kilometraje. Revise el log para más detalles.'
                 ], JSON_UNESCAPED_UNICODE);
             }
         } catch (Exception $e) {
@@ -313,42 +362,7 @@ switch ($_GET["op"]) {
         }
         break;
 
-    case "eliminar":
-        if (empty($_POST["id_registro_km"])) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'success' => false,
-                'message' => 'ID de registro es requerido'
-            ], JSON_UNESCAPED_UNICODE);
-            break;
-        }
-
-        $resultado = $registroKm->delete_registro_kmxid($_POST["id_registro_km"]);
-
-        if ($resultado) {
-            $registro->registrarActividad(
-                'admin',
-                'furgoneta_registro_kilometraje.php',
-                'eliminar',
-                "Registro eliminado exitosamente ID: " . $_POST["id_registro_km"],
-                'info'
-            );
-
-            header('Content-Type: application/json');
-            echo json_encode([
-                'success' => true,
-                'message' => 'Registro eliminado correctamente'
-            ], JSON_UNESCAPED_UNICODE);
-        } else {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'success' => false,
-                'message' => 'No se pudo eliminar el registro'
-            ], JSON_UNESCAPED_UNICODE);
-        }
-        break;
-
-    case "estadisticas":
+     case "estadisticas":
         try {
             if (empty($_POST["id_furgoneta"])) {
                 header('Content-Type: application/json');

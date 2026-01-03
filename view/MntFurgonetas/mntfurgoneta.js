@@ -38,7 +38,11 @@ $(document).ready(function () {
     // ==========================================
     var datatable_furgonetasConfig = {
         processing: true,
-
+        scrollX: true, // Habilita el desplazamiento horizontal
+        scrollCollapse: true, // Permite que la tabla se ajuste al contenedor y que el scroll se oculte cuando no es necesario
+        fixedColumns: {
+           left: 2  // Fija columnas: control (0), id_articulo oculto (1) 
+        },
         layout: {
             bottomEnd: {
                 paging: {
@@ -133,6 +137,20 @@ $(document).ready(function () {
             // Columna 10: Editar
             {
                 name: "editar",
+                data: null,
+                defaultContent: "",
+                className: "text-center align-middle",
+            },
+            // Columna 11: Mantenimiento
+            {
+                name: "mantenimiento",
+                data: null,
+                defaultContent: "",
+                className: "text-center align-middle",
+            },
+            // Columna 12: Kilometraje
+            {
+                name: "kilometraje",
                 data: null,
                 defaultContent: "",
                 className: "text-center align-middle",
@@ -340,6 +358,40 @@ $(document).ready(function () {
                                    data-id_furgoneta="${row.id_furgoneta}"> 
                                 <i class="fa-solid fa-edit"></i>
                             </button>`;
+                },
+            },
+            // Columna 11: Mantenimiento
+            {
+                targets: "mantenimiento:name",
+                width: "10%",
+                searchable: false,
+                orderable: false,
+                class: "text-center",
+                render: function (data, type, row) {
+                    return `<a href="../MntFurgonetas_mantenimiento/index.php?id_furgoneta=${row.id_furgoneta}" 
+                              class="btn btn-primary btn-sm" 
+                              data-bs-toggle="tooltip" 
+                              data-placement="top" 
+                              title="Ver Historial de Mantenimiento">
+                                <i class="bi bi-wrench-adjustable-circle me-1"></i>Historial
+                            </a>`;
+                },
+            },
+            // Columna 12: Kilometraje
+            {
+                targets: "kilometraje:name",
+                width: "10%",
+                searchable: false,
+                orderable: false,
+                class: "text-center",
+                render: function (data, type, row) {
+                    return `<a href="../MntFurgonetas_registro_kilometraje/index.php?id_furgoneta=${row.id_furgoneta}" 
+                              class="btn btn-success btn-sm" 
+                              data-bs-toggle="tooltip" 
+                              data-placement="top" 
+                              title="Ver Registro de Kilometraje">
+                                <i class="bi bi-speedometer2 me-1"></i>Kilometraje
+                            </a>`;
                 },
             },
         ],

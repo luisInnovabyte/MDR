@@ -13,3 +13,20 @@ Thumbs.db
 *.gif  
 BD/Importacion_BD_VerI/**/*.accdb
 *.accdb
+
+# Archivos de Claude
+CLAUDE.md
+.claude/
+
+# IDEs y editores
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+*~
+
+# Logs del sistema
+public/logs/
+public/logs/*.json
+*.log

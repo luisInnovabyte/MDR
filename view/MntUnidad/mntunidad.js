@@ -29,6 +29,7 @@ $(document).ready(function () {
     var datatable_unidadesConfig = {
         //serverSide: true, // procesamiento del lado del servidor
         processing: true, // mostrar el procesamiento de la tabla
+        scrollX: true, // Habilita el desplazamiento horizontal
         layout: {
             bottomEnd: { // que elementos de la paginación queremos que aparezcan
                 paging: {
