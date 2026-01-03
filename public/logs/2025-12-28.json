@@ -1,0 +1,162 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 10:53:35"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 10:53:35"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:34:41"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:34:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:41:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:42:48"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_mantenimiento.php",
+        "actividad": "mostrar",
+        "mensaje": "Mantenimiento obtenido exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:42:51"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:42:51"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:43:52"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:44:03"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:44:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:44:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 0 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:44:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:44:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_mantenimiento.php",
+        "actividad": "mostrar",
+        "mensaje": "Mantenimiento obtenido exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:44:41"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:44:46"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:45:31"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:45:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_mantenimiento.php",
+        "actividad": "mostrar",
+        "mensaje": "Mantenimiento obtenido exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:45:34"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-28 14:45:37"
+    }
+]

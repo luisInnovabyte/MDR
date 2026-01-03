@@ -13,3 +13,7 @@ Thumbs.db
 *.gif  
 BD/Importacion_BD_VerI/**/*.accdb
 *.accdb
+
+# Claude AI files
+CLAUDE.md
+.claude/

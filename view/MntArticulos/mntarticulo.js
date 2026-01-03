@@ -215,7 +215,9 @@ $(document).ready(function () {
         render: function (data, type, row) {
           if (type === "display") {
             return row.es_kit_articulo == 1
-              ? '<i class="bi bi-box-seam text-primary fa-2x" title="Es un kit"></i>'
+              ? `<button type="button" class="btn btn-link p-0 verKit" data-toggle="tooltip" data-placement="top" title="Gestionar composición del KIT" data-id_articulo="${row.id_articulo}">
+                   <i class="bi bi-box-seam text-primary fa-2x"></i>
+                 </button>`
               : '<i class="bi bi-box text-muted fa-2x" title="Artículo individual"></i>';
           }
           return row.es_kit_articulo;
@@ -737,6 +739,23 @@ $(document).ready(function () {
   });
   ///////////////////////////////////////
   //     FIN ZONA VER ELEMENTOS        //
+  /////////////////////////////////////
+
+  ///////////////////////////////////////
+  //   INICIO ZONA VER KIT             //
+  /////////////////////////////////////
+  // CAPTURAR EL CLICK EN EL BOTÓN DE VER KIT
+  $(document).on("click", ".verKit", function (event) {
+    event.preventDefault();
+
+    let id_articulo = $(this).data("id_articulo");
+    console.log("Ver composición del KIT:", id_articulo);
+
+    // Redirigir a la gestión de composición del KIT
+    window.location.href = `../MntKit/index.php?id_articulo=${id_articulo}`;
+  });
+  ///////////////////////////////////////
+  //     FIN ZONA VER KIT              //
   /////////////////////////////////////
 
   ////////////////////////////////////////////////

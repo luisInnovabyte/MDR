@@ -1,0 +1,322 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:17:46"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:17:46"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:24:43"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:24:43"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:24:43"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:24:43"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "articulo.php",
+        "actividad": "Verificar artículo",
+        "mensaje": "Artículo disponible: Cable XLR 10 metros",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:34:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "Articulo",
+        "actividad": "Actualizar",
+        "mensaje": "Se actualizó el artículo con ID: 24",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:34:36"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "articulo.php",
+        "actividad": "Actualizar artículo",
+        "mensaje": "Artículo actualizado: Cable XLR 10 metros (ID: 24)",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:34:36"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:36:37"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:36:37"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 14:40:04"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 18:54:12"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 18:54:12"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 19:00:48"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:45:08"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:45:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:45:28"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:47:25"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_mantenimiento.php",
+        "actividad": "mostrar",
+        "mensaje": "Mantenimiento obtenido exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:47:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:47:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:49:47"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:49:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:49:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 0 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:49:58"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:50:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:50:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:50:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 0 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:50:59"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:51:08"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:51:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_mantenimiento.php",
+        "actividad": "mostrar",
+        "mensaje": "Mantenimiento obtenido exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:51:14"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:52:22"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:52:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:52:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 0 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:52:29"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:52:32"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Consultando registros para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:53:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta_registro_kilometraje.php",
+        "actividad": "listar_por_furgoneta",
+        "mensaje": "Registros encontrados: 0 para furgoneta ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:53:02"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "furgoneta.php",
+        "actividad": "mostrar",
+        "mensaje": "Furgoneta obtenida exitosamente ID: 1",
+        "tipo": "info",
+        "fecha_hora": "2025-12-26 20:53:02"
+    }
+]

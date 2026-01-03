@@ -1,0 +1,66 @@
+[
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2026-01-02 20:00:44"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2026-01-02 20:00:44"
+    },
+    {
+        "usuario": "system",
+        "pantalla": "Presupuesto",
+        "actividad": "get_presupuestos_por_mes",
+        "mensaje": "Presupuestos obtenidos para mes 1\/2026: 3 registros",
+        "tipo": "info",
+        "fecha_hora": "2026-01-02 20:01:12"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "Login.php",
+        "actividad": "verificarUsuario",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2026-01-02 20:11:38"
+    },
+    {
+        "usuario": "luis@gmail.com",
+        "pantalla": "login.php",
+        "actividad": "iniciarSesion",
+        "mensaje": "Inicio de sesión exitoso",
+        "tipo": "info",
+        "fecha_hora": "2026-01-02 20:11:38"
+    },
+    {
+        "usuario": "system",
+        "pantalla": "Presupuesto",
+        "actividad": "get_presupuestos_por_mes",
+        "mensaje": "Presupuestos obtenidos para mes 1\/2026: 3 registros",
+        "tipo": "info",
+        "fecha_hora": "2026-01-02 20:13:32"
+    },
+    {
+        "usuario": "system",
+        "pantalla": "Presupuesto",
+        "actividad": "get_presupuestos_por_mes",
+        "mensaje": "Presupuestos obtenidos para mes 1\/2026: 3 registros",
+        "tipo": "info",
+        "fecha_hora": "2026-01-02 20:14:04"
+    },
+    {
+        "usuario": "admin",
+        "pantalla": "informe_presupuestos.php",
+        "actividad": "generar_pdf",
+        "mensaje": "PDF de presupuestos generado para Enero 2026 - Total registros: 3, Importe: 0.00€",
+        "tipo": "info",
+        "fecha_hora": "2026-01-02 20:14:04"
+    }
+]
