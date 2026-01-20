@@ -3,6 +3,19 @@ $(document).ready(function () {
     console.log('Botón Nuevo existe:', $('#btnNuevoContacto').length);
     console.log('Botón Editar existe:', $('#btnEditarContacto').length);
 
+    // Control de visibilidad de la nota de artículos y familias
+    function toggleNotaCoeficientes() {
+        if ($('#aplicar_coeficientes_presupuesto').is(':checked')) {
+            $('#nota_coeficientes').show();
+        } else {
+            $('#nota_coeficientes').hide();
+        }
+    }
+    
+    // Ejecutar al cargar y al cambiar el checkbox
+    toggleNotaCoeficientes();
+    $('#aplicar_coeficientes_presupuesto').on('change', toggleNotaCoeficientes);
+
     /////////////////////////////////////
     //     FORMATEO DE CAMPOS          //
     ///////////////////////////////////

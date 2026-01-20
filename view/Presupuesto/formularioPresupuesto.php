@@ -364,6 +364,10 @@
                                                 <strong>Activado:</strong> Aplica descuentos automáticos según los días de alquiler.<br>
                                                 <strong>Desactivado:</strong> Usa el precio base sin aplicar coeficientes.
                                             </small>
+                                            <div id="nota_coeficientes" class="alert alert-info mt-3 mb-0 py-2">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                <strong>Nota:</strong> Se tendrá en cuenta lo reflejado en artículos y familias.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

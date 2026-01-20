@@ -99,6 +99,7 @@
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="../Dashboard/index.php">Dashboard</a>
             <a class="breadcrumb-item" href="../Presupuesto/mntpresupuesto.php">Presupuestos</a>
+            <a class="breadcrumb-item" href="#" id="breadcrumb-presupuesto">Presupuesto Actual</a>
             <span class="breadcrumb-item active">Líneas de Presupuesto</span>
         </nav>
     </div><!-- br-pageheader -->
@@ -155,8 +156,8 @@
                         
                         <!-- Botón de acción -->
                         <div class="col-auto d-none d-md-block">
-                            <a href="../Presupuesto/mntpresupuesto.php" class="btn btn-light btn-sm">
-                                <i class="bi bi-arrow-left me-1"></i>Volver
+                            <a href="#" id="btn-volver-header" class="btn btn-light btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i>Volver al Presupuesto
                             </a>
                         </div>
                     </div>
@@ -236,8 +237,8 @@
                     <button class="btn btn-oblong btn-outline-primary flex-shrink-0" id="btn-nueva-linea">
                         <i class="fas fa-plus-circle me-2"></i>Nueva Línea
                     </button>
-                    <a href="../Presupuesto/mntpresupuesto.php" class="btn btn-oblong btn-outline-secondary flex-shrink-0">
-                        <i class="fas fa-arrow-left me-2"></i>Volver a Presupuestos
+                    <a href="#" id="btn-volver-footer" class="btn btn-oblong btn-outline-secondary flex-shrink-0">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al Presupuesto
                     </a>
                 </div>
             </div>

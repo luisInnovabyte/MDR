@@ -76,6 +76,9 @@
                                 <div class="col-md-6">
                                     <label for="fecha_desmontaje_linea_ppto" class="form-label fw-bold">
                                         <i class="bi bi-arrow-down-circle me-1 text-danger"></i>Fecha Desmontaje (Planificación)
+                                        <span id="dias_planificacion" class="badge bg-info ms-2" style="display: none;">
+                                            <i class="bi bi-calendar-range me-1"></i><span id="dias_planificacion_texto">0 días</span>
+                                        </span>
                                     </label>
                                     <input type="date" class="form-control" id="fecha_desmontaje_linea_ppto" 
                                            name="fecha_desmontaje_linea_ppto">
@@ -97,6 +100,9 @@
                                 <div class="col-md-6">
                                     <label for="fecha_fin_linea_ppto" class="form-label fw-bold">
                                         <i class="bi bi-calendar-x me-1 text-primary"></i>Fecha Fin Evento *
+                                        <span id="dias_evento" class="badge bg-primary ms-2" style="display: none;">
+                                            <i class="bi bi-calendar-range me-1"></i><span id="dias_evento_texto">0 días</span>
+                                        </span>
                                     </label>
                                     <input type="date" class="form-control" id="fecha_fin_linea_ppto" 
                                            name="fecha_fin_linea_ppto" required>
@@ -119,7 +125,8 @@
                                         <i class="bi bi-123 me-1 text-success"></i>Cantidad *
                                     </label>
                                     <input type="number" class="form-control text-center" id="cantidad_linea_ppto" 
-                                           name="cantidad_linea_ppto" min="0.01" step="0.01" value="1" required>
+                                           name="cantidad_linea_ppto" min="0.01" step="0.01" value="1" required 
+                                           onfocus="this.select()">
                                 </div>
                                 
                                 <!-- Precio Unitario (desde artículo) -->
@@ -142,7 +149,8 @@
                                     </label>
                                     <div class="input-group">
                                         <input type="number" class="form-control text-center" id="descuento_linea_ppto" 
-                                               name="descuento_linea_ppto" min="0" max="100" step="0.01" value="0">
+                                               name="descuento_linea_ppto" min="0" max="100" step="0.1" value="0" 
+                                               onfocus="this.select()">
                                         <span class="input-group-text">%</span>
                                     </div>
                                 </div>

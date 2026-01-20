@@ -49,6 +49,15 @@ $(document).ready(function () {
     $('#clear-filter').on('click', function () {
         limpiarFiltros();
     });
+    
+    // Event listeners para cálculo de días de diferencia en fechas
+    $(document).on('change', '#fecha_montaje_linea_ppto, #fecha_desmontaje_linea_ppto', function() {
+        actualizarDiasPlanificacion();
+    });
+    
+    $(document).on('change', '#fecha_inicio_linea_ppto, #fecha_fin_linea_ppto', function() {
+        actualizarDiasEvento();
+    });
 });
 
 /**
@@ -118,6 +127,17 @@ function cargarInfoVersion() {
                 } else {
                     $('#alert-version-bloqueada').hide();
                     $('#btn-nueva-linea').prop('disabled', false);
+                }
+                
+                // Configurar enlaces de navegación para volver al presupuesto específico
+                if (data.id_presupuesto) {
+                    const urlPresupuesto = `../Presupuesto/index.php?id_presupuesto=${data.id_presupuesto}`;
+                    $('#btn-volver-header, #btn-volver-footer').attr('href', urlPresupuesto);
+                    
+                    // Actualizar breadcrumb con número de presupuesto
+                    $('#breadcrumb-presupuesto')
+                        .attr('href', urlPresupuesto)
+                        .html(`<i class="bi bi-file-earmark-text"></i> ${data.numero_presupuesto || 'Presupuesto'}`);
                 }
             } else {
                 console.error("Error en respuesta:", response);
@@ -741,6 +761,10 @@ function cargarFechasIniciales() {
                 if (fechas.fecha_fin_evento) {
                     $('#fecha_fin_linea_ppto').val(fechas.fecha_fin_evento);
                 }
+                
+                // Calcular días de diferencia después de cargar las fechas
+                actualizarDiasPlanificacion();
+                actualizarDiasEvento();
             }
         },
         error: function() {
@@ -883,4 +907,69 @@ function cargarUbicacionesPorCliente(idCliente) {
             console.error('Respuesta:', xhr.responseText);
         }
     });
+}
+
+/**
+ * Calcula la diferencia de días entre dos fechas
+ * @param {string} fechaInicio - Fecha en formato YYYY-MM-DD
+ * @param {string} fechaFin - Fecha en formato YYYY-MM-DD
+ * @returns {number} - Número de días de diferencia
+ */
+function calcularDiasDiferencia(fechaInicio, fechaFin) {
+    if (!fechaInicio || !fechaFin) {
+        return 0;
+    }
+    
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+    
+    // Calcular diferencia en milisegundos y convertir a días
+    const diferenciaMilisegundos = fin - inicio;
+    const diferenciaDias = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
+    
+    return diferenciaDias;
+}
+
+/**
+ * Actualiza el indicador de días de diferencia para fechas de planificación (montaje/desmontaje)
+ */
+function actualizarDiasPlanificacion() {
+    const fechaMontaje = $('#fecha_montaje_linea_ppto').val();
+    const fechaDesmontaje = $('#fecha_desmontaje_linea_ppto').val();
+    
+    if (fechaMontaje && fechaDesmontaje) {
+        const dias = calcularDiasDiferencia(fechaMontaje, fechaDesmontaje);
+        
+        if (dias >= 0) {
+            $('#dias_planificacion_texto').text(`${dias} día${dias !== 1 ? 's' : ''}`);
+            $('#dias_planificacion').show();
+        } else {
+            $('#dias_planificacion').hide();
+            console.warn('La fecha de desmontaje es anterior a la fecha de montaje');
+        }
+    } else {
+        $('#dias_planificacion').hide();
+    }
+}
+
+/**
+ * Actualiza el indicador de días de diferencia para fechas del evento
+ */
+function actualizarDiasEvento() {
+    const fechaInicio = $('#fecha_inicio_linea_ppto').val();
+    const fechaFin = $('#fecha_fin_linea_ppto').val();
+    
+    if (fechaInicio && fechaFin) {
+        const dias = calcularDiasDiferencia(fechaInicio, fechaFin);
+        
+        if (dias >= 0) {
+            $('#dias_evento_texto').text(`${dias} día${dias !== 1 ? 's' : ''}`);
+            $('#dias_evento').show();
+        } else {
+            $('#dias_evento').hide();
+            console.warn('La fecha fin del evento es anterior a la fecha inicio');
+        }
+    } else {
+        $('#dias_evento').hide();
+    }
 }
