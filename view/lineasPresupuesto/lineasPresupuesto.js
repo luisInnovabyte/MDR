@@ -818,6 +818,16 @@ function cargarArticulosDisponibles() {
                         allowClear: true,
                         width: '100%'
                     });
+                    
+                    // Event listener para cuando cambia el artículo
+                    select.on('change', function() {
+                        const idArticulo = $(this).val();
+                        if (idArticulo) {
+                            verificarEstadoCoeficienteArticulo(idArticulo);
+                        } else {
+                            ocultarInfoEstadoCoeficiente();
+                        }
+                    });
                 }
             }
         },
@@ -972,4 +982,91 @@ function actualizarDiasEvento() {
     } else {
         $('#dias_evento').hide();
     }
+}
+
+/**
+ * Verifica el estado del coeficiente para un artículo
+ * @param {number} idArticulo - ID del artículo seleccionado
+ */
+function verificarEstadoCoeficienteArticulo(idArticulo) {
+    $.ajax({
+        url: '../../controller/articulo.php?op=get_estado_coeficiente',
+        type: 'POST',
+        data: { id_articulo: idArticulo },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                mostrarInfoEstadoCoeficiente(response.estado_coeficiente, response.mensaje);
+            } else {
+                console.error('Error al obtener estado de coeficiente:', response.message);
+                ocultarInfoEstadoCoeficiente();
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error en la petición AJAX:', error);
+            ocultarInfoEstadoCoeficiente();
+        }
+    });
+}
+
+/**
+ * Muestra el mensaje de estado del coeficiente según el código recibido
+ * @param {number} estadoCodigo - Código del estado (1, 2, 3, 4)
+ * @param {string} mensaje - Mensaje descriptivo
+ */
+function mostrarInfoEstadoCoeficiente(estadoCodigo, mensaje) {
+    const infoDiv = $('#info_estado_coeficiente');
+    const textoSpan = $('#texto_estado_coeficiente');
+    const checkbox = $('#aplicar_coeficiente_linea_ppto');
+    
+    // Remover clases de color previas
+    infoDiv.removeClass('alert-success alert-danger alert-warning alert-info');
+    
+    // Configurar según el código
+    switch(estadoCodigo) {
+        case 1:
+            // Artículo con coeficiente propio activo
+            infoDiv.addClass('alert-success');
+            textoSpan.html(`<strong>Estado: 1</strong> - ${mensaje}`);
+            checkbox.prop('checked', true); // Activar checkbox
+            break;
+            
+        case 2:
+            // Artículo que NO permite coeficientes
+            infoDiv.addClass('alert-danger');
+            textoSpan.html(`<strong>Estado: 2</strong> - ${mensaje}`);
+            checkbox.prop('checked', false); // Desactivar checkbox
+            break;
+            
+        case 3:
+            // Usa coeficiente de la familia
+            infoDiv.addClass('alert-info');
+            textoSpan.html(`<strong>Estado: 3</strong> - ${mensaje}`);
+            checkbox.prop('checked', true); // Activar checkbox
+            break;
+            
+        case 4:
+            // Familia sin coeficientes configurados
+            infoDiv.addClass('alert-warning');
+            textoSpan.html(`<strong>Estado: 4</strong> - ${mensaje}`);
+            checkbox.prop('checked', false); // Desactivar checkbox
+            break;
+            
+        default:
+            infoDiv.addClass('alert-secondary');
+            textoSpan.html(`<strong>Estado desconocido</strong> - ${mensaje}`);
+            checkbox.prop('checked', false); // Por defecto desactivar
+    }
+    
+    infoDiv.show();
+    
+    // Disparar el evento change del checkbox para actualizar la UI del formulario
+    checkbox.trigger('change');
+}
+
+/**
+ * Oculta el mensaje de estado del coeficiente
+ */
+function ocultarInfoEstadoCoeficiente() {
+    $('#info_estado_coeficiente').hide();
 }

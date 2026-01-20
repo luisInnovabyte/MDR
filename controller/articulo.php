@@ -582,4 +582,23 @@ switch ($_GET["op"]) {
         }
         break;
 
+    case "get_estado_coeficiente":
+        // Obtener el estado del coeficiente de un artículo
+        $id_articulo = $_POST['id_articulo'] ?? null;
+        
+        if (empty($id_articulo)) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de artículo no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+        
+        $resultado = $articulo->get_estado_coeficiente_articulo($id_articulo);
+        
+        header('Content-Type: application/json');
+        echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
+        break;
+
 }

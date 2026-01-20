@@ -606,4 +606,108 @@ class Articulo
         }
     }
 
+    /**
+     * Obtiene el estado del coeficiente para un artículo
+     * Retorna:
+     * 1 = Artículo con coeficiente propio activo
+     * 2 = Artículo que NO permite coeficientes
+     * 3 = Usa coeficiente de la familia (heredado)
+     * 4 = Familia sin coeficientes configurados
+     */
+    public function get_estado_coeficiente_articulo($id_articulo)
+    {
+        try {
+            // Obtener datos del artículo
+            $sql = "SELECT coeficiente_articulo, id_familia 
+                    FROM articulo 
+                    WHERE id_articulo = ? 
+                    AND activo_articulo = 1";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_articulo, PDO::PARAM_INT);
+            $stmt->execute();
+            $articulo = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$articulo) {
+                return [
+                    'success' => false,
+                    'message' => 'Artículo no encontrado',
+                    'estado_coeficiente' => null
+                ];
+            }
+            
+            $coeficiente_articulo = $articulo['coeficiente_articulo'];
+            $id_familia = $articulo['id_familia'];
+            
+            // Evaluar según la lógica solicitada
+            if ($coeficiente_articulo == 2) {
+                // Artículo que NO permite coeficientes
+                return [
+                    'success' => true,
+                    'estado_coeficiente' => 2,
+                    'mensaje' => 'Este artículo NO permite aplicar coeficientes'
+                ];
+            } elseif ($coeficiente_articulo == 1) {
+                // Artículo con coeficiente propio activo
+                return [
+                    'success' => true,
+                    'estado_coeficiente' => 1,
+                    'mensaje' => 'Artículo con coeficiente propio activo'
+                ];
+            } else {
+                // coeficiente_articulo == 0, consultar familia
+                $sql_familia = "SELECT coeficiente_familia 
+                                FROM familia 
+                                WHERE id_familia = ? 
+                                AND activo_familia = 1";
+                
+                $stmt_familia = $this->conexion->prepare($sql_familia);
+                $stmt_familia->bindValue(1, $id_familia, PDO::PARAM_INT);
+                $stmt_familia->execute();
+                $familia = $stmt_familia->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$familia) {
+                    return [
+                        'success' => false,
+                        'message' => 'Familia no encontrada',
+                        'estado_coeficiente' => null
+                    ];
+                }
+                
+                if ($familia['coeficiente_familia'] == 1) {
+                    // Usa coeficiente de la familia
+                    return [
+                        'success' => true,
+                        'estado_coeficiente' => 3,
+                        'mensaje' => 'Usa coeficiente heredado de la familia'
+                    ];
+                } else {
+                    // Familia sin coeficientes configurados
+                    return [
+                        'success' => true,
+                        'estado_coeficiente' => 4,
+                        'mensaje' => 'Familia sin coeficientes configurados'
+                    ];
+                }
+            }
+            
+        } catch (PDOException $e) {
+            if (isset($this->registro)) {
+                $this->registro->registrarActividad(
+                    null,
+                    'Articulo',
+                    'get_estado_coeficiente_articulo',
+                    "Error al obtener estado de coeficiente: " . $e->getMessage(),
+                    'error'
+                );
+            }
+            
+            return [
+                'success' => false,
+                'message' => 'Error al consultar estado de coeficiente',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
 }

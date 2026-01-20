@@ -242,6 +242,12 @@
                                 </label>
                             </div>
                             <small class="text-muted d-block mt-1">Se calculará automáticamente según las fechas de inicio y fin del evento</small>
+                            
+                            <!-- Indicador de estado de coeficiente del artículo -->
+                            <div id="info_estado_coeficiente" class="alert mt-2 mb-0 py-2" style="display: none;">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span id="texto_estado_coeficiente"></span>
+                            </div>
                         </div>
                         <div class="card-body d-none" id="campos_coeficiente">
                             <div class="row align-items-center">
