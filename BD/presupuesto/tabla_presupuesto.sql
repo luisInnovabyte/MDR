@@ -208,3 +208,37 @@ ADD INDEX idx_descuento_presupuesto (descuento_presupuesto);
    ENTONCES aplicar presupuesto.descuento_presupuesto
    SINO descuento = 0
 
+
+
+-- ============================================
+-- ALTER TABLE: presupuesto_cabecera
+-- Descripción: Añade campos para sistema de versiones
+-- Fecha: 2025-01-12
+-- ============================================
+
+-- Renombrar la tabla si aún se llama 'presupuesto'
+-- RENAME TABLE presupuesto TO presupuesto_cabecera;
+
+-- Añadir campos de control de versiones
+ALTER TABLE presupuesto_cabecera
+    -- Versión actual activa del presupuesto
+    ADD COLUMN version_actual_presupuesto INT UNSIGNED NOT NULL DEFAULT 1 
+        COMMENT 'Número de versión activa actual' 
+        AFTER id_estado_ppto,
+    
+    -- Estado general del presupuesto (puede diferir del estado de cada versión)
+    ADD COLUMN estado_general_presupuesto ENUM(
+        'borrador', 
+        'enviado', 
+        'aprobado', 
+        'rechazado', 
+        'cancelado'
+    ) NOT NULL DEFAULT 'borrador' 
+        COMMENT 'Estado general del presupuesto (sincronizado con version_actual)' 
+        AFTER version_actual_presupuesto,
+    
+    -- Índice para búsquedas por versión actual
+    ADD INDEX idx_version_actual_presupuesto (version_actual_presupuesto),
+    
+    -- Índice para búsquedas por estado general
+    ADD INDEX idx_estado_general_presupuesto (estado_general_presupuesto);

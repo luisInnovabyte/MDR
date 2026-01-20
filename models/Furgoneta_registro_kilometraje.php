@@ -36,8 +36,8 @@ class Furgoneta_registro_kilometraje
     public function get_registros_km()
     {
         try {
-            $sql = "SELECT * from vista_kilometraje_completo
-                    ORDER BY rk.fecha_registro_km DESC";
+            $sql = "SELECT * FROM vista_kilometraje_completo
+                    ORDER BY fecha_registro_km DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
@@ -61,7 +61,7 @@ class Furgoneta_registro_kilometraje
     public function get_registro_kmxid($id_registro_km)
     {
         try {
-            $sql = "SELECT * from vista_kilometraje_completo
+            $sql = "SELECT * FROM vista_kilometraje_completo
                     WHERE id_registro_km = ?";
             
             $stmt = $this->conexion->prepare($sql);
@@ -239,6 +239,7 @@ class Furgoneta_registro_kilometraje
 
     // =====================================================
     // MÉTODO 7: Actualizar registro
+    // NOTA: updated_at_registro_km se actualiza automáticamente
     // =====================================================
     public function update_registro_km(
         $id_registro_km,
@@ -255,6 +256,7 @@ class Furgoneta_registro_kilometraje
                 $tipo_registro = 'manual';
             }
 
+            // El campo updated_at_registro_km se actualiza automáticamente
             $sql = "UPDATE furgoneta_registro_kilometraje SET 
                         id_furgoneta = ?,
                         fecha_registro_km = ?,
@@ -301,7 +303,7 @@ class Furgoneta_registro_kilometraje
     public function get_registros_por_tipo($id_furgoneta, $tipo_registro)
     {
         try {
-            $sql = "SELECT * from vista_kilometraje_completo
+            $sql = "SELECT * FROM vista_kilometraje_completo
                     WHERE id_furgoneta = ?
                     AND tipo_registro_km = ?
                     ORDER BY fecha_registro_km DESC";
@@ -330,10 +332,10 @@ class Furgoneta_registro_kilometraje
     public function get_registros_por_fecha($id_furgoneta, $fecha_inicio, $fecha_fin)
     {
         try {
-            $sql = "SELECT * from vista_kilometraje_completo
-                    WHERE rk.id_furgoneta = ?
-                    AND rk.fecha_registro_km BETWEEN ? AND ?
-                    ORDER BY rk.fecha_registro_km DESC";
+            $sql = "SELECT * FROM vista_kilometraje_completo
+                    WHERE id_furgoneta = ?
+                    AND fecha_registro_km BETWEEN ? AND ?
+                    ORDER BY fecha_registro_km DESC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_furgoneta, PDO::PARAM_INT);

@@ -1,21 +1,21 @@
 -- ============================================
--- Vista: vista_presupuesto_completa
--- Descripción: Vista completa de presupuestos con todas las relaciones
--- Fecha: 2024-12-18
--- Actualización: 2024-12-19 - Añadido sistema de descuentos
+-- SCRIPT: Actualización de vista_presupuesto_completa
+-- OBJETIVO: Añadir información de la versión actual del presupuesto
+-- FECHA: 20 de enero de 2026
 -- 
--- DEPENDENCIAS:
---   - presupuesto (tabla)
---   - cliente (tabla)
---   - contacto_cliente (tabla)
---   - estado_presupuesto (tabla)
---   - forma_pago (tabla)
---   - metodo_pago (tabla)
---   - metodos_contacto (tabla)
+-- CAMBIOS REALIZADOS:
+-- 1. Añadido campo version_actual_presupuesto en SELECT
+-- 2. Añadido JOIN con presupuesto_version para obtener id_version_actual
+-- 3. Añadidos campos de versión: id_version_actual, numero_version_actual, 
+--    estado_version_actual, fecha_creacion_version_actual
 -- ============================================
 
+USE toldos_db;
+
+-- Eliminar vista existente
 DROP VIEW IF EXISTS vista_presupuesto_completa;
 
+-- Recrear vista con los nuevos campos
 CREATE VIEW vista_presupuesto_completa AS
 SELECT 
     -- =====================================================
@@ -23,13 +23,14 @@ SELECT
     -- =====================================================
     p.id_presupuesto,
     p.numero_presupuesto,
+    p.version_actual_presupuesto,                -- ← VERSIÓN ACTUAL DEL PRESUPUESTO
     p.fecha_presupuesto,
     p.fecha_validez_presupuesto,
     p.fecha_inicio_evento_presupuesto,
     p.fecha_fin_evento_presupuesto,
     p.numero_pedido_cliente_presupuesto,
     p.aplicar_coeficientes_presupuesto,
-    p.descuento_presupuesto,                     -- ← NUEVO CAMPO DESCUENTOS
+    p.descuento_presupuesto,
     p.nombre_evento_presupuesto,
     p.direccion_evento_presupuesto,
     p.poblacion_evento_presupuesto,
@@ -59,7 +60,7 @@ SELECT
     c.provincia_cliente,
     c.telefono_cliente,
     c.email_cliente,
-    c.porcentaje_descuento_cliente,              -- ← NUEVO CAMPO DESCUENTOS
+    c.porcentaje_descuento_cliente,
     
     -- Dirección de facturación del cliente
     c.nombre_facturacion_cliente,
@@ -221,7 +222,7 @@ SELECT
     END AS fecha_vencimiento_final,
     
     -- =====================================================
-    -- CAMPOS CALCULADOS - SISTEMA DE DESCUENTOS (NUEVOS)
+    -- CAMPOS CALCULADOS - SISTEMA DE DESCUENTOS
     -- =====================================================
     
     -- Comparación descuento presupuesto vs descuento cliente
@@ -261,6 +262,14 @@ SELECT
     (TO_DAYS(CURDATE()) - TO_DAYS(p.fecha_presupuesto)) AS dias_desde_emision,
     
     -- =====================================================
+    -- DATOS DE LA VERSIÓN ACTUAL DEL PRESUPUESTO
+    -- =====================================================
+    pv.id_version_presupuesto AS id_version_actual,
+    pv.numero_version_presupuesto AS numero_version_actual,
+    pv.estado_version_presupuesto AS estado_version_actual,
+    pv.fecha_creacion_version AS fecha_creacion_version_actual,
+    
+    -- =====================================================
     -- CAMPOS CALCULADOS - ESTADO GENERAL
     -- =====================================================
     CASE
@@ -294,4 +303,23 @@ LEFT JOIN metodos_contacto mc
     ON p.id_metodo = mc.id_metodo
 
 LEFT JOIN forma_pago fph 
-    ON c.id_forma_pago_habitual = fph.id_pago;
+    ON c.id_forma_pago_habitual = fph.id_pago
+
+LEFT JOIN presupuesto_version pv
+    ON p.id_presupuesto = pv.id_presupuesto
+    AND pv.numero_version_presupuesto = p.version_actual_presupuesto;
+
+-- Verificar la vista
+SELECT 'Vista actualizada correctamente' AS mensaje;
+SELECT COUNT(*) AS total_registros FROM vista_presupuesto_completa;
+
+-- Mostrar ejemplo de los nuevos campos
+SELECT 
+    id_presupuesto,
+    numero_presupuesto,
+    version_actual_presupuesto,
+    id_version_actual,
+    numero_version_actual,
+    estado_version_actual
+FROM vista_presupuesto_completa
+LIMIT 5;

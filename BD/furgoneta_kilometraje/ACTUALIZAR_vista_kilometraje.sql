@@ -1,11 +1,14 @@
 -- ========================================================
--- VISTA: vista_kilometraje_completo
--- DESCRIPCIÓN: Registro de kilometraje con información de furgoneta
---              y cálculos automáticos de km recorridos, días y promedios
--- FECHA CREACIÓN: 2024-12-20
--- ÚLTIMA ACTUALIZACIÓN: 2026-01-03
+-- SCRIPT DE ACTUALIZACIÓN: Vista kilometraje_completo
+-- DESCRIPCIÓN: Actualiza la vista para usar LAG() en lugar de subconsultas
+--              Esto mejora el rendimiento y corrige el cálculo de días y km/día
+-- FECHA: 2026-01-03
 -- ========================================================
 
+-- Eliminar vista anterior si existe
+DROP VIEW IF EXISTS vista_kilometraje_completo;
+
+-- Crear vista actualizada con LAG()
 CREATE OR REPLACE VIEW vista_kilometraje_completo AS
 SELECT 
     -- =====================================================
@@ -31,7 +34,8 @@ SELECT
     -- =====================================================
     -- CÁLCULO: Kilómetros recorridos desde registro anterior
     -- Usando LAG() para obtener el kilometraje anterior
-    -- El ORDER BY usa fecha ASC y kilometraje ASC para ordenamiento correcto
+    -- El ORDER BY usa fecha_registro_km DESC y luego kilometraje ASC
+    -- para que los registros del mismo día se ordenen por km menor a mayor
     -- =====================================================
     COALESCE(
         rk.kilometraje_registrado_km - LAG(rk.kilometraje_registrado_km) 
@@ -84,3 +88,19 @@ SELECT
 FROM furgoneta_registro_kilometraje rk
 INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
 ORDER BY rk.id_furgoneta ASC, rk.fecha_registro_km DESC, rk.kilometraje_registrado_km DESC;
+
+-- ========================================================
+-- VERIFICACIÓN: Consultar datos de prueba
+-- ========================================================
+-- Descomenta las siguientes líneas para verificar:
+-- SELECT * FROM vista_kilometraje_completo LIMIT 10;
+-- 
+-- SELECT 
+--     fecha_registro_km,
+--     kilometraje_registrado_km,
+--     km_recorridos,
+--     dias_transcurridos,
+--     km_promedio_diario
+-- FROM vista_kilometraje_completo
+-- WHERE id_furgoneta = 1
+-- ORDER BY fecha_registro_km DESC;

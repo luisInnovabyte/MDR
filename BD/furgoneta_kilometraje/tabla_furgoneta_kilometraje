@@ -35,6 +35,7 @@ CREATE TABLE furgoneta_registro_kilometraje (
     -- CONTROL
     -- =====================================================
     created_at_registro_km TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_registro_km TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     -- =====================================================
     -- RESTRICCIONES DE CLAVE FORÁNEA

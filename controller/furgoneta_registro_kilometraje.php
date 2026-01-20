@@ -29,7 +29,8 @@ switch ($_GET["op"]) {
                 "kilometraje_registrado_km" => $row["kilometraje_registrado_km"],
                 "tipo_registro_km" => $row["tipo_registro_km"] ?? 'manual',
                 "observaciones_registro_km" => $row["observaciones_registro_km"] ?? '',
-                "created_at_registro_km" => $row["created_at_registro_km"]
+                "created_at_registro_km" => $row["created_at_registro_km"],
+                "updated_at_registro_km" => $row["updated_at_registro_km"] ?? null
             );
         }
 
@@ -90,7 +91,8 @@ switch ($_GET["op"]) {
                 "km_promedio_diario" => $row["km_promedio_diario"] ?? 0,
                 "tipo_registro_km" => $row["tipo_registro_km"] ?? 'manual',
                 "observaciones_registro_km" => $row["observaciones_registro_km"] ?? '',
-                "created_at_registro_km" => $row["created_at_registro_km"]
+                "created_at_registro_km" => $row["created_at_registro_km"],
+                "updated_at_registro_km" => $row["updated_at_registro_km"] ?? null
             );
         }
 

@@ -28,6 +28,7 @@ switch ($op) {
                 // Datos básicos del presupuesto
                 "id_presupuesto" => $row["id_presupuesto"],
                 "numero_presupuesto" => $row["numero_presupuesto"],
+                "version_actual_presupuesto" => $row["version_actual_presupuesto"] ?? 1,
                 "fecha_presupuesto" => $row["fecha_presupuesto"],
                 "fecha_validez_presupuesto" => $row["fecha_validez_presupuesto"],
                 "fecha_inicio_evento_presupuesto" => $row["fecha_inicio_evento_presupuesto"],
@@ -149,7 +150,13 @@ switch ($op) {
                 // Campos calculados - Información adicional
                 "tiene_direccion_facturacion_diferente" => isset($row["tiene_direccion_facturacion_diferente"]) ? (bool)$row["tiene_direccion_facturacion_diferente"] : false,
                 "dias_desde_emision" => $row["dias_desde_emision"] ?? null,
-                "prioridad_presupuesto" => $row["prioridad_presupuesto"] ?? null
+                "prioridad_presupuesto" => $row["prioridad_presupuesto"] ?? null,
+                
+                // Datos de la versión actual
+                "id_version_actual" => $row["id_version_actual"] ?? null,
+                "numero_version_actual" => $row["numero_version_actual"] ?? null,
+                "estado_version_actual" => $row["estado_version_actual"] ?? null,
+                "fecha_creacion_version_actual" => $row["fecha_creacion_version_actual"] ?? null
             );
         }
 
@@ -634,7 +641,111 @@ echo json_encode([
 
 exit;
 
+    // =========================================================
+    // CASE: get_info_version
+    // Obtiene información de una versión específica de presupuesto
+    // =========================================================
+    case "get_info_version":
+        $id_version_presupuesto = $_POST["id_version_presupuesto"] ?? null;
+        
+        if (!$id_version_presupuesto) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de versión no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
 
+        $datos = $presupuesto->get_info_version($id_version_presupuesto);
+        
+        // Si hay un error SQL, mostrarlo
+        if (is_array($datos) && isset($datos['error'])) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error SQL: ' . $datos['error'],
+                'sql_error' => $datos['error']
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+        
+        if ($datos) {
+            $registro->registrarActividad(
+                $_SESSION['usuario'] ?? 'admin',
+                'presupuesto.php',
+                'get_info_version',
+                "Info de versión obtenida: ID {$id_version_presupuesto}",
+                'info'
+            );
 
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'data' => $datos
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'No se pudo obtener la información de la versión'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+    // =========================================================
+    // CASE: get_fechas_evento
+    // Obtiene las fechas del evento para inicializar líneas
+    // =========================================================
+    case "get_fechas_evento":
+        $id_version_presupuesto = $_POST["id_version_presupuesto"] ?? null;
+        
+        if (!$id_version_presupuesto) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de versión no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        // Obtener fechas desde el presupuesto
+        $sql = "SELECT 
+                    p.fecha_inicio_evento_presupuesto,
+                    p.fecha_fin_evento_presupuesto
+                FROM presupuesto_version pv
+                INNER JOIN presupuesto p ON pv.id_presupuesto = p.id_presupuesto
+                WHERE pv.id_version_presupuesto = ?";
+        
+        try {
+            $conexion = (new Conexion())->getConexion();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindValue(1, $id_version_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($datos) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'data' => [
+                        'fecha_inicio_evento' => $datos['fecha_inicio_evento_presupuesto'],
+                        'fecha_fin_evento' => $datos['fecha_fin_evento_presupuesto']
+                    ]
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'No se encontraron fechas para esta versión'
+                ], JSON_UNESCAPED_UNICODE);
+            }
+        } catch (PDOException $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al obtener fechas: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+        break;
 }
 ?>

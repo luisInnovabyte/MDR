@@ -211,6 +211,85 @@ class Presupuesto
         }
     }
 
+    /**
+     * Obtiene información de una versión específica de presupuesto
+     * Incluye datos del presupuesto cabecera, versión y cliente
+     * 
+     * @param int $id_version_presupuesto ID de la versión
+     * @return array|false Datos de la versión o false en caso de error
+     */
+    public function get_info_version($id_version_presupuesto)
+    {
+        try {
+            $sql = "SELECT 
+                        -- Datos de la versión
+                        pv.id_version_presupuesto,
+                        pv.numero_version_presupuesto,
+                        pv.estado_version_presupuesto,
+                        pv.motivo_modificacion_version,
+                        pv.fecha_creacion_version,
+                        pv.creado_por_version,
+                        
+                        -- Datos del presupuesto cabecera
+                        p.id_presupuesto,
+                        p.numero_presupuesto,
+                        p.nombre_evento_presupuesto,
+                        p.fecha_presupuesto,
+                        p.fecha_validez_presupuesto,
+                        p.fecha_inicio_evento_presupuesto,
+                        p.fecha_fin_evento_presupuesto,
+                        
+                        -- Datos del cliente
+                        c.id_cliente,
+                        c.nombre_cliente,
+                        c.email_cliente,
+                        c.telefono_cliente
+                        
+                    FROM presupuesto_version pv
+                    INNER JOIN presupuesto p ON pv.id_presupuesto = p.id_presupuesto
+                    INNER JOIN cliente c ON p.id_cliente = c.id_cliente
+                    WHERE pv.id_version_presupuesto = ?
+                    AND pv.activo_version = 1";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_version_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($resultado) {
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Presupuesto',
+                    'get_info_version',
+                    "Info versión obtenida: {$id_version_presupuesto}",
+                    'info'
+                );
+                return $resultado;
+            } else {
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Presupuesto',
+                    'get_info_version',
+                    "No se encontró la versión {$id_version_presupuesto}",
+                    'warning'
+                );
+                return false;
+            }
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Presupuesto',
+                'get_info_version',
+                "Error SQL: " . $e->getMessage() . " | Query para versión: {$id_version_presupuesto}",
+                'error'
+            );
+
+            // Retornar el error para debugging
+            return ['error' => $e->getMessage()];
+        }
+    }
+
     public function delete_presupuestoxid($id_presupuesto)
     {
         try {

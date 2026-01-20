@@ -215,9 +215,16 @@ $(document).ready(function () {
             {
                 targets: "lineas:name", width: '5%', searchable: false, orderable: false, class: "text-center",
                 render: function (data, type, row) {
-                    return `<button type="button" class="btn btn-primary btn-sm gestionarLineas" data-toggle="tooltip-primary" data-placement="top" title="Gestionar líneas"  
-                             data-id_presupuesto="${row.id_presupuesto}"> 
-                             <i class="bi bi-list-ul"></i>
+                    // Verificar si existe versión actual
+                    if (!row.id_version_actual) {
+                        return `<button type="button" class="btn btn-secondary btn-sm" disabled title="Sin versión actual"> 
+                                 <i class="fas fa-list"></i>
+                                 </button>`;
+                    }
+                    return `<button type="button" class="btn btn-info btn-sm gestionarLineas" data-toggle="tooltip-primary" data-placement="top" title="Ver líneas de presupuesto (versión actual)"  
+                             data-id_version_presupuesto="${row.id_version_actual}"
+                             data-numero_version="${row.numero_version_actual || 1}"> 
+                             <i class="fas fa-list"></i>
                              </button>`;
                 }
             }
@@ -245,6 +252,9 @@ $(document).ready(function () {
         deferRender: true,
         scrollX: true,
         scrollCollapse: true,
+        fixedColumns: {
+            left: 3  // Fija las 3 primeras columnas (ID, Número, Fecha)
+        },
         order: [[1, 'desc']],
         pageLength: 10,
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]]
@@ -538,10 +548,17 @@ $(document).ready(function () {
         window.location.href = 'formularioPresupuesto.php?modo=editar&id=' + id_presupuesto;
     });
 
-    // Gestionar líneas del presupuesto
+    // Gestionar líneas del presupuesto (versión actual)
     $(document).on('click', '.gestionarLineas', function () {
-        var id_presupuesto = $(this).data('id_presupuesto');
-        window.location.href = './Presupuesto_pies/index.php?id_presupuesto=' + id_presupuesto;
+        var id_version_presupuesto = $(this).data('id_version_presupuesto');
+        var numero_version = $(this).data('numero_version') || 1;
+        
+        console.log('Redirigiendo a líneas de presupuesto:', {
+            id_version: id_version_presupuesto,
+            numero_version: numero_version
+        });
+        
+        window.location.href = '../lineasPresupuesto/index.php?id_version_presupuesto=' + id_version_presupuesto;
     });
 
     /************************************/

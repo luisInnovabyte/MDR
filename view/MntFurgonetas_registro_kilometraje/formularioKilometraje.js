@@ -28,7 +28,7 @@ $(document).ready(function () {
     // Establecer fecha actual por defecto
     const hoy = new Date().toISOString().split('T')[0];
     $('#fecha_registro_km').val(hoy);
-    $('#fecha_registro_km').attr('max', hoy);
+    // NO establecer max para permitir fechas futuras si es necesario
 
     // Evento submit del formulario
     $('#formKilometraje').on('submit', function (e) {

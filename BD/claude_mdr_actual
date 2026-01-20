@@ -4073,77 +4073,6 @@ CREATE TABLE documento (
 
 
 
-## 4. TABLA DE LÍNEAS DE PRESUPUESTO
-
-
--- ========================================================
--- TABLA DE LÍNEAS DE PRESUPUESTO
--- ========================================================
-
-CREATE TABLE linea_presupuesto (
-    id_linea_ppto INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    id_presupuesto INT UNSIGNED NOT NULL,
-    id_articulo INT UNSIGNED,
-    numero_linea_ppto INT NOT NULL,
-    tipo_linea_ppto ENUM('articulo', 'kit', 'seccion', 'texto', 'subtotal') DEFAULT 'articulo',
-    
-    -- Datos del artículo
-    codigo_linea_ppto VARCHAR(50),
-    descripcion_linea_ppto TEXT NOT NULL,
-    
-    -- Cantidades y precios
-    cantidad_linea_ppto DECIMAL(10,2) DEFAULT 1.00,
-    precio_unitario_linea_ppto DECIMAL(10,2) DEFAULT 0.00,
-    descuento_linea_ppto DECIMAL(5,2) DEFAULT 0.00,
-    
-    -- Coeficiente reductor
-    jornadas_linea_ppto INT,
-    id_coeficiente INT UNSIGNED,
-    valor_coeficiente_linea_ppto DECIMAL(10,2),
-    
-    -- IVA
-    id_iva INT UNSIGNED,
-    porcentaje_iva_linea_ppto DECIMAL(5,2) DEFAULT 21.00,
-    
-    -- Totales
-    subtotal_linea_ppto DECIMAL(10,2) DEFAULT 0.00,
-    total_linea_ppto DECIMAL(10,2) DEFAULT 0.00,
-    
-    -- Observaciones específicas de esta línea
-    observaciones_linea_ppto TEXT COMMENT 'Observaciones específicas de esta línea en concreto',
-    mostrar_obs_articulo_linea_ppto BOOLEAN DEFAULT TRUE COMMENT 'Mostrar las observaciones del artículo',
-    
-    orden_linea_ppto INT DEFAULT 0,
-    activo_linea_ppto BOOLEAN DEFAULT TRUE,
-    created_at_linea_ppto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at_linea_ppto TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_linea_ppto_presupuesto FOREIGN KEY (id_presupuesto) 
-        REFERENCES presupuesto(id_presupuesto) 
-        ON DELETE CASCADE 
-        ON UPDATE CASCADE,
-    CONSTRAINT fk_linea_ppto_articulo FOREIGN KEY (id_articulo) 
-        REFERENCES articulo(id_articulo) 
-        ON DELETE SET NULL 
-        ON UPDATE CASCADE,
-    CONSTRAINT fk_linea_ppto_coeficiente FOREIGN KEY (id_coeficiente) 
-        REFERENCES coeficiente(id_coeficiente) 
-        ON DELETE SET NULL 
-        ON UPDATE CASCADE,
-    CONSTRAINT fk_linea_ppto_iva FOREIGN KEY (id_iva) 
-        REFERENCES tipo_iva(id_iva) 
-        ON DELETE SET NULL 
-        ON UPDATE CASCADE,
-    
-    INDEX idx_id_presupuesto_linea (id_presupuesto),
-    INDEX idx_id_articulo_linea (id_articulo),
-    INDEX idx_orden_linea_ppto (orden_linea_ppto)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-## 5. TABLA PARA VINCULAR OBSERVACIONES ESPECÍFICAS AL PRESUPUESTO
-
-
 -- ========================================================
 -- TABLA DE OBSERVACIONES VINCULADAS A PRESUPUESTOS
 -- ========================================================
@@ -4964,6 +4893,7 @@ CREATE TABLE furgoneta_registro_kilometraje (
     -- CONTROL
     -- =====================================================
     created_at_registro_km TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at_registro_km TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     -- =====================================================
     -- RESTRICCIONES DE CLAVE FORÁNEA
@@ -4982,7 +4912,6 @@ CREATE TABLE furgoneta_registro_kilometraje (
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 
 COMMENT='Registro histórico de kilometraje de furgonetas';
-
 
 
 
@@ -5210,10 +5139,18 @@ SELECT
 FROM furgoneta f;
 
 -- ========================================================
--- VISTA 2: Registro de kilometraje con información de furgoneta
+-- VISTA: vista_kilometraje_completo
+-- DESCRIPCIÓN: Registro de kilometraje con información de furgoneta
+--              y cálculos automáticos de km recorridos, días y promedios
+-- FECHA CREACIÓN: 2024-12-20
+-- ÚLTIMA ACTUALIZACIÓN: 2026-01-03
 -- ========================================================
+
 CREATE OR REPLACE VIEW vista_kilometraje_completo AS
 SELECT 
+    -- =====================================================
+    -- DATOS DEL REGISTRO DE KILOMETRAJE
+    -- =====================================================
     rk.id_registro_km,
     rk.id_furgoneta,
     rk.fecha_registro_km,
@@ -5221,60 +5158,70 @@ SELECT
     rk.tipo_registro_km,
     rk.observaciones_registro_km,
     rk.created_at_registro_km,
+    rk.updated_at_registro_km,
     
-    -- Datos de la furgoneta
+    -- =====================================================
+    -- DATOS DE LA FURGONETA
+    -- =====================================================
     f.matricula_furgoneta,
     f.marca_furgoneta,
     f.modelo_furgoneta,
     f.estado_furgoneta,
     
-    -- Cálculo de kilómetros recorridos desde el registro anterior
+    -- =====================================================
+    -- CÁLCULO: Kilómetros recorridos desde registro anterior
+    -- =====================================================
     (rk.kilometraje_registrado_km - 
      COALESCE((SELECT kilometraje_registrado_km 
                FROM furgoneta_registro_kilometraje 
                WHERE id_furgoneta = rk.id_furgoneta 
                AND fecha_registro_km < rk.fecha_registro_km 
-               ORDER BY fecha_registro_km DESC 
+               ORDER BY fecha_registro_km DESC, kilometraje_registrado_km DESC 
                LIMIT 1), 0)) AS km_recorridos,
     
-    -- Días transcurridos desde el registro anterior
+    -- =====================================================
+    -- CÁLCULO: Días transcurridos desde registro anterior
+    -- =====================================================
     DATEDIFF(rk.fecha_registro_km,
              COALESCE((SELECT fecha_registro_km 
                        FROM furgoneta_registro_kilometraje 
                        WHERE id_furgoneta = rk.id_furgoneta 
                        AND fecha_registro_km < rk.fecha_registro_km 
-                       ORDER BY fecha_registro_km DESC 
+                       ORDER BY fecha_registro_km DESC, kilometraje_registrado_km DESC 
                        LIMIT 1), rk.fecha_registro_km)) AS dias_transcurridos,
     
-    -- Promedio diario de kilómetros
+    -- =====================================================
+    -- CÁLCULO: Promedio diario de kilómetros (km/día)
+    -- =====================================================
     CASE 
         WHEN DATEDIFF(rk.fecha_registro_km,
                      COALESCE((SELECT fecha_registro_km 
                                FROM furgoneta_registro_kilometraje 
                                WHERE id_furgoneta = rk.id_furgoneta 
                                AND fecha_registro_km < rk.fecha_registro_km 
-                               ORDER BY fecha_registro_km DESC 
+                               ORDER BY fecha_registro_km DESC, kilometraje_registrado_km DESC 
                                LIMIT 1), rk.fecha_registro_km)) > 0
-        THEN (rk.kilometraje_registrado_km - 
+        THEN ROUND(
+            (rk.kilometraje_registrado_km - 
               COALESCE((SELECT kilometraje_registrado_km 
                         FROM furgoneta_registro_kilometraje 
                         WHERE id_furgoneta = rk.id_furgoneta 
                         AND fecha_registro_km < rk.fecha_registro_km 
-                        ORDER BY fecha_registro_km DESC 
+                        ORDER BY fecha_registro_km DESC, kilometraje_registrado_km DESC 
                         LIMIT 1), 0)) / 
              DATEDIFF(rk.fecha_registro_km,
                      COALESCE((SELECT fecha_registro_km 
                                FROM furgoneta_registro_kilometraje 
                                WHERE id_furgoneta = rk.id_furgoneta 
                                AND fecha_registro_km < rk.fecha_registro_km 
-                               ORDER BY fecha_registro_km DESC 
-                               LIMIT 1), rk.fecha_registro_km))
+                               ORDER BY fecha_registro_km DESC, kilometraje_registrado_km DESC 
+                               LIMIT 1), rk.fecha_registro_km)), 2)
         ELSE 0
     END AS km_promedio_diario
 
 FROM furgoneta_registro_kilometraje rk
 INNER JOIN furgoneta f ON rk.id_furgoneta = f.id_furgoneta
-ORDER BY rk.fecha_registro_km DESC;
+ORDER BY rk.fecha_registro_km DESC, rk.kilometraje_registrado_km DESC;
 
 -- ========================================================
 -- VISTA 3: Mantenimientos con información completa
@@ -5791,3 +5738,125 @@ SELECT
 FROM kit k
 INNER JOIN articulo am ON k.id_articulo_maestro = am.id_articulo
 INNER JOIN articulo ac ON k.id_articulo_componente = ac.id_articulo;
+
+
+-- ========================================================
+-- ELIMINACIÓN Y RECREACIÓN DE TABLA LÍNEAS DE PRESUPUESTO
+-- ========================================================
+
+-- Eliminar la tabla si existe (cuidado: se perderán los datos)
+DROP TABLE IF EXISTS linea_presupuesto;
+
+-- ========================================================
+-- TABLA DE LÍNEAS DE PRESUPUESTO
+-- ========================================================
+-- Descripción: Líneas de detalle de cada versión de presupuesto 
+-- con soporte para KITs jerárquicos, fechas de planificación,
+-- ubicaciones específicas y coeficientes reductores
+-- ========================================================
+
+CREATE TABLE linea_presupuesto (
+    -- IDENTIFICACIÓN
+    id_linea_ppto INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    -- RELACIONES
+    id_version_presupuesto INT UNSIGNED NOT NULL COMMENT 'FK: Versión del presupuesto a la que pertenece esta línea',
+    id_articulo INT UNSIGNED COMMENT 'FK: Artículo original (NULL para líneas tipo texto/sección)',
+    id_linea_padre INT UNSIGNED COMMENT 'FK: Línea padre para componentes de KIT (NULL si es línea principal)',
+    id_ubicacion INT UNSIGNED COMMENT 'FK: Ubicación específica de montaje',
+    id_coeficiente INT UNSIGNED COMMENT 'FK: Coeficiente reductor aplicado',
+    id_impuesto INT COMMENT 'FK: Tipo de impuesto/IVA aplicado (INT sin UNSIGNED por compatibilidad con tabla impuesto)',
+    
+    -- ESTRUCTURA Y ORDEN
+    numero_linea_ppto INT NOT NULL COMMENT 'Número de línea visual en el presupuesto',
+    tipo_linea_ppto ENUM('articulo', 'kit', 'componente_kit', 'seccion', 'texto', 'subtotal') DEFAULT 'articulo' COMMENT 'Tipo de línea',
+    nivel_jerarquia TINYINT DEFAULT 0 COMMENT 'Nivel de anidamiento: 0=principal, 1=componente KIT, 2=sub-componente',
+    orden_linea_ppto INT DEFAULT 0 COMMENT 'Orden de visualización',
+    
+    -- DATOS DEL ARTÍCULO
+    codigo_linea_ppto VARCHAR(50) COMMENT 'Código del artículo',
+    descripcion_linea_ppto TEXT NOT NULL COMMENT 'Descripción de la línea',
+    
+    -- FECHAS DE PLANIFICACIÓN Y COBRO
+    fecha_montaje_linea_ppto DATE COMMENT 'Fecha orientativa de montaje (informativa para planning)',
+    fecha_desmontaje_linea_ppto DATE COMMENT 'Fecha orientativa de desmontaje (informativa para planning)',
+    fecha_inicio_linea_ppto DATE COMMENT 'Fecha REAL de inicio para el cobro (heredada pero modificable)',
+    fecha_fin_linea_ppto DATE COMMENT 'Fecha REAL de fin para el cobro (heredada pero modificable)',
+    
+    -- CANTIDADES Y PRECIOS
+    cantidad_linea_ppto DECIMAL(10,2) DEFAULT 1.00 COMMENT 'Cantidad de unidades',
+    precio_unitario_linea_ppto DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Precio unitario base (heredado del artículo pero modificable)',
+    descuento_linea_ppto DECIMAL(5,2) DEFAULT 0.00 COMMENT 'Descuento porcentual específico de la línea (%)',
+    
+    -- COEFICIENTE REDUCTOR
+    aplicar_coeficiente_linea_ppto BOOLEAN DEFAULT FALSE COMMENT 'Si se aplica coeficiente reductor (Sí/No)',
+    valor_coeficiente_linea_ppto DECIMAL(10,2) COMMENT 'Valor del coeficiente aplicado',
+    jornadas_linea_ppto INT COMMENT 'Número de jornadas para cálculo del coeficiente',
+    
+    -- IVA
+    porcentaje_iva_linea_ppto DECIMAL(5,2) DEFAULT 21.00 COMMENT 'Porcentaje de IVA aplicado',
+    
+    -- OBSERVACIONES
+    observaciones_linea_ppto TEXT COMMENT 'Observaciones específicas de esta línea',
+    mostrar_obs_articulo_linea_ppto BOOLEAN DEFAULT TRUE COMMENT 'Si mostrar las observaciones del artículo original',
+    
+    -- VISIBILIDAD
+    ocultar_detalle_kit_linea_ppto BOOLEAN DEFAULT FALSE COMMENT 'TRUE: no mostrar desglose del KIT | FALSE: mostrar componentes',
+    mostrar_en_presupuesto BOOLEAN DEFAULT TRUE COMMENT 'Si se muestra al cliente en el presupuesto',
+    es_opcional BOOLEAN DEFAULT FALSE COMMENT 'Si es una línea opcional',
+    
+    -- CONTROL
+    activo_linea_ppto BOOLEAN DEFAULT TRUE COMMENT 'Estado activo/inactivo',
+    created_at_linea_ppto TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de creación',
+    updated_at_linea_ppto TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Fecha de última actualización',
+    
+    -- CLAVES FORÁNEAS
+    CONSTRAINT fk_linea_ppto_version 
+        FOREIGN KEY (id_version_presupuesto) 
+        REFERENCES presupuesto_version(id_version_presupuesto) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    CONSTRAINT fk_linea_ppto_articulo 
+        FOREIGN KEY (id_articulo) 
+        REFERENCES articulo(id_articulo) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    
+    CONSTRAINT fk_linea_ppto_linea_padre 
+        FOREIGN KEY (id_linea_padre) 
+        REFERENCES linea_presupuesto(id_linea_ppto) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    
+    CONSTRAINT fk_linea_ppto_ubicacion 
+        FOREIGN KEY (id_ubicacion) 
+        REFERENCES cliente_ubicacion(id_ubicacion) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    
+    CONSTRAINT fk_linea_ppto_coeficiente 
+        FOREIGN KEY (id_coeficiente) 
+        REFERENCES coeficiente(id_coeficiente) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    
+    CONSTRAINT fk_linea_ppto_impuesto 
+        FOREIGN KEY (id_impuesto) 
+        REFERENCES impuesto(id_impuesto) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    
+    -- ÍNDICES
+    INDEX idx_id_version_presupuesto_linea (id_version_presupuesto),
+    INDEX idx_id_articulo_linea (id_articulo),
+    INDEX idx_orden_linea_ppto (orden_linea_ppto),
+    INDEX idx_tipo_linea (tipo_linea_ppto),
+    INDEX idx_linea_padre (id_linea_padre),
+    INDEX idx_fecha_montaje (fecha_montaje_linea_ppto),
+    INDEX idx_fecha_inicio (fecha_inicio_linea_ppto),
+    INDEX idx_ubicacion (id_ubicacion),
+    INDEX idx_impuesto (id_impuesto),
+    INDEX idx_activo (activo_linea_ppto)
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci COMMENT='Líneas de detalle de versiones de presupuesto con soporte para KITs jerárquicos';

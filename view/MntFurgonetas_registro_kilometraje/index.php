@@ -68,7 +68,7 @@
     </div><!-- br-sideright -->
     <!-- ########## END: RIGHT PANEL ########## -->
     <style>
-        #modalMantenimiento {
+        #modalKilometraje {
             z-index: 1050 !important;
         }
 
@@ -89,7 +89,7 @@
     <div class="br-pagetitle">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center">
-                <h4 class="mb-0 me-2">Registro de Kilometraje</h4>
+                <h4 class="mb-0 me-2">Registro de Kilometraje de Furgoneta</h4>
                 <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaKilometraje" title="Ayuda sobre el módulo">
                     <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
                 </button>
@@ -160,14 +160,102 @@
 
                 <!-- Botones de acción -->
                 <div class="d-flex gap-2">
-                    <a href="formularioKilometraje.php?modo=nuevo&id_furgoneta=<?php echo $_GET['id_furgoneta'] ?? ''; ?>" class="btn btn-oblong btn-outline-primary flex-shrink-0">
+                    <a href="formularioKilometraje.php?modo=nuevo&id_furgoneta=<?php echo $_GET['id_furgoneta'] ?? ''; ?>" class="btn btn-oblong btn-outline-primary flex-shrink-0 mt-2 mt-sm-0">
                         <i class="fas fa-plus-circle me-2"></i>Nuevo Registro
                     </a>
-                    <a href="../MntFurgonetas/index.php" class="btn btn-oblong btn-outline-secondary flex-shrink-0">
+                    <a href="../MntFurgonetas/index.php" class="btn btn-oblong btn-outline-secondary flex-shrink-0 mt-2 mt-sm-0">
                         <i class="fas fa-arrow-left me-2"></i>Volver a Furgonetas
                     </a>
                 </div>
             </div>
+
+            <!-- Acordeón de Filtros -->
+            <div id="accordion" class="accordion mb-3">
+                <div class="card">
+                    <!-- <div class="card-header p-0">
+                        <h6 class="mg-b-0">
+                            <a id="accordion-toggle" 
+                               class="d-block p-3 bg-primary text-white collapsed" 
+                               data-toggle="collapse" 
+                               href="#collapseOne"
+                               style="text-decoration: none;">
+                                <i class="fas fa-filter me-2"></i>Filtros de Kilometraje
+                            </a>
+                        </h6>
+                    </div> -->
+
+                    <div id="collapseOne" class="collapse" data-parent="#accordion">
+                        <div class="card-body pd-20 pt-3">
+                            <div class="row g-3">
+                                <!-- Bloque Tipo de Registro -->
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm h-100">
+                                        <div class="card-header bg-white border-bottom py-2">
+                                            <h6 class="mb-0 text-primary">
+                                                <i class="fas fa-tag me-2"></i>Tipo de Registro
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <div class="status-selector">
+                                                <div class="status-option">
+                                                    <input type="radio" name="filterTipo" id="filterAllTipo" value="all" class="status-radio" checked>
+                                                    <label for="filterAllTipo" class="status-label">
+                                                        <span class="status-icon">
+                                                            <i class="fas fa-layer-group"></i>
+                                                        </span>
+                                                        <span class="status-text">Todos</span>
+                                                    </label>
+                                                </div>
+                                                <div class="status-option">
+                                                    <input type="radio" name="filterTipo" id="filterManual" value="manual" class="status-radio">
+                                                    <label for="filterManual" class="status-label">
+                                                        <span class="status-icon">
+                                                            <i class="fas fa-hand-pointer"></i>
+                                                        </span>
+                                                        <span class="status-text">Manual</span>
+                                                    </label>
+                                                </div>
+                                                <div class="status-option">
+                                                    <input type="radio" name="filterTipo" id="filterRevision" value="revision" class="status-radio">
+                                                    <label for="filterRevision" class="status-label">
+                                                        <span class="status-icon">
+                                                            <i class="fas fa-wrench"></i>
+                                                        </span>
+                                                        <span class="status-text">Revisión</span>
+                                                    </label>
+                                                </div>
+                                                <div class="status-option">
+                                                    <input type="radio" name="filterTipo" id="filterItv" value="itv" class="status-radio">
+                                                    <label for="filterItv" class="status-label">
+                                                        <span class="status-icon">
+                                                            <i class="fas fa-clipboard-check"></i>
+                                                        </span>
+                                                        <span class="status-text">ITV</span>
+                                                    </label>
+                                                </div>
+                                                <div class="status-option">
+                                                    <input type="radio" name="filterTipo" id="filterEvento" value="evento" class="status-radio">
+                                                    <label for="filterEvento" class="status-label">
+                                                        <span class="status-icon">
+                                                            <i class="fas fa-calendar-alt"></i>
+                                                        </span>
+                                                        <span class="status-text">Evento</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Espacio para otros filtros -->
+                                <div class="col-md-6">
+                                    <!-- Puedes agregar más filtros aquí si es necesario -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- card -->
+            </div><!-- accordion -->
 
             <!-- Tabla de registros de kilometraje -->
             <div class="table-wrapper">
@@ -184,6 +272,7 @@
                             <th>Tipo</th>
                             <th>Observaciones</th>
                             <th>Fecha Registro</th>
+                            <th>Edit.</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -191,14 +280,14 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th></th>
-                            <th class="d-none"><input type="text" placeholder="Buscar ID" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Buscar fecha" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Buscar km" class="form-control form-control-sm" /></th>
-                            <th class="d-none"><input type="text" placeholder="NO Buscar" class="form-control form-control-sm" /></th>
-                            <th class="d-none"><input type="text" placeholder="NO Buscar" class="form-control form-control-sm" /></th>
-                            <th class="d-none"><input type="text" placeholder="NO Buscar" class="form-control form-control-sm" /></th>
-                            <th>
+                            <th></th> <!-- Columna 0: Control (expandir) -->
+                            <th><input type="text" placeholder="Buscar ID" class="form-control form-control-sm" /></th> <!-- Columna 1: ID -->
+                            <th><input type="text" placeholder="Buscar fecha" class="form-control form-control-sm" /></th> <!-- Columna 2: Fecha -->
+                            <th><input type="text" placeholder="Buscar km" class="form-control form-control-sm" /></th> <!-- Columna 3: Kilometraje -->
+                            <th></th> <!-- Columna 4: KM Recorridos (calculado, no buscar) -->
+                            <th></th> <!-- Columna 5: Días (calculado, no buscar) -->
+                            <th></th> <!-- Columna 6: KM/Día (calculado, no buscar) -->
+                            <th> <!-- Columna 7: Tipo -->
                                 <select class="form-control form-control-sm" title="Filtrar por tipo">
                                     <option value="">Todos</option>
                                     <option value="manual">Manual</option>
@@ -207,8 +296,9 @@
                                     <option value="evento">Evento</option>
                                 </select>
                             </th>
-                            <th><input type="text" placeholder="Buscar observaciones" class="form-control form-control-sm" /></th>
-                            <th class="d-none"><input type="text" placeholder="NO Buscar" class="form-control form-control-sm" /></th>
+                            <th><input type="text" placeholder="Buscar observaciones" class="form-control form-control-sm" /></th> <!-- Columna 8: Observaciones -->
+                            <th></th> <!-- Columna 9: Fecha Registro (no buscar por ahora) -->
+                            <th></th> <!-- Columna 10: Botón Editar -->
                         </tr>
                     </tfoot>
                 </table>
@@ -220,16 +310,32 @@
         <?php include_once('../../config/template/mainFooter.php') ?>
     </footer>
 </div><!-- br-mainpanel -->
+        <!-- ------------------------- -->
+        <!--   END mainFooter.php      -->
+        <!-- ------------------------- -->
 
-    <!-- #################################### -->
-    <!-- MODAL DE AYUDA                       -->
-    <!-- #################################### -->
+    </div><!-- br-mainpanel -->
+    <!-- ########## END: MAIN PANEL ########## -->
+
+    <!-- *********************************** -->
+    <!--                FIN                  -->
+    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
+    <!--        DE LA PROPIA TABLA           -->
+    <!--             columDef                -->
+    <!-- *********************************** -->
+
+<!-- *************************************** -->
+    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
+    <!--             AYUDA                   -->
+    <!-- *********************************** -->
 
     <?php include_once('ayudaKilometraje.php') ?>
 
-    <!-- #################################### -->
-    <!-- FIN MODAL DE AYUDA                   -->
-    <!-- #################################### -->
+    <!-- *********************************** -->
+    <!--                FIN                  -->
+    <!-- MODAL QUE SE DISPARA DESDE EL BOTON -->
+    <!--               AYUDA                 -->
+    <!-- *********************************** -->
 
 
     <!-- ----------------------- -->
