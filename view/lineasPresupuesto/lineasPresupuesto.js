@@ -811,6 +811,8 @@ function cargarArticulosDisponibles() {
  * Carga ubicaciones del cliente actual
  */
 function cargarUbicacionesCliente() {
+    console.log('Cargando ubicaciones del cliente para versión:', id_version_presupuesto);
+    
     // Primero necesitamos el ID del cliente desde la info de versión
     $.ajax({
         url: '../../controller/presupuesto.php?op=get_info_version',
@@ -818,10 +820,19 @@ function cargarUbicacionesCliente() {
         data: { id_version_presupuesto: id_version_presupuesto },
         dataType: 'json',
         success: function(response) {
+            console.log('Respuesta get_info_version:', response);
+            
             if (response.success && response.data && response.data.id_cliente) {
                 const idCliente = response.data.id_cliente;
+                console.log('ID Cliente encontrado:', idCliente);
                 cargarUbicacionesPorCliente(idCliente);
+            } else {
+                console.error('No se pudo obtener el ID del cliente:', response);
             }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error al obtener info versión:', error);
+            console.error('Respuesta:', xhr.responseText);
         }
     });
 }
@@ -830,28 +841,46 @@ function cargarUbicacionesCliente() {
  * Carga ubicaciones de un cliente específico
  */
 function cargarUbicacionesPorCliente(idCliente) {
+    console.log('Cargando ubicaciones para cliente:', idCliente);
+    
     $.ajax({
         url: '../../controller/ubicaciones.php?op=listar_por_cliente',
         type: 'POST',
         data: { id_cliente: idCliente },
         dataType: 'json',
         success: function(response) {
+            console.log('Respuesta ubicaciones:', response);
+            
             const select = $('#id_ubicacion');
+            
+            if (!select.length) {
+                console.error('No se encontró el select #id_ubicacion');
+                return;
+            }
+            
             select.empty();
             select.append('<option value="">Sin ubicación específica</option>');
             
-            if (response.data && response.data.length > 0) {
+            if (response.success && response.data && response.data.length > 0) {
+                console.log('Ubicaciones encontradas:', response.data.length);
                 response.data.forEach(function(ubicacion) {
+                    const direccion = ubicacion.direccion_ubicacion || '';
+                    const poblacion = ubicacion.poblacion_ubicacion || '';
+                    const detalle = direccion ? `${direccion}, ${poblacion}` : poblacion;
+                    
                     select.append(
                         `<option value="${ubicacion.id_ubicacion}">
-                            ${ubicacion.nombre_ubicacion} - ${ubicacion.direccion_ubicacion || ''}
+                            ${ubicacion.nombre_ubicacion}${detalle ? ' - ' + detalle : ''}
                         </option>`
                     );
                 });
+            } else {
+                console.log('No hay ubicaciones para este cliente');
             }
         },
-        error: function() {
-            console.error('No se pudieron cargar las ubicaciones del cliente');
+        error: function(xhr, status, error) {
+            console.error('Error al cargar ubicaciones:', error);
+            console.error('Respuesta:', xhr.responseText);
         }
     });
 }

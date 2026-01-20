@@ -374,7 +374,7 @@ switch ($_GET["op"]) {
                     direccion_ubicacion,
                     poblacion_ubicacion,
                     provincia_ubicacion,
-                    cp_ubicacion
+                    codigo_postal_ubicacion
                 FROM cliente_ubicacion
                 WHERE id_cliente = ?
                 AND activo_ubicacion = 1

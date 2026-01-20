@@ -527,5 +527,59 @@ switch ($_GET["op"]) {
         echo json_encode($results, JSON_UNESCAPED_UNICODE);
         break;
 
+    // =========================================================
+    // CASE: obtener_componentes_kit
+    // Obtiene los componentes de un KIT
+    // =========================================================
+    case "obtener_componentes_kit":
+        $id_articulo = $_POST["id_articulo"] ?? null;
+        
+        if (!$id_articulo) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de artículo no proporcionado',
+                'data' => []
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+        
+        // Obtener componentes del KIT
+        $sql = "SELECT 
+                    k.id_kit,
+                    k.cantidad_kit,
+                    a.id_articulo,
+                    a.codigo_articulo,
+                    a.nombre_articulo,
+                    a.precio_alquiler_articulo
+                FROM kit k
+                INNER JOIN articulo a ON k.id_articulo_componente = a.id_articulo
+                WHERE k.id_articulo_maestro = ?
+                AND k.activo_kit = 1
+                AND a.activo_articulo = 1
+                ORDER BY a.nombre_articulo ASC";
+        
+        try {
+            $conexion = (new Conexion())->getConexion();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindValue(1, $id_articulo, PDO::PARAM_INT);
+            $stmt->execute();
+            $componentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'data' => $componentes
+            ], JSON_UNESCAPED_UNICODE);
+            
+        } catch (PDOException $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al obtener componentes: ' . $e->getMessage(),
+                'data' => []
+            ], JSON_UNESCAPED_UNICODE);
+        }
+        break;
 
 }

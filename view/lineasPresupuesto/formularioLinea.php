@@ -194,10 +194,11 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <!-- Contenedor de opciones KIT (solo visible si es KIT) -->
+                            <div class="row" id="contenedor_opciones_kit" style="display: none;">
                                 <!-- Ocultar detalle KIT -->
-                                <div class="col-md-6">
-                                    <div class="form-check form-switch">
+                                <div class="col-md-12">
+                                    <div class="form-check form-switch mb-3">
                                         <input class="form-check-input" type="checkbox" id="ocultar_detalle_kit_linea_ppto" 
                                                name="ocultar_detalle_kit_linea_ppto" value="1">
                                         <label class="form-check-label fw-bold" for="ocultar_detalle_kit_linea_ppto">
@@ -205,7 +206,17 @@
                                             Ocultar Detalles del KIT en Impresión
                                         </label>
                                     </div>
-                                    <small class="text-muted d-block mt-1">Si está marcado, no se mostrarán los componentes del KIT en el presupuesto impreso</small>
+                                    <small class="text-muted d-block mb-3">Si está marcado, no se mostrarán los componentes del KIT en el presupuesto impreso</small>
+                                    
+                                    <!-- Componentes del KIT -->
+                                    <div class="alert alert-info mb-0">
+                                        <h6 class="alert-heading mb-2">
+                                            <i class="bi bi-box-seam me-1"></i>Componentes del KIT:
+                                        </h6>
+                                        <div id="lista_componentes_kit" class="small">
+                                            <span class="text-muted">Seleccione un KIT para ver sus componentes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -405,6 +416,22 @@ function cargarDatosArticulo(idArticulo) {
                     $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva);
                 }
                 
+                // Verificar si es un KIT
+                const esKit = data.es_kit_articulo == 1 || data.es_kit_articulo == '1' || data.es_kit_articulo === true;
+                
+                console.log('Artículo cargado:', data.nombre_articulo, 'Es KIT:', esKit, 'Valor es_kit_articulo:', data.es_kit_articulo);
+                
+                if (esKit) {
+                    // Mostrar sección de KIT
+                    $('#contenedor_opciones_kit').show();
+                    // Cargar componentes del KIT
+                    cargarComponentesKit(idArticulo);
+                } else {
+                    // Ocultar sección de KIT para artículos normales
+                    $('#contenedor_opciones_kit').hide();
+                    $('#ocultar_detalle_kit_linea_ppto').prop('checked', false);
+                }
+                
                 // Recalcular preview
                 calcularPreview();
             }
@@ -420,12 +447,53 @@ function cargarDatosArticulo(idArticulo) {
 }
 
 /**
+ * Carga los componentes de un KIT
+ */
+function cargarComponentesKit(idArticulo) {
+    console.log('Cargando componentes del KIT:', idArticulo);
+    
+    $.ajax({
+        url: '../../controller/articulo.php?op=obtener_componentes_kit',
+        type: 'POST',
+        data: { id_articulo: idArticulo },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Respuesta componentes KIT:', response);
+            
+            const contenedor = $('#lista_componentes_kit');
+            
+            if (response.success && response.data && response.data.length > 0) {
+                let html = '<ul class="mb-0">';
+                response.data.forEach(function(componente) {
+                    const cantidad = componente.cantidad_kit || 1;
+                    const codigo = componente.codigo_articulo || '';
+                    const nombre = componente.nombre_articulo || '';
+                    
+                    html += `<li><strong>${cantidad}x</strong> ${codigo} - ${nombre}</li>`;
+                });
+                html += '</ul>';
+                contenedor.html(html);
+            } else {
+                contenedor.html('<span class="text-muted">Este KIT no tiene componentes definidos</span>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error al cargar componentes:', error);
+            console.error('Respuesta:', xhr.responseText);
+            $('#lista_componentes_kit').html('<span class="text-danger">Error al cargar componentes</span>');
+        }
+    });
+}
+
+/**
  * Limpia los datos del artículo
  */
 function limpiarDatosArticulo() {
     $('#descripcion_linea_ppto').val('');
     $('#precio_unitario_linea_ppto').val('0.00');
     $('#porcentaje_iva_linea_ppto').val('21');
+    $('#contenedor_opciones_kit').hide();
+    $('#lista_componentes_kit').html('<span class="text-muted">Seleccione un KIT para ver sus componentes</span>');
     calcularPreview();
 }
 
