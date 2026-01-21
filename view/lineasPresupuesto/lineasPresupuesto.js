@@ -196,6 +196,10 @@ function mostrarAlertaVersionBloqueada() {
 function inicializarDataTable() {
     var datatable_lineasConfig = {
         processing: true,
+        scrollX: true,
+        fixedColumns: {
+            leftColumns: 2  // Fijar código y descripción (las dos primeras visibles)
+        },
         layout: {
             bottomEnd: {
                 paging: {
@@ -548,7 +552,7 @@ function cargarTotales() {
                 $('#total-base').text(formatearMoneda(data.total_base_imponible || 0));
                 $('#total-iva').text(formatearMoneda(data.total_iva || 0));
                 $('#total-con-iva').text(formatearMoneda(data.total_con_iva || 0));
-                $('#cantidad-lineas').text(data.cantidad_lineas || 0);
+                $('#cantidad-lineas').text(data.cantidad_lineas_total || 0);
                 
                 // Desglose de IVA
                 let desgloseHTML = '';
@@ -565,7 +569,7 @@ function cargarTotales() {
                     desgloseHTML += `0%: ${formatearMoneda(data.iva_0)} `;
                 }
                 
-                $('#desglose-iva').html(desgloseHTML || 'Sin IVA aplicado');
+                // $('#desglose-iva').html(desgloseHTML || 'Sin IVA aplicado');
             }
         },
         error: function () {

@@ -190,7 +190,6 @@
                     <div class="card-body">
                         <h6 class="text-muted mb-1">IVA Total</h6>
                         <h4 class="mb-0" id="total-iva">0,00 €</h4>
-                        <small class="text-muted" id="desglose-iva">--</small>
                     </div>
                 </div>
             </div>
