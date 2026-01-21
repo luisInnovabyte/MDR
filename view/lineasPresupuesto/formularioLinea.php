@@ -182,10 +182,58 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN 4: UBICACIÓN Y CONFIGURACIÓN -->
+                    <!-- SECCIÓN 4: COEFICIENTE REDUCTOR (OPCIONAL) -->
+                    <div class="card mb-3 border-warning">
+                        <div class="card-header bg-warning bg-opacity-10 py-2">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="aplicar_coeficiente_linea_ppto" 
+                                       name="aplicar_coeficiente_linea_ppto" value="1">
+                                <label class="form-check-label fw-bold" for="aplicar_coeficiente_linea_ppto">
+                                    <i class="bi bi-calculator me-1 text-warning"></i>
+                                    4. Aplicar Coeficiente Reductor por Jornadas
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mt-1">Se calculará automáticamente según las fechas de inicio y fin del evento</small>
+                            
+                            <!-- Indicador de estado de coeficiente del artículo -->
+                            <div id="info_estado_coeficiente" class="alert mt-2 mb-0 py-2" style="display: none;">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span id="texto_estado_coeficiente"></span>
+                            </div>
+                        </div>
+                        <div class="card-body d-none" id="campos_coeficiente">
+                            <div class="row align-items-center justify-content-center">
+                                <!-- Campo Jornadas Calculadas - OCULTO (se mantiene para envío de datos) -->
+                                <input type="hidden" id="jornadas_linea_ppto" name="jornadas_linea_ppto" value="1">
+                                
+                                <!-- Campo Coeficiente Aplicado - OCULTO (se mantiene para envío de datos) -->
+                                <input type="hidden" id="id_coeficiente" name="id_coeficiente" value="">
+                                
+                                <!-- Solo mostrar Factor y Precio con Coeficiente -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-calculator me-1"></i>Factor Aplicado
+                                    </label>
+                                    <div class="alert alert-warning mb-0 py-2 text-center">
+                                        <strong class="fs-5" id="vista_coeficiente">1.00x</strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-currency-euro me-1"></i>Precio con Coeficiente
+                                    </label>
+                                    <div class="alert alert-info mb-0 py-2 text-center">
+                                        <strong class="fs-5" id="preview_precio_coef">0,00 €</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 5: UBICACIÓN Y CONFIGURACIÓN -->
                     <div class="card mb-3">
                         <div class="card-header bg-secondary text-white py-2">
-                            <h6 class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>4. Ubicación y Configuración</h6>
+                            <h6 class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>5. Ubicación y Configuración</h6>
                         </div>
                         <div class="card-body">
                             <div class="row mb-3">
@@ -224,61 +272,6 @@
                                         <div id="lista_componentes_kit" class="small">
                                             <span class="text-muted">Seleccione un KIT para ver sus componentes</span>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SECCIÓN 5: COEFICIENTE (OPCIONAL) -->
-                    <div class="card mb-3 border-warning">
-                        <div class="card-header bg-warning bg-opacity-10 py-2">
-                            <div class="form-check form-switch mb-0">
-                                <input class="form-check-input" type="checkbox" id="aplicar_coeficiente_linea_ppto" 
-                                       name="aplicar_coeficiente_linea_ppto" value="1">
-                                <label class="form-check-label fw-bold" for="aplicar_coeficiente_linea_ppto">
-                                    <i class="bi bi-calculator me-1 text-warning"></i>
-                                    5. Aplicar Coeficiente Reductor por Jornadas
-                                </label>
-                            </div>
-                            <small class="text-muted d-block mt-1">Se calculará automáticamente según las fechas de inicio y fin del evento</small>
-                            
-                            <!-- Indicador de estado de coeficiente del artículo -->
-                            <div id="info_estado_coeficiente" class="alert mt-2 mb-0 py-2" style="display: none;">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <span id="texto_estado_coeficiente"></span>
-                            </div>
-                        </div>
-                        <div class="card-body d-none" id="campos_coeficiente">
-                            <div class="row align-items-center">
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">
-                                        <i class="bi bi-calendar3 me-1"></i>Jornadas Calculadas
-                                    </label>
-                                    <input type="number" class="form-control text-center bg-light" 
-                                           id="jornadas_linea_ppto" name="jornadas_linea_ppto" readonly value="1">
-                                    <small class="text-muted">Días entre inicio y fin</small>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="id_coeficiente" class="form-label fw-bold">
-                                        <i class="bi bi-list-ol me-1"></i>Coeficiente Aplicado
-                                    </label>
-                                    <select class="form-select bg-light" id="id_coeficiente" name="id_coeficiente" disabled>
-                                        <option value="">Se calcula según jornadas</option>
-                                        <!-- Se carga dinámicamente -->
-                                    </select>
-                                    <small class="text-muted">Automático según tabla</small>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold">Factor</label>
-                                    <div class="alert alert-warning mb-0 py-2 text-center">
-                                        <strong class="fs-6" id="vista_coeficiente">1.00x</strong>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">Precio con Coef.</label>
-                                    <div class="alert alert-info mb-0 py-2 text-center">
-                                        <strong class="fs-6" id="preview_precio_coef">0,00 €</strong>
                                     </div>
                                 </div>
                             </div>
@@ -378,14 +371,18 @@ $(document).ready(function() {
         calcularPreview();
     });
 
-    // Calcular jornadas cuando cambien las fechas
+    // Calcular jornadas y precio cuando cambien las fechas del evento
     $('#fecha_inicio_linea_ppto, #fecha_fin_linea_ppto').on('change', function() {
+        // Recalcular preview con las nuevas jornadas
+        calcularPreview();
+        
+        // Si el coeficiente está activado, recalcular también el coeficiente
         if ($('#aplicar_coeficiente_linea_ppto').is(':checked')) {
             calcularJornadas();
         }
     });
 
-    // Calcular preview en tiempo real
+    // Calcular preview en tiempo real cuando cambien cantidad, precio, descuento o IVA
     $('#cantidad_linea_ppto, #precio_unitario_linea_ppto, #descuento_linea_ppto, #porcentaje_iva_linea_ppto').on('input change', function() {
         calcularPreview();
     });
@@ -554,47 +551,39 @@ function cargarCoeficiente(jornadas) {
 
 /**
  * Calcula preview de totales en tiempo real
+ * Fórmula paso a paso según especificación:
+ * 1. dia_cantidad_precio = días × cantidad × precio_unitario
+ * 2. condescuento = dia_cantidad_precio - (dia_cantidad_precio × descuento) / 100
+ * 3. total = condescuento + (condescuento × iva) / 100
  */
 function calcularPreview() {
     const cantidad = parseFloat($('#cantidad_linea_ppto').val()) || 0;
     const precio = parseFloat($('#precio_unitario_linea_ppto').val()) || 0;
     const descuento = parseFloat($('#descuento_linea_ppto').val()) || 0;
     const iva = parseFloat($('#porcentaje_iva_linea_ppto').val()) || 0;
-    const jornadas = parseInt($('#jornadas_linea_ppto').val()) || 1;
-    const aplicarCoef = $('#aplicar_coeficiente').is(':checked');
-
-    // 1. Subtotal sin descuento (cantidad x precio)
-    let subtotal = cantidad * precio;
-    $('#preview_subtotal_sin_dto').text(formatearMoneda(subtotal));
-
-    // 2. Aplicar descuento
-    const importeDescuento = subtotal * (descuento / 100);
-    $('#preview_descuento').text(formatearMoneda(importeDescuento));
     
-    let baseImponible = subtotal - importeDescuento;
-
-    // 3. Aplicar coeficiente si está marcado
-    let coeficiente = 1.00;
-    if (aplicarCoef && jornadas > 1) {
-        // TODO: Obtener coeficiente real de tabla según jornadas
-        // Por ahora simulación: 50% adicional por jornada extra
-        coeficiente = 1 + ((jornadas - 1) * 0.5);
-        baseImponible = baseImponible * coeficiente;
-        $('#vista_coeficiente').text(coeficiente.toFixed(2) + 'x');
-        $('#preview_precio_coef').text(formatearMoneda(baseImponible));
-    } else {
-        $('#vista_coeficiente').text('1.00x');
-        $('#preview_precio_coef').text(formatearMoneda(baseImponible));
+    // Obtener jornadas del evento (días de alquiler)
+    const fechaInicio = $('#fecha_inicio_linea_ppto').val();
+    const fechaFin = $('#fecha_fin_linea_ppto').val();
+    let dias = 1;
+    
+    if (fechaInicio && fechaFin) {
+        const inicio = new Date(fechaInicio);
+        const fin = new Date(fechaFin);
+        const diferencia = Math.floor((fin - inicio) / (1000 * 60 * 60 * 24));
+        dias = diferencia + 1; // Jornadas inclusivas
     }
 
-    $('#preview_base_imponible').text(formatearMoneda(baseImponible));
+    // PASO 1: Multiplicar días × cantidad × precio
+    const dia_cantidad_precio = dias * cantidad * precio;
 
-    // 4. Calcular IVA
-    const importeIva = baseImponible * (iva / 100);
-    $('#preview_iva').text(formatearMoneda(importeIva));
+    // PASO 2: Aplicar descuento
+    const condescuento = dia_cantidad_precio - (dia_cantidad_precio * descuento) / 100;
 
-    // 5. Total final
-    const total = baseImponible + importeIva;
+    // PASO 3: Calcular total con IVA
+    const total = condescuento + (condescuento * iva) / 100;
+    
+    // Mostrar el total en la interfaz
     $('#preview_total').text(formatearMoneda(total));
 }
 

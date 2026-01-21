@@ -256,14 +256,21 @@ switch ($_GET["op"]) {
             
             if ($datos) {
                 header('Content-Type: application/json');
-                echo json_encode($datos, JSON_UNESCAPED_UNICODE);
+                echo json_encode([
+                    'success' => true,
+                    'data' => [
+                        'id_coeficiente' => $datos['id_coeficiente'],
+                        'jornadas_desde_coeficiente' => $datos['jornadas_coeficiente'],
+                        'jornadas_hasta_coeficiente' => $datos['jornadas_coeficiente'],
+                        'factor_coeficiente' => $datos['valor_coeficiente']
+                    ]
+                ], JSON_UNESCAPED_UNICODE);
             } else {
-                // Si no hay coeficiente, devolver valor por defecto 1.00
+                // Si no hay coeficiente, devolver error
                 header('Content-Type: application/json');
                 echo json_encode([
-                    'id_coeficiente' => null,
-                    'jornadas_coeficiente' => $jornadas,
-                    'valor_coeficiente' => 1.00
+                    'success' => false,
+                    'message' => 'No se encontró coeficiente para ' . $jornadas . ' jornadas'
                 ], JSON_UNESCAPED_UNICODE);
             }
             

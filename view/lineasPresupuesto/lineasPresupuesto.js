@@ -57,6 +57,17 @@ $(document).ready(function () {
     
     $(document).on('change', '#fecha_inicio_linea_ppto, #fecha_fin_linea_ppto', function() {
         actualizarDiasEvento();
+        calcularJornadas(); // Recalcular jornadas al cambiar fechas del evento
+    });
+    
+    // Event listener para checkbox de aplicar coeficiente
+    $(document).on('change', '#aplicar_coeficiente_linea_ppto', function() {
+        if ($(this).is(':checked')) {
+            $('#campos_coeficiente').removeClass('d-none');
+            calcularJornadas();
+        } else {
+            $('#campos_coeficiente').addClass('d-none');
+        }
     });
 });
 
@@ -951,7 +962,9 @@ function actualizarDiasPlanificacion() {
         const dias = calcularDiasDiferencia(fechaMontaje, fechaDesmontaje);
         
         if (dias >= 0) {
-            $('#dias_planificacion_texto').text(`${dias} día${dias !== 1 ? 's' : ''}`);
+            // Sumar 1 para contar jornadas inclusivas (primer y último día)
+            const jornadas = dias + 1;
+            $('#dias_planificacion_texto').text(`${jornadas} día${jornadas !== 1 ? 's' : ''}`);
             $('#dias_planificacion').show();
         } else {
             $('#dias_planificacion').hide();
@@ -973,7 +986,9 @@ function actualizarDiasEvento() {
         const dias = calcularDiasDiferencia(fechaInicio, fechaFin);
         
         if (dias >= 0) {
-            $('#dias_evento_texto').text(`${dias} día${dias !== 1 ? 's' : ''}`);
+            // Sumar 1 para contar jornadas inclusivas (primer y último día)
+            const jornadas = dias + 1;
+            $('#dias_evento_texto').text(`${jornadas} día${jornadas !== 1 ? 's' : ''}`);
             $('#dias_evento').show();
         } else {
             $('#dias_evento').hide();
@@ -1069,4 +1084,106 @@ function mostrarInfoEstadoCoeficiente(estadoCodigo, mensaje) {
  */
 function ocultarInfoEstadoCoeficiente() {
     $('#info_estado_coeficiente').hide();
+}
+
+/**
+ * Calcula las jornadas y busca el coeficiente correspondiente
+ */
+function calcularJornadas() {
+    const fechaInicio = $('#fecha_inicio_linea_ppto').val();
+    const fechaFin = $('#fecha_fin_linea_ppto').val();
+    
+    if (!fechaInicio || !fechaFin) {
+        $('#jornadas_linea_ppto').val(1);
+        return;
+    }
+    
+    const dias = calcularDiasDiferencia(fechaInicio, fechaFin);
+    const jornadas = dias + 1; // Jornadas inclusivas
+    
+    // Actualizar campo de jornadas
+    $('#jornadas_linea_ppto').val(jornadas);
+    
+    // Buscar coeficiente correspondiente a estas jornadas
+    buscarCoeficientePorJornadas(jornadas);
+}
+
+/**
+ * Busca el coeficiente correspondiente al número de jornadas
+ * @param {number} jornadas - Número de jornadas calculadas
+ */
+function buscarCoeficientePorJornadas(jornadas) {
+    $.ajax({
+        url: '../../controller/coeficiente.php?op=obtener_por_jornadas',
+        type: 'POST',
+        data: { jornadas: jornadas },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Respuesta coeficiente:', response);
+            
+            if (response.success && response.data) {
+                const coef = response.data;
+                
+                // Actualizar select de coeficiente
+                const select = $('#id_coeficiente');
+                select.empty();
+                select.append(new Option(
+                    `${coef.jornadas_desde_coeficiente} jornadas: ${coef.factor_coeficiente}x`,
+                    coef.id_coeficiente,
+                    true,
+                    true
+                ));
+                
+                // Mostrar el factor
+                $('#vista_coeficiente').text(`${parseFloat(coef.factor_coeficiente).toFixed(2)}x`);
+                
+                // Recalcular precio con coeficiente
+                calcularPrecioConCoeficiente(coef.factor_coeficiente);
+            } else {
+                console.warn('No se encontró coeficiente para', jornadas, 'jornadas:', response.message);
+                $('#id_coeficiente').empty().append(new Option(response.message || 'Sin coeficiente disponible', '', true, true));
+                $('#vista_coeficiente').text('1.00x');
+                calcularPrecioConCoeficiente(1.00);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error al buscar coeficiente:', error);
+            $('#id_coeficiente').empty().append(new Option('Error al cargar', '', true, true));
+            $('#vista_coeficiente').text('1.00x');
+        }
+    });
+}
+
+/**
+ * Calcula el precio aplicando el coeficiente (Sección 4)
+ * Solo se ejecuta si el checkbox "Aplicar Coeficiente Reductor" está marcado
+ * Fórmula paso a paso:
+ * 1. dia_cantidad_precio = factor × cantidad × precio_unitario (el factor reemplaza a los días)
+ * 2. condescuento = dia_cantidad_precio - (dia_cantidad_precio × descuento) / 100
+ * 3. total = condescuento + (condescuento × iva) / 100
+ * 
+ * @param {number} factor - Factor del coeficiente reductor (ej: 8.75 reemplaza a 9 días)
+ */
+function calcularPrecioConCoeficiente(factor) {
+    // Verificar si el checkbox está marcado
+    if (!$('#aplicar_coeficiente_linea_ppto').is(':checked')) {
+        return;
+    }
+    
+    const cantidad = parseFloat($('#cantidad_linea_ppto').val()) || 0;
+    const precioUnitario = parseFloat($('#precio_unitario_linea_ppto').val()) || 0;
+    const descuento = parseFloat($('#descuento_linea_ppto').val()) || 0;
+    const iva = parseFloat($('#porcentaje_iva_linea_ppto').val()) || 0;
+    
+    // PASO 1: Multiplicar factor × cantidad × precio (el factor reemplaza a los días)
+    const dia_cantidad_precio = parseFloat(factor) * cantidad * precioUnitario;
+    
+    // PASO 2: Aplicar descuento
+    const condescuento = dia_cantidad_precio - (dia_cantidad_precio * descuento) / 100;
+    
+    // PASO 3: Calcular total con IVA
+    const total = condescuento + (condescuento * iva) / 100;
+    
+    // Mostrar precio con coeficiente en la Sección 4
+    $('#preview_precio_coef').text(formatearMoneda(total));
 }
