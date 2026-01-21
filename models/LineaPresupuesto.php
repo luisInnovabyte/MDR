@@ -31,6 +31,14 @@ class LineaPresupuesto
     }
 
     // =========================================================
+    // MÉTODO DEBUG: Obtener conexión (solo para debug)
+    // =========================================================
+    public function getConexion()
+    {
+        return $this->conexion;
+    }
+
+    // =========================================================
     // MÉTODO 1: Listar líneas de una versión (usando VISTA)
     // =========================================================
     /**
@@ -162,6 +170,10 @@ class LineaPresupuesto
                 jornadas_linea_ppto,
                 valor_coeficiente_linea_ppto,
                 porcentaje_iva_linea_ppto,
+                fecha_montaje_linea_ppto,
+                fecha_desmontaje_linea_ppto,
+                fecha_inicio_linea_ppto,
+                fecha_fin_linea_ppto,
                 observaciones_linea_ppto,
                 mostrar_obs_articulo_linea_ppto,
                 ocultar_detalle_kit_linea_ppto,
@@ -171,7 +183,7 @@ class LineaPresupuesto
             ) VALUES (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?
             )";
 
             $stmt = $this->conexion->prepare($sql);
@@ -195,6 +207,10 @@ class LineaPresupuesto
                 $datos['jornadas_linea_ppto'] ?? null,
                 $datos['valor_coeficiente_linea_ppto'] ?? null,
                 $datos['porcentaje_iva_linea_ppto'] ?? 21.00,
+                $datos['fecha_montaje_linea_ppto'] ?? null,
+                $datos['fecha_desmontaje_linea_ppto'] ?? null,
+                $datos['fecha_inicio_linea_ppto'] ?? null,
+                $datos['fecha_fin_linea_ppto'] ?? null,
                 $datos['observaciones_linea_ppto'] ?? null,
                 $datos['mostrar_obs_articulo_linea_ppto'] ?? 1,
                 $datos['ocultar_detalle_kit_linea_ppto'] ?? 0,
@@ -258,6 +274,10 @@ class LineaPresupuesto
                 jornadas_linea_ppto = ?,
                 valor_coeficiente_linea_ppto = ?,
                 porcentaje_iva_linea_ppto = ?,
+                fecha_montaje_linea_ppto = ?,
+                fecha_desmontaje_linea_ppto = ?,
+                fecha_inicio_linea_ppto = ?,
+                fecha_fin_linea_ppto = ?,
                 observaciones_linea_ppto = ?,
                 mostrar_obs_articulo_linea_ppto = ?,
                 ocultar_detalle_kit_linea_ppto = ?,
@@ -285,6 +305,10 @@ class LineaPresupuesto
                 $datos['jornadas_linea_ppto'] ?? null,
                 $datos['valor_coeficiente_linea_ppto'] ?? null,
                 $datos['porcentaje_iva_linea_ppto'] ?? 21.00,
+                $datos['fecha_montaje_linea_ppto'] ?? null,
+                $datos['fecha_desmontaje_linea_ppto'] ?? null,
+                $datos['fecha_inicio_linea_ppto'] ?? null,
+                $datos['fecha_fin_linea_ppto'] ?? null,
                 $datos['observaciones_linea_ppto'] ?? null,
                 $datos['mostrar_obs_articulo_linea_ppto'] ?? 1,
                 $datos['ocultar_detalle_kit_linea_ppto'] ?? 0,

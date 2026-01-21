@@ -1,19 +1,29 @@
 -- ========================================================
--- VISTA: v_linea_presupuesto_calculada
+-- ACTUALIZACIÓN DE VISTA: v_linea_presupuesto_calculada
 -- ========================================================
--- VERSIÓN: DEFINITIVA - Nomenclatura 100% verificada
--- FECHA: 2025-01-20
+-- FECHA: 2026-01-21
 -- AUTOR: Luis - MDR ERP Manager
+-- CAMBIO: Agregar campos de fecha de la línea que faltaban
 --
--- CORRECCIONES FINALES:
---   ✅ id_version_presupuesto (NO id_presupuesto)
---   ✅ Tabla: impuesto (NO tipo_iva)  
---   ✅ Tabla: coeficiente (campos verificados)
---   ✅ JOIN triple: linea_presupuesto → presupuesto_version → presupuesto
+-- CAMPOS AGREGADOS:
+--   ✅ fecha_montaje_linea_ppto
+--   ✅ fecha_desmontaje_linea_ppto
+--   ✅ fecha_inicio_linea_ppto
+--   ✅ fecha_fin_linea_ppto
+--   ✅ id_linea_padre
+--   ✅ id_ubicacion
+--   ✅ nivel_jerarquia
+--   ✅ ocultar_detalle_kit_linea_ppto
+--   ✅ mostrar_en_presupuesto
+--   ✅ es_opcional
 -- ========================================================
 
+USE toldos_db;
+
+-- Eliminar vista existente
 DROP VIEW IF EXISTS v_linea_presupuesto_calculada;
 
+-- Recrear vista con campos adicionales
 CREATE VIEW v_linea_presupuesto_calculada AS
 SELECT 
     -- =====================================================
@@ -212,36 +222,25 @@ LEFT JOIN impuesto imp
 WHERE lp.activo_linea_ppto = TRUE
   AND p.activo_presupuesto = TRUE;
 
+-- ========================================================
+-- VERIFICACIÓN - Vista creada correctamente
+-- ========================================================
+SELECT 'Vista v_linea_presupuesto_calculada actualizada correctamente' AS resultado;
 
 -- ========================================================
--- CONSULTAS DE EJEMPLO
+-- PRUEBA DE FUNCIONAMIENTO
 -- ========================================================
-
-/*
--- EJEMPLO 1: Líneas de una versión específica
+-- Ver algunos registros de ejemplo con las nuevas fechas
 SELECT 
-    id_version_presupuesto,
-    numero_version_presupuesto,
-    estado_version_presupuesto,
-    numero_linea_ppto,
+    id_linea_ppto,
     descripcion_linea_ppto,
+    fecha_montaje_linea_ppto,
+    fecha_desmontaje_linea_ppto,
+    fecha_inicio_linea_ppto,
+    fecha_fin_linea_ppto,
     cantidad_linea_ppto,
     precio_unitario_linea_ppto,
     base_imponible,
-    importe_iva,
     total_linea
 FROM v_linea_presupuesto_calculada
-WHERE id_version_presupuesto = 1
-ORDER BY orden_linea_ppto;
-
--- EJEMPLO 2: Totales de una versión
-SELECT 
-    id_version_presupuesto,
-    numero_version_presupuesto,
-    numero_presupuesto,
-    SUM(base_imponible) AS total_base,
-    SUM(importe_iva) AS total_iva,
-    SUM(total_linea) AS total_final
-FROM v_linea_presupuesto_calculada
-WHERE id_version_presupuesto = 1;
-*/
+LIMIT 5;

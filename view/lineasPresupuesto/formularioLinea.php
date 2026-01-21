@@ -14,35 +14,46 @@
                     <!-- Campos ocultos -->
                     <input type="hidden" id="id_linea_ppto" name="id_linea_ppto">
                     <input type="hidden" id="id_version_presupuesto_hidden" name="id_version_presupuesto">
+                    <input type="hidden" name="numero_linea_ppto" value="1">
+                    <input type="hidden" name="tipo_linea_ppto" value="articulo">
+                    <input type="hidden" name="nivel_jerarquia" value="0">
+                    <input type="hidden" name="orden_linea_ppto" value="0">
+                    <input type="hidden" name="mostrar_obs_articulo_linea_ppto" value="1">
+                    <input type="hidden" name="mostrar_en_presupuesto" value="1">
+                    <input type="hidden" name="es_opcional" value="0">
+                    <input type="hidden" name="activo_linea_ppto" value="1">
                     
                     <!-- SECCIÓN 1: ARTÍCULO -->
                     <div class="card mb-3">
                         <div class="card-header bg-primary text-white py-2">
-                            <h6 class="mb-0"><i class="bi bi-box-seam-fill me-2"></i>1. Artículo</h6>
+                            <h6 class="mb-0"><i class="bi bi-box-seam-fill me-2"></i>1. Selección de Artículo</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <!-- Artículo -->
-                                <div class="col-md-6">
+                                <div class="col-md-12 mb-3">
                                     <label for="id_articulo" class="form-label fw-bold">
-                                        <i class="bi bi-box me-1 text-primary"></i>Seleccione el Artículo *
+                                        <i class="bi bi-box me-1 text-primary"></i>Artículo a Alquilar *
                                     </label>
                                     <select class="form-select select2" id="id_articulo" name="id_articulo" required>
-                                        <option value="">Buscar artículo...</option>
-                                        <!-- Se carga dinámicamente (artículos y KITs para mostrar) -->
+                                        <option value="">Buscar y seleccionar artículo...</option>
+                                        <!-- Se carga dinámicamente -->
                                     </select>
-                                    <small class="text-muted">Solo se pueden añadir artículos individuales</small>
                                 </div>
 
                                 <!-- Descripción (readonly, desde artículo) -->
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label for="descripcion_linea_ppto" class="form-label fw-bold">
-                                        <i class="bi bi-file-text me-1 text-primary"></i>Descripción
+                                        <i class="bi bi-file-text me-1 text-secondary"></i>Descripción
                                     </label>
                                     <input type="text" class="form-control bg-light" id="descripcion_linea_ppto" 
-                                           name="descripcion_linea_ppto" readonly placeholder="Se cargará del artículo">
-                                    <small class="text-muted">Descripción automática del artículo</small>
+                                           name="descripcion_linea_ppto" readonly placeholder="Se cargará automáticamente del artículo seleccionado">
                                 </div>
+                                
+                                <!-- Campos ocultos adicionales del artículo -->
+                                <input type="hidden" id="codigo_linea_ppto" name="codigo_linea_ppto">
+                                <input type="hidden" id="id_impuesto" name="id_impuesto">
+                                <input type="hidden" id="valor_coeficiente_linea_ppto" name="valor_coeficiente_linea_ppto" value="">
                             </div>
                         </div>
                     </div>
@@ -385,6 +396,11 @@ $(document).ready(function() {
     // Calcular preview en tiempo real cuando cambien cantidad, precio, descuento o IVA
     $('#cantidad_linea_ppto, #precio_unitario_linea_ppto, #descuento_linea_ppto, #porcentaje_iva_linea_ppto').on('input change', function() {
         calcularPreview();
+        
+        // Si el coeficiente está activado, recalcular jornadas
+        if ($('#aplicar_coeficiente_linea_ppto').is(':checked')) {
+            calcularJornadas();
+        }
     });
 
     // Submit del formulario
@@ -407,8 +423,10 @@ $(document).ready(function() {
 
 /**
  * Carga datos automáticos del artículo seleccionado
+ * @param {number} idArticulo - ID del artículo a cargar
+ * @param {boolean} esEdicion - Si es true, no sobrescribe precio ni otros datos ya cargados
  */
-function cargarDatosArticulo(idArticulo) {
+function cargarDatosArticulo(idArticulo, esEdicion = false) {
     $.ajax({
         url: '../../controller/articulo.php?op=mostrar',
         type: 'POST',
@@ -416,14 +434,28 @@ function cargarDatosArticulo(idArticulo) {
         dataType: 'json',
         success: function(data) {
             if (data) {
-                // Cargar descripción (readonly)
-                $('#descripcion_linea_ppto').val(data.nombre_articulo || '');
+                // Cargar descripción (readonly) - solo si está vacía o no es edición
+                if (!esEdicion || !$('#descripcion_linea_ppto').val()) {
+                    $('#descripcion_linea_ppto').val(data.nombre_articulo || '');
+                }
                 
-                // Cargar precio de alquiler
-                $('#precio_unitario_linea_ppto').val(parseFloat(data.precio_alquiler_articulo || 0).toFixed(2));
+                // Cargar código del artículo - solo si está vacío o no es edición
+                if (!esEdicion || !$('#codigo_linea_ppto').val()) {
+                    $('#codigo_linea_ppto').val(data.codigo_articulo || '');
+                }
                 
-                // Cargar IVA del artículo (si existe)
-                if (data.porcentaje_iva) {
+                // Cargar ID del impuesto - solo si está vacío o no es edición
+                if (!esEdicion || !$('#id_impuesto').val()) {
+                    $('#id_impuesto').val(data.id_impuesto || '');
+                }
+                
+                // Cargar precio de alquiler - SOLO en creación, NO en edición
+                if (!esEdicion) {
+                    $('#precio_unitario_linea_ppto').val(parseFloat(data.precio_alquiler_articulo || 0).toFixed(2));
+                }
+                
+                // Cargar IVA del artículo (si existe) - solo si está vacío o no es edición
+                if (data.porcentaje_iva && (!esEdicion || !$('#porcentaje_iva_linea_ppto').val())) {
                     $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva);
                 }
                 

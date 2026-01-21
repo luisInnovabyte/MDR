@@ -239,8 +239,8 @@ function inicializarDataTable() {
             { name: 'acciones', data: null, className: "text-center align-middle" }
         ],
         columnDefs: [
-            // Columna 0: Orden
-            { targets: "orden_linea_ppto:name", width: '5%', searchable: false, orderable: true, className: "text-center" },
+            // Columna 0: Orden (OCULTA)
+            { targets: "orden_linea_ppto:name", width: '5%', searchable: false, orderable: true, className: "text-center", visible: false },
             // Columna 1: Código
             { 
                 targets: "codigo_linea_ppto:name", 
@@ -270,13 +270,14 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 3: Tipo
+            // Columna 3: Tipo (OCULTA)
             {
                 targets: "tipo_linea_ppto:name",
                 width: '8%',
                 orderable: true,
                 searchable: true,
                 className: "text-center",
+                visible: false,
                 render: function (data, type, row) {
                     if (type === "display") {
                         const tipos = {
@@ -444,13 +445,27 @@ function inicializarDataTable() {
             url: '../../controller/lineapresupuesto.php?op=listar',
             type: 'POST',
             data: function() {
+                console.log("Enviando petición con id_version_presupuesto:", id_version_presupuesto);
                 return {
                     id_version_presupuesto: id_version_presupuesto
                 };
             },
             dataSrc: function (json) {
-                console.log("JSON recibido desde servidor:", json);
-                console.log("Número de registros:", json.data ? json.data.length : json.length);
+                console.log("=== RESPUESTA DEL SERVIDOR ===");
+                console.log("JSON completo:", json);
+                console.log("Tiene propiedad 'data':", json.hasOwnProperty('data'));
+                console.log("Número de registros:", json.data ? json.data.length : (Array.isArray(json) ? json.length : 0));
+                
+                if (json.success === false) {
+                    console.error("Error del servidor:", json.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al cargar datos',
+                        text: json.message || 'Error desconocido del servidor',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    return [];
+                }
                 
                 if (!json || (!json.data && !Array.isArray(json))) {
                     console.warn("No se recibieron datos válidos del servidor");
@@ -460,9 +475,19 @@ function inicializarDataTable() {
                 return json.data || json;
             },
             error: function(xhr, status, error) {
-                console.error("Error al cargar datos:", error);
-                console.error("Status:", status);
-                console.error("Response:", xhr.responseText);
+                console.error("=== ERROR EN PETICIÓN AJAX ===");
+                console.error("Status HTTP:", xhr.status);
+                console.error("Status Text:", status);
+                console.error("Error:", error);
+                console.error("Response Text:", xhr.responseText);
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    html: `<p>No se pudieron cargar las líneas del presupuesto.</p>
+                           <p><small>Status: ${xhr.status} - ${error}</small></p>`,
+                    confirmButtonText: 'Aceptar'
+                });
             }
         },
         deferRender: true,
@@ -596,17 +621,127 @@ function editarLinea(id_linea_ppto) {
             if (response.success && response.data) {
                 const data = response.data;
                 
-                // Rellenar formulario
+                // Rellenar campos ocultos
                 $('#id_linea_ppto').val(data.id_linea_ppto);
                 $('#id_version_presupuesto_hidden').val(data.id_version_presupuesto);
-                $('#id_articulo').val(data.id_articulo).trigger('change');
-                $('#tipo_linea_ppto').val(data.tipo_linea_ppto);
+                $('[name="numero_linea_ppto"]').val(data.numero_linea_ppto || 1);
+                $('[name="tipo_linea_ppto"]').val(data.tipo_linea_ppto || 'articulo');
+                $('[name="nivel_jerarquia"]').val(data.nivel_jerarquia || 0);
+                $('[name="orden_linea_ppto"]').val(data.orden_linea_ppto || 0);
+                
+                // Rellenar artículo en Select2 (crear opción si no existe)
+                if (data.id_articulo) {
+                    const textoArticulo = data.nombre_articulo || data.descripcion_linea_ppto || 'Artículo';
+                    const codigoArticulo = data.codigo_articulo || data.codigo_linea_ppto || '';
+                    const textoCompleto = codigoArticulo ? `[${codigoArticulo}] ${textoArticulo}` : textoArticulo;
+                    
+                    // Verificar si la opción ya existe
+                    if ($('#id_articulo').find(`option[value="${data.id_articulo}"]`).length === 0) {
+                        // Crear nueva opción
+                        const newOption = new Option(textoCompleto, data.id_articulo, true, true);
+                        $('#id_articulo').append(newOption);
+                    } else {
+                        // Seleccionar opción existente
+                        $('#id_articulo').val(data.id_articulo);
+                    }
+                    // Cargar datos del artículo sin sobrescribir precio (modo edición)
+                    if (typeof cargarDatosArticulo === 'function') {
+                        cargarDatosArticulo(data.id_articulo, true);
+                    }
+                }
+                
+                // Rellenar datos relacionados del artículo
+                // Rellenar datos relacionados del artículo
                 $('#descripcion_linea_ppto').val(data.descripcion_linea_ppto);
-                $('#cantidad_linea_ppto').val(data.cantidad_linea_ppto);
-                $('#precio_unitario_linea_ppto').val(data.precio_unitario_linea_ppto);
-                $('#descuento_linea_ppto').val(data.descuento_linea_ppto);
-                $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva_linea_ppto);
-                $('#jornadas_linea_ppto').val(data.jornadas_linea_ppto);
+                $('#codigo_linea_ppto').val(data.codigo_linea_ppto || data.codigo_articulo || '');
+                $('#id_impuesto').val(data.id_impuesto || '');
+                
+                // Rellenar fechas
+                $('#fecha_montaje_linea_ppto').val(data.fecha_montaje_linea_ppto || '');
+                $('#fecha_desmontaje_linea_ppto').val(data.fecha_desmontaje_linea_ppto || '');
+                $('#fecha_inicio_linea_ppto').val(data.fecha_inicio_linea_ppto || '');
+                $('#fecha_fin_linea_ppto').val(data.fecha_fin_linea_ppto || '');
+                
+                // Rellenar cantidades y precios
+                $('#cantidad_linea_ppto').val(data.cantidad_linea_ppto || 1);
+                $('#precio_unitario_linea_ppto').val(data.precio_unitario_linea_ppto || 0);
+                $('#descuento_linea_ppto').val(data.descuento_linea_ppto || 0);
+                $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva_linea_ppto || 21);
+                
+                // Rellenar coeficiente (verificar id_coeficiente o si hay valor > 1)
+                const tieneCoeficiente = data.id_coeficiente || (data.valor_coeficiente_linea_ppto && parseFloat(data.valor_coeficiente_linea_ppto) > 1);
+                
+                if (tieneCoeficiente) {
+                    $('#id_coeficiente').val(data.id_coeficiente || '');
+                    $('#aplicar_coeficiente_linea_ppto').prop('checked', true);
+                    $('#campos_coeficiente').removeClass('d-none');
+                    $('#jornadas_linea_ppto').val(data.jornadas_linea_ppto || '');
+                    $('#valor_coeficiente_linea_ppto').val(data.valor_coeficiente_linea_ppto || '');
+                    
+                    // Actualizar vista del coeficiente
+                    const valorCoef = parseFloat(data.valor_coeficiente_linea_ppto || 1).toFixed(2);
+                    $('#vista_coeficiente').text(valorCoef + 'x');
+                    
+                    // Calcular y mostrar precio con coeficiente
+                    const precioBase = parseFloat(data.precio_unitario_linea_ppto || 0);
+                    const cantidad = parseFloat(data.cantidad_linea_ppto || 1);
+                    const descuento = parseFloat(data.descuento_linea_ppto || 0);
+                    const precioConDescuento = precioBase * (1 - descuento / 100);
+                    const precioConCoef = precioConDescuento * parseFloat(valorCoef);
+                    const totalConCoef = precioConCoef * cantidad;
+                    $('#preview_precio_coef').text(totalConCoef.toFixed(2).replace('.', ',') + ' €');
+                } else {
+                    $('#id_coeficiente').val('');
+                    $('#aplicar_coeficiente_linea_ppto').prop('checked', false);
+                    $('#campos_coeficiente').addClass('d-none');
+                    $('#jornadas_linea_ppto').val('');
+                    $('#valor_coeficiente_linea_ppto').val('');
+                    $('#vista_coeficiente').text('1.00x');
+                    $('#preview_precio_coef').text('0,00 €');
+                }
+                
+                // Cargar ubicaciones del cliente y luego establecer la seleccionada
+                if (data.id_cliente) {
+                    cargarUbicacionesPorCliente(data.id_cliente, function() {
+                        // Callback: después de cargar ubicaciones, seleccionar la correcta
+                        if (data.id_ubicacion) {
+                            $('#id_ubicacion').val(data.id_ubicacion);
+                        }
+                    });
+                } else if (data.id_ubicacion) {
+                    // Si no hay id_cliente directo, intentar establecer valor (puede no funcionar)
+                    $('#id_ubicacion').val(data.id_ubicacion);
+                }
+                
+                // Rellenar observaciones (si existe el campo)
+                if ($('#observaciones_linea_ppto').length) {
+                    $('#observaciones_linea_ppto').val(data.observaciones_linea_ppto || '');
+                }
+                
+                // Rellenar checkboxes opcionales
+                if ($('[name="mostrar_obs_articulo_linea_ppto"]').length) {
+                    $('[name="mostrar_obs_articulo_linea_ppto"]').val(data.mostrar_obs_articulo_linea_ppto || 1);
+                }
+                if ($('[name="ocultar_detalle_kit_linea_ppto"]').length) {
+                    $('[name="ocultar_detalle_kit_linea_ppto"]').val(data.ocultar_detalle_kit_linea_ppto || 0);
+                }
+                if ($('[name="mostrar_en_presupuesto"]').length) {
+                    $('[name="mostrar_en_presupuesto"]').val(data.mostrar_en_presupuesto !== undefined ? data.mostrar_en_presupuesto : 1);
+                }
+                if ($('[name="es_opcional"]').length) {
+                    $('[name="es_opcional"]').val(data.es_opcional || 0);
+                }
+                
+                // Actualizar cálculo de días si hay fechas
+                if (data.fecha_montaje_linea_ppto && data.fecha_desmontaje_linea_ppto) {
+                    actualizarDiasPlanificacion();
+                }
+                if (data.fecha_inicio_linea_ppto && data.fecha_fin_linea_ppto) {
+                    actualizarDiasEvento();
+                    if ($('#aplicar_coeficiente_linea_ppto').is(':checked')) {
+                        calcularJornadas();
+                    }
+                }
                 
                 // Cambiar título
                 $('#modalFormularioLineaLabel').text('Editar Línea de Presupuesto');
@@ -884,8 +1019,10 @@ function cargarUbicacionesCliente() {
 
 /**
  * Carga ubicaciones de un cliente específico
+ * @param {number} idCliente - ID del cliente
+ * @param {function} callback - Función a ejecutar después de cargar las ubicaciones
  */
-function cargarUbicacionesPorCliente(idCliente) {
+function cargarUbicacionesPorCliente(idCliente, callback) {
     console.log('Cargando ubicaciones para cliente:', idCliente);
     
     $.ajax({
@@ -900,6 +1037,7 @@ function cargarUbicacionesPorCliente(idCliente) {
             
             if (!select.length) {
                 console.error('No se encontró el select #id_ubicacion');
+                if (callback) callback();
                 return;
             }
             
@@ -922,10 +1060,15 @@ function cargarUbicacionesPorCliente(idCliente) {
             } else {
                 console.log('No hay ubicaciones para este cliente');
             }
+            
+            // Ejecutar callback si existe
+            if (callback) callback();
         },
         error: function(xhr, status, error) {
             console.error('Error al cargar ubicaciones:', error);
             console.error('Respuesta:', xhr.responseText);
+            // Ejecutar callback incluso en error
+            if (callback) callback();
         }
     });
 }
@@ -1174,6 +1317,9 @@ function calcularPrecioConCoeficiente(factor) {
     const precioUnitario = parseFloat($('#precio_unitario_linea_ppto').val()) || 0;
     const descuento = parseFloat($('#descuento_linea_ppto').val()) || 0;
     const iva = parseFloat($('#porcentaje_iva_linea_ppto').val()) || 0;
+    
+    // Guardar el valor del factor del coeficiente en el campo oculto
+    $('#valor_coeficiente_linea_ppto').val(parseFloat(factor));
     
     // PASO 1: Multiplicar factor × cantidad × precio (el factor reemplaza a los días)
     const dia_cantidad_precio = parseFloat(factor) * cantidad * precioUnitario;
