@@ -532,6 +532,7 @@ function cargarCoeficiente(jornadas) {
         success: function(data) {
             if (data && data.id_coeficiente) {
                 $('#id_coeficiente').val(data.id_coeficiente);
+                $('#valor_coeficiente_linea_ppto').val(data.valor_coeficiente);
                 $('#vista_coeficiente').text(parseFloat(data.valor_coeficiente || 1).toFixed(2) + 'x');
                 calcularPreview();
             }
@@ -593,13 +594,68 @@ function formatearMoneda(valor) {
  * Guarda la línea (INSERT o UPDATE)
  */
 function guardarLinea() {
-    const formData = $('#formLinea').serialize();
+    // Serializar formulario
+    let formData = $('#formLinea').serializeArray();
+    
+    // IMPORTANTE: Agregar el checkbox aplicar_coeficiente_linea_ppto explícitamente
+    // Los checkboxes desmarcados no se envían con serialize()
+    const aplicarCoeficiente = $('#aplicar_coeficiente_linea_ppto').is(':checked') ? 1 : 0;
+    formData.push({
+        name: 'aplicar_coeficiente_linea_ppto',
+        value: aplicarCoeficiente
+    });
+    
+    // Si NO se aplica coeficiente, asegurar que jornadas, id_coeficiente y valor_coeficiente sean NULL/vacío
+    if (!aplicarCoeficiente) {
+        // Buscar y actualizar o agregar estos campos
+        let jornadasField = formData.find(f => f.name === 'jornadas_linea_ppto');
+        let coefField = formData.find(f => f.name === 'id_coeficiente');
+        let valorCoefField = formData.find(f => f.name === 'valor_coeficiente_linea_ppto');
+        
+        if (jornadasField) {
+            jornadasField.value = '';
+        } else {
+            formData.push({ name: 'jornadas_linea_ppto', value: '' });
+        }
+        
+        if (coefField) {
+            coefField.value = '';
+        } else {
+            formData.push({ name: 'id_coeficiente', value: '' });
+        }
+        
+        if (valorCoefField) {
+            valorCoefField.value = '';
+        } else {
+            formData.push({ name: 'valor_coeficiente_linea_ppto', value: '' });
+        }
+    } else {
+        // Si SÍ se aplica coeficiente, asegurar que id_coeficiente y valor_coeficiente se envíen
+        let coefField = formData.find(f => f.name === 'id_coeficiente');
+        let valorCoefField = formData.find(f => f.name === 'valor_coeficiente_linea_ppto');
+        
+        // Si no están en formData, agregarlos desde los campos hidden
+        if (!coefField) {
+            let idCoef = $('#id_coeficiente').val();
+            if (idCoef && idCoef !== '' && idCoef !== 'null') {
+                formData.push({ name: 'id_coeficiente', value: idCoef });
+            }
+        }
+        
+        if (!valorCoefField) {
+            let valorCoef = $('#valor_coeficiente_linea_ppto').val();
+            if (valorCoef && valorCoef !== '' && valorCoef !== 'null') {
+                formData.push({ name: 'valor_coeficiente_linea_ppto', value: valorCoef });
+            }
+        }
+    }
+    
     const operacion = $('#id_linea_ppto').val() ? 'guardaryeditar' : 'guardaryeditar';
 
     $.ajax({
         url: `../../controller/lineapresupuesto.php?op=${operacion}`,
         type: 'POST',
-        data: formData,
+        data: $.param(formData),
         dataType: 'json',
         success: function(response) {
             if (response.success) {

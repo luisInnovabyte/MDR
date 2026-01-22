@@ -58,6 +58,7 @@ SELECT
     -- =====================================================
     lp.jornadas_linea_ppto,
     lp.id_coeficiente,
+    lp.aplicar_coeficiente_linea_ppto,
     lp.valor_coeficiente_linea_ppto,
     
     -- Datos del coeficiente maestro
@@ -67,49 +68,99 @@ SELECT
     c.activo_coeficiente,
     
     -- =====================================================
-    -- CÁLCULO 1: SUBTOTAL SIN COEFICIENTE
-    -- Fórmula: cantidad × precio × (1 - descuento/100)
+    -- CÁLCULO 0: DÍAS DEL EVENTO
+    -- Calcula los días entre fecha_inicio y fecha_fin (inclusivo)
     -- =====================================================
-    (lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100)) 
+    CASE 
+        WHEN lp.fecha_inicio_linea_ppto IS NOT NULL 
+             AND lp.fecha_fin_linea_ppto IS NOT NULL THEN
+            DATEDIFF(lp.fecha_fin_linea_ppto, lp.fecha_inicio_linea_ppto) + 1
+        ELSE
+            1
+    END AS dias_evento,
+    
+    -- =====================================================
+    -- CÁLCULO 1: SUBTOTAL SIN COEFICIENTE
+    -- Fórmula: días × cantidad × precio × (1 - descuento/100)
+    -- =====================================================
+    (CASE 
+        WHEN lp.fecha_inicio_linea_ppto IS NOT NULL 
+             AND lp.fecha_fin_linea_ppto IS NOT NULL THEN
+            DATEDIFF(lp.fecha_fin_linea_ppto, lp.fecha_inicio_linea_ppto) + 1
+        ELSE
+            1
+    END * lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100)) 
         AS subtotal_sin_coeficiente,
     
     -- =====================================================
     -- CÁLCULO 2: BASE IMPONIBLE (CON COEFICIENTE SI APLICA)
+    -- Fórmula SIN coeficiente: días × cantidad × precio × (1 - descuento/100)
+    -- Fórmula CON coeficiente: cantidad × precio × (1 - descuento/100) × coeficiente
+    -- NOTA: El coeficiente YA incorpora el ajuste por jornadas/días
     -- =====================================================
     CASE 
-        WHEN lp.valor_coeficiente_linea_ppto IS NOT NULL 
+        WHEN lp.aplicar_coeficiente_linea_ppto = 1
+             AND lp.valor_coeficiente_linea_ppto IS NOT NULL 
              AND lp.valor_coeficiente_linea_ppto > 0 THEN
+            -- CON coeficiente: NO multiplicar por días (el coeficiente ya lo considera)
             (lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100)) 
             * lp.valor_coeficiente_linea_ppto
         ELSE
-            (lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100))
+            -- SIN coeficiente: SÍ multiplicar por días
+            (CASE 
+                WHEN lp.fecha_inicio_linea_ppto IS NOT NULL 
+                     AND lp.fecha_fin_linea_ppto IS NOT NULL THEN
+                    DATEDIFF(lp.fecha_fin_linea_ppto, lp.fecha_inicio_linea_ppto) + 1
+                ELSE
+                    1
+            END * lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100))
     END AS base_imponible,
     
     -- =====================================================
     -- CÁLCULO 3: IMPORTE DE IVA
+    -- Fórmula: base_imponible × (iva/100)
     -- =====================================================
     CASE 
-        WHEN lp.valor_coeficiente_linea_ppto IS NOT NULL 
+        WHEN lp.aplicar_coeficiente_linea_ppto = 1
+             AND lp.valor_coeficiente_linea_ppto IS NOT NULL 
              AND lp.valor_coeficiente_linea_ppto > 0 THEN
+            -- CON coeficiente: base sin días × coeficiente × IVA
             ((lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100)) 
             * lp.valor_coeficiente_linea_ppto) 
             * (lp.porcentaje_iva_linea_ppto/100)
         ELSE
-            ((lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100))) 
+            -- SIN coeficiente: base con días × IVA
+            ((CASE 
+                WHEN lp.fecha_inicio_linea_ppto IS NOT NULL 
+                     AND lp.fecha_fin_linea_ppto IS NOT NULL THEN
+                    DATEDIFF(lp.fecha_fin_linea_ppto, lp.fecha_inicio_linea_ppto) + 1
+                ELSE
+                    1
+            END * lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100))) 
             * (lp.porcentaje_iva_linea_ppto/100)
     END AS importe_iva,
     
     -- =====================================================
     -- CÁLCULO 4: TOTAL LÍNEA (BASE + IVA)
+    -- Fórmula: base_imponible × (1 + iva/100)
     -- =====================================================
     CASE 
-        WHEN lp.valor_coeficiente_linea_ppto IS NOT NULL 
+        WHEN lp.aplicar_coeficiente_linea_ppto = 1
+             AND lp.valor_coeficiente_linea_ppto IS NOT NULL 
              AND lp.valor_coeficiente_linea_ppto > 0 THEN
+            -- CON coeficiente: base sin días × coeficiente × (1 + IVA)
             ((lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100)) 
             * lp.valor_coeficiente_linea_ppto) 
             * (1 + lp.porcentaje_iva_linea_ppto/100)
         ELSE
-            ((lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100))) 
+            -- SIN coeficiente: base con días × (1 + IVA)
+            ((CASE 
+                WHEN lp.fecha_inicio_linea_ppto IS NOT NULL 
+                     AND lp.fecha_fin_linea_ppto IS NOT NULL THEN
+                    DATEDIFF(lp.fecha_fin_linea_ppto, lp.fecha_inicio_linea_ppto) + 1
+                ELSE
+                    1
+            END * lp.cantidad_linea_ppto * lp.precio_unitario_linea_ppto * (1 - lp.descuento_linea_ppto/100))) 
             * (1 + lp.porcentaje_iva_linea_ppto/100)
     END AS total_linea,
     

@@ -167,6 +167,7 @@ class LineaPresupuesto
                 precio_unitario_linea_ppto,
                 descuento_linea_ppto,
                 jornadas_linea_ppto,
+                aplicar_coeficiente_linea_ppto,
                 valor_coeficiente_linea_ppto,
                 porcentaje_iva_linea_ppto,
                 fecha_montaje_linea_ppto,
@@ -182,7 +183,7 @@ class LineaPresupuesto
             ) VALUES (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?
             )";
 
             $stmt = $this->conexion->prepare($sql);
@@ -204,6 +205,7 @@ class LineaPresupuesto
                 $datos['precio_unitario_linea_ppto'] ?? 0.00,
                 $datos['descuento_linea_ppto'] ?? 0.00,
                 $datos['jornadas_linea_ppto'] ?? null,
+                $datos['aplicar_coeficiente_linea_ppto'] ?? 0,
                 $datos['valor_coeficiente_linea_ppto'] ?? null,
                 $datos['porcentaje_iva_linea_ppto'] ?? 21.00,
                 $datos['fecha_montaje_linea_ppto'] ?? null,
@@ -271,6 +273,7 @@ class LineaPresupuesto
                 precio_unitario_linea_ppto = ?,
                 descuento_linea_ppto = ?,
                 jornadas_linea_ppto = ?,
+                aplicar_coeficiente_linea_ppto = ?,
                 valor_coeficiente_linea_ppto = ?,
                 porcentaje_iva_linea_ppto = ?,
                 fecha_montaje_linea_ppto = ?,
@@ -302,6 +305,7 @@ class LineaPresupuesto
                 $datos['precio_unitario_linea_ppto'] ?? 0.00,
                 $datos['descuento_linea_ppto'] ?? 0.00,
                 $datos['jornadas_linea_ppto'] ?? null,
+                $datos['aplicar_coeficiente_linea_ppto'] ?? 0,
                 $datos['valor_coeficiente_linea_ppto'] ?? null,
                 $datos['porcentaje_iva_linea_ppto'] ?? 21.00,
                 $datos['fecha_montaje_linea_ppto'] ?? null,

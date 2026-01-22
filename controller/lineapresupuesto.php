@@ -167,24 +167,43 @@ switch ($_GET["op"]) {
                     "descuento_linea_ppto" => $row["descuento_linea_ppto"],
                     "porcentaje_iva_linea_ppto" => $row["porcentaje_iva_linea_ppto"],
                 
-                // Coeficiente
-                "jornadas_linea_ppto" => $row["jornadas_linea_ppto"] ?? null,
-                "valor_coeficiente_linea_ppto" => $row["valor_coeficiente_linea_ppto"] ?? null,
-                
-                // Cálculos (desde la vista)
-                "subtotal_sin_coeficiente" => $row["subtotal_sin_coeficiente"],
-                "base_imponible" => $row["base_imponible"],
-                "importe_iva" => $row["importe_iva"],
-                "total_linea" => $row["total_linea"],
-                
-                // Impuesto
-                "tipo_impuesto" => $row["tipo_impuesto"] ?? null,
-                "tasa_impuesto" => $row["tasa_impuesto"] ?? null,
-                
-                // Estado
-                "activo_linea_ppto" => $row["activo_linea_ppto"]
-            );
-        }
+                    // Coeficiente
+                    "aplicar_coeficiente_linea_ppto" => $row["aplicar_coeficiente_linea_ppto"] ?? 0,
+                    "jornadas_linea_ppto" => $row["jornadas_linea_ppto"] ?? null,
+                    "valor_coeficiente_linea_ppto" => $row["valor_coeficiente_linea_ppto"] ?? null,
+                    
+                    // Fechas del evento
+                    "fecha_inicio_linea_ppto" => $row["fecha_inicio_linea_ppto"] ?? null,
+                    "fecha_fin_linea_ppto" => $row["fecha_fin_linea_ppto"] ?? null,
+                    "dias_evento_linea_ppto" => $row["dias_evento_linea_ppto"] ?? null,
+                    
+                    // Fechas de planificación
+                    "fecha_montaje_linea_ppto" => $row["fecha_montaje_linea_ppto"] ?? null,
+                    "fecha_desmontaje_linea_ppto" => $row["fecha_desmontaje_linea_ppto"] ?? null,
+                    "dias_planificacion_linea_ppto" => $row["dias_planificacion_linea_ppto"] ?? null,
+                    
+                    // Cálculos (desde la vista)
+                    "subtotal_sin_coeficiente" => $row["subtotal_sin_coeficiente"],
+                    "base_imponible" => $row["base_imponible"],
+                    "importe_iva" => $row["importe_iva"],
+                    "total_linea" => $row["total_linea"],
+                    
+                    // Notas
+                    "notas_tecnicas_linea_ppto" => $row["notas_tecnicas_linea_ppto"] ?? null,
+                    "notas_comerciales_linea_ppto" => $row["notas_comerciales_linea_ppto"] ?? null,
+                    
+                    // Impuesto
+                    "tipo_impuesto" => $row["tipo_impuesto"] ?? null,
+                    "tasa_impuesto" => $row["tasa_impuesto"] ?? null,
+                    
+                    // Auditoría
+                    "created_at_linea_ppto" => $row["created_at_linea_ppto"] ?? null,
+                    "updated_at_linea_ppto" => $row["updated_at_linea_ppto"] ?? null,
+                    
+                    // Estado
+                    "activo_linea_ppto" => $row["activo_linea_ppto"]
+                );
+            }
 
         $registro->registrarActividad(
             $_SESSION['usuario'] ?? 'admin',
@@ -482,6 +501,7 @@ switch ($_GET["op"]) {
                 'cantidad_linea_ppto' => $_POST['cantidad_linea_ppto'] ?? 1.00,
                 'precio_unitario_linea_ppto' => $_POST['precio_unitario_linea_ppto'] ?? 0.00,
                 'descuento_linea_ppto' => $_POST['descuento_linea_ppto'] ?? 0.00,
+                'aplicar_coeficiente_linea_ppto' => isset($_POST['aplicar_coeficiente_linea_ppto']) ? intval($_POST['aplicar_coeficiente_linea_ppto']) : 0,
                 'jornadas_linea_ppto' => null,
                 'valor_coeficiente_linea_ppto' => null,
                 'porcentaje_iva_linea_ppto' => $_POST['porcentaje_iva_linea_ppto'] ?? 21.00,
@@ -510,10 +530,6 @@ switch ($_GET["op"]) {
                 $datos['id_ubicacion'] = intval($_POST["id_ubicacion"]);
             }
 
-            if (isset($_POST["id_coeficiente"]) && $_POST["id_coeficiente"] !== '' && $_POST["id_coeficiente"] !== 'null') {
-                $datos['id_coeficiente'] = intval($_POST["id_coeficiente"]);
-            }
-
             if (isset($_POST["id_impuesto"]) && $_POST["id_impuesto"] !== '' && $_POST["id_impuesto"] !== 'null') {
                 $datos['id_impuesto'] = intval($_POST["id_impuesto"]);
             }
@@ -522,12 +538,27 @@ switch ($_GET["op"]) {
                 $datos['codigo_linea_ppto'] = $_POST["codigo_linea_ppto"];
             }
 
-            if (isset($_POST["jornadas_linea_ppto"]) && $_POST["jornadas_linea_ppto"] !== '' && $_POST["jornadas_linea_ppto"] !== 'null') {
-                $datos['jornadas_linea_ppto'] = intval($_POST["jornadas_linea_ppto"]);
-            }
-
-            if (isset($_POST["valor_coeficiente_linea_ppto"]) && $_POST["valor_coeficiente_linea_ppto"] !== '' && $_POST["valor_coeficiente_linea_ppto"] !== 'null') {
-                $datos['valor_coeficiente_linea_ppto'] = floatval($_POST["valor_coeficiente_linea_ppto"]);
+            // Solo guardar id_coeficiente, jornadas y valor_coeficiente si aplicar_coeficiente_linea_ppto = 1
+            if ($datos['aplicar_coeficiente_linea_ppto'] == 1) {
+                // id_coeficiente
+                if (isset($_POST["id_coeficiente"]) && $_POST["id_coeficiente"] !== '' && $_POST["id_coeficiente"] !== 'null') {
+                    $datos['id_coeficiente'] = intval($_POST["id_coeficiente"]);
+                }
+                
+                // jornadas
+                if (isset($_POST["jornadas_linea_ppto"]) && $_POST["jornadas_linea_ppto"] !== '' && $_POST["jornadas_linea_ppto"] !== 'null') {
+                    $datos['jornadas_linea_ppto'] = intval($_POST["jornadas_linea_ppto"]);
+                }
+                
+                // valor_coeficiente
+                if (isset($_POST["valor_coeficiente_linea_ppto"]) && $_POST["valor_coeficiente_linea_ppto"] !== '' && $_POST["valor_coeficiente_linea_ppto"] !== 'null') {
+                    $datos['valor_coeficiente_linea_ppto'] = floatval($_POST["valor_coeficiente_linea_ppto"]);
+                }
+            } else {
+                // Si NO se aplica coeficiente, forzar todo a NULL
+                $datos['id_coeficiente'] = null;
+                $datos['jornadas_linea_ppto'] = null;
+                $datos['valor_coeficiente_linea_ppto'] = null;
             }
 
             // Campos de fecha

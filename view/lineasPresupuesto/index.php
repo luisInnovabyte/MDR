@@ -91,6 +91,11 @@
             font-size: 0.9rem;
             padding: 0.5rem 1rem;
         }
+        
+        /* Botón de detalles */
+        button.details-control {
+            min-width: 30px;
+        }
     </style>
     
     <!-- ########## START: MAIN PANEL ########## -->
@@ -247,6 +252,7 @@
                 <table id="lineas_data" class="table display responsive nowrap" style="width:100%">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Orden</th>
                             <th>Código</th>
                             <th>Descripción</th>
@@ -268,6 +274,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
+                            <th></th>
                             <th></th>
                             <th><input type="text" placeholder="Código" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Descripción" class="form-control form-control-sm" /></th>
@@ -340,6 +347,17 @@
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
     <script type="text/javascript" src="lineasPresupuesto.js"></script>
+  
+  <script>
+        // Colapsar el sidebar al cargar la página
+        $(document).ready(function() {
+            $('body').addClass('collapsed-menu');
+            $('.br-sideleft').addClass('collapsed');
+        });
+    </script>
+
+
+
 
 </body>
 

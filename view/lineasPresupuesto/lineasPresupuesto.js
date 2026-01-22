@@ -198,7 +198,7 @@ function inicializarDataTable() {
         processing: true,
         scrollX: true,
         fixedColumns: {
-            leftColumns: 2  // Fijar código y descripción (las dos primeras visibles)
+            leftColumns: 3  // Fijar botón de detalles, orden y código
         },
         layout: {
             bottomEnd: {
@@ -227,6 +227,7 @@ function inicializarDataTable() {
             }
         },
         columns: [
+            { name: 'detalles', data: null, defaultContent: '', className: "text-center align-middle", orderable: false },
             { name: 'orden_linea_ppto', data: 'orden_linea_ppto', className: "text-center align-middle" },
             { name: 'codigo_linea_ppto', data: 'codigo_linea_ppto', className: "text-center align-middle" },
             { name: 'descripcion_linea_ppto', data: 'descripcion_linea_ppto', className: "text-left align-middle" },
@@ -243,9 +244,23 @@ function inicializarDataTable() {
             { name: 'acciones', data: null, className: "text-center align-middle" }
         ],
         columnDefs: [
-            // Columna 0: Orden (OCULTA)
+            // Columna 0: Botón de detalles
+            { 
+                targets: "detalles:name", 
+                width: '5%', 
+                searchable: false, 
+                orderable: false, 
+                className: "text-center",
+                render: function(data, type, row) {
+                    if (type === 'display') {
+                        return '<button class="btn btn-sm btn-primary details-control"><i class="bi bi-plus-circle"></i></button>';
+                    }
+                    return '';
+                }
+            },
+            // Columna 1: Orden (OCULTA)
             { targets: "orden_linea_ppto:name", width: '5%', searchable: false, orderable: true, className: "text-center", visible: false },
-            // Columna 1: Código
+            // Columna 2: Código
             { 
                 targets: "codigo_linea_ppto:name", 
                 width: '8%', 
@@ -256,7 +271,7 @@ function inicializarDataTable() {
                     return data || row.codigo_articulo || '--';
                 }
             },
-            // Columna 2: Descripción
+            // Columna 3: Descripción
             { 
                 targets: "descripcion_linea_ppto:name", 
                 width: '20%', 
@@ -274,7 +289,7 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 3: Tipo (OCULTA)
+            // Columna 4: Tipo (OCULTA)
             {
                 targets: "tipo_linea_ppto:name",
                 width: '8%',
@@ -517,12 +532,12 @@ function inicializarDataTable() {
         deferRender: true,
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100],
-        order: [[0, 'asc']] // Ordenar por orden por defecto
+        order: [[1, 'asc']] // Ordenar por orden por defecto (columna 1 ahora es orden_linea_ppto)
     };
 
     var $table = $('#lineas_data');
     var $tableConfig = datatable_lineasConfig;
-    var $tableBody = $('#lineas_data tbody');
+    var $tableBody = $table.find('tbody');
     var $columnFilterInputs = $('#lineas_data tfoot input, #lineas_data tfoot select');
 
     tabla = $table.DataTable($tableConfig);
@@ -541,6 +556,23 @@ function inicializarDataTable() {
     // Recargar totales después de cada actualización de tabla
     tabla.on('draw', function () {
         cargarTotales();
+    });
+    
+    // Click event para mostrar/ocultar detalles
+    $tableBody.on('click', 'button.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = tabla.row(tr);
+        var btn = $(this);
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            btn.html('<i class="bi bi-plus-circle"></i>');
+        } else {
+            row.child(formatLineaDetalle(row.data())).show();
+            tr.addClass('shown');
+            btn.html('<i class="bi bi-dash-circle"></i>');
+        }
     });
     
     // Event listeners para botones
@@ -619,6 +651,18 @@ function formatearMoneda(valor) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }).format(numero);
+}
+
+/**
+ * Función para formatear fechas a formato europeo (DD/MM/YYYY)
+ */
+function formatoFechaEuropeo(fechaString) {
+    if (!fechaString) return '-';
+    var fecha = new Date(fechaString);
+    var dia = ("0" + fecha.getDate()).slice(-2);
+    var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+    var anio = fecha.getFullYear();
+    return dia + "/" + mes + "/" + anio;
 }
 
 /**
@@ -1485,4 +1529,211 @@ function calcularPrecioConCoeficiente(factor) {
     
     // Mostrar precio con coeficiente en la Sección 4
     $('#preview_precio_coef').text(formatearMoneda(total));
+}
+
+/**
+ * Formatea los detalles de una línea para mostrar en la tabla expandible
+ * @param {Object} d - Datos de la línea de presupuesto
+ * @returns {string} HTML formateado con todos los detalles
+ */
+function formatLineaDetalle(d) {
+    // Función auxiliar para formatear valores nulos
+    const val = (value) => value !== null && value !== undefined && value !== '' ? value : '<span class="text-muted">-</span>';
+    
+    // DEBUG: Ver qué fechas están llegando
+    console.log('Fechas recibidas:', {
+        fecha_inicio: d.fecha_inicio_linea_ppto,
+        fecha_fin: d.fecha_fin_linea_ppto,
+        fecha_montaje: d.fecha_montaje_linea_ppto,
+        fecha_desmontaje: d.fecha_desmontaje_linea_ppto,
+        created_at: d.created_at_linea_ppto,
+        updated_at: d.updated_at_linea_ppto
+    });
+    
+    return `
+        <div class="card border-primary mb-3">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-list-ul fs-3 me-2"></i>
+                    <h5 class="card-title mb-0">Detalles de la Línea de Presupuesto</h5>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="row">
+                    
+                    <!-- ========== COLUMNA 1: DATOS GENERALES ========== -->
+                    <div class="col-md-4">
+                        
+                        <!-- DATOS BÁSICOS -->
+                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="bi bi-file-text me-2"></i>Datos Básicos
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-hash me-1"></i>ID Línea:</strong> ${val(d.id_linea_ppto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-sort-numeric-down me-1"></i>Orden:</strong> ${val(d.orden_linea_ppto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-upc me-1"></i>Código:</strong> ${val(d.codigo_linea_ppto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-card-text me-1"></i>Descripción:</strong></p>
+                            <p class="ms-3 text-muted small" style="word-break: break-word;">${val(d.descripcion_linea_ppto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-tags me-1"></i>Tipo:</strong> 
+                                ${d.tipo_linea_ppto === 'articulo' ? '<span class="badge bg-primary">Artículo</span>' : 
+                                  d.tipo_linea_ppto === 'kit' ? '<span class="badge bg-info">Kit</span>' :
+                                  d.tipo_linea_ppto === 'seccion' ? '<span class="badge bg-secondary">Sección</span>' :
+                                  d.tipo_linea_ppto === 'texto' ? '<span class="badge bg-light text-dark">Texto</span>' : 
+                                  val(d.tipo_linea_ppto)}
+                            </p>
+                        </div>
+
+                        <!-- DATOS DEL ARTÍCULO (si aplica) -->
+                        ${d.id_articulo ? `
+                        <h6 class="text-info border-bottom pb-2 mb-3">
+                            <i class="bi bi-box me-2"></i>Artículo Asociado
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-hash me-1"></i>ID Artículo:</strong> ${val(d.id_articulo)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-box-seam me-1"></i>Nombre:</strong> ${val(d.nombre_articulo)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-upc-scan me-1"></i>Código:</strong> ${val(d.codigo_articulo)}</p>
+                        </div>
+                        ` : ''}
+
+                        <!-- ESTADO -->
+                        <h6 class="text-secondary border-bottom pb-2 mb-3">
+                            <i class="bi bi-toggle-on me-2"></i>Estado
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-check-circle me-1"></i>Activo:</strong> 
+                                ${d.activo_linea_ppto == 1 ? 
+                                    '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>SÍ</span>' : 
+                                    '<span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>NO</span>'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ========== COLUMNA 2: PRECIOS Y CÁLCULOS ========== -->
+                    <div class="col-md-4">
+                        
+                        <!-- CANTIDADES Y PRECIOS -->
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="bi bi-calculator me-2"></i>Cantidades y Precios
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-123 me-1"></i>Cantidad:</strong> 
+                                <span class="badge bg-info">${val(d.cantidad_linea_ppto)}</span>
+                            </p>
+                            <p class="mb-1"><strong><i class="bi bi-currency-euro me-1"></i>Precio Unitario:</strong> 
+                                ${formatearMoneda(d.precio_unitario_linea_ppto)}
+                            </p>
+                            <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>Descuento:</strong> 
+                                ${d.descuento_linea_ppto > 0 ? 
+                                    `<span class="badge bg-warning text-dark">${d.descuento_linea_ppto}%</span>` : 
+                                    '<span class="text-muted">Sin descuento</span>'}
+                            </p>
+                        </div>
+
+                        <!-- COEFICIENTE -->
+                        ${d.aplicar_coeficiente_linea_ppto == 1 ? `
+                        <h6 class="text-warning border-bottom pb-2 mb-3">
+                            <i class="bi bi-gear me-2"></i>Coeficiente Reductor
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-toggle-on me-1"></i>Aplicar:</strong> 
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>SÍ</span>
+                            </p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar-week me-1"></i>Jornadas:</strong> 
+                                <span class="badge bg-info">${val(d.jornadas_linea_ppto)}</span>
+                            </p>
+                            <p class="mb-1"><strong><i class="bi bi-calculator me-1"></i>Factor Coeficiente:</strong> 
+                                <span class="badge bg-warning text-dark">x${val(d.valor_coeficiente_linea_ppto)}</span>
+                            </p>
+                        </div>
+                        ` : `
+                        <h6 class="text-muted border-bottom pb-2 mb-3">
+                            <i class="bi bi-gear me-2"></i>Coeficiente Reductor
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-toggle-off me-1"></i>Aplicar:</strong> 
+                                <span class="badge bg-secondary">NO</span>
+                            </p>
+                        </div>
+                        `}
+
+                        <!-- TOTALES -->
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="bi bi-cash-stack me-2"></i>Totales
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-currency-euro me-1"></i>Base Imponible:</strong> 
+                                <span class="fw-bold">${formatearMoneda(d.base_imponible)}</span>
+                            </p>
+                            <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>IVA (${d.porcentaje_iva_linea_ppto}%):</strong> 
+                                ${formatearMoneda(d.importe_iva)}
+                            </p>
+                            <p class="mb-1"><strong><i class="bi bi-cash-coin me-1"></i>TOTAL:</strong> 
+                                <span class="fw-bold text-success fs-5">${formatearMoneda(d.total_linea)}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ========== COLUMNA 3: FECHAS Y PLANIFICACIÓN ========== -->
+                    <div class="col-md-4">
+                        
+                        <!-- FECHAS DEL EVENTO -->
+                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="bi bi-calendar-event me-2"></i>Fechas del Evento
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-calendar-check me-1"></i>Fecha Inicio:</strong> 
+                                ${d.fecha_inicio_linea_ppto ? formatoFechaEuropeo(d.fecha_inicio_linea_ppto) : val(null)}
+                            </p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar-x me-1"></i>Fecha Fin:</strong> 
+                                ${d.fecha_fin_linea_ppto ? formatoFechaEuropeo(d.fecha_fin_linea_ppto) : val(null)}
+                            </p>
+                            ${d.dias_evento_linea_ppto ? `
+                            <p class="mb-1"><strong><i class="bi bi-hourglass-split me-1"></i>Días del Evento:</strong> 
+                                <span class="badge bg-info">${d.dias_evento_linea_ppto} días</span>
+                            </p>
+                            ` : ''}
+                        </div>
+
+                        <!-- FECHAS DE PLANIFICACIÓN -->
+                        <h6 class="text-info border-bottom pb-2 mb-3">
+                            <i class="bi bi-calendar-range me-2"></i>Planificación
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-arrow-up-circle me-1"></i>Fecha Montaje:</strong> 
+                                ${d.fecha_montaje_linea_ppto ? formatoFechaEuropeo(d.fecha_montaje_linea_ppto) : val(null)}
+                            </p>
+                            <p class="mb-1"><strong><i class="bi bi-arrow-down-circle me-1"></i>Fecha Desmontaje:</strong> 
+                                ${d.fecha_desmontaje_linea_ppto ? formatoFechaEuropeo(d.fecha_desmontaje_linea_ppto) : val(null)}
+                            </p>
+                            ${d.dias_planificacion_linea_ppto ? `
+                            <p class="mb-1"><strong><i class="bi bi-clock-history me-1"></i>Días Planificados:</strong> 
+                                <span class="badge bg-warning text-dark">${d.dias_planificacion_linea_ppto} días</span>
+                            </p>
+                            ` : ''}
+                        </div>
+
+                        <!-- NOTAS -->
+                        ${d.notas_linea_ppto ? `
+                        <h6 class="text-secondary border-bottom pb-2 mb-3">
+                            <i class="bi bi-sticky me-2"></i>Notas
+                        </h6>
+                        <div class="mb-3">
+                            <p class="text-muted small" style="word-break: break-word;">${val(d.notas_linea_ppto)}</p>
+                        </div>
+                        ` : ''}
+
+                        <!-- FECHAS DE SISTEMA -->
+                        <h6 class="text-muted border-bottom pb-2 mb-3">
+                            <i class="bi bi-clock me-2"></i>Sistema
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><small class="text-muted"><i class="bi bi-calendar-plus me-1"></i>Creación: ${d.created_at_linea_ppto ? formatoFechaEuropeo(d.created_at_linea_ppto) : val(null)}</small></p>
+                            <p class="mb-1"><small class="text-muted"><i class="bi bi-calendar-check me-1"></i>Última modificación: ${d.updated_at_linea_ppto ? formatoFechaEuropeo(d.updated_at_linea_ppto) : val(null)}</small></p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    `;
 }
