@@ -209,8 +209,7 @@ LEFT JOIN coeficiente c
 LEFT JOIN impuesto imp 
     ON lp.id_impuesto = imp.id_impuesto
 
-WHERE lp.activo_linea_ppto = TRUE
-  AND p.activo_presupuesto = TRUE;
+WHERE p.activo_presupuesto = TRUE;
 
 
 -- ========================================================

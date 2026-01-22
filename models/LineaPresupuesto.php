@@ -50,10 +50,9 @@ class LineaPresupuesto
     public function get_lineas_version($id_version_presupuesto)
     {
         try {
-            // Usar VISTA para obtener datos con cálculos
+            // Usar VISTA para obtener datos con cálculos (incluye activos e inactivos)
             $sql = "SELECT * FROM v_linea_presupuesto_calculada 
                     WHERE id_version_presupuesto = ? 
-                    AND activo_linea_ppto = 1 
                     ORDER BY orden_linea_ppto ASC";
             
             $stmt = $this->conexion->prepare($sql);

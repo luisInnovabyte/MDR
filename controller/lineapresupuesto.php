@@ -52,29 +52,54 @@ switch ($_GET["op"]) {
             // Test 1: Conexión
             $testConexion = $lineaPresupuesto->getConexion();
             
-            // Test 2: Consulta directa a tabla
-            $sql = "SELECT COUNT(*) as total FROM linea_presupuesto WHERE id_version_presupuesto = ?";
+            // Test 2: Consulta directa a tabla (todas las líneas)
+            $sql = "SELECT id_linea_ppto, descripcion_linea_ppto, activo_linea_ppto 
+                    FROM linea_presupuesto 
+                    WHERE id_version_presupuesto = ?
+                    ORDER BY orden_linea_ppto";
             $stmt = $testConexion->prepare($sql);
             $stmt->execute([$id_version]);
-            $totalTabla = $stmt->fetch(PDO::FETCH_ASSOC);
+            $lineasTabla = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            // Test 3: Consulta a vista
-            $sqlVista = "SELECT COUNT(*) as total FROM v_linea_presupuesto_calculada WHERE id_version_presupuesto = ?";
+            // Test 3: Consulta a vista (todas las líneas)
+            $sqlVista = "SELECT id_linea_ppto, descripcion_linea_ppto, activo_linea_ppto 
+                        FROM v_linea_presupuesto_calculada 
+                        WHERE id_version_presupuesto = ?
+                        ORDER BY orden_linea_ppto";
             $stmtVista = $testConexion->prepare($sqlVista);
             $stmtVista->execute([$id_version]);
-            $totalVista = $stmtVista->fetch(PDO::FETCH_ASSOC);
+            $lineasVista = $stmtVista->fetchAll(PDO::FETCH_ASSOC);
             
             // Test 4: Método del modelo
-            $lineas = $lineaPresupuesto->get_lineas_version($id_version);
+            $lineasModelo = $lineaPresupuesto->get_lineas_version($id_version);
+            
+            // Contar activos e inactivos
+            $activosTabla = array_filter($lineasTabla, fn($l) => $l['activo_linea_ppto'] == 1);
+            $inactivosTabla = array_filter($lineasTabla, fn($l) => $l['activo_linea_ppto'] == 0);
+            
+            $activosVista = array_filter($lineasVista, fn($l) => $l['activo_linea_ppto'] == 1);
+            $inactivosVista = array_filter($lineasVista, fn($l) => $l['activo_linea_ppto'] == 0);
             
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
                 'tests' => [
                     'conexion' => $testConexion ? 'OK' : 'FAIL',
-                    'tabla_lineas' => $totalTabla,
-                    'vista_lineas' => $totalVista,
-                    'modelo_lineas' => count($lineas)
+                    'tabla' => [
+                        'total' => count($lineasTabla),
+                        'activos' => count($activosTabla),
+                        'inactivos' => count($inactivosTabla),
+                        'lineas' => $lineasTabla
+                    ],
+                    'vista' => [
+                        'total' => count($lineasVista),
+                        'activos' => count($activosVista),
+                        'inactivos' => count($inactivosVista),
+                        'lineas' => $lineasVista
+                    ],
+                    'modelo' => [
+                        'total' => count($lineasModelo)
+                    ]
                 ],
                 'id_version_test' => $id_version
             ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -157,7 +182,7 @@ switch ($_GET["op"]) {
                 "tasa_impuesto" => $row["tasa_impuesto"] ?? null,
                 
                 // Estado
-                "activo_linea_ppto" => (bool)$row["activo_linea_ppto"]
+                "activo_linea_ppto" => $row["activo_linea_ppto"]
             );
         }
 
@@ -311,6 +336,126 @@ switch ($_GET["op"]) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Error al obtener línea: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // =========================================================
+    // DUPLICAR UNA LÍNEA
+    // =========================================================
+    case "duplicar":
+        try {
+            $id_linea_ppto = $_POST["id_linea_ppto"] ?? null;
+            
+            if (!$id_linea_ppto) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'ID de línea no proporcionado'
+                ], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+
+            // Obtener línea original
+            $linea_original = $lineaPresupuesto->get_lineaxid($id_linea_ppto);
+            
+            if (!$linea_original) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Línea original no encontrada'
+                ], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+
+            // Obtener el siguiente número de línea y orden
+            $id_version = $linea_original['id_version_presupuesto'];
+            
+            // Obtener max numero_linea_ppto
+            $sql_numero = "SELECT COALESCE(MAX(numero_linea_ppto), 0) + 1 as siguiente_numero 
+                          FROM linea_presupuesto 
+                          WHERE id_version_presupuesto = ?";
+            $stmt_numero = $lineaPresupuesto->getConexion()->prepare($sql_numero);
+            $stmt_numero->execute([$id_version]);
+            $siguiente_numero = $stmt_numero->fetch(PDO::FETCH_ASSOC)['siguiente_numero'];
+            
+            // Obtener max orden_linea_ppto
+            $sql_orden = "SELECT COALESCE(MAX(orden_linea_ppto), 0) + 1 as siguiente_orden 
+                         FROM linea_presupuesto 
+                         WHERE id_version_presupuesto = ?";
+            $stmt_orden = $lineaPresupuesto->getConexion()->prepare($sql_orden);
+            $stmt_orden->execute([$id_version]);
+            $siguiente_orden = $stmt_orden->fetch(PDO::FETCH_ASSOC)['siguiente_orden'];
+
+            // Preparar datos para nueva línea (clonar todos los datos excepto ID)
+            $datos = [
+                'id_version_presupuesto' => $linea_original['id_version_presupuesto'],
+                'id_articulo' => $linea_original['id_articulo'],
+                'id_linea_padre' => $linea_original['id_linea_padre'],
+                'id_ubicacion' => $linea_original['id_ubicacion'],
+                'id_coeficiente' => $linea_original['id_coeficiente'],
+                'id_impuesto' => $linea_original['id_impuesto'],
+                'numero_linea_ppto' => $siguiente_numero,
+                'tipo_linea_ppto' => $linea_original['tipo_linea_ppto'],
+                'nivel_jerarquia' => $linea_original['nivel_jerarquia'],
+                'orden_linea_ppto' => $siguiente_orden,
+                'codigo_linea_ppto' => $linea_original['codigo_linea_ppto'],
+                'descripcion_linea_ppto' => $linea_original['descripcion_linea_ppto'],
+                'cantidad_linea_ppto' => $linea_original['cantidad_linea_ppto'],
+                'precio_unitario_linea_ppto' => $linea_original['precio_unitario_linea_ppto'],
+                'descuento_linea_ppto' => $linea_original['descuento_linea_ppto'],
+                'jornadas_linea_ppto' => $linea_original['jornadas_linea_ppto'],
+                'valor_coeficiente_linea_ppto' => $linea_original['valor_coeficiente_linea_ppto'],
+                'porcentaje_iva_linea_ppto' => $linea_original['porcentaje_iva_linea_ppto'],
+                'fecha_montaje_linea_ppto' => $linea_original['fecha_montaje_linea_ppto'],
+                'fecha_desmontaje_linea_ppto' => $linea_original['fecha_desmontaje_linea_ppto'],
+                'fecha_inicio_linea_ppto' => $linea_original['fecha_inicio_linea_ppto'],
+                'fecha_fin_linea_ppto' => $linea_original['fecha_fin_linea_ppto'],
+                'observaciones_linea_ppto' => $linea_original['observaciones_linea_ppto'],
+                'mostrar_obs_articulo_linea_ppto' => $linea_original['mostrar_obs_articulo_linea_ppto'],
+                'ocultar_detalle_kit_linea_ppto' => $linea_original['ocultar_detalle_kit_linea_ppto'],
+                'mostrar_en_presupuesto' => $linea_original['mostrar_en_presupuesto'],
+                'es_opcional' => $linea_original['es_opcional']
+            ];
+
+            // Insertar nueva línea
+            $id_nueva_linea = $lineaPresupuesto->insert_linea($datos);
+
+            if ($id_nueva_linea) {
+                $registro->registrarActividad(
+                    $_SESSION['usuario'] ?? 'admin',
+                    'lineapresupuesto.php',
+                    'Duplicar línea',
+                    "Línea original ID: {$id_linea_ppto}, Nueva línea ID: {$id_nueva_linea}",
+                    'info'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Línea duplicada correctamente',
+                    'id_nueva_linea' => $id_nueva_linea
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error al duplicar la línea'
+                ], JSON_UNESCAPED_UNICODE);
+            }
+            
+        } catch (Exception $e) {
+            writeToLog([
+                'operation' => 'duplicar',
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al duplicar línea: ' . $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
         break;
@@ -472,6 +617,45 @@ switch ($_GET["op"]) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Error: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // =========================================================
+    // DESACTIVAR LÍNEA (SOFT DELETE)
+    // =========================================================
+    case "desactivar":
+        try {
+            $id_linea_ppto = intval($_POST["id_linea_ppto"]);
+            
+            $resultado = $lineaPresupuesto->delete_lineaxid($id_linea_ppto);
+            
+            if ($resultado) {
+                $registro->registrarActividad(
+                    $_SESSION['usuario'] ?? 'admin',
+                    'lineapresupuesto.php',
+                    'Desactivar línea',
+                    "Línea desactivada ID: {$id_linea_ppto}",
+                    'warning'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Línea desactivada correctamente'
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error al desactivar la línea'
+                ], JSON_UNESCAPED_UNICODE);
+            }
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al desactivar línea: ' . $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
         break;

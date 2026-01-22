@@ -423,18 +423,38 @@ function inicializarDataTable() {
                 className: "text-center",
                 render: function (data, type, row) {
                     const puedeEditarLinea = puedeEditar();
+                    const estaActivo = row.activo_linea_ppto == 1;
                     
                     if (puedeEditarLinea) {
-                        return `
-                            <button type="button" class="btn btn-info btn-sm editarLinea" data-bs-toggle="tooltip-primary" data-placement="top" title="Editar"  
+                        let botones = `
+                            <button type="button" class="btn btn-primary btn-sm duplicarLinea" data-bs-toggle="tooltip-primary" data-placement="top" title="Duplicar"  
+                                 data-id_linea_ppto="${row.id_linea_ppto}"> 
+                                 <i class="bi bi-files"></i>
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm editarLinea" data-bs-toggle="tooltip-primary" data-placement="top" title="Editar"  
                                  data-id_linea_ppto="${row.id_linea_ppto}"> 
                                  <i class="fa-solid fa-edit"></i>
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm eliminarLinea" data-bs-toggle="tooltip-primary" data-placement="top" title="Eliminar" 
-                                 data-id_linea_ppto="${row.id_linea_ppto}"> 
-                                 <i class="fa-solid fa-trash"></i>
-                            </button>
                         `;
+                        
+                        // Botón dinámico: Desactivar (rojo) si está activo, Activar (verde) si está inactivo
+                        if (estaActivo) {
+                            botones += `
+                                <button type="button" class="btn btn-danger btn-sm eliminarLinea" data-bs-toggle="tooltip-primary" data-placement="top" title="Desactivar" 
+                                     data-id_linea_ppto="${row.id_linea_ppto}"> 
+                                     <i class="fa-solid fa-trash"></i>
+                                </button>
+                            `;
+                        } else {
+                            botones += `
+                                <button type="button" class="btn btn-success btn-sm activarLinea" data-bs-toggle="tooltip-primary" data-placement="top" title="Activar" 
+                                     data-id_linea_ppto="${row.id_linea_ppto}"> 
+                                     <i class="fa-solid fa-check"></i>
+                                </button>
+                            `;
+                        }
+                        
+                        return botones;
                     } else {
                         return `
                             <button class="btn btn-sm btn-secondary" disabled title="Versión bloqueada">
@@ -529,9 +549,19 @@ function inicializarDataTable() {
         editarLinea(id_linea_ppto);
     });
     
+    $tableBody.on('click', '.duplicarLinea', function() {
+        var id_linea_ppto = $(this).data('id_linea_ppto');
+        duplicarLinea(id_linea_ppto);
+    });
+    
     $tableBody.on('click', '.eliminarLinea', function() {
         var id_linea_ppto = $(this).data('id_linea_ppto');
         eliminarLinea(id_linea_ppto);
+    });
+    
+    $tableBody.on('click', '.activarLinea', function() {
+        var id_linea_ppto = $(this).data('id_linea_ppto');
+        activarLinea(id_linea_ppto);
     });
 }
 
@@ -774,13 +804,13 @@ function eliminarLinea(id_linea_ppto) {
     }
 
     Swal.fire({
-        title: '¿Eliminar línea?',
+        title: '¿Desactivar línea?',
         text: 'Esta acción desactivará la línea del presupuesto',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: 'Sí, desactivar',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
@@ -793,7 +823,7 @@ function eliminarLinea(id_linea_ppto) {
                     if (response.success) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Eliminado',
+                            title: 'Desactivado',
                             text: response.message,
                             timer: 2000,
                             showConfirmButton: false
@@ -812,7 +842,126 @@ function eliminarLinea(id_linea_ppto) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'No se pudo eliminar la línea'
+                        text: 'No se pudo desactivar la línea'
+                    });
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Activa una línea previamente desactivada
+ */
+function activarLinea(id_linea_ppto) {
+    if (!puedeEditar()) {
+        mostrarAlertaVersionBloqueada();
+        return;
+    }
+
+    Swal.fire({
+        title: '¿Activar línea?',
+        text: 'Esta acción activará la línea en el presupuesto',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, activar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '../../controller/lineapresupuesto.php?op=activar',
+                type: 'POST',
+                data: { id_linea_ppto: id_linea_ppto },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Activado',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        tabla.ajax.reload();
+                        cargarTotales();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo activar la línea'
+                    });
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Duplica una línea existente
+ */
+function duplicarLinea(id_linea_ppto) {
+    if (!puedeEditar()) {
+        mostrarAlertaVersionBloqueada();
+        return;
+    }
+
+    Swal.fire({
+        title: '¿Duplicar línea?',
+        text: 'Se creará una copia exacta de esta línea',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0d6efd',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, duplicar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '../../controller/lineapresupuesto.php?op=duplicar',
+                type: 'POST',
+                data: { id_linea_ppto: id_linea_ppto },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Duplicado',
+                            text: response.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        
+                        // Recargar tabla y totales
+                        tabla.ajax.reload(null, false); // false = mantener página actual
+                        cargarTotales();
+                        
+                        // Abrir modal de edición con la nueva línea
+                        setTimeout(function() {
+                            editarLinea(response.id_nueva_linea);
+                        }, 1600);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo duplicar la línea'
                     });
                 }
             });

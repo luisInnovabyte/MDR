@@ -301,48 +301,6 @@
                         </div>
                     </div>
 
-
-                    <!-- RESUMEN DE CÁLCULOS -->
-                    <div class="card bg-light border-success">
-                        <div class="card-body py-2">
-                            <div class="row text-center align-items-center">
-                                <div class="col-md-2">
-                                    <small class="text-muted d-block mb-1">Subtotal</small>
-                                    <strong class="text-dark" id="preview_subtotal_sin_dto">0,00 €</strong>
-                                </div>
-                                <div class="col-md-1 text-muted">
-                                    <i class="bi bi-dash-lg"></i>
-                                </div>
-                                <div class="col-md-2">
-                                    <small class="text-muted d-block mb-1">Descuento</small>
-                                    <strong class="text-warning" id="preview_descuento">0,00 €</strong>
-                                </div>
-                                <div class="col-md-1 text-muted">
-                                    <i class="bi bi-equals"></i>
-                                </div>
-                                <div class="col-md-2">
-                                    <small class="text-muted d-block mb-1">Base Imp.</small>
-                                    <strong class="text-primary" id="preview_base_imponible">0,00 €</strong>
-                                </div>
-                                <div class="col-md-1 text-muted">
-                                    <i class="bi bi-plus-lg"></i>
-                                </div>
-                                <div class="col-md-1">
-                                    <small class="text-muted d-block mb-1">IVA</small>
-                                    <strong class="text-info" id="preview_iva">0,00 €</strong>
-                                </div>
-                                <div class="col-md-1 text-muted">
-                                    <i class="bi bi-equals"></i>
-                                </div>
-                                <div class="col-md-1">
-                                    <small class="text-muted d-block mb-1">TOTAL</small>
-                                    <strong class="text-success fs-5" id="preview_total">0,00 €</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
                 </div>
                 
                 <div class="modal-footer bg-light">
