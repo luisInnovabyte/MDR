@@ -191,6 +191,15 @@ switch ($_GET["op"]) {
                     // Notas
                     "notas_tecnicas_linea_ppto" => $row["notas_tecnicas_linea_ppto"] ?? null,
                     "notas_comerciales_linea_ppto" => $row["notas_comerciales_linea_ppto"] ?? null,
+                    "observaciones_linea_ppto" => $row["observaciones_linea_ppto"] ?? null,
+                    
+                    // Localización
+                    "localizacion_linea_ppto" => $row["localizacion_linea_ppto"] ?? null,
+                    
+                    // Kit
+                    "id_kit" => $row["id_kit"] ?? null,
+                    "es_kit_articulo" => $row["es_kit_articulo"] ?? 0,
+                    "ocultar_detalle_kit_linea_ppto" => $row["ocultar_detalle_kit_linea_ppto"] ?? null,
                     
                     // Impuesto
                     "tipo_impuesto" => $row["tipo_impuesto"] ?? null,
@@ -510,10 +519,10 @@ switch ($_GET["op"]) {
                 'fecha_inicio_linea_ppto' => null,
                 'fecha_fin_linea_ppto' => null,
                 'observaciones_linea_ppto' => null,
-                'mostrar_obs_articulo_linea_ppto' => $_POST['mostrar_obs_articulo_linea_ppto'] ?? 1,
-                'ocultar_detalle_kit_linea_ppto' => $_POST['ocultar_detalle_kit_linea_ppto'] ?? 0,
-                'mostrar_en_presupuesto' => $_POST['mostrar_en_presupuesto'] ?? 1,
-                'es_opcional' => $_POST['es_opcional'] ?? 0,
+                'mostrar_obs_articulo_linea_ppto' => isset($_POST['mostrar_obs_articulo_linea_ppto']) ? intval($_POST['mostrar_obs_articulo_linea_ppto']) : 1,
+                'ocultar_detalle_kit_linea_ppto' => isset($_POST['ocultar_detalle_kit_linea_ppto']) ? intval($_POST['ocultar_detalle_kit_linea_ppto']) : 0,
+                'mostrar_en_presupuesto' => isset($_POST['mostrar_en_presupuesto']) ? intval($_POST['mostrar_en_presupuesto']) : 1,
+                'es_opcional' => isset($_POST['es_opcional']) ? intval($_POST['es_opcional']) : 0,
                 'activo_linea_ppto' => $_POST['activo_linea_ppto'] ?? 1
             ];
 

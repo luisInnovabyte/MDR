@@ -252,19 +252,16 @@
                 <table id="lineas_data" class="table display responsive nowrap" style="width:100%">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th>Orden</th>
+                            <th></th><!-- Detalles -->
+                            <th>Orden</th><!-- Oculta -->
+                            <th>Localización</th><!-- Oculta -->
                             <th>Código</th>
                             <th>Descripción</th>
-                            <th>Tipo</th>
-                            <th>Cantidad</th>
-                            <th>P. Unitario</th>
-                            <th>Dto. %</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th>Días</th>
                             <th>Coef.</th>
-                            <th>Base Imp.</th>
-                            <th>IVA %</th>
-                            <th>Imp. IVA</th>
-                            <th>Total</th>
+                            <th>Total<span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span></th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -274,27 +271,16 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th></th>
-                            <th></th>
+                            <th></th><!-- Detalles -->
+                            <th></th><!-- Orden (oculto) -->
+                            <th></th><!-- Localización (oculto) -->
                             <th><input type="text" placeholder="Código" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Descripción" class="form-control form-control-sm" /></th>
-                            <th>
-                                <select class="form-control form-control-sm">
-                                    <option value="">Todos</option>
-                                    <option value="articulo">Artículo</option>
-                                    <option value="kit">Kit</option>
-                                    <option value="seccion">Sección</option>
-                                    <option value="texto">Texto</option>
-                                </select>
-                            </th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
+                            <th></th><!-- Fecha Inicio -->
+                            <th></th><!-- Fecha Fin -->
+                            <th></th><!-- Días -->
+                            <th></th><!-- Coeficiente -->
+                            <th></th><!-- Total -->
                             <th>
                                 <select class="form-control form-control-sm">
                                     <option value="">Todos</option>
@@ -302,10 +288,19 @@
                                     <option value="0">Inactivo</option>
                                 </select>
                             </th>
-                            <th></th>
+                            <th></th><!-- Acciones -->
                         </tr>
                     </tfoot>
                 </table>
+                
+                <!-- Nota explicativa del asterisco -->
+                <div class="mt-2 px-2">
+                    <small class="text-muted">
+                        <span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span>
+                        <strong>Nota:</strong> El total mostrado incluye el descuento aplicado en la línea de presupuesto del artículo 
+                        y el coeficiente (si procede), pero <strong>no está incluido el descuento global del cliente</strong>.
+                    </small>
+                </div>
             </div><!-- table-wrapper -->
         </div><!-- br-section-wrapper -->
     </div><!-- br-pagebody -->

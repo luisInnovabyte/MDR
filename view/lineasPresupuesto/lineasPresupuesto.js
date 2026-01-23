@@ -228,20 +228,17 @@ function inicializarDataTable() {
         },
         columns: [
             { name: 'detalles', data: null, defaultContent: '', className: "text-center align-middle", orderable: false },
-            { name: 'orden_linea_ppto', data: 'orden_linea_ppto', className: "text-center align-middle" },
-            { name: 'codigo_linea_ppto', data: 'codigo_linea_ppto', className: "text-center align-middle" },
-            { name: 'descripcion_linea_ppto', data: 'descripcion_linea_ppto', className: "text-left align-middle" },
-            { name: 'tipo_linea_ppto', data: 'tipo_linea_ppto', className: "text-center align-middle" },
-            { name: 'cantidad_linea_ppto', data: 'cantidad_linea_ppto', className: "text-center align-middle" },
-            { name: 'precio_unitario_linea_ppto', data: 'precio_unitario_linea_ppto', className: "text-end align-middle" },
-            { name: 'descuento_linea_ppto', data: 'descuento_linea_ppto', className: "text-center align-middle" },
-            { name: 'valor_coeficiente_linea_ppto', data: 'valor_coeficiente_linea_ppto', className: "text-center align-middle" },
-            { name: 'base_imponible', data: 'base_imponible', className: "text-end align-middle" },
-            { name: 'porcentaje_iva_linea_ppto', data: 'porcentaje_iva_linea_ppto', className: "text-center align-middle" },
-            { name: 'importe_iva', data: 'importe_iva', className: "text-end align-middle" },
-            { name: 'total_linea', data: 'total_linea', className: "text-end align-middle" },
-            { name: 'activo_linea_ppto', data: 'activo_linea_ppto', className: "text-center align-middle" },
-            { name: 'acciones', data: null, className: "text-center align-middle" }
+            { name: 'orden_linea_ppto', data: 'orden_linea_ppto', defaultContent: '0', className: "text-center align-middle" },
+            { name: 'localizacion_linea_ppto', data: 'localizacion_linea_ppto', defaultContent: '', className: "text-center align-middle" },
+            { name: 'codigo_linea_ppto', data: 'codigo_linea_ppto', defaultContent: '', className: "text-center align-middle" },
+            { name: 'descripcion_linea_ppto', data: 'descripcion_linea_ppto', defaultContent: '', className: "text-left align-middle" },
+            { name: 'fecha_inicio_linea_ppto', data: 'fecha_inicio_linea_ppto', defaultContent: null, className: "text-center align-middle" },
+            { name: 'fecha_fin_linea_ppto', data: 'fecha_fin_linea_ppto', defaultContent: null, className: "text-center align-middle" },
+            { name: 'dias_duracion', data: null, defaultContent: '', className: "text-center align-middle" },
+            { name: 'valor_coeficiente_linea_ppto', data: 'valor_coeficiente_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
+            { name: 'total_linea', data: 'total_linea', defaultContent: '0', className: "text-end align-middle" },
+            { name: 'activo_linea_ppto', data: 'activo_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
+            { name: 'acciones', data: null, defaultContent: '', className: "text-center align-middle" }
         ],
         columnDefs: [
             // Columna 0: Botón de detalles
@@ -258,181 +255,177 @@ function inicializarDataTable() {
                     return '';
                 }
             },
-            // Columna 1: Orden (OCULTA)
-            { targets: "orden_linea_ppto:name", width: '5%', searchable: false, orderable: true, className: "text-center", visible: false },
-            // Columna 2: Código
+            // Columna 1: Orden (OCULTA para agrupación posterior)
+            { 
+                targets: "orden_linea_ppto:name", 
+                visible: false, 
+                searchable: false, 
+                orderable: true 
+            },
+            // Columna 2: Localización (OCULTA para agrupación posterior)
+            { 
+                targets: "localizacion_linea_ppto:name", 
+                visible: false, 
+                searchable: true, 
+                orderable: true 
+            },
+            // Columna 3: Código
             { 
                 targets: "codigo_linea_ppto:name", 
-                width: '8%', 
+                width: '100px', 
                 searchable: true, 
                 orderable: true, 
-                className: "text-center",
+                className: "text-center fw-bold",
                 render: function (data, type, row) {
                     return data || row.codigo_articulo || '--';
                 }
             },
-            // Columna 3: Descripción
+            // Columna 4: Descripción
             { 
                 targets: "descripcion_linea_ppto:name", 
-                width: '20%', 
+                width: '250px', 
                 searchable: true, 
                 orderable: true, 
                 className: "text-left",
                 render: function (data, type, row) {
-                    if (type === "display") {
-                        let html = `<div class="text-truncate" style="max-width: 300px;" title="${data}">${data}</div>`;
-                        if (row.nombre_articulo && row.nombre_articulo !== data) {
-                            html += `<small class="text-muted">${row.nombre_articulo}</small>`;
-                        }
-                        return html;
+                    if (type === "display" && data && data.length > 50) {
+                        return '<span title="' + data + '">' + data.substring(0, 50) + '...</span>';
                     }
                     return data;
                 }
             },
-            // Columna 4: Tipo (OCULTA)
+            // Columna 5: Fecha Inicio
             {
-                targets: "tipo_linea_ppto:name",
-                width: '8%',
-                orderable: true,
-                searchable: true,
-                className: "text-center",
-                visible: false,
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        const tipos = {
-                            'articulo': '<span class="badge bg-primary">Artículo</span>',
-                            'kit': '<span class="badge bg-info">Kit</span>',
-                            'seccion': '<span class="badge bg-secondary">Sección</span>',
-                            'texto': '<span class="badge bg-light text-dark">Texto</span>'
-                        };
-                        return tipos[data] || data;
-                    }
-                    return data;
-                }
-            },
-            // Columna 4: Cantidad
-            { targets: "cantidad_linea_ppto:name", width: '5%', searchable: false, orderable: true, className: "text-center" },
-            // Columna 5: Precio Unitario
-            {
-                targets: "precio_unitario_linea_ppto:name",
-                width: '8%',
-                searchable: false,
-                orderable: true,
-                className: "text-end",
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        return formatearMoneda(data);
-                    }
-                    return data;
-                }
-            },
-            // Columna 6: Descuento
-            {
-                targets: "descuento_linea_ppto:name",
-                width: '6%',
+                targets: "fecha_inicio_linea_ppto:name",
+                width: '120px',
                 searchable: false,
                 orderable: true,
                 className: "text-center",
                 render: function (data, type, row) {
-                    if (type === "display") {
-                        return data > 0 ? `${data}%` : '--';
+                    if (type === "display" && data) {
+                        let fecha = new Date(data);
+                        let dia = ("0" + fecha.getDate()).slice(-2);
+                        let mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+                        let anio = fecha.getFullYear();
+                        
+                        return `<div class="text-nowrap">
+                                    <i class="bi bi-calendar-check text-success me-1"></i>
+                                    <strong>${dia}/${mes}/${anio}</strong>
+                                </div>`;
                     }
-                    return data;
+                    return data ? data : '<span class="text-muted">No definida</span>';
                 }
             },
-            // Columna 7: Coeficiente
+            // Columna 6: Fecha Fin
+            {
+                targets: "fecha_fin_linea_ppto:name",
+                width: '120px',
+                searchable: false,
+                orderable: true,
+                className: "text-center",
+                render: function (data, type, row) {
+                    if (type === "display" && data) {
+                        let fecha = new Date(data);
+                        let ahora = new Date();
+                        let dia = ("0" + fecha.getDate()).slice(-2);
+                        let mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+                        let anio = fecha.getFullYear();
+                        
+                        let claseColor = fecha < ahora ? 'text-danger' : 'text-warning';
+                        let icono = fecha < ahora ? 'bi-exclamation-triangle' : 'bi-calendar-x';
+                        
+                        return `<div class="text-nowrap ${claseColor}">
+                                    <i class="bi ${icono} me-1"></i>
+                                    <strong>${dia}/${mes}/${anio}</strong>
+                                </div>`;
+                    }
+                    return data ? data : '<span class="text-muted">No definida</span>';
+                }
+            },
+            // Columna 7: Días de duración
+            {
+                targets: "dias_duracion:name",
+                width: '70px',
+                searchable: false,
+                orderable: false,
+                className: "text-center",
+                render: function (data, type, row) {
+                    if (type === "display" && row.fecha_inicio_linea_ppto && row.fecha_fin_linea_ppto) {
+                        let inicio = new Date(row.fecha_inicio_linea_ppto);
+                        let fin = new Date(row.fecha_fin_linea_ppto);
+                        
+                        let diferenciaMilisegundos = fin - inicio;
+                        let dias = Math.ceil(diferenciaMilisegundos / (1000 * 60 * 60 * 24)) + 1;
+                        
+                        let claseBadge = 'bg-info';
+                        if (dias <= 1) claseBadge = 'bg-success';
+                        else if (dias > 7) claseBadge = 'bg-warning';
+                        
+                        return `<span class="badge ${claseBadge}" title="Duración del alquiler">
+                                    ${dias} ${dias === 1 ? 'día' : 'días'}
+                                </span>`;
+                    }
+                    return '<span class="text-muted">-</span>';
+                }
+            },
+            // Columna 8: Coeficiente
             {
                 targets: "valor_coeficiente_linea_ppto:name",
-                width: '6%',
+                width: '90px',
                 searchable: false,
                 orderable: true,
                 className: "text-center",
                 render: function (data, type, row) {
                     if (type === "display") {
-                        if (data && parseFloat(data) > 1) {
-                            return `<span class="badge bg-warning text-dark" title="${row.jornadas_linea_ppto} jornadas">x${data}</span>`;
+                        let coef = parseFloat(data);
+                        if (coef && coef !== 1.00) {
+                            let clase = coef > 1 ? 'bg-warning' : 'bg-info';
+                            return `<span class="badge ${clase}" title="Coeficiente aplicado">
+                                        <i class="bi bi-calculator"></i> ${coef.toFixed(2)}
+                                    </span>`;
                         }
-                        return '--';
+                        return '<span class="text-muted">-</span>';
                     }
                     return data;
                 }
             },
-            // Columna 8: Base Imponible
-            {
-                targets: "base_imponible:name",
-                width: '8%',
-                searchable: false,
-                orderable: true,
-                className: "text-end",
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        return `<strong>${formatearMoneda(data)}</strong>`;
-                    }
-                    return data;
-                }
-            },
-            // Columna 9: Porcentaje IVA
-            {
-                targets: "porcentaje_iva_linea_ppto:name",
-                width: '5%',
-                searchable: false,
-                orderable: true,
-                className: "text-center",
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        return `${data}%`;
-                    }
-                    return data;
-                }
-            },
-            // Columna 10: Importe IVA
-            {
-                targets: "importe_iva:name",
-                width: '8%',
-                searchable: false,
-                orderable: true,
-                className: "text-end",
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        return formatearMoneda(data);
-                    }
-                    return data;
-                }
-            },
-            // Columna 11: Total
+            // Columna 9: Total
             {
                 targets: "total_linea:name",
-                width: '8%',
+                width: '110px',
                 searchable: false,
                 orderable: true,
-                className: "text-end",
+                className: "text-end fw-bold",
                 render: function (data, type, row) {
                     if (type === "display") {
-                        return `<strong class="text-success">${formatearMoneda(data)}</strong>`;
+                        let total = parseFloat(data);
+                        return `<span class="text-success" style="font-size: 1.05rem;">
+                                    ${formatearMoneda(total)}
+                                </span>`;
                     }
                     return data;
                 }
             },
-            // Columna 12: Estado
+            // Columna 10: Estado
             {
                 targets: "activo_linea_ppto:name",
-                width: '6%',
+                width: '50px',
                 orderable: true,
                 searchable: true,
                 className: "text-center",
                 render: function (data, type, row) {
                     if (type === "display") {
-                        return data == 1 ? 
-                            '<i class="bi bi-check-circle text-success fa-2x"></i>' : 
-                            '<i class="bi bi-x-circle text-danger fa-2x"></i>';
+                        return data == 1 
+                            ? '<i class="bi bi-check-circle text-success" style="font-size: 1.2rem;" title="Activo"></i>'
+                            : '<i class="bi bi-x-circle text-danger" style="font-size: 1.2rem;" title="Inactivo"></i>';
                     }
                     return data;
                 }
             },
-            // Columna 13: Acciones
+            // Columna 11: Acciones
             {
                 targets: "acciones:name",
-                width: '10%',
+                width: '110px',
                 searchable: false,
                 orderable: false,
                 className: "text-center",
@@ -801,7 +794,8 @@ function editarLinea(id_linea_ppto) {
                     $('[name="mostrar_obs_articulo_linea_ppto"]').val(data.mostrar_obs_articulo_linea_ppto || 1);
                 }
                 if ($('[name="ocultar_detalle_kit_linea_ppto"]').length) {
-                    $('[name="ocultar_detalle_kit_linea_ppto"]').val(data.ocultar_detalle_kit_linea_ppto || 0);
+                    // Usar .prop('checked') para checkboxes en lugar de .val()
+                    $('#ocultar_detalle_kit_linea_ppto').prop('checked', data.ocultar_detalle_kit_linea_ppto == 1);
                 }
                 if ($('[name="mostrar_en_presupuesto"]').length) {
                     $('[name="mostrar_en_presupuesto"]').val(data.mostrar_en_presupuesto !== undefined ? data.mostrar_en_presupuesto : 1);
@@ -1540,198 +1534,254 @@ function formatLineaDetalle(d) {
     // Función auxiliar para formatear valores nulos
     const val = (value) => value !== null && value !== undefined && value !== '' ? value : '<span class="text-muted">-</span>';
     
-    // DEBUG: Ver qué fechas están llegando
-    console.log('Fechas recibidas:', {
-        fecha_inicio: d.fecha_inicio_linea_ppto,
-        fecha_fin: d.fecha_fin_linea_ppto,
-        fecha_montaje: d.fecha_montaje_linea_ppto,
-        fecha_desmontaje: d.fecha_desmontaje_linea_ppto,
-        created_at: d.created_at_linea_ppto,
-        updated_at: d.updated_at_linea_ppto
-    });
+    // Calcular días de duración si hay fechas
+    let diasDuracion = '';
+    if (d.fecha_inicio_linea_ppto && d.fecha_fin_linea_ppto) {
+        let inicio = new Date(d.fecha_inicio_linea_ppto);
+        let fin = new Date(d.fecha_fin_linea_ppto);
+        let dias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24)) + 1;
+        diasDuracion = `<span class="badge bg-info">${dias} ${dias === 1 ? 'día' : 'días'}</span>`;
+    }
     
     return `
-        <div class="card border-primary mb-3">
-            <div class="card-header bg-primary text-white">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-list-ul fs-3 me-2"></i>
-                    <h5 class="card-title mb-0">Detalles de la Línea de Presupuesto</h5>
-                </div>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-2">
+                <h6 class="mb-0"><i class="bi bi-info-circle-fill me-2"></i>Detalle Completo de la Línea</h6>
             </div>
-            <div class="card-body p-3">
+            <div class="card-body py-2">
                 <div class="row">
                     
-                    <!-- ========== COLUMNA 1: DATOS GENERALES ========== -->
+                    <!-- ========== COLUMNA 1: INFORMACIÓN GENERAL ========== -->
                     <div class="col-md-4">
-                        
-                        <!-- DATOS BÁSICOS -->
-                        <h6 class="text-primary border-bottom pb-2 mb-3">
-                            <i class="bi bi-file-text me-2"></i>Datos Básicos
+                        <h6 class="text-primary border-bottom pb-1 mb-1">
+                            <i class="bi bi-box-seam"></i> Información General
                         </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-hash me-1"></i>ID Línea:</strong> ${val(d.id_linea_ppto)}</p>
-                            <p class="mb-1"><strong><i class="bi bi-sort-numeric-down me-1"></i>Orden:</strong> ${val(d.orden_linea_ppto)}</p>
-                            <p class="mb-1"><strong><i class="bi bi-upc me-1"></i>Código:</strong> ${val(d.codigo_linea_ppto)}</p>
-                            <p class="mb-1"><strong><i class="bi bi-card-text me-1"></i>Descripción:</strong></p>
-                            <p class="ms-3 text-muted small" style="word-break: break-word;">${val(d.descripcion_linea_ppto)}</p>
-                            <p class="mb-1"><strong><i class="bi bi-tags me-1"></i>Tipo:</strong> 
-                                ${d.tipo_linea_ppto === 'articulo' ? '<span class="badge bg-primary">Artículo</span>' : 
-                                  d.tipo_linea_ppto === 'kit' ? '<span class="badge bg-info">Kit</span>' :
-                                  d.tipo_linea_ppto === 'seccion' ? '<span class="badge bg-secondary">Sección</span>' :
-                                  d.tipo_linea_ppto === 'texto' ? '<span class="badge bg-light text-dark">Texto</span>' : 
-                                  val(d.tipo_linea_ppto)}
-                            </p>
-                        </div>
-
-                        <!-- DATOS DEL ARTÍCULO (si aplica) -->
-                        ${d.id_articulo ? `
-                        <h6 class="text-info border-bottom pb-2 mb-3">
-                            <i class="bi bi-box me-2"></i>Artículo Asociado
-                        </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-hash me-1"></i>ID Artículo:</strong> ${val(d.id_articulo)}</p>
-                            <p class="mb-1"><strong><i class="bi bi-box-seam me-1"></i>Nombre:</strong> ${val(d.nombre_articulo)}</p>
-                            <p class="mb-1"><strong><i class="bi bi-upc-scan me-1"></i>Código:</strong> ${val(d.codigo_articulo)}</p>
-                        </div>
-                        ` : ''}
-
-                        <!-- ESTADO -->
-                        <h6 class="text-secondary border-bottom pb-2 mb-3">
-                            <i class="bi bi-toggle-on me-2"></i>Estado
-                        </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-check-circle me-1"></i>Activo:</strong> 
-                                ${d.activo_linea_ppto == 1 ? 
-                                    '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>SÍ</span>' : 
-                                    '<span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>NO</span>'}
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- ========== COLUMNA 2: PRECIOS Y CÁLCULOS ========== -->
-                    <div class="col-md-4">
-                        
-                        <!-- CANTIDADES Y PRECIOS -->
-                        <h6 class="text-success border-bottom pb-2 mb-3">
-                            <i class="bi bi-calculator me-2"></i>Cantidades y Precios
-                        </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-123 me-1"></i>Cantidad:</strong> 
-                                <span class="badge bg-info">${val(d.cantidad_linea_ppto)}</span>
-                            </p>
-                            <p class="mb-1"><strong><i class="bi bi-currency-euro me-1"></i>Precio Unitario:</strong> 
-                                ${formatearMoneda(d.precio_unitario_linea_ppto)}
-                            </p>
-                            <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>Descuento:</strong> 
-                                ${d.descuento_linea_ppto > 0 ? 
-                                    `<span class="badge bg-warning text-dark">${d.descuento_linea_ppto}%</span>` : 
-                                    '<span class="text-muted">Sin descuento</span>'}
-                            </p>
-                        </div>
-
-                        <!-- COEFICIENTE -->
-                        ${d.aplicar_coeficiente_linea_ppto == 1 ? `
-                        <h6 class="text-warning border-bottom pb-2 mb-3">
-                            <i class="bi bi-gear me-2"></i>Coeficiente Reductor
-                        </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-toggle-on me-1"></i>Aplicar:</strong> 
-                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>SÍ</span>
-                            </p>
-                            <p class="mb-1"><strong><i class="bi bi-calendar-week me-1"></i>Jornadas:</strong> 
-                                <span class="badge bg-info">${val(d.jornadas_linea_ppto)}</span>
-                            </p>
-                            <p class="mb-1"><strong><i class="bi bi-calculator me-1"></i>Factor Coeficiente:</strong> 
-                                <span class="badge bg-warning text-dark">x${val(d.valor_coeficiente_linea_ppto)}</span>
-                            </p>
-                        </div>
-                        ` : `
-                        <h6 class="text-muted border-bottom pb-2 mb-3">
-                            <i class="bi bi-gear me-2"></i>Coeficiente Reductor
-                        </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-toggle-off me-1"></i>Aplicar:</strong> 
-                                <span class="badge bg-secondary">NO</span>
-                            </p>
-                        </div>
-                        `}
-
-                        <!-- TOTALES -->
-                        <h6 class="text-success border-bottom pb-2 mb-3">
-                            <i class="bi bi-cash-stack me-2"></i>Totales
-                        </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-currency-euro me-1"></i>Base Imponible:</strong> 
-                                <span class="fw-bold">${formatearMoneda(d.base_imponible)}</span>
-                            </p>
-                            <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>IVA (${d.porcentaje_iva_linea_ppto}%):</strong> 
-                                ${formatearMoneda(d.importe_iva)}
-                            </p>
-                            <p class="mb-1"><strong><i class="bi bi-cash-coin me-1"></i>TOTAL:</strong> 
-                                <span class="fw-bold text-success fs-5">${formatearMoneda(d.total_linea)}</span>
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- ========== COLUMNA 3: FECHAS Y PLANIFICACIÓN ========== -->
-                    <div class="col-md-4">
-                        
-                        <!-- FECHAS DEL EVENTO -->
-                        <h6 class="text-primary border-bottom pb-2 mb-3">
-                            <i class="bi bi-calendar-event me-2"></i>Fechas del Evento
-                        </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-calendar-check me-1"></i>Fecha Inicio:</strong> 
-                                ${d.fecha_inicio_linea_ppto ? formatoFechaEuropeo(d.fecha_inicio_linea_ppto) : val(null)}
-                            </p>
-                            <p class="mb-1"><strong><i class="bi bi-calendar-x me-1"></i>Fecha Fin:</strong> 
-                                ${d.fecha_fin_linea_ppto ? formatoFechaEuropeo(d.fecha_fin_linea_ppto) : val(null)}
-                            </p>
-                            ${d.dias_evento_linea_ppto ? `
-                            <p class="mb-1"><strong><i class="bi bi-hourglass-split me-1"></i>Días del Evento:</strong> 
-                                <span class="badge bg-info">${d.dias_evento_linea_ppto} días</span>
-                            </p>
+                        <table class="table table-sm table-borderless mb-0" style="font-size: 0.9rem; line-height: 1.1;">
+                            <tr>
+                                <td class="text-muted" style="width: 140px;">ID Línea:</td>
+                                <td class="fw-bold">#${val(d.id_linea_ppto)}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Tipo:</td>
+                                <td>
+                                    ${(() => {
+                                        const tipos = {
+                                            'articulo': '<span class="badge bg-primary">Artículo</span>',
+                                            'kit': '<span class="badge bg-success">Kit</span>',
+                                            'seccion': '<span class="badge bg-warning">Sección</span>',
+                                            'texto': '<span class="badge bg-info">Texto</span>'
+                                        };
+                                        return tipos[d.tipo_linea_ppto] || val(d.tipo_linea_ppto);
+                                    })()}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Código:</td>
+                                <td class="fw-bold">${val(d.codigo_linea_ppto) || val(d.codigo_articulo)}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Descripción:</td>
+                                <td>${val(d.descripcion_linea_ppto)}</td>
+                            </tr>
+                            ${d.observaciones_linea_ppto ? `
+                            <tr>
+                                <td class="text-muted">Observaciones:</td>
+                                <td><small class="text-muted">${val(d.observaciones_linea_ppto)}</small></td>
+                            </tr>
                             ` : ''}
-                        </div>
-
-                        <!-- FECHAS DE PLANIFICACIÓN -->
-                        <h6 class="text-info border-bottom pb-2 mb-3">
-                            <i class="bi bi-calendar-range me-2"></i>Planificación
+                        </table>
+                        
+                        ${d.es_kit_articulo == 1 ? `
+                        <h6 class="text-info border-bottom pb-1 mb-1 mt-1">
+                            <i class="bi bi-box"></i> Artículo/Kit Asociado
                         </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><strong><i class="bi bi-arrow-up-circle me-1"></i>Fecha Montaje:</strong> 
-                                ${d.fecha_montaje_linea_ppto ? formatoFechaEuropeo(d.fecha_montaje_linea_ppto) : val(null)}
-                            </p>
-                            <p class="mb-1"><strong><i class="bi bi-arrow-down-circle me-1"></i>Fecha Desmontaje:</strong> 
-                                ${d.fecha_desmontaje_linea_ppto ? formatoFechaEuropeo(d.fecha_desmontaje_linea_ppto) : val(null)}
-                            </p>
-                            ${d.dias_planificacion_linea_ppto ? `
-                            <p class="mb-1"><strong><i class="bi bi-clock-history me-1"></i>Días Planificados:</strong> 
-                                <span class="badge bg-warning text-dark">${d.dias_planificacion_linea_ppto} días</span>
-                            </p>
-                            ` : ''}
-                        </div>
-
-                        <!-- NOTAS -->
-                        ${d.notas_linea_ppto ? `
-                        <h6 class="text-secondary border-bottom pb-2 mb-3">
-                            <i class="bi bi-sticky me-2"></i>Notas
-                        </h6>
-                        <div class="mb-3">
-                            <p class="text-muted small" style="word-break: break-word;">${val(d.notas_linea_ppto)}</p>
-                        </div>
+                        <table class="table table-sm table-borderless mb-0" style="font-size: 0.9rem; line-height: 1.1;">
+                            <tr>
+                                <td class="text-muted" style="width: 140px;">Ocultar Detalle Kit:</td>
+                                <td>
+                                    ${d.aplicar_coeficiente_linea_ppto === null || d.aplicar_coeficiente_linea_ppto === undefined || d.aplicar_coeficiente_linea_ppto === '' 
+                                        ? '<span class="badge bg-secondary">No aplica</span>' 
+                                        : d.aplicar_coeficiente_linea_ppto == 1 
+                                            ? '<span class="badge bg-warning">Se ocultarán los detalles</span>' 
+                                            : '<span class="badge bg-success">Se mostrarán los detalles del KIT</span>'}
+                                </td>
+                            </tr>
+                        </table>
                         ` : ''}
-
-                        <!-- FECHAS DE SISTEMA -->
-                        <h6 class="text-muted border-bottom pb-2 mb-3">
-                            <i class="bi bi-clock me-2"></i>Sistema
-                        </h6>
-                        <div class="mb-3">
-                            <p class="mb-1"><small class="text-muted"><i class="bi bi-calendar-plus me-1"></i>Creación: ${d.created_at_linea_ppto ? formatoFechaEuropeo(d.created_at_linea_ppto) : val(null)}</small></p>
-                            <p class="mb-1"><small class="text-muted"><i class="bi bi-calendar-check me-1"></i>Última modificación: ${d.updated_at_linea_ppto ? formatoFechaEuropeo(d.updated_at_linea_ppto) : val(null)}</small></p>
-                        </div>
                     </div>
                     
+                    <!-- ========== COLUMNA 2: INFORMACIÓN ECONÓMICA ========== -->
+                    <div class="col-md-4">
+                        <h6 class="text-success border-bottom pb-1 mb-1">
+                            <i class="bi bi-currency-euro"></i> Detalle Económico
+                        </h6>
+                        <table class="table table-sm table-borderless mb-0" style="font-size: 0.9rem; line-height: 1.1;">
+                            <tr>
+                                <td class="text-muted" style="width: 140px;">Cantidad:</td>
+                                <td class="text-end fw-bold">${val(d.cantidad_linea_ppto)}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Precio Unitario:</td>
+                                <td class="text-end fw-bold">${formatearMoneda(d.precio_unitario_linea_ppto || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Descuento:</td>
+                                <td class="text-end">${parseFloat(d.descuento_linea_ppto || 0).toFixed(2)} %</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Coeficiente:</td>
+                                <td class="text-end">
+                                    ${parseFloat(d.valor_coeficiente_linea_ppto || 1).toFixed(2)}
+                                    ${parseFloat(d.valor_coeficiente_linea_ppto) !== 1 ? '<i class="bi bi-exclamation-circle text-warning ms-1" title="Coeficiente aplicado"></i>' : ''}
+                                </td>
+                            </tr>
+                            ${d.jornadas_linea_ppto ? `
+                            <tr>
+                                <td class="text-muted">Jornadas:</td>
+                                <td class="text-end"><span class="badge bg-info">${val(d.jornadas_linea_ppto)}</span></td>
+                            </tr>
+                            ` : ''}
+                            <tr class="border-top pt-2">
+                                <td class="text-muted">Base Imponible<span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span>:</td>
+                                <td class="text-end fw-bold">${formatearMoneda(d.base_imponible || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">IVA (${parseFloat(d.porcentaje_iva_linea_ppto || 0).toFixed(0)}%):</td>
+                                <td class="text-end">${formatearMoneda(d.importe_iva || 0)}</td>
+                            </tr>
+                            <tr class="border-top pt-2">
+                                <td class="text-muted fw-bold">TOTAL<span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span>:</td>
+                                <td class="text-end fw-bold text-success" style="font-size: 1.1rem;">
+                                    ${formatearMoneda(d.total_linea || 0)}
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        ${d.aplicar_coeficiente_linea_ppto == 1 ? `
+                        <div class="alert alert-warning alert-sm mt-1 mb-0 py-1 px-2">
+                            <small><i class="bi bi-calculator me-1"></i><strong>Coeficiente aplicado:</strong> 
+                            Se ha aplicado un coeficiente reductor basado en ${d.jornadas_linea_ppto || 0} jornada(s).</small>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <!-- ========== COLUMNA 3: LOCALIZACIÓN Y FECHAS ========== -->
+                    <div class="col-md-4">
+                        <h6 class="text-info border-bottom pb-1 mb-1">
+                            <i class="bi bi-geo-alt"></i> Localización y Fechas
+                        </h6>
+                        <table class="table table-sm table-borderless mb-0" style="font-size: 0.9rem; line-height: 1.1;">
+                            <tr>
+                                <td class="text-muted" style="width: 140px;">Localización:</td>
+                                <td class="fw-bold">
+                                    ${d.localizacion_linea_ppto 
+                                        ? `<span class="badge bg-info"><i class="bi bi-geo-alt-fill"></i> ${d.localizacion_linea_ppto}</span>` 
+                                        : '<span class="text-muted">No especificada</span>'}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Inicio:</td>
+                                <td>
+                                    ${d.fecha_inicio_linea_ppto 
+                                        ? '<i class="bi bi-calendar-check text-success me-1"></i>' + new Date(d.fecha_inicio_linea_ppto).toLocaleDateString('es-ES', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        })
+                                        : '<span class="text-muted">No definida</span>'}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Fin:</td>
+                                <td>
+                                    ${d.fecha_fin_linea_ppto 
+                                        ? '<i class="bi bi-calendar-x text-warning me-1"></i>' + new Date(d.fecha_fin_linea_ppto).toLocaleDateString('es-ES', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        })
+                                        : '<span class="text-muted">No definida</span>'}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Duración:</td>
+                                <td class="fw-bold">${diasDuracion || '<span class="text-muted">-</span>'}</td>
+                            </tr>
+                        </table>
+                        
+                        <h6 class="text-secondary border-bottom pb-1 mb-1 mt-1">
+                            <i class="bi bi-calendar-range"></i> Planificación
+                        </h6>
+                        <table class="table table-sm table-borderless mb-0" style="font-size: 0.9rem; line-height: 1.1;">
+                            <tr>
+                                <td class="text-muted" style="width: 140px;">Montaje:</td>
+                                <td>
+                                    ${d.fecha_montaje_linea_ppto 
+                                        ? new Date(d.fecha_montaje_linea_ppto).toLocaleDateString('es-ES', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        })
+                                        : '<span class="text-muted">No definida</span>'}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Desmontaje:</td>
+                                <td>
+                                    ${d.fecha_desmontaje_linea_ppto 
+                                        ? new Date(d.fecha_desmontaje_linea_ppto).toLocaleDateString('es-ES', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        })
+                                        : '<span class="text-muted">No definida</span>'}
+                                </td>
+                            </tr>
+                            ${d.dias_evento_linea_ppto ? `
+                            <tr>
+                                <td class="text-muted">Días Evento:</td>
+                                <td><span class="badge bg-info">${d.dias_evento_linea_ppto}</span></td>
+                            </tr>
+                            ` : ''}
+                            ${d.dias_planificacion_linea_ppto ? `
+                            <tr>
+                                <td class="text-muted">Días Planif.:</td>
+                                <td><span class="badge bg-warning">${d.dias_planificacion_linea_ppto}</span></td>
+                            </tr>
+                            ` : ''}
+                        </table>
+                        
+                        ${d.notas_linea_ppto ? `
+                        <div class="alert alert-secondary alert-sm mt-3">
+                            <small><strong>Notas:</strong><br>${d.notas_linea_ppto}</small>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <!-- ========== FILA ADICIONAL: INFORMACIÓN TÉCNICA Y SISTEMA ========== -->
+                <div class="row mt-3 pt-3 border-top">
+                    <div class="col-md-6">
+                        <h6 class="text-secondary">
+                            <i class="bi bi-gear"></i> Información Técnica
+                        </h6>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <small class="text-muted">ID Versión Presupuesto: <strong>${d.id_version_presupuesto || '-'}</strong></small>
+                            ${d.numero_linea_ppto ? `<small class="text-muted">Número Línea: <strong>${d.numero_linea_ppto}</strong></small>` : ''}
+                            ${d.nivel_jerarquia !== null && d.nivel_jerarquia !== undefined ? `<small class="text-muted">Nivel Jerarquía: <strong>${d.nivel_jerarquia}</strong></small>` : ''}
+                            ${d.id_coeficiente ? `<small class="text-muted">ID Coeficiente: <strong>${d.id_coeficiente}</strong></small>` : ''}
+                            <small class="text-muted">Estado: ${d.activo_linea_ppto == 1 ? '<span class="badge bg-success">Activo</span>' : '<span class="badge bg-danger">Inactivo</span>'}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <h6 class="text-muted">
+                            <i class="bi bi-clock-history"></i> Registro
+                        </h6>
+                        <div class="d-flex gap-3 flex-wrap justify-content-end">
+                            ${d.created_at_linea_ppto ? `<small class="text-muted">Creado: <strong>${new Date(d.created_at_linea_ppto).toLocaleString('es-ES')}</strong></small>` : ''}
+                            ${d.updated_at_linea_ppto ? `<small class="text-muted">Actualizado: <strong>${new Date(d.updated_at_linea_ppto).toLocaleString('es-ES')}</strong></small>` : ''}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

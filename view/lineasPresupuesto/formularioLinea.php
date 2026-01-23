@@ -597,12 +597,19 @@ function guardarLinea() {
     // Serializar formulario
     let formData = $('#formLinea').serializeArray();
     
-    // IMPORTANTE: Agregar el checkbox aplicar_coeficiente_linea_ppto explícitamente
+    // IMPORTANTE: Agregar los checkboxes explícitamente
     // Los checkboxes desmarcados no se envían con serialize()
     const aplicarCoeficiente = $('#aplicar_coeficiente_linea_ppto').is(':checked') ? 1 : 0;
     formData.push({
         name: 'aplicar_coeficiente_linea_ppto',
         value: aplicarCoeficiente
+    });
+    
+    // Agregar checkbox ocultar_detalle_kit_linea_ppto explícitamente
+    const ocultarDetalleKit = $('#ocultar_detalle_kit_linea_ppto').is(':checked') ? 1 : 0;
+    formData.push({
+        name: 'ocultar_detalle_kit_linea_ppto',
+        value: ocultarDetalleKit
     });
     
     // Si NO se aplica coeficiente, asegurar que jornadas, id_coeficiente y valor_coeficiente sean NULL/vacío
