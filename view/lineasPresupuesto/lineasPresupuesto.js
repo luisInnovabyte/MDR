@@ -700,32 +700,75 @@ function editarLinea(id_linea_ppto) {
                 $('[name="nivel_jerarquia"]').val(data.nivel_jerarquia || 0);
                 $('[name="orden_linea_ppto"]').val(data.orden_linea_ppto || 0);
                 
+                // IMPORTANTE: Destruir y recrear Select2 para permitir búsqueda
+                if ($('#id_articulo').hasClass('select2-hidden-accessible')) {
+                    $('#id_articulo').select2('destroy');
+                }
+                
                 // Rellenar artículo en Select2 (crear opción si no existe)
                 if (data.id_articulo) {
                     const textoArticulo = data.nombre_articulo || data.descripcion_linea_ppto || 'Artículo';
                     const codigoArticulo = data.codigo_articulo || data.codigo_linea_ppto || '';
                     const textoCompleto = codigoArticulo ? `[${codigoArticulo}] ${textoArticulo}` : textoArticulo;
                     
-                    // Verificar si la opción ya existe
+                    // Verificar si la opción ya existe en el Select2
                     if ($('#id_articulo').find(`option[value="${data.id_articulo}"]`).length === 0) {
-                        // Crear nueva opción
+                        // Crear nueva opción si no existe
                         const newOption = new Option(textoCompleto, data.id_articulo, true, true);
                         $('#id_articulo').append(newOption);
                     } else {
-                        // Seleccionar opción existente
+                        // Seleccionar la opción existente
                         $('#id_articulo').val(data.id_articulo);
-                    }
-                    // Cargar datos del artículo sin sobrescribir precio (modo edición)
-                    if (typeof cargarDatosArticulo === 'function') {
-                        cargarDatosArticulo(data.id_articulo, true);
                     }
                 }
                 
-                // Rellenar datos relacionados del artículo
+                // Reinicializar Select2 con configuración completa
+                if ($.fn.select2) {
+                    $('#id_articulo').select2({
+                        theme: 'bootstrap-5',
+                        dropdownParent: $('#modalFormularioLinea'),
+                        placeholder: 'Buscar artículo...',
+                        allowClear: true,
+                        width: '100%',
+                        ajax: {
+                            url: '../../controller/articulo.php?op=listar_para_presupuesto',
+                            type: 'POST',
+                            dataType: 'json',
+                            delay: 250,
+                            data: function(params) {
+                                return {
+                                    q: params.term,
+                                    page: params.page || 1
+                                };
+                            },
+                            processResults: function(data) {
+                                return {
+                                    results: data.data.map(function(item) {
+                                        return {
+                                            id: item.id_articulo,
+                                            text: '[' + item.codigo_articulo + '] ' + item.nombre_articulo
+                                        };
+                                    })
+                                };
+                            },
+                            cache: true
+                        }
+                    });
+                }
+                
                 // Rellenar datos relacionados del artículo
                 $('#descripcion_linea_ppto').val(data.descripcion_linea_ppto);
                 $('#codigo_linea_ppto').val(data.codigo_linea_ppto || data.codigo_articulo || '');
                 $('#id_impuesto').val(data.id_impuesto || '');
+                
+                // Verificar si es un KIT y mostrar opciones correspondientes
+                const esKit = data.es_kit_articulo == 1 || data.es_kit_articulo == '1' || data.es_kit_articulo === true;
+                if (esKit && typeof cargarComponentesKit === 'function') {
+                    $('#contenedor_opciones_kit').show();
+                    cargarComponentesKit(data.id_articulo);
+                } else {
+                    $('#contenedor_opciones_kit').hide();
+                }
                 
                 // Rellenar fechas
                 $('#fecha_montaje_linea_ppto').val(data.fecha_montaje_linea_ppto || '');
@@ -1583,13 +1626,14 @@ function formatLineaDetalle(d) {
                                 <td class="text-muted">Descripción:</td>
                                 <td>${val(d.descripcion_linea_ppto)}</td>
                             </tr>
-                            ${d.observaciones_linea_ppto ? `
-                            <tr>
-                                <td class="text-muted">Observaciones:</td>
-                                <td><small class="text-muted">${val(d.observaciones_linea_ppto)}</small></td>
-                            </tr>
-                            ` : ''}
                         </table>
+                        
+                        ${d.observaciones_linea_ppto ? `
+                        <div class="alert alert-info alert-sm mt-2 mb-0 py-2 px-2">
+                            <h6 class="mb-1"><i class="bi bi-chat-left-text me-1"></i><strong>Observaciones<span class="text-danger fw-bold" style="font-size: 1.1rem;">**</span>:</strong></h6>
+                            <small>${d.observaciones_linea_ppto}</small>
+                        </div>
+                        ` : ''}
                         
                         ${d.es_kit_articulo == 1 ? `
                         <h6 class="text-info border-bottom pb-1 mb-1 mt-1">

@@ -301,6 +301,12 @@
                         y el coeficiente (si procede), pero <strong>no está incluido el descuento global del cliente</strong>.
                     </small>
                 </div>
+                <div class="mt-2 px-2">
+                    <small class="text-muted">
+                        <span class="text-danger fw-bold" style="font-size: 1.1rem;">**</span>
+                        <strong>Nota:</strong> Las observaciones indicadas en esta sección se imprimirán en el presupuesto.
+                    </small>
+                </div>
             </div><!-- table-wrapper -->
         </div><!-- br-section-wrapper -->
     </div><!-- br-pagebody -->

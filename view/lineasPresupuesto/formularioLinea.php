@@ -24,36 +24,49 @@
                     <input type="hidden" name="activo_linea_ppto" value="1">
                     
                     <!-- SECCIÓN 1: ARTÍCULO -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-primary text-white py-2">
-                            <h6 class="mb-0"><i class="bi bi-box-seam-fill me-2"></i>1. Selección de Artículo</h6>
+                    <div class="card mb-3 border-primary border-2 shadow-sm">
+                        <div class="card-header bg-gradient text-white py-2" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                            <h6 class="mb-0">
+                                <i class="bi bi-box-seam-fill me-2"></i>
+                                <strong>1. Selección de Artículo</strong>
+                                <span class="badge bg-light text-primary ms-2">REQUERIDO</span>
+                            </h6>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body bg-light" style="background-color: #f8f9fc !important;">
                             <div class="row">
                                 <!-- Artículo -->
-                                <div class="col-md-12 mb-3">
-                                    <label for="id_articulo" class="form-label fw-bold">
-                                        <i class="bi bi-box me-1 text-primary"></i>Artículo a Alquilar *
+                                <div class="col-md-8 mb-3">
+                                    <label for="id_articulo" class="form-label fw-bold fs-6">
+                                        <i class="bi bi-search me-1 text-primary"></i>Buscar Artículo *
                                     </label>
-                                    <select class="form-select select2" id="id_articulo" name="id_articulo" required>
-                                        <option value="">Buscar y seleccionar artículo...</option>
+                                    <select class="form-select select2 form-select-lg" id="id_articulo" name="id_articulo" required style="border: 2px solid #0d6efd; font-size: 1rem;">
+                                        <option value="">🔍 Escriba para buscar el artículo a alquilar...</option>
                                         <!-- Se carga dinámicamente -->
                                     </select>
                                 </div>
 
                                 <!-- Descripción (readonly, desde artículo) -->
-                                <div class="col-md-12">
+                                <div class="col-md-4 mb-3">
                                     <label for="descripcion_linea_ppto" class="form-label fw-bold">
                                         <i class="bi bi-file-text me-1 text-secondary"></i>Descripción
                                     </label>
-                                    <input type="text" class="form-control bg-light" id="descripcion_linea_ppto" 
-                                           name="descripcion_linea_ppto" readonly placeholder="Se cargará automáticamente del artículo seleccionado">
+                                    <input type="text" class="form-control bg-white" id="descripcion_linea_ppto" 
+                                           name="descripcion_linea_ppto" readonly placeholder="Descripción automática" style="border: 1px solid #dee2e6;">
                                 </div>
                                 
                                 <!-- Campos ocultos adicionales del artículo -->
                                 <input type="hidden" id="codigo_linea_ppto" name="codigo_linea_ppto">
                                 <input type="hidden" id="id_impuesto" name="id_impuesto">
                                 <input type="hidden" id="valor_coeficiente_linea_ppto" name="valor_coeficiente_linea_ppto" value="">
+                            </div>
+                            
+                            <!-- Mensaje de ayuda al pie de la sección -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-lightbulb me-1"></i>Escriba el nombre, código o descripción del artículo
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
