@@ -1643,9 +1643,9 @@ function formatLineaDetalle(d) {
                             <tr>
                                 <td class="text-muted" style="width: 140px;">Ocultar Detalle Kit:</td>
                                 <td>
-                                    ${d.aplicar_coeficiente_linea_ppto === null || d.aplicar_coeficiente_linea_ppto === undefined || d.aplicar_coeficiente_linea_ppto === '' 
+                                    ${d.ocultar_detalle_kit_linea_ppto === null || d.ocultar_detalle_kit_linea_ppto === undefined || d.ocultar_detalle_kit_linea_ppto === '' 
                                         ? '<span class="badge bg-secondary">No aplica</span>' 
-                                        : d.aplicar_coeficiente_linea_ppto == 1 
+                                        : d.ocultar_detalle_kit_linea_ppto == 1 
                                             ? '<span class="badge bg-warning">Se ocultarán los detalles</span>' 
                                             : '<span class="badge bg-success">Se mostrarán los detalles del KIT</span>'}
                                 </td>
