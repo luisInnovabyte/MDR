@@ -177,6 +177,8 @@
                                                onfocus="this.select()">
                                         <span class="input-group-text">%</span>
                                     </div>
+                                    <!-- Avisos de artículo -->
+                                    <div id="avisos_descuento" class="mt-2"></div>
                                 </div>
                                 
                                 <!-- IVA (calculado desde artículo) -->
@@ -430,6 +432,22 @@ function cargarDatosArticulo(idArticulo, esEdicion = false) {
                     $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva);
                 }
                 
+                // Establecer descuento por defecto y mostrar avisos - SOLO en creación
+                if (!esEdicion) {
+                    const noFacturar = data.no_facturar_articulo == 1 || data.no_facturar_articulo == '1';
+                    const permitirDescuentos = data.permitir_descuentos_articulo == 1 || data.permitir_descuentos_articulo == '1';
+                    
+                    // Establecer valor por defecto del descuento
+                    if (noFacturar) {
+                        $('#descuento_linea_ppto').val(100);
+                    } else if (!permitirDescuentos) {
+                        $('#descuento_linea_ppto').val(0);
+                    }
+                }
+                
+                // Mostrar avisos (siempre, en creación y edición)
+                mostrarAvisosDescuento(data);
+                
                 // Verificar si es un KIT
                 const esKit = data.es_kit_articulo == 1 || data.es_kit_articulo == '1' || data.es_kit_articulo === true;
                 
@@ -458,6 +476,31 @@ function cargarDatosArticulo(idArticulo, esEdicion = false) {
             });
         }
     });
+}
+
+/**
+ * Muestra avisos sobre descuentos según las propiedades del artículo
+ */
+function mostrarAvisosDescuento(data) {
+    const contenedor = $('#avisos_descuento');
+    contenedor.empty();
+    
+    const noFacturar = data.no_facturar_articulo == 1 || data.no_facturar_articulo == '1';
+    const permitirDescuentos = data.permitir_descuentos_articulo == 1 || data.permitir_descuentos_articulo == '1';
+    
+    let avisos = [];
+    
+    if (noFacturar) {
+        avisos.push('<small class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>Marcado como no facturable</small>');
+    }
+    
+    if (!permitirDescuentos) {
+        avisos.push('<small class="badge bg-warning text-dark"><i class="bi bi-slash-circle me-1"></i>Marcado como no permitir descuentos</small>');
+    }
+    
+    if (avisos.length > 0) {
+        contenedor.html(avisos.join('<br>'));
+    }
 }
 
 /**

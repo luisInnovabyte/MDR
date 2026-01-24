@@ -156,6 +156,8 @@ switch ($_GET["op"]) {
                 "notes_budget_articulo" => $row["notes_budget_articulo"] ?? '',
                 "orden_obs_articulo" => $row["orden_obs_articulo"] ?? 200,
                 "observaciones_articulo" => $row["observaciones_articulo"] ?? '',
+                "permitir_descuentos_articulo" => $row["permitir_descuentos_articulo"] ?? 1,
+                "id_impuesto" => $row["id_impuesto"] ?? null,
                 "jerarquia_completa" => $row["jerarquia_completa"] ?? '',
                 "configuracion_completa" => $row["configuracion_completa"] ?? 0,
                 "activo_articulo" => $row["activo_articulo"],
@@ -208,6 +210,8 @@ switch ($_GET["op"]) {
                 "notes_budget_articulo" => $row["notes_budget_articulo"] ?? '',
                 "orden_obs_articulo" => $row["orden_obs_articulo"] ?? 200,
                 "observaciones_articulo" => $row["observaciones_articulo"] ?? '',
+                "permitir_descuentos_articulo" => $row["permitir_descuentos_articulo"] ?? 1,
+                "id_impuesto" => $row["id_impuesto"] ?? null,
                 "jerarquia_completa" => $row["jerarquia_completa"] ?? '',
                 "configuracion_completa" => $row["configuracion_completa"] ?? 0,
                 "activo_articulo" => $row["activo_articulo"],
@@ -255,6 +259,10 @@ switch ($_GET["op"]) {
             $no_facturar = !empty($_POST["no_facturar_articulo"]) ? 1 : 0;
             $orden_obs = !empty($_POST["orden_obs_articulo"]) ? 
                 (int)$_POST["orden_obs_articulo"] : 200;
+            
+            // Nuevos campos
+            $permitir_descuentos = isset($_POST["permitir_descuentos_articulo"]) && $_POST["permitir_descuentos_articulo"] == 1 ? 1 : 0;
+            $id_impuesto = !empty($_POST["id_impuesto"]) ? (int)$_POST["id_impuesto"] : null;
 
             // Procesar imagen usando la función procesarImagenArticulo
             $imagen = '';
@@ -305,7 +313,9 @@ switch ($_GET["op"]) {
                     trim($_POST["notas_presupuesto_articulo"] ?? ''),
                     trim($_POST["notes_budget_articulo"] ?? ''),
                     $orden_obs,
-                    trim($_POST["observaciones_articulo"] ?? '')
+                    trim($_POST["observaciones_articulo"] ?? ''),
+                    $permitir_descuentos,
+                    $id_impuesto
                 );
 
                 if ($resultado !== false) {
@@ -345,7 +355,9 @@ switch ($_GET["op"]) {
                     trim($_POST["notas_presupuesto_articulo"] ?? ''),
                     trim($_POST["notes_budget_articulo"] ?? ''),
                     $orden_obs,
-                    trim($_POST["observaciones_articulo"] ?? '')
+                    trim($_POST["observaciones_articulo"] ?? ''),
+                    $permitir_descuentos,
+                    $id_impuesto
                 );
 
                 if ($resultado !== false) {

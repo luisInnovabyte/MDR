@@ -118,7 +118,7 @@
                                     <div class="invalid-feedback small-invalid-feedback">Ingrese un código válido (máximo 50 caracteres, único)</div>
                                     <small class="form-text text-muted">Código único identificativo (máximo 50 caracteres)</small>
                                 </div>
-                                <div class="col-12 col-md-4">
+                                <div class="col-12 col-md-2">
                                     <label class="form-label">Estado:</label>
                                     <div class="form-check form-switch mt-2">
                                         <input class="form-check-input" type="checkbox" name="activo_articulo" id="activo_articulo" checked disabled>
@@ -128,10 +128,23 @@
                                     </div>
                                     <small class="form-text text-muted">El estado se establece automáticamente</small>
                                 </div>
-                                <div class="col-12 col-md-4">
+                                <div class="col-12 col-md-3">
                                     <label for="precio_alquiler_articulo" class="form-label">Precio de alquiler (€):</label>
                                     <input type="number" class="form-control" name="precio_alquiler_articulo" id="precio_alquiler_articulo" step="0.01" min="0" placeholder="0.00">
-                                    <small class="form-text text-muted">Precio base de alquiler del artículo</small>
+                                    <small class="form-text text-muted">Precio base de alquiler</small>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="id_impuesto" class="form-label">Impuesto aplicable:</label>
+                                    <select class="form-control" name="id_impuesto" id="id_impuesto">
+                                        <option value="">Sin impuesto asignado</option>
+                                        <!-- Las opciones se cargarán dinámicamente -->
+                                    </select>
+                                    <small class="form-text text-muted">
+                                        Impuesto que se aplicará al artículo (opcional)
+                                        <i class="fas fa-question-circle text-info ms-1" 
+                                           data-bs-toggle="tooltip" 
+                                           title="Seleccione el tipo de impuesto (IVA, IGIC, etc.) que se aplicará a este artículo en los presupuestos."></i>
+                                    </small>
                                 </div>
                             </div>
 
@@ -265,6 +278,12 @@
                                         <input class="form-check-input" type="checkbox" name="no_facturar_articulo" id="no_facturar_articulo">
                                         <label class="form-check-label" for="no_facturar_articulo">
                                             <span id="facturar-text">No facturar</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-switch mt-2">
+                                        <input class="form-check-input" type="checkbox" name="permitir_descuentos_articulo" id="permitir_descuentos_articulo" checked>
+                                        <label class="form-check-label" for="permitir_descuentos_articulo">
+                                            <span id="descuentos-text">Permitir descuentos</span>
                                         </label>
                                     </div>
                                     <small class="form-text text-muted">Flags especiales para el artículo</small>

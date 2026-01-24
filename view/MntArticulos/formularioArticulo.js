@@ -108,6 +108,46 @@ $(document).ready(function () {
         });
     }
 
+    // Cargar impuestos disponibles
+    function cargarImpuestos() {
+        $.ajax({
+            url: "../../controller/impuesto.php?op=listarDisponibles",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                try {
+                    console.log('Respuesta impuestos:', response);
+                    
+                    if (response && response.data && Array.isArray(response.data)) {
+                        var select = $('#id_impuesto');
+                        select.empty();
+                        select.append('<option value="">-- Sin impuesto --</option>');
+                        
+                        response.data.forEach(function(impuesto) {
+                            var option = $('<option></option>')
+                                .attr('value', impuesto.id_impuesto)
+                                .text(impuesto.tipo_impuesto + ' (' + impuesto.tasa_impuesto + '%)');
+                            select.append(option);
+                        });
+                        
+                        console.log('Impuestos cargados correctamente');
+                    } else {
+                        console.error('Formato de respuesta inesperado:', response);
+                        toastr.error('Error al cargar los impuestos');
+                    }
+                } catch (e) {
+                    console.error('Error al procesar impuestos:', e);
+                    toastr.error('Error al cargar los impuestos');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar impuestos:', error);
+                console.error('Respuesta del servidor:', xhr.responseText);
+                toastr.error('Error al cargar los impuestos');
+            }
+        });
+    }
+
     // Manejar cambio en el select de familia
     $('#id_familia').on('change', function() {
         var selectedOption = $(this).find('option:selected');
@@ -181,6 +221,14 @@ $(document).ready(function () {
                         $('#id_unidad').val(data.id_unidad);
                         $('#id_unidad').trigger('change');
                     }
+                    
+                    // Configurar impuesto
+                    if (data.id_impuesto) {
+                        $('#id_impuesto').val(data.id_impuesto);
+                    }
+                    
+                    // Configurar permitir descuentos
+                    $('#permitir_descuentos_articulo').prop('checked', data.permitir_descuentos_articulo != 0);
                     
                     // Configurar coeficiente
                     if (data.coeficiente_articulo === null || data.coeficiente_articulo === '') {
@@ -300,6 +348,10 @@ $(document).ready(function () {
         var es_kit_articuloR = $('#es_kit_articulo').is(':checked') ? 1 : 0;
         var control_total_articuloR = $('#control_total_articulo').is(':checked') ? 1 : 0;
         var no_facturar_articuloR = $('#no_facturar_articulo').is(':checked') ? 1 : 0;
+        var permitir_descuentos_articuloR = $('#permitir_descuentos_articulo').is(':checked') ? 1 : 0;
+        
+        // Obtener impuesto
+        var id_impuestoR = $('#id_impuesto').val() || null;
         
         // El estado
         var activo_articuloR;
@@ -332,11 +384,13 @@ $(document).ready(function () {
             notes_budget_articuloR,
             orden_obs_articuloR,
             observaciones_articuloR,
-            activo_articuloR
+            activo_articuloR,
+            permitir_descuentos_articuloR,
+            id_impuestoR
         );
     });
 
-    function verificarArticuloExistente(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo) {
+    function verificarArticuloExistente(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, id_impuesto) {
         $.ajax({
             url: "../../controller/articulo.php?op=verificarArticulo",
             type: "GET",
@@ -356,7 +410,7 @@ $(document).ready(function () {
                 if (response.existe) {
                     mostrarErrorArticuloExistente(nombre_articulo);
                 } else {
-                    guardarArticulo(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo);
+                    guardarArticulo(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, id_impuesto);
                 }
             },
             error: function(xhr, status, error) {
@@ -376,7 +430,7 @@ $(document).ready(function () {
         });
     }
 
-    function guardarArticulo(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo) {
+    function guardarArticulo(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, id_impuesto) {
         // Mostrar indicador de carga
         $('#btnSalvarArticulo').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
         
@@ -396,6 +450,8 @@ $(document).ready(function () {
         formData.append('es_kit_articulo', es_kit_articulo);
         formData.append('control_total_articulo', control_total_articulo);
         formData.append('no_facturar_articulo', no_facturar_articulo);
+        formData.append('permitir_descuentos_articulo', permitir_descuentos_articulo);
+        formData.append('id_impuesto', id_impuesto || '');
         formData.append('notas_presupuesto_articulo', notas_presupuesto_articulo);
         formData.append('notes_budget_articulo', notes_budget_articulo);
         formData.append('orden_obs_articulo', orden_obs_articulo);
@@ -515,9 +571,10 @@ $(document).ready(function () {
     //   INICIALIZACIÓN DEL FORMULARIO    //
     ///////////////////////////////////////
     
-    // Cargar familias y unidades de medida
+    // Cargar familias, unidades de medida e impuestos
     cargarFamilias();
     cargarUnidadesMedida();
+    cargarImpuestos();
 
     // Inicialización según el modo
     const urlParamsInit = new URLSearchParams(window.location.search);

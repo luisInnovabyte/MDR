@@ -4,37 +4,6 @@ require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../config/funciones.php';
 
 
-// CREATE TABLE articulo (
-//     id_articulo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-//     id_familia INT UNSIGNED NOT NULL,
-//     id_unidad INT UNSIGNED,
-//     codigo_articulo VARCHAR(50) NOT NULL UNIQUE,
-//     nombre_articulo VARCHAR(255) NOT NULL,
-//     name_articulo VARCHAR(255) NOT NULL,
-//     imagen_articulo VARCHAR(255),
-//     precio_alquiler_articulo DECIMAL(10,2) DEFAULT 0.00,
-//     coeficiente_articulo TINYINT(1) NULL,
-//     es_kit_articulo TINYINT(1) DEFAULT 0,
-//     control_total_articulo TINYINT(1) DEFAULT 0,
-//     no_facturar_articulo TINYINT(1) DEFAULT 0,
-//     notas_presupuesto_articulo TEXT,
-//     notes_budget_articulo TEXT,
-//     orden_obs_articulo INT DEFAULT 200,
-//     observaciones_articulo TEXT,
-//     activo_articulo TINYINT(1) DEFAULT 1,
-//     created_at_articulo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//     updated_at_articulo TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//     CONSTRAINT fk_articulo_familia FOREIGN KEY (id_familia) 
-//         REFERENCES familia(id_familia) 
-//         ON DELETE RESTRICT 
-//         ON UPDATE CASCADE,
-//     CONSTRAINT fk_articulo_unidad FOREIGN KEY (id_unidad) 
-//         REFERENCES unidad_medida(id_unidad) 
-//         ON DELETE SET NULL 
-//         ON UPDATE CASCADE
-// ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
 
 class Articulo
 {
@@ -345,30 +314,6 @@ class Articulo
 
 
 
-
-// CREATE TABLE articulo (
-//     id_articulo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-//     id_familia INT UNSIGNED NOT NULL,
-//     id_unidad INT UNSIGNED,
-//     codigo_articulo VARCHAR(50) NOT NULL UNIQUE,
-//     nombre_articulo VARCHAR(255) NOT NULL,
-//     name_articulo VARCHAR(255) NOT NULL,
-//     imagen_articulo VARCHAR(255),
-//     precio_alquiler_articulo DECIMAL(10,2) DEFAULT 0.00,
-//     coeficiente_articulo TINYINT(1) NULL,
-//     es_kit_articulo TINYINT(1) DEFAULT 0,
-//     control_total_articulo TINYINT(1) DEFAULT 0,
-//     no_facturar_articulo TINYINT(1) DEFAULT 0,
-//     notas_presupuesto_articulo TEXT,
-//     notes_budget_articulo TEXT,
-//     orden_obs_articulo INT DEFAULT 200,
-//     observaciones_articulo TEXT,
-//     activo_articulo TINYINT(1) DEFAULT 1,
-//     created_at_articulo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//     updated_at_articulo TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-// ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
     public function insert_articulo(
         $id_familia,
         $id_unidad,
@@ -384,7 +329,9 @@ class Articulo
         $notas_presupuesto_articulo = '',
         $notes_budget_articulo = '',
         $orden_obs_articulo = 200,
-        $observaciones_articulo = ''
+        $observaciones_articulo = '',
+        $permitir_descuentos_articulo = 1,
+        $id_impuesto = null
     )
     {
         try {
@@ -405,10 +352,12 @@ class Articulo
                         notes_budget_articulo, 
                         orden_obs_articulo, 
                         observaciones_articulo, 
+                        permitir_descuentos_articulo,
+                        id_impuesto,
                         activo_articulo, 
                         created_at_articulo, 
                         updated_at_articulo
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $id_familia, PDO::PARAM_INT);
             $stmt->bindValue(2, $id_unidad, $id_unidad === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
@@ -425,6 +374,8 @@ class Articulo
             $stmt->bindValue(13, $notes_budget_articulo, PDO::PARAM_STR);
             $stmt->bindValue(14, $orden_obs_articulo, PDO::PARAM_INT);
             $stmt->bindValue(15, $observaciones_articulo, PDO::PARAM_STR);
+            $stmt->bindValue(16, $permitir_descuentos_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(17, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId(); // Se obtiene el ID del ultimo insertado
 
@@ -457,29 +408,7 @@ class Articulo
     }
 
 
-// CREATE TABLE articulo (
-//     id_articulo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-//     id_familia INT UNSIGNED NOT NULL,
-//     id_unidad INT UNSIGNED,
-//     codigo_articulo VARCHAR(50) NOT NULL UNIQUE,
-//     nombre_articulo VARCHAR(255) NOT NULL,
-//     name_articulo VARCHAR(255) NOT NULL,
-//     imagen_articulo VARCHAR(255),
-//     precio_alquiler_articulo DECIMAL(10,2) DEFAULT 0.00,
-//     coeficiente_articulo TINYINT(1) NULL,
-//     es_kit_articulo TINYINT(1) DEFAULT 0,
-//     control_total_articulo TINYINT(1) DEFAULT 0,
-//     no_facturar_articulo TINYINT(1) DEFAULT 0,
-//     notas_presupuesto_articulo TEXT,
-//     notes_budget_articulo TEXT,
-//     orden_obs_articulo INT DEFAULT 200,
-//     observaciones_articulo TEXT,
-//     activo_articulo TINYINT(1) DEFAULT 1,
-//     created_at_articulo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//     updated_at_articulo TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-// ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-    
+   
     public function update_articulo(
         $id_articulo,
         $id_familia,
@@ -496,7 +425,9 @@ class Articulo
         $notas_presupuesto_articulo = '',
         $notes_budget_articulo = '',
         $orden_obs_articulo = 200,
-        $observaciones_articulo = ''
+        $observaciones_articulo = '',
+        $permitir_descuentos_articulo = 1,
+        $id_impuesto = null
     ){
         try {
             $sql = "UPDATE articulo SET 
@@ -515,6 +446,8 @@ class Articulo
                         notes_budget_articulo = ?, 
                         orden_obs_articulo = ?, 
                         observaciones_articulo = ?, 
+                        permitir_descuentos_articulo = ?,
+                        id_impuesto = ?,
                         updated_at_articulo = NOW() 
                     WHERE id_articulo = ?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
@@ -533,7 +466,9 @@ class Articulo
             $stmt->bindValue(13, $notes_budget_articulo, PDO::PARAM_STR);
             $stmt->bindValue(14, $orden_obs_articulo, PDO::PARAM_INT);
             $stmt->bindValue(15, $observaciones_articulo, PDO::PARAM_STR);
-            $stmt->bindValue(16, $id_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(16, $permitir_descuentos_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(17, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $stmt->bindValue(18, $id_articulo, PDO::PARAM_INT);
 
             $stmt->execute();
 

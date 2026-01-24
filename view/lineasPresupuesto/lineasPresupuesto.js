@@ -858,6 +858,20 @@ function editarLinea(id_linea_ppto) {
                     }
                 }
                 
+                // Cargar avisos de descuento del artículo (en modo edición)
+                if (data.id_articulo && typeof cargarDatosArticulo === 'function') {
+                    // Crear objeto data del artículo para mostrar avisos
+                    const datosArticulo = {
+                        no_facturar_articulo: data.no_facturar_articulo,
+                        permitir_descuentos_articulo: data.permitir_descuentos_articulo
+                    };
+                    
+                    // Llamar solo a la función de mostrar avisos si existe
+                    if (typeof mostrarAvisosDescuento === 'function') {
+                        mostrarAvisosDescuento(datosArticulo);
+                    }
+                }
+                
                 // Cambiar título
                 $('#modalFormularioLineaLabel').text('Editar Línea de Presupuesto');
                 
@@ -1705,6 +1719,18 @@ function formatLineaDetalle(d) {
                         <div class="alert alert-warning alert-sm mt-1 mb-0 py-1 px-2">
                             <small><i class="bi bi-calculator me-1"></i><strong>Coeficiente aplicado:</strong> 
                             Se ha aplicado un coeficiente reductor basado en ${d.jornadas_linea_ppto || 0} jornada(s).</small>
+                        </div>
+                        ` : ''}
+                        
+                        ${d.no_facturar_articulo == 1 ? `
+                        <div class="alert alert-danger alert-sm mt-1 mb-0 py-1 px-2">
+                            <small><i class="bi bi-exclamation-triangle me-1"></i><strong>Artículo marcado como no facturable</strong></small>
+                        </div>
+                        ` : ''}
+                        
+                        ${d.permitir_descuentos_articulo == 0 ? `
+                        <div class="alert alert-warning alert-sm mt-1 mb-0 py-1 px-2">
+                            <small><i class="bi bi-slash-circle me-1"></i><strong>Artículo marcado como no permitir descuentos</strong></small>
                         </div>
                         ` : ''}
                     </div>

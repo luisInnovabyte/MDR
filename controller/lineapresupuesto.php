@@ -201,6 +201,10 @@ switch ($_GET["op"]) {
                     "es_kit_articulo" => $row["es_kit_articulo"] ?? 0,
                     "ocultar_detalle_kit_linea_ppto" => $row["ocultar_detalle_kit_linea_ppto"] ?? null,
                     
+                    // Propiedades especiales del artículo
+                    "no_facturar_articulo" => $row["no_facturar_articulo"] ?? 0,
+                    "permitir_descuentos_articulo" => $row["permitir_descuentos_articulo"] ?? 1,
+                    
                     // Impuesto
                     "tipo_impuesto" => $row["tipo_impuesto"] ?? null,
                     "tasa_impuesto" => $row["tasa_impuesto"] ?? null,
