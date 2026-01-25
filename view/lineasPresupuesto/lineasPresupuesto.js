@@ -853,9 +853,6 @@ function editarLinea(id_linea_ppto) {
                 }
                 if (data.fecha_inicio_linea_ppto && data.fecha_fin_linea_ppto) {
                     actualizarDiasEvento();
-                    if ($('#aplicar_coeficiente_linea_ppto').is(':checked')) {
-                        calcularJornadas();
-                    }
                 }
                 
                 // Cargar avisos de descuento del artículo (en modo edición)
@@ -882,6 +879,21 @@ function editarLinea(id_linea_ppto) {
                 
                 // Mostrar modal
                 $('#modalFormularioLinea').modal('show');
+                
+                // VALIDAR coeficiente guardado DESPUÉS de mostrar el modal
+                // Usar setTimeout para asegurar que el modal esté completamente renderizado
+                if (data.fecha_inicio_linea_ppto && data.fecha_fin_linea_ppto && data.jornadas_linea_ppto) {
+                    setTimeout(function() {
+                        // Verificar si el checkbox está marcado (después de que se haya actualizado)
+                        if ($('#aplicar_coeficiente_linea_ppto').is(':checked')) {
+                            validarCoeficienteGuardado(
+                                parseInt(data.jornadas_linea_ppto),
+                                data.id_coeficiente,
+                                parseFloat(data.valor_coeficiente_linea_ppto)
+                            );
+                        }
+                    }, 300); // 300ms para dar tiempo a que el modal se renderice
+                }
             }
         },
         error: function () {
@@ -890,6 +902,95 @@ function editarLinea(id_linea_ppto) {
                 title: 'Error',
                 text: 'No se pudo cargar la línea'
             });
+        }
+    });
+}
+
+/**
+ * Valida el coeficiente guardado comparándolo con el que devolvería la lógica actual
+ * Muestra avisos informativos SIN modificar los valores guardados
+ * @param {number} jornadas - Jornadas calculadas guardadas
+ * @param {number|null} idCoeficienteGuardado - ID del coeficiente guardado
+ * @param {number} valorGuardado - Valor del coeficiente guardado
+ */
+function validarCoeficienteGuardado(jornadas, idCoeficienteGuardado, valorGuardado) {
+    // Consultar qué coeficiente devolvería la lógica actual
+    $.ajax({
+        url: '../../controller/coeficiente.php?op=obtener_por_jornadas',
+        type: 'POST',
+        data: { jornadas: jornadas },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.data) {
+                const data = response.data;
+                const infoDiv = $('#info_estado_coeficiente');
+                const textoDiv = $('#texto_estado_coeficiente');
+                
+                // Comparar ID de coeficiente
+                const idActual = data.id_coeficiente;
+                const valorActual = parseFloat(data.factor_coeficiente);
+                const esExacto = data.es_exacto;
+                
+                // CASO 1: El coeficiente guardado coincide con el actual
+                if (idCoeficienteGuardado == idActual && Math.abs(valorGuardado - valorActual) < 0.01) {
+                    if (esExacto) {
+                        // Coeficiente guardado es exacto y sigue siendo válido
+                        infoDiv.removeClass('alert-warning alert-danger d-none')
+                               .addClass('alert-success');
+                        textoDiv.html('<strong>✓ Coeficiente Válido:</strong> El coeficiente guardado (' + 
+                                     valorGuardado.toFixed(2) + 'x) es exacto para ' + jornadas + ' jornadas.');
+                    } else {
+                        // Coeficiente guardado es aproximado pero sigue siendo el mismo
+                        infoDiv.removeClass('alert-success alert-danger d-none')
+                               .addClass('alert-info');
+                        textoDiv.html('<strong>ℹ️ Coeficiente Aproximado Guardado:</strong> ' + data.mensaje + 
+                                     ' (valor guardado: ' + valorGuardado.toFixed(2) + 'x)');
+                    }
+                }
+                // CASO 2: El coeficiente ha cambiado (ID diferente o valor diferente)
+                else {
+                    let mensajeComparacion = '';
+                    
+                    if (idCoeficienteGuardado && idCoeficienteGuardado != idActual) {
+                        // El ID cambió - probablemente se modificó la tabla de coeficientes
+                        mensajeComparacion = 'El coeficiente guardado (ID: ' + idCoeficienteGuardado + 
+                                           ', valor: ' + valorGuardado.toFixed(2) + 'x) ';
+                        
+                        if (idActual) {
+                            mensajeComparacion += 'difiere del actual (ID: ' + idActual + 
+                                                ', valor: ' + valorActual.toFixed(2) + 'x). ';
+                        } else {
+                            mensajeComparacion += 'ya no existe en el sistema. Se aplicaría ' + 
+                                                valorActual.toFixed(2) + 'x por defecto. ';
+                        }
+                    } else if (Math.abs(valorGuardado - valorActual) >= 0.01) {
+                        // Solo el valor cambió
+                        mensajeComparacion = 'El valor guardado (' + valorGuardado.toFixed(2) + 
+                                           'x) difiere del valor actual (' + valorActual.toFixed(2) + 'x). ';
+                    }
+                    
+                    infoDiv.removeClass('alert-success alert-info d-none')
+                           .addClass('alert-warning');
+                    textoDiv.html('<strong>⚠️ Coeficiente Desactualizado:</strong> ' + mensajeComparacion + 
+                                 '<br><small class="text-muted">Los valores guardados se mantienen. ' + 
+                                 'Si desea actualizar, modifique las fechas o active/desactive el coeficiente.</small>');
+                }
+                
+                // CASO 3: Coeficiente guardado era NULL pero ahora hay uno disponible
+                if (!idCoeficienteGuardado && idActual && Math.abs(valorGuardado - 1.0) < 0.01) {
+                    infoDiv.removeClass('alert-success alert-danger d-none')
+                           .addClass('alert-info');
+                    textoDiv.html('<strong>ℹ️ Coeficiente Disponible:</strong> Cuando se guardó esta línea ' +
+                                 'no había coeficiente disponible (1.00x). Ahora existe un coeficiente de ' +
+                                 valorActual.toFixed(2) + 'x para ' + data.jornadas_usadas + ' jornadas. ' +
+                                 '<br><small class="text-muted">Para aplicarlo, modifique las fechas o ' +
+                                 'active/desactive el checkbox de coeficiente.</small>');
+                }
+            }
+        },
+        error: function() {
+            // No mostrar error, solo registrar en consola
+            console.warn('No se pudo validar el coeficiente guardado');
         }
     });
 }
@@ -1479,7 +1580,7 @@ function mostrarInfoEstadoCoeficiente(estadoCodigo, mensaje) {
  * Oculta el mensaje de estado del coeficiente
  */
 function ocultarInfoEstadoCoeficiente() {
-    $('#info_estado_coeficiente').hide();
+    $('#info_estado_coeficiente').addClass('d-none');
 }
 
 /**

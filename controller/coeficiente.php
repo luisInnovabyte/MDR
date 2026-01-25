@@ -223,6 +223,11 @@ switch ($_GET["op"]) {
     // =========================================================
     // CASE: obtener_por_jornadas
     // Obtiene el coeficiente correspondiente según número de jornadas
+    // ESTRATEGIA DE FALLBACK:
+    // 1. Buscar coeficiente exacto
+    // 2. Si no existe, buscar inmediatamente superior
+    // 3. Si no existe, buscar inmediatamente inferior
+    // 4. Si no existe ninguno, devolver 1.00 (sin descuento)
     // =========================================================
     case "obtener_por_jornadas":
         $jornadas = $_POST["jornadas"] ?? null;
@@ -236,43 +241,120 @@ switch ($_GET["op"]) {
             break;
         }
         
-        // Buscar coeficiente más cercano (por defecto buscar el mayor que no supere las jornadas)
-        $sql = "SELECT 
-                    id_coeficiente,
-                    jornadas_coeficiente,
-                    valor_coeficiente
-                FROM coeficiente
-                WHERE jornadas_coeficiente <= ?
-                AND activo_coeficiente = 1
-                ORDER BY jornadas_coeficiente DESC
-                LIMIT 1";
-        
         try {
             $conexion = (new Conexion())->getConexion();
-            $stmt = $conexion->prepare($sql);
+            
+            // ===== PASO 1: Buscar coeficiente EXACTO =====
+            $sql_exacto = "SELECT 
+                            id_coeficiente,
+                            jornadas_coeficiente,
+                            valor_coeficiente
+                        FROM coeficiente
+                        WHERE jornadas_coeficiente = ?
+                        AND activo_coeficiente = 1
+                        LIMIT 1";
+            
+            $stmt = $conexion->prepare($sql_exacto);
             $stmt->bindValue(1, $jornadas, PDO::PARAM_INT);
             $stmt->execute();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if ($datos) {
+                // Coeficiente exacto encontrado
                 header('Content-Type: application/json');
                 echo json_encode([
                     'success' => true,
                     'data' => [
                         'id_coeficiente' => $datos['id_coeficiente'],
-                        'jornadas_desde_coeficiente' => $datos['jornadas_coeficiente'],
-                        'jornadas_hasta_coeficiente' => $datos['jornadas_coeficiente'],
-                        'factor_coeficiente' => $datos['valor_coeficiente']
+                        'jornadas_solicitadas' => $jornadas,
+                        'jornadas_usadas' => $datos['jornadas_coeficiente'],
+                        'factor_coeficiente' => $datos['valor_coeficiente'],
+                        'es_exacto' => true,
+                        'mensaje' => 'Coeficiente exacto aplicado'
                     ]
                 ], JSON_UNESCAPED_UNICODE);
-            } else {
-                // Si no hay coeficiente, devolver error
+                break;
+            }
+            
+            // ===== PASO 2: Buscar coeficiente SUPERIOR más cercano =====
+            $sql_superior = "SELECT 
+                                id_coeficiente,
+                                jornadas_coeficiente,
+                                valor_coeficiente
+                            FROM coeficiente
+                            WHERE jornadas_coeficiente > ?
+                            AND activo_coeficiente = 1
+                            ORDER BY jornadas_coeficiente ASC
+                            LIMIT 1";
+            
+            $stmt = $conexion->prepare($sql_superior);
+            $stmt->bindValue(1, $jornadas, PDO::PARAM_INT);
+            $stmt->execute();
+            $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($datos) {
+                // Coeficiente superior encontrado
                 header('Content-Type: application/json');
                 echo json_encode([
-                    'success' => false,
-                    'message' => 'No se encontró coeficiente para ' . $jornadas . ' jornadas'
+                    'success' => true,
+                    'data' => [
+                        'id_coeficiente' => $datos['id_coeficiente'],
+                        'jornadas_solicitadas' => $jornadas,
+                        'jornadas_usadas' => $datos['jornadas_coeficiente'],
+                        'factor_coeficiente' => $datos['valor_coeficiente'],
+                        'es_exacto' => false,
+                        'mensaje' => 'No existe coeficiente para ' . $jornadas . ' jornadas. Usando coeficiente de ' . $datos['jornadas_coeficiente'] . ' jornadas (superior más cercano)'
+                    ]
                 ], JSON_UNESCAPED_UNICODE);
+                break;
             }
+            
+            // ===== PASO 3: Buscar coeficiente INFERIOR más cercano =====
+            $sql_inferior = "SELECT 
+                                id_coeficiente,
+                                jornadas_coeficiente,
+                                valor_coeficiente
+                            FROM coeficiente
+                            WHERE jornadas_coeficiente < ?
+                            AND activo_coeficiente = 1
+                            ORDER BY jornadas_coeficiente DESC
+                            LIMIT 1";
+            
+            $stmt = $conexion->prepare($sql_inferior);
+            $stmt->bindValue(1, $jornadas, PDO::PARAM_INT);
+            $stmt->execute();
+            $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($datos) {
+                // Coeficiente inferior encontrado
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'data' => [
+                        'id_coeficiente' => $datos['id_coeficiente'],
+                        'jornadas_solicitadas' => $jornadas,
+                        'jornadas_usadas' => $datos['jornadas_coeficiente'],
+                        'factor_coeficiente' => $datos['valor_coeficiente'],
+                        'es_exacto' => false,
+                        'mensaje' => 'No existe coeficiente para ' . $jornadas . ' jornadas. Usando coeficiente de ' . $datos['jornadas_coeficiente'] . ' jornadas (inferior más cercano)'
+                    ]
+                ], JSON_UNESCAPED_UNICODE);
+                break;
+            }
+            
+            // ===== PASO 4: FALLBACK - No hay coeficientes en BD, usar 1.00 =====
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'id_coeficiente' => null,
+                    'jornadas_solicitadas' => $jornadas,
+                    'jornadas_usadas' => null,
+                    'factor_coeficiente' => 1.00,
+                    'es_exacto' => false,
+                    'mensaje' => 'No existen coeficientes configurados. Aplicando precio base (1.00x)'
+                ]
+            ], JSON_UNESCAPED_UNICODE);
             
         } catch (PDOException $e) {
             header('Content-Type: application/json');

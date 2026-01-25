@@ -222,7 +222,7 @@
                             <small class="text-muted d-block mt-1">Se calculará automáticamente según las fechas de inicio y fin del evento</small>
                             
                             <!-- Indicador de estado de coeficiente del artículo -->
-                            <div id="info_estado_coeficiente" class="alert mt-2 mb-0 py-2" style="display: none;">
+                            <div id="info_estado_coeficiente" class="alert mt-2 mb-0 py-2 d-none">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <span id="texto_estado_coeficiente"></span>
                             </div>
@@ -234,6 +234,7 @@
                                 
                                 <!-- Campo Coeficiente Aplicado - OCULTO (se mantiene para envío de datos) -->
                                 <input type="hidden" id="id_coeficiente" name="id_coeficiente" value="">
+                                <input type="hidden" id="valor_coeficiente_linea_ppto" name="valor_coeficiente_linea_ppto" value="">
                                 
                                 <!-- Solo mostrar Factor y Precio con Coeficiente -->
                                 <div class="col-md-4">
@@ -351,6 +352,8 @@ $(document).ready(function() {
             calcularJornadas();
         } else {
             $('#campos_coeficiente').addClass('d-none');
+            // Ocultar mensaje de estado de coeficiente al desactivar
+            $('#info_estado_coeficiente').addClass('d-none');
         }
         calcularPreview();
     });
@@ -578,6 +581,11 @@ function calcularJornadas() {
 
 /**
  * Carga el coeficiente correspondiente según las jornadas
+ * ESTRATEGIA DE FALLBACK:
+ * 1. Buscar coeficiente exacto
+ * 2. Si no existe, usar superior más cercano
+ * 3. Si no existe, usar inferior más cercano
+ * 4. Si no existe ninguno, usar 1.00 (sin descuento)
  */
 function cargarCoeficiente(jornadas) {
     $.ajax({
@@ -585,15 +593,79 @@ function cargarCoeficiente(jornadas) {
         type: 'POST',
         data: { jornadas: jornadas },
         dataType: 'json',
-        success: function(data) {
-            if (data && data.id_coeficiente) {
-                $('#id_coeficiente').val(data.id_coeficiente);
-                $('#valor_coeficiente_linea_ppto').val(data.valor_coeficiente);
-                $('#vista_coeficiente').text(parseFloat(data.valor_coeficiente || 1).toFixed(2) + 'x');
+        success: function(response) {
+            if (response.success && response.data) {
+                const data = response.data;
+                
+                // Actualizar campos ocultos
+                $('#id_coeficiente').val(data.id_coeficiente || '');
+                $('#valor_coeficiente_linea_ppto').val(data.factor_coeficiente);
+                
+                // Actualizar visualización del factor
+                $('#vista_coeficiente').text(parseFloat(data.factor_coeficiente).toFixed(2) + 'x');
+                
+                // Mostrar aviso si no es coeficiente exacto
+                const infoDiv = $('#info_estado_coeficiente');
+                const textoDiv = $('#texto_estado_coeficiente');
+                
+                if (!data.es_exacto) {
+                    // Coeficiente aproximado - mostrar aviso en amarillo
+                    infoDiv.removeClass('alert-success alert-danger d-none')
+                           .addClass('alert-warning');
+                    textoDiv.html('<strong>⚠️ Coeficiente Aproximado:</strong> ' + data.mensaje);
+                } else {
+                    // Coeficiente exacto - mostrar confirmación en verde
+                    infoDiv.removeClass('alert-warning alert-danger d-none')
+                           .addClass('alert-success');
+                    textoDiv.html('<strong>✓ Coeficiente Exacto:</strong> ' + data.mensaje);
+                }
+                
+                // Recalcular precios
                 calcularPreview();
+            } else {
+                // Error en la respuesta - usar fallback 1.00
+                console.error('Error al cargar coeficiente:', response);
+                aplicarCoeficientePorDefecto(jornadas, response.message || 'Error desconocido');
             }
+        },
+        error: function(xhr, status, error) {
+            // Error de red - usar fallback 1.00
+            console.error('Error AJAX al cargar coeficiente:', error);
+            aplicarCoeficientePorDefecto(jornadas, 'Error de conexión con el servidor');
         }
     });
+}
+
+/**
+ * Aplica coeficiente por defecto (1.00) cuando hay error
+ */
+function aplicarCoeficientePorDefecto(jornadas, motivoError) {
+    // Aplicar valores por defecto
+    $('#id_coeficiente').val('');
+    $('#valor_coeficiente_linea_ppto').val('1.00');
+    $('#vista_coeficiente').text('1.00x');
+    
+    // Mostrar aviso de error
+    const infoDiv = $('#info_estado_coeficiente');
+    const textoDiv = $('#texto_estado_coeficiente');
+    
+    infoDiv.removeClass('alert-success alert-warning d-none')
+           .addClass('alert-danger');
+    textoDiv.html('<strong>❌ Error:</strong> ' + motivoError + '. Aplicando precio base (1.00x)');
+    
+    // Mostrar alerta temporal al usuario
+    Swal.fire({
+        icon: 'warning',
+        title: 'Aviso',
+        text: 'No se pudo cargar el coeficiente. Se aplicará el precio base sin descuento.',
+        timer: 3000,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end'
+    });
+    
+    // Recalcular precios
+    calcularPreview();
 }
 
 /**
