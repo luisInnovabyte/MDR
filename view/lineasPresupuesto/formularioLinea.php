@@ -427,10 +427,10 @@ function cargarDatosArticulo(idArticulo, esEdicion = false) {
                     $('#precio_unitario_linea_ppto').val(parseFloat(data.precio_alquiler_articulo || 0).toFixed(2));
                 }
                 
-                // Cargar IVA del artículo (si existe) - solo si está vacío o no es edición
-                if (data.porcentaje_iva && (!esEdicion || !$('#porcentaje_iva_linea_ppto').val())) {
-                    $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva);
-                }
+                // Cargar IVA del artículo desde tasa_impuesto (SIEMPRE, en creación y edición)
+                // Este campo es de solo lectura y proviene de la configuración del artículo
+                const tasaIva = data.tasa_impuesto || 21;
+                $('#porcentaje_iva_linea_ppto').val(tasaIva);
                 
                 // Establecer descuento por defecto y mostrar avisos - SOLO en creación
                 if (!esEdicion) {
@@ -599,13 +599,14 @@ function cargarCoeficiente(jornadas) {
 /**
  * Calcula preview de totales en tiempo real
  * Fórmula paso a paso según especificación:
- * 1. dia_cantidad_precio = días × cantidad × precio_unitario
- * 2. condescuento = dia_cantidad_precio - (dia_cantidad_precio × descuento) / 100
- * 3. total = condescuento + (condescuento × iva) / 100
+ * 1. Aplicar coeficiente si está activado: precio = precio × coeficiente
+ * 2. base = días × cantidad × precio (sin IVA)
+ * 3. con_descuento = base - (base × descuento/100)
+ * 4. total = con_descuento + (con_descuento × iva/100)
  */
 function calcularPreview() {
     const cantidad = parseFloat($('#cantidad_linea_ppto').val()) || 0;
-    const precio = parseFloat($('#precio_unitario_linea_ppto').val()) || 0;
+    let precioUnitario = parseFloat($('#precio_unitario_linea_ppto').val()) || 0;
     const descuento = parseFloat($('#descuento_linea_ppto').val()) || 0;
     const iva = parseFloat($('#porcentaje_iva_linea_ppto').val()) || 0;
     
@@ -621,14 +622,26 @@ function calcularPreview() {
         dias = diferencia + 1; // Jornadas inclusivas
     }
 
-    // PASO 1: Multiplicar días × cantidad × precio
-    const dia_cantidad_precio = dias * cantidad * precio;
+    // Verificar si se aplica coeficiente
+    const aplicarCoeficiente = $('#aplicar_coeficiente_linea_ppto').is(':checked');
+    
+    if (aplicarCoeficiente) {
+        const coeficiente = parseFloat($('#valor_coeficiente_linea_ppto').val()) || 1.0;
+        // Aplicar coeficiente al precio unitario
+        precioUnitario = precioUnitario * coeficiente;
+        $('#preview_precio_coef').text(formatearMoneda(precioUnitario));
+    }
+
+    // PASO 1: Base = días × cantidad × precio_unitario (con coeficiente si aplica)
+    const base = dias * cantidad * precioUnitario;
 
     // PASO 2: Aplicar descuento
-    const condescuento = dia_cantidad_precio - (dia_cantidad_precio * descuento) / 100;
+    const importeDescuento = (base * descuento) / 100;
+    const conDescuento = base - importeDescuento;
 
     // PASO 3: Calcular total con IVA
-    const total = condescuento + (condescuento * iva) / 100;
+    const importeIva = (conDescuento * iva) / 100;
+    const total = conDescuento + importeIva;
     
     // Mostrar el total en la interfaz
     $('#preview_total').text(formatearMoneda(total));

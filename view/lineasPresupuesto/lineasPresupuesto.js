@@ -872,6 +872,11 @@ function editarLinea(id_linea_ppto) {
                     }
                 }
                 
+                // IMPORTANTE: Recalcular preview del total después de cargar todos los datos
+                if (typeof calcularPreview === 'function') {
+                    calcularPreview();
+                }
+                
                 // Cambiar título
                 $('#modalFormularioLineaLabel').text('Editar Línea de Presupuesto');
                 
@@ -1704,7 +1709,7 @@ function formatLineaDetalle(d) {
                                 <td class="text-end fw-bold">${formatearMoneda(d.base_imponible || 0)}</td>
                             </tr>
                             <tr>
-                                <td class="text-muted">IVA (${parseFloat(d.porcentaje_iva_linea_ppto || 0).toFixed(0)}%):</td>
+                                <td class="text-muted">IVA (${parseFloat(d.porcentaje_iva_linea_ppto || 21).toFixed(2)}%):</td>
                                 <td class="text-end">${formatearMoneda(d.importe_iva || 0)}</td>
                             </tr>
                             <tr class="border-top pt-2">
