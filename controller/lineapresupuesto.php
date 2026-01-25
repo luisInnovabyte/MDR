@@ -201,10 +201,6 @@ switch ($_GET["op"]) {
                     "es_kit_articulo" => $row["es_kit_articulo"] ?? 0,
                     "ocultar_detalle_kit_linea_ppto" => $row["ocultar_detalle_kit_linea_ppto"] ?? null,
                     
-                    // Propiedades especiales del artículo
-                    "no_facturar_articulo" => $row["no_facturar_articulo"] ?? 0,
-                    "permitir_descuentos_articulo" => $row["permitir_descuentos_articulo"] ?? 1,
-                    
                     // Impuesto
                     "tipo_impuesto" => $row["tipo_impuesto"] ?? null,
                     "tasa_impuesto" => $row["tasa_impuesto"] ?? null,
@@ -553,19 +549,37 @@ switch ($_GET["op"]) {
 
             // Solo guardar id_coeficiente, jornadas y valor_coeficiente si aplicar_coeficiente_linea_ppto = 1
             if ($datos['aplicar_coeficiente_linea_ppto'] == 1) {
+                // DEBUG: Log de datos recibidos
+                error_log("🔍 DEBUG Coeficiente en Controller:");
+                error_log("  - aplicar_coeficiente: " . $datos['aplicar_coeficiente_linea_ppto']);
+                error_log("  - id_coeficiente POST: " . ($_POST["id_coeficiente"] ?? 'NO EXISTE'));
+                error_log("  - jornadas_linea_ppto POST: " . ($_POST["jornadas_linea_ppto"] ?? 'NO EXISTE'));
+                error_log("  - valor_coeficiente_linea_ppto POST: " . ($_POST["valor_coeficiente_linea_ppto"] ?? 'NO EXISTE'));
+                
                 // id_coeficiente
                 if (isset($_POST["id_coeficiente"]) && $_POST["id_coeficiente"] !== '' && $_POST["id_coeficiente"] !== 'null') {
                     $datos['id_coeficiente'] = intval($_POST["id_coeficiente"]);
+                    error_log("  ✅ id_coeficiente guardado: " . $datos['id_coeficiente']);
                 }
                 
                 // jornadas
                 if (isset($_POST["jornadas_linea_ppto"]) && $_POST["jornadas_linea_ppto"] !== '' && $_POST["jornadas_linea_ppto"] !== 'null') {
                     $datos['jornadas_linea_ppto'] = intval($_POST["jornadas_linea_ppto"]);
+                    error_log("  ✅ jornadas guardadas: " . $datos['jornadas_linea_ppto']);
                 }
                 
-                // valor_coeficiente
+                // valor_coeficiente - guardar incluso si es 1.00
                 if (isset($_POST["valor_coeficiente_linea_ppto"]) && $_POST["valor_coeficiente_linea_ppto"] !== '' && $_POST["valor_coeficiente_linea_ppto"] !== 'null') {
-                    $datos['valor_coeficiente_linea_ppto'] = floatval($_POST["valor_coeficiente_linea_ppto"]);
+                    $valorCoef = floatval($_POST["valor_coeficiente_linea_ppto"]);
+                    // Guardar el valor si es > 0 (incluye 1.00, 0.85, 8.20, etc.)
+                    if ($valorCoef > 0) {
+                        $datos['valor_coeficiente_linea_ppto'] = $valorCoef;
+                        error_log("  ✅ valor_coeficiente guardado: " . $datos['valor_coeficiente_linea_ppto']);
+                    } else {
+                        error_log("  ⚠️ valor_coeficiente no guardado (valor <= 0): " . $valorCoef);
+                    }
+                } else {
+                    error_log("  ❌ valor_coeficiente NO recibido o está vacío");
                 }
             } else {
                 // Si NO se aplica coeficiente, forzar todo a NULL

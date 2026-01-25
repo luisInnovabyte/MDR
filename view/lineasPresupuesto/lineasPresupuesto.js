@@ -782,8 +782,8 @@ function editarLinea(id_linea_ppto) {
                 $('#descuento_linea_ppto').val(data.descuento_linea_ppto || 0);
                 $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva_linea_ppto || 21);
                 
-                // Rellenar coeficiente (verificar id_coeficiente o si hay valor > 1)
-                const tieneCoeficiente = data.id_coeficiente || (data.valor_coeficiente_linea_ppto && parseFloat(data.valor_coeficiente_linea_ppto) > 1);
+                // Rellenar coeficiente - usar directamente el campo aplicar_coeficiente_linea_ppto de la BD
+                const tieneCoeficiente = data.aplicar_coeficiente_linea_ppto == 1 || data.aplicar_coeficiente_linea_ppto == '1';
                 
                 if (tieneCoeficiente) {
                     $('#id_coeficiente').val(data.id_coeficiente || '');
@@ -804,6 +804,14 @@ function editarLinea(id_linea_ppto) {
                     const precioConCoef = precioConDescuento * parseFloat(valorCoef);
                     const totalConCoef = precioConCoef * cantidad;
                     $('#preview_precio_coef').text(totalConCoef.toFixed(2).replace('.', ',') + ' €');
+                    
+                    // Mostrar información del coeficiente guardado
+                    if (data.jornadas_linea_ppto && data.valor_coeficiente_linea_ppto) {
+                        const infoDiv = $('#info_estado_coeficiente');
+                        const textoDiv = $('#texto_estado_coeficiente');
+                        infoDiv.removeClass('d-none alert-warning alert-danger').addClass('alert-success');
+                        textoDiv.html('<strong>✓ Coeficiente Guardado:</strong> Factor ' + valorCoef + 'x aplicado para ' + data.jornadas_linea_ppto + ' jornadas');
+                    }
                 } else {
                     $('#id_coeficiente').val('');
                     $('#aplicar_coeficiente_linea_ppto').prop('checked', false);

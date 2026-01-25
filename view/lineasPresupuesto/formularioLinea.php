@@ -57,7 +57,6 @@
                                 <!-- Campos ocultos adicionales del artículo -->
                                 <input type="hidden" id="codigo_linea_ppto" name="codigo_linea_ppto">
                                 <input type="hidden" id="id_impuesto" name="id_impuesto">
-                                <input type="hidden" id="valor_coeficiente_linea_ppto" name="valor_coeficiente_linea_ppto" value="">
                             </div>
                             
                             <!-- Mensaje de ayuda al pie de la sección -->
@@ -349,13 +348,19 @@ $(document).ready(function() {
     $('#aplicar_coeficiente_linea_ppto').on('change', function() {
         if ($(this).is(':checked')) {
             $('#campos_coeficiente').removeClass('d-none');
-            calcularJornadas();
+            // Calcular jornadas si hay fechas
+            const fechaInicio = $('#fecha_inicio_linea_ppto').val();
+            const fechaFin = $('#fecha_fin_linea_ppto').val();
+            if (fechaInicio && fechaFin) {
+                calcularJornadas();
+            }
         } else {
             $('#campos_coeficiente').addClass('d-none');
             // Ocultar mensaje de estado de coeficiente al desactivar
             $('#info_estado_coeficiente').addClass('d-none');
+            // Recalcular sin coeficiente
+            calcularPreview();
         }
-        calcularPreview();
     });
 
     // Calcular jornadas y precio cuando cambien las fechas del evento
@@ -467,8 +472,10 @@ function cargarDatosArticulo(idArticulo, esEdicion = false) {
                     $('#ocultar_detalle_kit_linea_ppto').prop('checked', false);
                 }
                 
-                // Recalcular preview
-                calcularPreview();
+                // Recalcular preview con un pequeño delay para que el DOM se actualice
+                setTimeout(function() {
+                    calcularPreview();
+                }, 100);
             }
         },
         error: function() {
@@ -597,12 +604,13 @@ function cargarCoeficiente(jornadas) {
             if (response.success && response.data) {
                 const data = response.data;
                 
-                // Actualizar campos ocultos
+                // Actualizar campos ocultos - asegurar formato decimal correcto
                 $('#id_coeficiente').val(data.id_coeficiente || '');
-                $('#valor_coeficiente_linea_ppto').val(data.factor_coeficiente);
+                const factorCoef = parseFloat(data.factor_coeficiente).toFixed(2);
+                $('#valor_coeficiente_linea_ppto').val(factorCoef);
                 
                 // Actualizar visualización del factor
-                $('#vista_coeficiente').text(parseFloat(data.factor_coeficiente).toFixed(2) + 'x');
+                $('#vista_coeficiente').text(factorCoef + 'x');
                 
                 // Mostrar aviso si no es coeficiente exacto
                 const infoDiv = $('#info_estado_coeficiente');
@@ -669,16 +677,17 @@ function aplicarCoeficientePorDefecto(jornadas, motivoError) {
 }
 
 /**
- * Calcula preview de totales en tiempo real
- * Fórmula paso a paso según especificación:
- * 1. Aplicar coeficiente si está activado: precio = precio × coeficiente
- * 2. base = días × cantidad × precio (sin IVA)
- * 3. con_descuento = base - (base × descuento/100)
- * 4. total = con_descuento + (con_descuento × iva/100)
+ * Calcula preview de totales en tiempo real (SECCIÓN 3)
+ * Esta función NO aplica coeficientes - solo calcula:
+ * Fórmula: base = días × cantidad × precio_unitario
+ *          con_descuento = base - (base × descuento/100)
+ *          total = con_descuento + (con_descuento × iva/100)
+ * 
+ * IMPORTANTE: El coeficiente se muestra solo en SECCIÓN 4 como información adicional
  */
 function calcularPreview() {
     const cantidad = parseFloat($('#cantidad_linea_ppto').val()) || 0;
-    let precioUnitario = parseFloat($('#precio_unitario_linea_ppto').val()) || 0;
+    const precioUnitario = parseFloat($('#precio_unitario_linea_ppto').val()) || 0;
     const descuento = parseFloat($('#descuento_linea_ppto').val()) || 0;
     const iva = parseFloat($('#porcentaje_iva_linea_ppto').val()) || 0;
     
@@ -694,17 +703,7 @@ function calcularPreview() {
         dias = diferencia + 1; // Jornadas inclusivas
     }
 
-    // Verificar si se aplica coeficiente
-    const aplicarCoeficiente = $('#aplicar_coeficiente_linea_ppto').is(':checked');
-    
-    if (aplicarCoeficiente) {
-        const coeficiente = parseFloat($('#valor_coeficiente_linea_ppto').val()) || 1.0;
-        // Aplicar coeficiente al precio unitario
-        precioUnitario = precioUnitario * coeficiente;
-        $('#preview_precio_coef').text(formatearMoneda(precioUnitario));
-    }
-
-    // PASO 1: Base = días × cantidad × precio_unitario (con coeficiente si aplica)
+    // PASO 1: Base = días × cantidad × precio_unitario (SIN coeficiente)
     const base = dias * cantidad * precioUnitario;
 
     // PASO 2: Aplicar descuento
@@ -715,8 +714,22 @@ function calcularPreview() {
     const importeIva = (conDescuento * iva) / 100;
     const total = conDescuento + importeIva;
     
-    // Mostrar el total en la interfaz
+    // Mostrar el total en la interfaz (SECCIÓN 3)
     $('#preview_total').text(formatearMoneda(total));
+    
+    // Si el coeficiente está activo, actualizar preview de SECCIÓN 4
+    const aplicarCoeficiente = $('#aplicar_coeficiente_linea_ppto').is(':checked');
+    if (aplicarCoeficiente) {
+        const coeficiente = parseFloat($('#valor_coeficiente_linea_ppto').val()) || 1.0;
+        
+        // Calcular precio con coeficiente aplicado a la línea completa
+        // Fórmula: (cantidad × precio_unitario × (1 - descuento/100) × coeficiente)
+        const subtotalConCoef = cantidad * precioUnitario * (1 - descuento / 100) * coeficiente;
+        const ivaConCoef = subtotalConCoef * (iva / 100);
+        const totalConCoef = subtotalConCoef + ivaConCoef;
+        
+        $('#preview_precio_coef').text(formatearMoneda(totalConCoef));
+    }
 }
 
 /**
@@ -782,23 +795,37 @@ function guardarLinea() {
         let coefField = formData.find(f => f.name === 'id_coeficiente');
         let valorCoefField = formData.find(f => f.name === 'valor_coeficiente_linea_ppto');
         
+        // Obtener valores de los campos
+        let idCoef = $('#id_coeficiente').val();
+        let valorCoef = $('#valor_coeficiente_linea_ppto').val();
+        
+        console.log('🔍 DEBUG Coeficiente al guardar:');
+        console.log('  - aplicarCoeficiente:', aplicarCoeficiente);
+        console.log('  - id_coeficiente:', idCoef);
+        console.log('  - valor_coeficiente_linea_ppto:', valorCoef);
+        
         // Si no están en formData, agregarlos desde los campos hidden
-        if (!coefField) {
-            let idCoef = $('#id_coeficiente').val();
-            if (idCoef && idCoef !== '' && idCoef !== 'null') {
-                formData.push({ name: 'id_coeficiente', value: idCoef });
-            }
+        if (!coefField && idCoef && idCoef !== '' && idCoef !== 'null') {
+            formData.push({ name: 'id_coeficiente', value: idCoef });
         }
         
+        // IMPORTANTE: Agregar valor_coeficiente SIEMPRE que haya un valor (incluso si es 1.00)
         if (!valorCoefField) {
-            let valorCoef = $('#valor_coeficiente_linea_ppto').val();
             if (valorCoef && valorCoef !== '' && valorCoef !== 'null') {
+                console.log('  ✅ Agregando valor_coeficiente_linea_ppto:', valorCoef);
                 formData.push({ name: 'valor_coeficiente_linea_ppto', value: valorCoef });
+            } else {
+                console.log('  ⚠️ valor_coeficiente_linea_ppto está vacío!');
             }
+        } else {
+            console.log('  ℹ️ valor_coeficiente_linea_ppto ya está en formData:', valorCoefField.value);
         }
     }
     
     const operacion = $('#id_linea_ppto').val() ? 'guardaryeditar' : 'guardaryeditar';
+    
+    // Debug: mostrar todos los datos que se van a enviar
+    console.log('📤 Datos completos a enviar:', formData);
 
     $.ajax({
         url: `../../controller/lineapresupuesto.php?op=${operacion}`,
