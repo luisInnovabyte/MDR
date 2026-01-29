@@ -238,6 +238,7 @@ function inicializarDataTable() {
             { name: 'dias_duracion', data: null, defaultContent: '', className: "text-center align-middle" },
             { name: 'valor_coeficiente_linea_ppto', data: 'valor_coeficiente_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
             { name: 'total_linea', data: 'total_linea', defaultContent: '0', className: "text-end align-middle" },
+            { name: 'TotalImporte_iva_linea_ppto_hotel', data: 'TotalImporte_iva_linea_ppto_hotel', defaultContent: '0', className: "text-end align-middle" },
             { name: 'activo_linea_ppto', data: 'activo_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
             { name: 'acciones', data: null, defaultContent: '', className: "text-center align-middle" }
         ],
@@ -399,7 +400,32 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 11: Estado
+            // Columna 11: Total Final (Hotel)
+            {
+                targets: "TotalImporte_iva_linea_ppto_hotel:name",
+                width: '130px',
+                searchable: false,
+                orderable: true,
+                className: "text-end fw-bold",
+                render: function (data, type, row) {
+                    if (type === "display") {
+                        let totalHotel = parseFloat(data) || 0;
+                        let porcentajeDesc = parseFloat(row.porcentaje_descuento_cliente) || 0;
+                        
+                        if (porcentajeDesc > 0) {
+                            return `<span class="text-warning" style="font-size: 1.05rem;" title="Precio con descuento de cliente (${porcentajeDesc.toFixed(2)}%)">
+                                        <i class="bi bi-building me-1"></i>${formatearMoneda(totalHotel)}
+                                    </span>`;
+                        } else {
+                            return `<span class="text-muted" style="font-size: 0.9rem;" title="Sin descuento de cliente">
+                                        ${formatearMoneda(totalHotel)}
+                                    </span>`;
+                        }
+                    }
+                    return data;
+                }
+            },
+            // Columna 13: Estado
             {
                 targets: "activo_linea_ppto:name",
                 width: '50px',
@@ -415,7 +441,7 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 12: Acciones
+            // Columna 14: Acciones
             {
                 targets: "acciones:name",
                 width: '110px',

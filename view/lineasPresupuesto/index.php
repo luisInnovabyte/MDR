@@ -319,6 +319,7 @@
                             <th>Días</th>
                             <th>Coef.</th>
                             <th>Total<span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span></th>
+                            <th>Total Final (Hotel)</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -339,6 +340,7 @@
                             <th></th><!-- Días -->
                             <th></th><!-- Coeficiente -->
                             <th></th><!-- Total -->
+                            <th></th><!-- Total Final (Hotel) -->
                             <th>
                                 <select class="form-control form-control-sm">
                                     <option value="">Todos</option>
