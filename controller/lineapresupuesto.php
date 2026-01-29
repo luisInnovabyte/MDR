@@ -182,6 +182,10 @@ switch ($_GET["op"]) {
                     "fecha_desmontaje_linea_ppto" => $row["fecha_desmontaje_linea_ppto"] ?? null,
                     "dias_planificacion_linea_ppto" => $row["dias_planificacion_linea_ppto"] ?? null,
                     
+                    // Ubicación (para agrupación en DataTables)
+                    "ubicacion_agrupacion" => $row["ubicacion_agrupacion"] ?? 'Sin ubicación',
+                    "ubicacion_completa_agrupacion" => $row["ubicacion_completa_agrupacion"] ?? 'Sin ubicación',
+                    
                     // Cálculos (desde la vista)
                     "subtotal_sin_coeficiente" => $row["subtotal_sin_coeficiente"],
                     "base_imponible" => $row["base_imponible"],

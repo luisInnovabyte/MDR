@@ -229,10 +229,11 @@ function inicializarDataTable() {
         columns: [
             { name: 'detalles', data: null, defaultContent: '', className: "text-center align-middle", orderable: false },
             { name: 'orden_linea_ppto', data: 'orden_linea_ppto', defaultContent: '0', className: "text-center align-middle" },
+            { name: 'fecha_inicio_linea_ppto', data: 'fecha_inicio_linea_ppto', defaultContent: null, className: "text-center align-middle" },
+            { name: 'ubicacion_agrupacion', data: 'ubicacion_agrupacion', defaultContent: 'Sin ubicación', className: "text-center align-middle" },
             { name: 'localizacion_linea_ppto', data: 'localizacion_linea_ppto', defaultContent: '', className: "text-center align-middle" },
             { name: 'codigo_linea_ppto', data: 'codigo_linea_ppto', defaultContent: '', className: "text-center align-middle" },
             { name: 'descripcion_linea_ppto', data: 'descripcion_linea_ppto', defaultContent: '', className: "text-left align-middle" },
-            { name: 'fecha_inicio_linea_ppto', data: 'fecha_inicio_linea_ppto', defaultContent: null, className: "text-center align-middle" },
             { name: 'fecha_fin_linea_ppto', data: 'fecha_fin_linea_ppto', defaultContent: null, className: "text-center align-middle" },
             { name: 'dias_duracion', data: null, defaultContent: '', className: "text-center align-middle" },
             { name: 'valor_coeficiente_linea_ppto', data: 'valor_coeficiente_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
@@ -262,14 +263,28 @@ function inicializarDataTable() {
                 searchable: false, 
                 orderable: true 
             },
-            // Columna 2: Localización (OCULTA para agrupación posterior)
+            // Columna 2: Fecha Inicio (OCULTA - usada para agrupación nivel 1)
+            { 
+                targets: "fecha_inicio_linea_ppto:name", 
+                visible: false, 
+                searchable: false, 
+                orderable: true 
+            },
+            // Columna 3: Ubicación Agrupación (OCULTA - usada para agrupación nivel 2)
+            { 
+                targets: "ubicacion_agrupacion:name", 
+                visible: false, 
+                searchable: true, 
+                orderable: true 
+            },
+            // Columna 4: Localización (OCULTA para agrupación posterior)
             { 
                 targets: "localizacion_linea_ppto:name", 
                 visible: false, 
                 searchable: true, 
                 orderable: true 
             },
-            // Columna 3: Código
+            // Columna 5: Código
             { 
                 targets: "codigo_linea_ppto:name", 
                 width: '100px', 
@@ -280,7 +295,7 @@ function inicializarDataTable() {
                     return data || row.codigo_articulo || '--';
                 }
             },
-            // Columna 4: Descripción
+            // Columna 6: Descripción
             { 
                 targets: "descripcion_linea_ppto:name", 
                 width: '250px', 
@@ -294,29 +309,7 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 5: Fecha Inicio
-            {
-                targets: "fecha_inicio_linea_ppto:name",
-                width: '120px',
-                searchable: false,
-                orderable: true,
-                className: "text-center",
-                render: function (data, type, row) {
-                    if (type === "display" && data) {
-                        let fecha = new Date(data);
-                        let dia = ("0" + fecha.getDate()).slice(-2);
-                        let mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
-                        let anio = fecha.getFullYear();
-                        
-                        return `<div class="text-nowrap">
-                                    <i class="bi bi-calendar-check text-success me-1"></i>
-                                    <strong>${dia}/${mes}/${anio}</strong>
-                                </div>`;
-                    }
-                    return data ? data : '<span class="text-muted">No definida</span>';
-                }
-            },
-            // Columna 6: Fecha Fin
+            // Columna 7: Fecha Fin
             {
                 targets: "fecha_fin_linea_ppto:name",
                 width: '120px',
@@ -342,7 +335,7 @@ function inicializarDataTable() {
                     return data ? data : '<span class="text-muted">No definida</span>';
                 }
             },
-            // Columna 7: Días de duración
+            // Columna 8: Días de duración
             {
                 targets: "dias_duracion:name",
                 width: '70px',
@@ -368,7 +361,7 @@ function inicializarDataTable() {
                     return '<span class="text-muted">-</span>';
                 }
             },
-            // Columna 8: Coeficiente
+            // Columna 9: Coeficiente
             {
                 targets: "valor_coeficiente_linea_ppto:name",
                 width: '90px',
@@ -389,7 +382,7 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 9: Total
+            // Columna 10: Total
             {
                 targets: "total_linea:name",
                 width: '110px',
@@ -406,7 +399,7 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 10: Estado
+            // Columna 11: Estado
             {
                 targets: "activo_linea_ppto:name",
                 width: '50px',
@@ -422,7 +415,7 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 11: Acciones
+            // Columna 12: Acciones
             {
                 targets: "acciones:name",
                 width: '110px',
@@ -488,6 +481,14 @@ function inicializarDataTable() {
                 console.log("Tiene propiedad 'data':", json.hasOwnProperty('data'));
                 console.log("Número de registros:", json.data ? json.data.length : (Array.isArray(json) ? json.length : 0));
                 
+                // DEBUG: Verificar si ubicacion_agrupacion viene en los datos
+                if (json.data && json.data.length > 0) {
+                    console.log("=== VERIFICACIÓN CAMPOS AGRUPACIÓN ===");
+                    console.log("Primera línea completa:", json.data[0]);
+                    console.log("Campo ubicacion_agrupacion:", json.data[0].ubicacion_agrupacion);
+                    console.log("Campo fecha_inicio_linea_ppto:", json.data[0].fecha_inicio_linea_ppto);
+                }
+                
                 if (json.success === false) {
                     console.error("Error del servidor:", json.message);
                     Swal.fire({
@@ -525,7 +526,64 @@ function inicializarDataTable() {
         deferRender: true,
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100],
-        order: [[1, 'asc']] // Ordenar por orden por defecto (columna 1 ahora es orden_linea_ppto)
+        order: [[2, 'asc'], [3, 'asc'], [1, 'asc']], // Ordenar por fecha_inicio (col 2), luego ubicacion_agrupacion (col 3), luego orden (col 1)
+        rowGroup: {
+            dataSrc: ['fecha_inicio_linea_ppto', 'ubicacion_agrupacion'],
+            startRender: function (rows, group, level) {
+                if (level === 0) {
+                    // Nivel 1: Agrupación por fecha
+                    let fechaFormateada = 'Sin fecha';
+                    if (group && group !== 'null') {
+                        let fecha = new Date(group);
+                        let dia = ("0" + fecha.getDate()).slice(-2);
+                        let mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+                        let anio = fecha.getFullYear();
+                        fechaFormateada = `${dia}/${mes}/${anio}`;
+                    }
+                    
+                    // Calcular totales del grupo
+                    let totalGrupo = 0;
+                    rows.data().each(function(row) {
+                        totalGrupo += parseFloat(row.total_linea || 0);
+                    });
+                    
+                    return $('<tr class="group-fecha"/>').append(
+                        '<td colspan="13">' +
+                            '<i class="bi bi-calendar-event me-2"></i>' +
+                            '<span style="font-weight: 400;">Fecha: ' + fechaFormateada + '</span>' +
+                            '<span class="float-end" style="font-weight: 300; font-size: 0.85rem;">' +
+                                '<i class="bi bi-box-seam me-1"></i>' + rows.count() + ' líneas' +
+                                '<span class="ms-3">' +
+                                    '<i class="bi bi-currency-euro me-1"></i>' + formatearMoneda(totalGrupo) +
+                                '</span>' +
+                            '</span>' +
+                        '</td>'
+                    );
+                } else if (level === 1) {
+                    // Nivel 2: Agrupación por ubicación
+                    let ubicacion = group || 'Sin ubicación';
+                    
+                    // Calcular totales del subgrupo
+                    let totalSubgrupo = 0;
+                    rows.data().each(function(row) {
+                        totalSubgrupo += parseFloat(row.total_linea || 0);
+                    });
+                    
+                    return $('<tr class="group-ubicacion"/>').append(
+                        '<td colspan="13">' +
+                            '<i class="bi bi-geo-alt me-1"></i>' +
+                            '<span style="font-weight: 300;">' + ubicacion + '</span>' +
+                            '<span class="float-end" style="font-weight: 300; font-size: 0.8rem;">' +
+                                '<i class="bi bi-list-check me-1"></i>' + rows.count() +
+                                '<span class="ms-2">' +
+                                    '<i class="bi bi-currency-euro me-1"></i>' + formatearMoneda(totalSubgrupo) +
+                                '</span>' +
+                            '</span>' +
+                        '</td>'
+                    );
+                }
+            }
+        }
     };
 
     var $table = $('#lineas_data');

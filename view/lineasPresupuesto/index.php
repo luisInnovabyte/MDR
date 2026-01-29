@@ -96,6 +96,62 @@
         button.details-control {
             min-width: 30px;
         }
+        
+        /* ========================================
+           ESTILOS PARA AGRUPACIÓN DATATABLES
+           ======================================== */
+        
+        /* Agrupación nivel 1: Fecha */
+        tr.group-fecha td {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
+            color: #1976d2 !important;
+            font-weight: 400;
+            padding: 6px 12px !important;
+            font-size: 0.875rem;
+            border: none !important;
+            border-left: 3px solid #1976d2 !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        tr.group-fecha td:hover {
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%) !important;
+            cursor: pointer;
+        }
+        
+        /* Agrupación nivel 2: Ubicación */
+        tr.group-ubicacion td {
+            background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%) !important;
+            color: #558b2f !important;
+            font-weight: 300;
+            padding: 5px 12px 5px 28px !important;
+            font-size: 0.813rem;
+            border: none !important;
+            border-left: 2px solid #7cb342 !important;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.03);
+        }
+        
+        tr.group-ubicacion td:hover {
+            background: linear-gradient(135deg, #dcedc8 0%, #c5e1a5 100%) !important;
+            cursor: pointer;
+        }
+        
+        /* Iconos en agrupaciones */
+        tr.group-fecha i.bi,
+        tr.group-ubicacion i.bi {
+            font-size: 0.95em;
+            vertical-align: middle;
+            opacity: 0.8;
+        }
+        
+        /* Ajustar espaciado entre grupos */
+        tr.group-fecha + tr.group-ubicacion td {
+            padding-top: 8px !important;
+        }
+        
+        /* Filas de datos dentro de grupos */
+        .dtr-group + tr td {
+            border-top: 2px solid #e9ecef !important;
+        }
     </style>
     
     <!-- ########## START: MAIN PANEL ########## -->
