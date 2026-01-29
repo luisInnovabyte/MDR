@@ -310,10 +310,11 @@
                         <tr>
                             <th></th><!-- Detalles -->
                             <th>Orden</th><!-- Oculta -->
+                            <th>Fecha Inicio</th><!-- Oculta - para agrupación -->
+                            <th>Ubicación</th><!-- Oculta - para agrupación -->
                             <th>Localización</th><!-- Oculta -->
                             <th>Código</th>
                             <th>Descripción</th>
-                            <th>Fecha Inicio</th>
                             <th>Fecha Fin</th>
                             <th>Días</th>
                             <th>Coef.</th>
@@ -329,10 +330,11 @@
                         <tr>
                             <th></th><!-- Detalles -->
                             <th></th><!-- Orden (oculto) -->
+                            <th></th><!-- Fecha Inicio (oculto) -->
+                            <th></th><!-- Ubicación (oculto) -->
                             <th></th><!-- Localización (oculto) -->
                             <th><input type="text" placeholder="Código" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Descripción" class="form-control form-control-sm" /></th>
-                            <th></th><!-- Fecha Inicio -->
                             <th></th><!-- Fecha Fin -->
                             <th></th><!-- Días -->
                             <th></th><!-- Coeficiente -->

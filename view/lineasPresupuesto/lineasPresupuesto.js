@@ -589,19 +589,27 @@ function inicializarDataTable() {
     var $table = $('#lineas_data');
     var $tableConfig = datatable_lineasConfig;
     var $tableBody = $table.find('tbody');
-    var $columnFilterInputs = $('#lineas_data tfoot input, #lineas_data tfoot select');
 
     tabla = $table.DataTable($tableConfig);
 
     // Aplicar búsqueda en columnas del footer
-    $columnFilterInputs.on('keyup change clear', function () {
-        var column_index = $(this).parent().index();
-        var search_value = this.value;
+    // Configurar filtros después de que la tabla esté inicializada
+    $('#lineas_data tfoot th').each(function(index) {
+        const $th = $(this);
+        const $input = $th.find('input, select');
         
-        if (tabla.column(column_index).search() !== search_value) {
-            tabla.column(column_index).search(search_value).draw();
+        if ($input.length) {
+            // Agregar evento de búsqueda
+            $input.on('keyup change clear', function() {
+                const searchValue = this.value;
+                const column = tabla.column(index);
+                
+                if (column.search() !== searchValue) {
+                    column.search(searchValue).draw();
+                    actualizarAlertaFiltros();
+                }
+            });
         }
-        actualizarAlertaFiltros();
     });
 
     // Recargar totales después de cada actualización de tabla
