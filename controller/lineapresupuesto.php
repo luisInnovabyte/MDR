@@ -160,6 +160,8 @@ switch ($_GET["op"]) {
                     "descripcion_linea_ppto" => $row["descripcion_linea_ppto"],
                     "codigo_articulo" => $row["codigo_articulo"] ?? null,
                     "nombre_articulo" => $row["nombre_articulo"] ?? null,
+                    "permitir_descuentos_articulo" => $row["permitir_descuentos_articulo"] ?? 1,
+                    "no_facturar_articulo" => $row["no_facturar_articulo"] ?? 0,
                     
                     // Cantidades y precios
                     "cantidad_linea_ppto" => $row["cantidad_linea_ppto"],
@@ -191,6 +193,15 @@ switch ($_GET["op"]) {
                     "base_imponible" => $row["base_imponible"],
                     "importe_iva" => $row["importe_iva"],
                     "total_linea" => $row["total_linea"],
+                    
+                    // Cálculos con descuento de hotel (desde la vista)
+                    "porcentaje_descuento_cliente" => $row["porcentaje_descuento_cliente"] ?? 0,
+                    "precio_unitario_linea_ppto_hotel" => $row["precio_unitario_linea_ppto_hotel"] ?? 0,
+                    "base_imponible_hotel" => $row["base_imponible_hotel"] ?? 0,
+                    "importe_descuento_linea_ppto_hotel" => $row["importe_descuento_linea_ppto_hotel"] ?? 0,
+                    "TotalImporte_descuento_linea_ppto_hotel" => $row["TotalImporte_descuento_linea_ppto_hotel"] ?? 0,
+                    "importe_iva_linea_ppto_hotel" => $row["importe_iva_linea_ppto_hotel"] ?? 0,
+                    "TotalImporte_iva_linea_ppto_hotel" => $row["TotalImporte_iva_linea_ppto_hotel"] ?? 0,
                     
                     // Notas
                     "notas_tecnicas_linea_ppto" => $row["notas_tecnicas_linea_ppto"] ?? null,

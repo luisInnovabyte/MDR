@@ -1895,6 +1895,49 @@ function formatLineaDetalle(d) {
                             </tr>
                         </table>
                         
+                        <!-- Sección de Precios para Hotel -->
+                        <h6 class="text-warning border-bottom pb-1 mb-1 mt-3">
+                            <i class="bi bi-building"></i> Precios con Descuento de Cliente (Hotel)
+                            ${d.porcentaje_descuento_cliente && parseFloat(d.porcentaje_descuento_cliente) > 0 
+                                ? `<span class="badge bg-warning ms-2">${parseFloat(d.porcentaje_descuento_cliente).toFixed(2)}% descuento</span>` 
+                                : ''}
+                        </h6>
+                        <table class="table table-sm table-borderless mb-0" style="font-size: 0.9rem; line-height: 1.1;">
+                            <tr>
+                                <td class="text-muted" style="width: 140px;">Precio Unit. Hotel:</td>
+                                <td class="text-end fw-bold">${formatearMoneda(d.precio_unitario_linea_ppto_hotel || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Base Imp. Hotel:</td>
+                                <td class="text-end">${formatearMoneda(d.base_imponible_hotel || 0)}</td>
+                            </tr>
+                            ${d.importe_descuento_linea_ppto_hotel && parseFloat(d.importe_descuento_linea_ppto_hotel) > 0 ? `
+                            <tr>
+                                <td class="text-muted">Desc. Línea Hotel:</td>
+                                <td class="text-end text-danger">-${formatearMoneda(d.importe_descuento_linea_ppto_hotel || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Total sin IVA:</td>
+                                <td class="text-end">${formatearMoneda(d.TotalImporte_descuento_linea_ppto_hotel || 0)}</td>
+                            </tr>
+                            ` : ''}
+                            <tr>
+                                <td class="text-muted">IVA Hotel:</td>
+                                <td class="text-end">${formatearMoneda(d.importe_iva_linea_ppto_hotel || 0)}</td>
+                            </tr>
+                            <tr class="border-top pt-2">
+                                <td class="text-muted fw-bold">TOTAL Hotel:</td>
+                                <td class="text-end fw-bold text-warning" style="font-size: 1.05rem;">
+                                    ${formatearMoneda(d.TotalImporte_iva_linea_ppto_hotel || 0)}
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <div class="alert alert-warning alert-sm mt-1 mb-0 py-1 px-2">
+                            <small><i class="bi bi-info-circle me-1"></i><strong>Nota:</strong> 
+                            Estos precios incluyen el descuento del cliente (hotel) aplicado. ${d.permitir_descuentos_articulo == 0 ? 'Este artículo NO permite descuentos, por lo que los valores son iguales a los normales.' : ''}</small>
+                        </div>
+                        
                         ${d.aplicar_coeficiente_linea_ppto == 1 ? `
                         <div class="alert alert-warning alert-sm mt-1 mb-0 py-1 px-2">
                             <small><i class="bi bi-calculator me-1"></i><strong>Coeficiente aplicado:</strong> 

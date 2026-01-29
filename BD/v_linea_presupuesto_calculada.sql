@@ -1,9 +1,9 @@
 -- ============================================
--- ACTUALIZACIÓN: VISTA v_linea_presupuesto_calculada
--- Descripción: Añadir todos los campos de vista_presupuesto_completa
+-- ACTUALIZACIÃƒ"N: VISTA v_linea_presupuesto_calculada
+-- DescripciÃƒÂ³n: AÃƒÂ±adir campos calculados con descuento de hotel
 -- Fecha: 2026-01-29
 -- Autor: Luis MDR
--- BASADO EN: toldos_db.sql - Estructura real de la base de datos
+-- Ticket: Campos para presupuestos con/sin descuento de hotel
 -- ============================================
 
 -- =====================================================
@@ -12,7 +12,7 @@
 DROP VIEW IF EXISTS `v_linea_presupuesto_calculada`;
 
 -- =====================================================
--- Crear vista actualizada con campos REALES
+-- Crear vista actualizada con campos de hotel
 -- =====================================================
 CREATE OR REPLACE VIEW `v_linea_presupuesto_calculada` AS 
 SELECT 
@@ -137,7 +137,7 @@ SELECT
         ) * (`lp`.`porcentaje_iva_linea_ppto` / 100)
     END AS `importe_iva`,
     
-    -- Total línea (base + IVA)
+    -- Total lÃƒÂ­nea (base + IVA)
     CASE 
         WHEN `lp`.`aplicar_coeficiente_linea_ppto` = 1 
          AND `lp`.`valor_coeficiente_linea_ppto` IS NOT NULL 
@@ -165,6 +165,197 @@ SELECT
     END AS `total_linea`,
     
     -- =====================================================
+    -- CAMPOS CALCULADOS CON DESCUENTO DE HOTEL
+    -- Aplican descuento de cliente (hotel) si permitir_descuentos_articulo = 1
+    -- =====================================================
+    
+    -- Precio unitario con descuento de hotel
+    CASE 
+        WHEN `a`.`permitir_descuentos_articulo` = 1 
+        THEN `lp`.`precio_unitario_linea_ppto` - (
+            (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+        )
+        ELSE `lp`.`precio_unitario_linea_ppto`
+    END AS `precio_unitario_linea_ppto_hotel`,
+    
+    -- Base imponible con descuento de hotel
+    CASE 
+        WHEN `a`.`permitir_descuentos_articulo` = 1 
+        THEN (
+            -- precio_unitario_linea_ppto_hotel
+            (`lp`.`precio_unitario_linea_ppto` - (
+                (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+            ))
+            * `lp`.`valor_coeficiente_linea_ppto`
+            * `lp`.`cantidad_linea_ppto`
+        )
+        ELSE (
+            `lp`.`precio_unitario_linea_ppto`
+            * `lp`.`valor_coeficiente_linea_ppto`
+            * `lp`.`cantidad_linea_ppto`
+        )
+    END AS `base_imponible_hotel`,
+    
+    -- Importe descuento de lÃƒÂ­nea sobre base hotel
+    CASE 
+        WHEN `a`.`permitir_descuentos_articulo` = 1 
+        THEN (
+            -- base_imponible_hotel
+            (
+                (`lp`.`precio_unitario_linea_ppto` - (
+                    (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                ))
+                * `lp`.`valor_coeficiente_linea_ppto`
+                * `lp`.`cantidad_linea_ppto`
+            )
+            * `lp`.`descuento_linea_ppto`
+        ) / 100
+        ELSE 0
+    END AS `importe_descuento_linea_ppto_hotel`,
+    
+    -- Total con descuento de lÃƒÂ­nea aplicado
+    CASE 
+        WHEN `a`.`permitir_descuentos_articulo` = 1 
+        THEN (
+            -- base_imponible_hotel
+            (
+                (`lp`.`precio_unitario_linea_ppto` - (
+                    (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                ))
+                * `lp`.`valor_coeficiente_linea_ppto`
+                * `lp`.`cantidad_linea_ppto`
+            )
+            - (
+                -- importe_descuento_linea_ppto_hotel
+                (
+                    (
+                        (`lp`.`precio_unitario_linea_ppto` - (
+                            (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                        ))
+                        * `lp`.`valor_coeficiente_linea_ppto`
+                        * `lp`.`cantidad_linea_ppto`
+                    )
+                    * `lp`.`descuento_linea_ppto`
+                ) / 100
+            )
+        )
+        ELSE (
+            `lp`.`precio_unitario_linea_ppto`
+            * `lp`.`valor_coeficiente_linea_ppto`
+            * `lp`.`cantidad_linea_ppto`
+        )
+    END AS `TotalImporte_descuento_linea_ppto_hotel`,
+    
+    -- Importe IVA sobre total con descuentos
+    CASE 
+        WHEN `a`.`permitir_descuentos_articulo` = 1 
+        THEN (
+            -- TotalImporte_descuento_linea_ppto_hotel
+            (
+                (
+                    (`lp`.`precio_unitario_linea_ppto` - (
+                        (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                    ))
+                    * `lp`.`valor_coeficiente_linea_ppto`
+                    * `lp`.`cantidad_linea_ppto`
+                )
+                - (
+                    (
+                        (
+                            (`lp`.`precio_unitario_linea_ppto` - (
+                                (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                            ))
+                            * `lp`.`valor_coeficiente_linea_ppto`
+                            * `lp`.`cantidad_linea_ppto`
+                        )
+                        * `lp`.`descuento_linea_ppto`
+                    ) / 100
+                )
+            )
+            * `lp`.`porcentaje_iva_linea_ppto`
+        ) / 100
+        ELSE (
+            (
+                `lp`.`precio_unitario_linea_ppto`
+                * `lp`.`valor_coeficiente_linea_ppto`
+                * `lp`.`cantidad_linea_ppto`
+            )
+            * `lp`.`porcentaje_iva_linea_ppto`
+        ) / 100
+    END AS `importe_iva_linea_ppto_hotel`,
+    
+    -- Total con IVA incluido (base con descuentos + IVA)
+    CASE 
+        WHEN `a`.`permitir_descuentos_articulo` = 1 
+        THEN (
+            -- TotalImporte_descuento_linea_ppto_hotel
+            (
+                (
+                    (`lp`.`precio_unitario_linea_ppto` - (
+                        (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                    ))
+                    * `lp`.`valor_coeficiente_linea_ppto`
+                    * `lp`.`cantidad_linea_ppto`
+                )
+                - (
+                    (
+                        (
+                            (`lp`.`precio_unitario_linea_ppto` - (
+                                (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                            ))
+                            * `lp`.`valor_coeficiente_linea_ppto`
+                            * `lp`.`cantidad_linea_ppto`
+                        )
+                        * `lp`.`descuento_linea_ppto`
+                    ) / 100
+                )
+            )
+            + (
+                -- importe_iva_linea_ppto_hotel
+                (
+                    (
+                        (
+                            (`lp`.`precio_unitario_linea_ppto` - (
+                                (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                            ))
+                            * `lp`.`valor_coeficiente_linea_ppto`
+                            * `lp`.`cantidad_linea_ppto`
+                        )
+                        - (
+                            (
+                                (
+                                    (`lp`.`precio_unitario_linea_ppto` - (
+                                        (`lp`.`precio_unitario_linea_ppto` * `p`.`porcentaje_descuento_cliente`) / 100
+                                    ))
+                                    * `lp`.`valor_coeficiente_linea_ppto`
+                                    * `lp`.`cantidad_linea_ppto`
+                                )
+                                * `lp`.`descuento_linea_ppto`
+                            ) / 100
+                        )
+                    )
+                    * `lp`.`porcentaje_iva_linea_ppto`
+                ) / 100
+            )
+        )
+        ELSE (
+            (
+                `lp`.`precio_unitario_linea_ppto`
+                * `lp`.`valor_coeficiente_linea_ppto`
+                * `lp`.`cantidad_linea_ppto`
+            )
+            + (
+                (
+                    `lp`.`precio_unitario_linea_ppto`
+                    * `lp`.`valor_coeficiente_linea_ppto`
+                    * `lp`.`cantidad_linea_ppto`
+                )
+                * `lp`.`porcentaje_iva_linea_ppto`
+            ) / 100
+        )
+    END AS `TotalImporte_iva_linea_ppto_hotel`,
+    
+    -- =====================================================
     -- CAMPOS DE ARTICULO (desde vista_articulo_completa)
     -- =====================================================
     `a`.`codigo_articulo`,
@@ -183,7 +374,7 @@ SELECT
     `a`.`activo_articulo`,
     `a`.`permitir_descuentos_articulo`,
     
-    -- Campos de impuesto del artículo
+    -- Campos de impuesto del artÃƒÂ­culo
     `a`.`id_impuesto` AS `id_impuesto_articulo`,
     `a`.`tipo_impuesto` AS `tipo_impuesto_articulo`,
     `a`.`tasa_impuesto` AS `tasa_impuesto_articulo`,
@@ -199,7 +390,7 @@ SELECT
     `a`.`activo_unidad_relacionada` AS `activo_unidad`,
     
     -- =====================================================
-    -- CAMPOS DE IMPUESTO DE LÍNEA (LEFT JOIN imp)
+    -- CAMPOS DE IMPUESTO DE LÃƒNEA (LEFT JOIN imp)
     -- =====================================================
     `lp`.`id_impuesto`,
     `imp`.`tipo_impuesto`,
@@ -219,10 +410,9 @@ SELECT
     
     -- =====================================================
     -- CAMPOS DE PRESUPUESTO (desde vista_presupuesto_completa)
-    -- *** TODOS LOS CAMPOS REALES DE LA VISTA ***
     -- =====================================================
     
-    -- Datos básicos del presupuesto
+    -- Datos bÃƒÂ¡sicos del presupuesto
     `p`.`numero_presupuesto`,
     `p`.`version_actual_presupuesto`,
     `p`.`fecha_presupuesto`,
@@ -290,12 +480,12 @@ SELECT
     `p`.`dias_final_pago`,
     `p`.`descuento_pago`,
     
-    -- Método de pago
+    -- MÃƒÂ©todo de pago
     `p`.`id_metodo_pago`,
     `p`.`codigo_metodo_pago`,
     `p`.`nombre_metodo_pago`,
     
-    -- Método de contacto
+    -- MÃƒÂ©todo de contacto
     `p`.`id_metodo_contacto`,
     `p`.`nombre_metodo_contacto`,
     
@@ -350,17 +540,14 @@ SELECT
     `cu`.`activo_ubicacion`,
     
     -- =====================================================
-    -- CAMPOS CALCULADOS PARA AGRUPACIÓN EN DATATABLES
+    -- CAMPOS CALCULADOS PARA AGRUPACIÃƒ"N EN DATATABLES
     -- =====================================================
-    -- Ubicación para agrupación: prioriza ubicación específica de la línea,
-    -- luego el nombre del evento, y finalmente 'Sin ubicación'
     COALESCE(
         `cu`.`nombre_ubicacion`, 
         `p`.`nombre_evento_presupuesto`, 
-        'Sin ubicación'
+        'Sin ubicaciÃƒÂ³n'
     ) AS `ubicacion_agrupacion`,
     
-    -- Dirección completa para agrupación (opcional, para mostrar más detalles)
     COALESCE(
         CONCAT_WS(', ',
             `cu`.`nombre_ubicacion`,
@@ -369,11 +556,11 @@ SELECT
             `cu`.`provincia_ubicacion`
         ),
         `p`.`direccion_completa_evento_presupuesto`,
-        'Sin ubicación'
+        'Sin ubicaciÃƒÂ³n'
     ) AS `ubicacion_completa_agrupacion`,
     
     -- =====================================================
-    -- CAMPOS DE AUDITORÍA
+    -- CAMPOS DE AUDITORÃƒA
     -- =====================================================
     `lp`.`created_at_linea_ppto`,
     `lp`.`updated_at_linea_ppto`
@@ -383,169 +570,46 @@ SELECT
 -- =====================================================
 FROM `linea_presupuesto` `lp`
 
--- JOIN con presupuesto_version
 INNER JOIN `presupuesto_version` `pv` 
     ON `lp`.`id_version_presupuesto` = `pv`.`id_version_presupuesto`
 
--- JOIN con vista_presupuesto_completa
 INNER JOIN `vista_presupuesto_completa` `p` 
     ON `pv`.`id_presupuesto` = `p`.`id_presupuesto`
 
--- LEFT JOIN con vista_articulo_completa
 LEFT JOIN `vista_articulo_completa` `a` 
     ON `lp`.`id_articulo` = `a`.`id_articulo`
     
--- LEFT JOIN con coeficiente
 LEFT JOIN `coeficiente` `c` 
     ON `lp`.`id_coeficiente` = `c`.`id_coeficiente`
     
--- LEFT JOIN con impuesto de línea
 LEFT JOIN `impuesto` `imp` 
     ON `lp`.`id_impuesto` = `imp`.`id_impuesto`
     
--- LEFT JOIN con cliente_ubicacion
 LEFT JOIN `cliente_ubicacion` `cu` 
     ON `lp`.`id_ubicacion` = `cu`.`id_ubicacion`
 
--- =====================================================
--- WHERE
--- =====================================================
 WHERE `p`.`activo_presupuesto` = TRUE;
 
 -- =====================================================
--- VERIFICACIÓN
+-- VERIFICACIÃƒ"N
 -- =====================================================
 
--- Verificar que la vista se creó correctamente
-SELECT COUNT(*) AS total_registros 
-FROM `v_linea_presupuesto_calculada`;
+SELECT 'Vista v_linea_presupuesto_calculada actualizada correctamente con campos hotel' AS resultado;
 
--- Verificar algunos campos clave
+-- Verificar campos hotel en un registro
 SELECT 
     `id_linea_ppto`,
     `codigo_linea_ppto`,
     `descripcion_linea_ppto`,
-    `fecha_inicio_linea_ppto`,
-    `ubicacion_agrupacion`,
-    `ubicacion_completa_agrupacion`,
-    `numero_presupuesto`,
-    `nombre_evento_presupuesto`,
-    `duracion_evento_dias`,
-    `nombre_cliente`,
-    `email_cliente`,
-    `nombre_estado_ppto`,
-    `direccion_completa_evento_presupuesto`,
-    `estado_validez_presupuesto`,
-    `estado_evento_presupuesto`,
-    `prioridad_presupuesto`
+    `permitir_descuentos_articulo`,
+    `porcentaje_descuento_cliente`,
+    `precio_unitario_linea_ppto`,
+    `precio_unitario_linea_ppto_hotel`,
+    `base_imponible`,
+    `base_imponible_hotel`,
+    `importe_descuento_linea_ppto_hotel`,
+    `TotalImporte_descuento_linea_ppto_hotel`,
+    `importe_iva_linea_ppto_hotel`,
+    `TotalImporte_iva_linea_ppto_hotel`
 FROM `v_linea_presupuesto_calculada`
-ORDER BY `fecha_inicio_linea_ppto`, `ubicacion_agrupacion`
 LIMIT 5;
-
--- =====================================================
--- RESUMEN DE CAMBIOS
--- =====================================================
-
-/*
-CAMPOS AÑADIDOS DE VISTA_PRESUPUESTO_COMPLETA (80+ campos nuevos):
-
-1. DATOS BÁSICOS DEL PRESUPUESTO:
-   - version_actual_presupuesto
-   - numero_pedido_cliente_presupuesto
-   - aplicar_coeficientes_presupuesto
-   - descuento_presupuesto
-   - Ubicación evento: direccion, poblacion, cp, provincia
-   - Observaciones: cabecera, pie (español e inglés)
-   - Flags: mostrar_obs_familias, mostrar_obs_articulos
-   - observaciones_internas_presupuesto
-
-2. DATOS EXTENDIDOS DEL CLIENTE:
-   - codigo_cliente
-   - porcentaje_descuento_cliente
-   - Datos facturación: nombre, direccion, cp, poblacion, provincia
-
-3. CONTACTO DEL CLIENTE:
-   - apellidos_contacto_cliente
-
-4. FORMA DE PAGO COMPLETA:
-   - Todos los campos de forma_pago
-   - Método de pago: id, codigo, nombre
-   - Forma de pago habitual del cliente
-
-5. MÉTODO DE CONTACTO:
-   - id_metodo_contacto, nombre_metodo_contacto
-
-6. CAMPOS CALCULADOS (YA EN VISTA):
-   - direccion_completa_evento_presupuesto
-   - direccion_completa_cliente
-   - direccion_facturacion_completa_cliente
-   - nombre_completo_contacto
-   - dias_validez_restantes
-   - estado_validez_presupuesto
-   - duracion_evento_dias
-   - dias_hasta_inicio_evento
-   - dias_hasta_fin_evento
-   - estado_evento_presupuesto
-   - prioridad_presupuesto
-   - tipo_pago_presupuesto
-   - descripcion_completa_forma_pago
-   - fecha_vencimiento_anticipo
-   - fecha_vencimiento_final
-   - comparacion_descuento
-   - estado_descuento_presupuesto
-   - aplica_descuento_presupuesto
-   - diferencia_descuento
-   - tiene_direccion_facturacion_diferente
-   - dias_desde_emision
-   - id_version_actual
-   - numero_version_actual
-   - estado_version_actual
-   - fecha_creacion_version_actual
-   - estado_general_presupuesto
-
-TOTAL: Aproximadamente 122 campos incluyendo los originales
-
-CAMPOS ESPECIALES PARA AGRUPACIÓN EN DATATABLES:
-✅ ubicacion_agrupacion: 
-   - Prioridad 1: nombre_ubicacion (ubicación específica de la línea)
-   - Prioridad 2: nombre_evento_presupuesto (ubicación general del evento)
-   - Prioridad 3: 'Sin ubicación' (fallback)
-   
-✅ ubicacion_completa_agrupacion:
-   - Versión extendida con dirección completa para mostrar detalles
-   
-✅ fecha_inicio_linea_ppto:
-   - Ya disponible para agrupación de primer nivel
-
-USO EN DATATABLES:
-Para agrupar correctamente en DataTables usar:
-1. Nivel 1: ORDER BY fecha_inicio_linea_ppto
-2. Nivel 2: ORDER BY ubicacion_agrupacion
-
-EJEMPLO DE CONFIGURACIÓN DATATABLES:
-```javascript
-$('#tabla').DataTable({
-    order: [[col_fecha_inicio, 'asc'], [col_ubicacion_agrupacion, 'asc']],
-    rowGroup: {
-        dataSrc: ['fecha_inicio_linea_ppto', 'ubicacion_agrupacion'],
-        startRender: function (rows, group, level) {
-            if (level === 0) {
-                // Nivel 1: Fecha
-                return 'Fecha: ' + moment(group).format('DD/MM/YYYY');
-            } else {
-                // Nivel 2: Ubicación
-                return 'Ubicación: ' + group;
-            }
-        }
-    }
-});
-```
-
-BENEFICIOS:
-✅ Basado en estructura REAL de la base de datos
-✅ No inventa campos inexistentes
-✅ Incluye TODOS los campos calculados útiles
-✅ 100% compatible con código existente
-✅ Coherencia con vista_articulo_completa
-✅ Campos optimizados para agrupación en DataTables
-*/
