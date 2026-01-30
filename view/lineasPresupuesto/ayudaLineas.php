@@ -65,51 +65,6 @@
                     </div>
                 </div>
 
-                <!-- Tipos de Línea -->
-                <div class="card mb-3">
-                    <div class="card-header bg-primary bg-opacity-10">
-                        <h6 class="mb-0">
-                            <i class="bi bi-tag me-2 text-primary"></i>Tipos de Línea
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-3">
-                                <span class="badge bg-primary me-2">Artículo</span>
-                                <strong>Elemento individual</strong><br>
-                                <small class="text-muted">
-                                    Representa un artículo específico del catálogo (toldo, estructura, accesorio, etc.). 
-                                    Se puede aplicar coeficiente por jornadas de alquiler.
-                                </small>
-                            </li>
-                            <li class="mb-3">
-                                <span class="badge bg-info me-2">Kit</span>
-                                <strong>Conjunto de artículos</strong><br>
-                                <small class="text-muted">
-                                    Agrupa varios artículos relacionados con un precio conjunto. 
-                                    Ideal para paquetes predefinidos.
-                                </small>
-                            </li>
-                            <li class="mb-3">
-                                <span class="badge bg-secondary me-2">Sección</span>
-                                <strong>Separador visual</strong><br>
-                                <small class="text-muted">
-                                    Título para agrupar líneas relacionadas en el presupuesto. 
-                                    No tiene precio asociado.
-                                </small>
-                            </li>
-                            <li class="mb-0">
-                                <span class="badge bg-light text-dark me-2">Texto</span>
-                                <strong>Texto libre</strong><br>
-                                <small class="text-muted">
-                                    Permite añadir notas o descripciones sin artículo asociado. 
-                                    Puede tener precio si es necesario.
-                                </small>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
                 <!-- Sistema de Coeficientes -->
                 <div class="card mb-3 border-warning">
                     <div class="card-header bg-warning bg-opacity-10">
@@ -146,24 +101,62 @@
                 <div class="card mb-3">
                     <div class="card-header bg-success bg-opacity-10">
                         <h6 class="mb-0">
-                            <i class="bi bi-calculator-fill me-2 text-success"></i>Cálculos Automáticos
+                            <i class="bi bi-calculator-fill me-2 text-success"></i>Columna TOTAL del DataTable
                         </h6>
                     </div>
                     <div class="card-body">
-                        <p>Todos los cálculos se realizan automáticamente siguiendo esta fórmula:</p>
+                        <p>La columna <strong>TOTAL</strong> del listado de líneas muestra el cálculo final de cada línea según esta fórmula:</p>
                         
-                        <ol class="mb-3">
-                            <li><strong>Subtotal sin descuento:</strong> Cantidad × Precio Unitario</li>
-                            <li><strong>Aplicar descuento:</strong> Subtotal - (Subtotal × Descuento%)</li>
-                            <li><strong>Aplicar coeficiente:</strong> Resultado × Coeficiente (si aplica)</li>
-                            <li><strong>Base Imponible:</strong> Resultado del paso 3</li>
-                            <li><strong>IVA:</strong> Base Imponible × IVA%</li>
-                            <li><strong>Total Línea:</strong> Base Imponible + IVA</li>
-                        </ol>
+                        <div class="bg-light p-3 rounded mb-3">
+                            <code>
+                                <strong>TOTAL = (Cantidad × Precio Unitario) - Descuento + IVA</strong>
+                            </code>
+                        </div>
 
-                        <div class="alert alert-warning mb-0">
+                        <h6 class="mt-3 mb-2">Consideraciones sobre los Coeficientes:</h6>
+                        <ul>
+                            <li class="mb-2">
+                                <strong>Si el coeficiente está activado:</strong> Se aplicará el coeficiente correspondiente 
+                                según las jornadas de alquiler, tanto al cliente final como al hotel.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Si el coeficiente NO está activado:</strong> Se mostrarán los <strong>días efectivos</strong> 
+                                que se han contratado el equipamiento.
+                            </li>
+                            <li class="mb-3">
+                                <strong>Modificación del comportamiento:</strong> La aplicación del coeficiente reductor viene 
+                                desde la ficha del artículo, pero se puede modificar directamente desde la línea de presupuesto.
+                            </li>
+                        </ul>
+
+                        <h6 class="mt-3 mb-2">Gestión de Descuentos:</h6>
+                        <div class="alert alert-warning mb-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Artículos que NO admiten descuento:</strong><br>
+                            Aunque en la ficha del artículo se muestre como "no admite descuentos", el sistema 
+                            <strong>informará de tal circunstancia</strong> debajo del campo de descuento, pero 
+                            <strong>permitirá introducir un % de descuento para esta línea</strong>. Sin embargo, 
+                            <strong>NO se aplicarán los % de descuento del hotel</strong>.
+                        </div>
+
+                        <div class="alert alert-danger mb-3">
                             <i class="bi bi-info-circle me-2"></i>
-                            Los totales del presupuesto (pie) se actualizan automáticamente al guardar o eliminar líneas.
+                            <strong>Artículos NO facturables:</strong><br>
+                            Si el artículo se señala como "no facturable" en su ficha, el sistema:
+                            <ul class="mb-0 mt-2">
+                                <li>Advertirá de tal circunstancia en la línea de presupuesto</li>
+                                <li>Aplicará automáticamente el <strong>100% de descuento</strong></li>
+                                <li>Permitirá <strong>modificar a la baja el % de descuento</strong> para esa línea</li>
+                                <li>En ese caso, pasará a cobrarse al cliente final y aplicando lo correspondiente al hotel</li>
+                            </ul>
+                        </div>
+
+                        <h6 class="mt-3 mb-2">Detalle de Cálculos:</h6>
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Al hacer clic en el botón <strong>+</strong> (expansión de columna) de cada línea, 
+                            se mostrará el <strong>detalle completo de todos los cálculos finales</strong> aplicados 
+                            a esa línea específica.
                         </div>
                     </div>
                 </div>
@@ -177,6 +170,11 @@
                     </div>
                     <div class="card-body">
                         <ul class="mb-0">
+                            <li class="mb-2">
+                                <strong>Orden del DataTable:</strong> Las líneas se muestran ordenadas primero por 
+                                <strong>fecha de inicio del alquiler</strong> y dentro de la misma fecha se ordenan 
+                                por <strong>ubicación</strong>.
+                            </li>
                             <li class="mb-2">
                                 <strong>Orden de las líneas:</strong> Se asigna automáticamente al crear la línea. 
                                 Puedes reorganizarlas desde la vista de edición.
