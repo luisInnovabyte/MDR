@@ -431,7 +431,50 @@ class LineaPresupuesto
     }
 
     // =========================================================
-    // MÉTODO 8: Validar totales del presupuesto
+    // MÉTODO 8: Eliminar línea físicamente (DELETE)
+    // =========================================================
+    /**
+     * Elimina físicamente una línea de presupuesto de la base de datos
+     * ADVERTENCIA: Esta acción es irreversible
+     * 
+     * @param int $id_linea_ppto ID de la línea
+     * @return bool True si se eliminó correctamente
+     */
+    public function eliminar_lineaxid($id_linea_ppto)
+    {
+        try {
+            $sql = "DELETE FROM linea_presupuesto 
+                    WHERE id_linea_ppto = ?";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $resultado = $stmt->execute([$id_linea_ppto]);
+
+            if ($resultado) {
+                $this->registro->registrarActividad(
+                    $_SESSION['usuario'] ?? 'system',
+                    'LineaPresupuesto',
+                    'eliminar_lineaxid',
+                    "Línea ELIMINADA físicamente ID: {$id_linea_ppto}",
+                    'error'
+                );
+            }
+
+            return $resultado;
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                $_SESSION['usuario'] ?? 'system',
+                'LineaPresupuesto',
+                'eliminar_lineaxid',
+                "Error al eliminar: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+
+    // =========================================================
+    // MÉTODO 9: Validar totales del presupuesto
     // =========================================================
     /**
      * Valida que los totales cuadren correctamente

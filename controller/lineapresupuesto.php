@@ -801,6 +801,42 @@ switch ($_GET["op"]) {
         break;
 
     // =========================================================
+    // ELIMINAR LÍNEA FÍSICAMENTE (DELETE)
+    // =========================================================
+    case "eliminar_fisico":
+        try {
+            $id_linea_ppto = intval($_POST["id_linea_ppto"]);
+            
+            $resultado = $lineaPresupuesto->eliminar_lineaxid($id_linea_ppto);
+            
+            if ($resultado) {
+                $registro->registrarActividad(
+                    $_SESSION['usuario'] ?? 'admin',
+                    'lineapresupuesto.php',
+                    'Eliminar línea físicamente',
+                    "Línea ELIMINADA físicamente ID: {$id_linea_ppto}",
+                    'error'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Línea eliminada correctamente'
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                throw new Exception('No se pudo eliminar la línea');
+            }
+
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al eliminar línea: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // =========================================================
     // VALIDAR TOTALES
     // =========================================================
     case "validar_totales":

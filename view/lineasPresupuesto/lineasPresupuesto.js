@@ -680,6 +680,12 @@ function inicializarDataTable() {
         var id_linea_ppto = $(this).data('id_linea_ppto');
         activarLinea(id_linea_ppto);
     });
+    
+    // Event listeners para botones en el child-row
+    $tableBody.on('click', '.eliminarLineaFisicoChildRow', function() {
+        var id_linea_ppto = $(this).data('id_linea_ppto');
+        eliminarLineaFisico(id_linea_ppto);
+    });
 }
 
 /**
@@ -1144,6 +1150,63 @@ function eliminarLinea(id_linea_ppto) {
                         icon: 'error',
                         title: 'Error',
                         text: 'No se pudo desactivar la línea'
+                    });
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Elimina una línea físicamente de la base de datos
+ */
+function eliminarLineaFisico(id_linea_ppto) {
+    if (!puedeEditar()) {
+        mostrarAlertaVersionBloqueada();
+        return;
+    }
+
+    Swal.fire({
+        title: '¿Eliminar línea permanentemente?',
+        html: '<strong class="text-danger">¡ADVERTENCIA!</strong><br>Esta acción eliminará la línea de forma <strong>permanente</strong> de la base de datos.<br><br>No se podrá recuperar.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar permanentemente',
+        cancelButtonText: 'Cancelar',
+        focusCancel: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '../../controller/lineapresupuesto.php?op=eliminar_fisico',
+                type: 'POST',
+                data: { id_linea_ppto: id_linea_ppto },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Eliminado',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        tabla.ajax.reload();
+                        cargarTotales();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo eliminar la línea'
                     });
                 }
             });
@@ -2102,6 +2165,36 @@ function formatLineaDetalle(d) {
                         </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- ========== BOTONES DE ACCIÓN EN CHILD ROW ========== -->
+            <div class="card-footer bg-light py-2 d-flex justify-content-end gap-2">
+                ${(() => {
+                    const puedeEditarLinea = puedeEditar();
+                    
+                    if (!puedeEditarLinea) {
+                        return `
+                            <button class="btn btn-sm btn-secondary" disabled title="Versión bloqueada">
+                                <i class="bi bi-lock me-1"></i> Versión bloqueada
+                            </button>
+                        `;
+                    }
+                    
+                    return `
+                        <button type="button" class="btn btn-primary btn-sm duplicarLinea" 
+                                data-id_linea_ppto="${d.id_linea_ppto}">
+                            <i class="bi bi-files me-1"></i> Duplicar
+                        </button>
+                        <button type="button" class="btn btn-warning btn-sm editarLinea" 
+                                data-id_linea_ppto="${d.id_linea_ppto}">
+                            <i class="fa-solid fa-edit me-1"></i> Editar
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm eliminarLineaFisicoChildRow" 
+                                data-id_linea_ppto="${d.id_linea_ppto}">
+                            <i class="fa-solid fa-trash me-1"></i> Eliminar
+                        </button>
+                    `;
+                })()}
             </div>
         </div>
     `;
