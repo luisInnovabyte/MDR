@@ -1882,6 +1882,23 @@ function formatLineaDetalle(d) {
                         <h6 class="text-primary border-bottom pb-1 mb-1">
                             <i class="bi bi-box-seam"></i> Información General
                         </h6>
+                        
+                        ${d.imagen_articulo ? `
+                        <div class="mb-2 text-center">
+                            <a href="../../public/img/articulo/${d.imagen_articulo}" target="_blank" title="Click para ver imagen completa">
+                                <img src="../../public/img/articulo/${d.imagen_articulo}" 
+                                     alt="${d.nombre_articulo || 'Artículo'}" 
+                                     class="img-fluid rounded" 
+                                     style="max-height: 150px; object-fit: contain; border: 1px solid #ddd; padding: 5px; background: white; cursor: pointer;"
+                                     onerror="this.style.display='none'; this.parentElement.nextElementSibling.style.display='block';">
+                            </a>
+                            <div style="display: none; padding: 20px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px;">
+                                <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+                                <div class="text-muted small mt-2">Imagen no disponible</div>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
                         <table class="table table-sm table-borderless mb-0" style="font-size: 0.9rem; line-height: 1.1;">
                             <tr>
                                 <td class="text-muted" style="width: 140px;">ID Línea:</td>
@@ -1909,6 +1926,16 @@ function formatLineaDetalle(d) {
                                 <td class="text-muted">Descripción:</td>
                                 <td>${val(d.descripcion_linea_ppto)}</td>
                             </tr>
+                            ${d.simbolo_unidad || d.nombre_unidad ? `
+                            <tr>
+                                <td class="text-muted">Unidad:</td>
+                                <td>
+                                    ${d.simbolo_unidad ? `<strong>${d.simbolo_unidad}</strong>` : ''}
+                                    ${d.simbolo_unidad && d.nombre_unidad ? ' - ' : ''}
+                                    ${d.nombre_unidad || ''}
+                                </td>
+                            </tr>
+                            ` : ''}
                         </table>
                         
                         ${d.observaciones_linea_ppto ? `

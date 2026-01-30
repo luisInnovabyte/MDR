@@ -160,8 +160,13 @@ switch ($_GET["op"]) {
                     "descripcion_linea_ppto" => $row["descripcion_linea_ppto"],
                     "codigo_articulo" => $row["codigo_articulo"] ?? null,
                     "nombre_articulo" => $row["nombre_articulo"] ?? null,
+                    "imagen_articulo" => $row["imagen_articulo"] ?? null,
                     "permitir_descuentos_articulo" => $row["permitir_descuentos_articulo"] ?? 1,
                     "no_facturar_articulo" => $row["no_facturar_articulo"] ?? 0,
+                    
+                    // Unidad de medida
+                    "simbolo_unidad" => $row["simbolo_unidad"] ?? null,
+                    "nombre_unidad" => $row["nombre_unidad"] ?? null,
                     
                     // Cantidades y precios
                     "cantidad_linea_ppto" => $row["cantidad_linea_ppto"],
