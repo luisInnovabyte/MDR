@@ -2141,6 +2141,107 @@ function formatLineaDetalle(d) {
                     </div>
                 </div>
                 
+                <!-- ========== FILA ADICIONAL: OBSERVACIONES ARTÍCULOS Y FAMILIAS ========== -->
+                <div class="row mt-2 pt-2 border-top">
+                    <div class="col-md-6 pe-1">
+                        <h6 class="text-primary border-bottom pb-1 mb-1" style="font-size: 0.9rem;">
+                            <i class="bi bi-card-text"></i> Observaciones de Artículo
+                        </h6>
+                        ${(() => {
+                            const mostrarObs = (d.mostrar_obs_articulos_presupuesto == 1);
+                            
+                            if (mostrarObs) {
+                                return `
+                                    <table class="table table-sm table-borderless mb-0" style="font-size: 0.85rem; line-height: 1;">
+                                        ${d.notas_presupuesto_articulo || d.notes_budget_articulo ? `
+                                        <tr>
+                                            <td class="text-muted ps-0" style="width: 140px; vertical-align: top;">Notas Presupuesto:</td>
+                                            <td class="ps-0" style="white-space: pre-wrap; word-wrap: break-word; word-break: break-word;">
+                                                ${d.notas_presupuesto_articulo ? `
+                                                <div class="mb-1">
+                                                    <strong class="text-primary" style="font-size: 0.8rem;"><i class="bi bi-flag-fill me-1"></i>ES:</strong>
+                                                    <div style="font-size: 0.8rem;">${d.notas_presupuesto_articulo}</div>
+                                                </div>
+                                                ` : ''}
+                                                ${d.notes_budget_articulo ? `
+                                                <div>
+                                                    <strong class="text-info" style="font-size: 0.8rem;"><i class="bi bi-flag-fill me-1"></i>EN:</strong>
+                                                    <div style="font-size: 0.8rem;">${d.notes_budget_articulo}</div>
+                                                </div>
+                                                ` : ''}
+                                            </td>
+                                        </tr>
+                                        ` : ''}
+                                        ${d.orden_obs_articulo !== null && d.orden_obs_articulo !== undefined ? `
+                                        <tr>
+                                            <td class="text-muted ps-0">Orden:</td>
+                                            <td class="ps-0"><span class="badge bg-secondary" style="font-size: 0.75rem;">${d.orden_obs_articulo}</span></td>
+                                        </tr>
+                                        ` : ''}
+                                    </table>
+                                    ${!d.notas_presupuesto_articulo && !d.notes_budget_articulo ? 
+                                        '<p class="text-muted mb-0 ps-0" style="font-size: 0.8rem;"><i class="bi bi-info-circle me-1"></i>Sin observaciones de artículo</p>' : ''}
+                                `;
+                            } else {
+                                return `
+                                    <div class="alert alert-warning mb-0 py-1 px-2">
+                                        <small style="font-size: 0.8rem;"><i class="bi bi-exclamation-triangle me-1"></i><strong>No mostrar observaciones de artículos prohibido en cabecera de presupuesto</strong></small>
+                                    </div>
+                                `;
+                            }
+                        })()}
+                    </div>
+                    
+                    <div class="col-md-6 ps-1">
+                        <h6 class="text-success border-bottom pb-1 mb-1" style="font-size: 0.9rem;">
+                            <i class="bi bi-card-list"></i> Observaciones de Familia
+                        </h6>
+                        ${(() => {
+                            const mostrarObsFam = (d.mostrar_obs_familias_presupuesto == 1);
+                            
+                            if (mostrarObsFam) {
+                                return `
+                                    <table class="table table-sm table-borderless mb-0" style="font-size: 0.85rem; line-height: 1;">
+                                        ${d.observaciones_presupuesto_familia || d.observations_budget_familia ? `
+                                        <tr>
+                                            <td class="text-muted ps-0" style="width: 140px; vertical-align: top;">Observaciones Presupuesto:</td>
+                                            <td class="ps-0" style="white-space: pre-wrap; word-wrap: break-word; word-break: break-word;">
+                                                ${d.observaciones_presupuesto_familia ? `
+                                                <div class="mb-1">
+                                                    <strong class="text-primary" style="font-size: 0.8rem;"><i class="bi bi-flag-fill me-1"></i>ES:</strong>
+                                                    <div style="font-size: 0.8rem;">${d.observaciones_presupuesto_familia}</div>
+                                                </div>
+                                                ` : ''}
+                                                ${d.observations_budget_familia ? `
+                                                <div>
+                                                    <strong class="text-info" style="font-size: 0.8rem;"><i class="bi bi-flag-fill me-1"></i>EN:</strong>
+                                                    <div style="font-size: 0.8rem;">${d.observations_budget_familia}</div>
+                                                </div>
+                                                ` : ''}
+                                            </td>
+                                        </tr>
+                                        ` : ''}
+                                        ${d.orden_obs_familia !== null && d.orden_obs_familia !== undefined ? `
+                                        <tr>
+                                            <td class="text-muted ps-0">Orden:</td>
+                                            <td class="ps-0"><span class="badge bg-secondary" style="font-size: 0.75rem;">${d.orden_obs_familia}</span></td>
+                                        </tr>
+                                        ` : ''}
+                                    </table>
+                                    ${!d.observaciones_presupuesto_familia && !d.observations_budget_familia ? 
+                                        '<p class="text-muted mb-0 ps-0" style="font-size: 0.8rem;"><i class="bi bi-info-circle me-1"></i>Sin observaciones de familia</p>' : ''}
+                                `;
+                            } else {
+                                return `
+                                    <div class="alert alert-warning mb-0 py-1 px-2">
+                                        <small style="font-size: 0.8rem;"><i class="bi bi-exclamation-triangle me-1"></i><strong>No mostrar observaciones de familias prohibido en cabecera de presupuesto</strong></small>
+                                    </div>
+                                `;
+                            }
+                        })()}
+                    </div>
+                </div>
+                
                 <!-- ========== FILA ADICIONAL: INFORMACIÓN TÉCNICA Y SISTEMA ========== -->
                 <div class="row mt-3 pt-3 border-top">
                     <div class="col-md-6">

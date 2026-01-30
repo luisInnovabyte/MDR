@@ -203,6 +203,20 @@ switch ($_GET["op"]) {
                     "importe_iva_linea_ppto_hotel" => $row["importe_iva_linea_ppto_hotel"] ?? 0,
                     "TotalImporte_iva_linea_ppto_hotel" => $row["TotalImporte_iva_linea_ppto_hotel"] ?? 0,
                     
+                    // Control de observaciones (desde presupuesto)
+                    "mostrar_obs_articulos_presupuesto" => $row["mostrar_obs_articulos_presupuesto"] ?? 1,
+                    "mostrar_obs_familias_presupuesto" => $row["mostrar_obs_familias_presupuesto"] ?? 1,
+                    
+                    // Campos de observaciones de artículos
+                    "notas_presupuesto_articulo" => $row["notas_presupuesto_articulo"] ?? null,
+                    "notes_budget_articulo" => $row["notes_budget_articulo"] ?? null,
+                    "orden_obs_articulo" => $row["orden_obs_articulo"] ?? null,
+                    
+                    // Campos de observaciones de familias
+                    "observaciones_presupuesto_familia" => $row["observaciones_presupuesto_familia"] ?? null,
+                    "observations_budget_familia" => $row["observations_budget_familia"] ?? null,
+                    "orden_obs_familia" => $row["orden_obs_familia"] ?? null,
+                    
                     // Notas
                     "notas_tecnicas_linea_ppto" => $row["notas_tecnicas_linea_ppto"] ?? null,
                     "notas_comerciales_linea_ppto" => $row["notas_comerciales_linea_ppto"] ?? null,
