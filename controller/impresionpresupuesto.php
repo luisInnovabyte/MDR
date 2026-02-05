@@ -1,8 +1,8 @@
 <?php
 
-require_once "../config/conexion.php";
-require_once "../config/funciones.php";
-require_once "../models/ImpresionPresupuesto.php";
+require_once __DIR__ . "/../config/conexion.php";
+require_once __DIR__ . "/../config/funciones.php";
+require_once __DIR__ . "/../models/ImpresionPresupuesto.php";
 
 // Inicializar clases
 $registro = new RegistroActividad();
