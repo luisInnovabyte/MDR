@@ -236,6 +236,7 @@ function inicializarDataTable() {
             { name: 'descripcion_linea_ppto', data: 'descripcion_linea_ppto', defaultContent: '', className: "text-left align-middle" },
             { name: 'fecha_fin_linea_ppto', data: 'fecha_fin_linea_ppto', defaultContent: null, className: "text-center align-middle" },
             { name: 'dias_duracion', data: null, defaultContent: '', className: "text-center align-middle" },
+            { name: 'cantidad_linea_ppto', data: 'cantidad_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
             { name: 'valor_coeficiente_linea_ppto', data: 'valor_coeficiente_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
             { name: 'total_linea', data: 'total_linea', defaultContent: '0', className: "text-end align-middle" },
             { name: 'TotalImporte_iva_linea_ppto_hotel', data: 'TotalImporte_iva_linea_ppto_hotel', defaultContent: '0', className: "text-end align-middle" },
@@ -362,7 +363,24 @@ function inicializarDataTable() {
                     return '<span class="text-muted">-</span>';
                 }
             },
-            // Columna 9: Coeficiente
+            // Columna 9: Cantidad
+            {
+                targets: "cantidad_linea_ppto:name",
+                width: '80px',
+                searchable: false,
+                orderable: true,
+                className: "text-center",
+                render: function (data, type, row) {
+                    if (type === "display") {
+                        let cantidad = parseFloat(data) || 1;
+                        return `<span class="badge bg-secondary" title="Cantidad de unidades">
+                                    <i class="bi bi-hash"></i> ${cantidad}
+                                </span>`;
+                    }
+                    return data;
+                }
+            },
+            // Columna 10: Coeficiente
             {
                 targets: "valor_coeficiente_linea_ppto:name",
                 width: '90px',
@@ -383,7 +401,7 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 10: Total
+            // Columna 11: Total
             {
                 targets: "total_linea:name",
                 width: '110px',
@@ -400,7 +418,7 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 11: Total Final (Hotel)
+            // Columna 12: Total Final (Hotel)
             {
                 targets: "TotalImporte_iva_linea_ppto_hotel:name",
                 width: '130px',

@@ -363,5 +363,84 @@ class ImpresionPresupuesto
         
         return $ruta;
     }
+
+    /**
+     * Obtener líneas del presupuesto para impresión
+     * 
+     * Obtiene todas las líneas de la versión actual del presupuesto
+     * desde la vista v_linea_presupuesto_calculada, ordenadas por:
+     * 1. fecha_inicio_linea_ppto
+     * 2. id_ubicacion
+     * 3. nombre_articulo
+     * 
+     * @param int $id_presupuesto ID del presupuesto
+     * @return array|false Array de líneas o false si hay error
+     */
+    public function get_lineas_impresion($id_presupuesto)
+    {
+        try {
+            $sql = "SELECT 
+                        vlpc.id_linea_ppto,
+                        vlpc.fecha_inicio_linea_ppto,
+                        vlpc.fecha_fin_linea_ppto,
+                        vlpc.jornadas_linea_ppto,
+                        vlpc.id_ubicacion,
+                        vlpc.nombre_ubicacion,
+                        vlpc.ubicacion_completa_agrupacion,
+                        vlpc.nombre_articulo,
+                        vlpc.codigo_articulo,
+                        vlpc.cantidad_linea_ppto,
+                        vlpc.precio_unitario_linea_ppto,
+                        vlpc.descuento_linea_ppto,
+                        vlpc.porcentaje_iva_linea_ppto,
+                        vlpc.valor_coeficiente_linea_ppto,
+                        vlpc.base_imponible,
+                        vlpc.importe_iva,
+                        vlpc.total_linea,
+                        vlpc.tipo_linea_ppto,
+                        vlpc.nivel_jerarquia,
+                        vlpc.descripcion_linea_ppto
+                    FROM v_linea_presupuesto_calculada vlpc
+                    WHERE vlpc.id_presupuesto = ?
+                    AND vlpc.numero_version_presupuesto = (
+                        SELECT version_actual_presupuesto 
+                        FROM presupuesto 
+                        WHERE id_presupuesto = ?
+                    )
+                    AND vlpc.activo_linea_ppto = 1
+                    AND vlpc.mostrar_en_presupuesto = 1
+                    ORDER BY 
+                        vlpc.fecha_inicio_linea_ppto ASC,
+                        vlpc.id_ubicacion ASC,
+                        vlpc.nombre_articulo ASC";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_impresion',
+                "Líneas obtenidas para presupuesto ID: $id_presupuesto - Total: " . count($lineas),
+                'info'
+            );
+            
+            return $lineas;
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_impresion',
+                "Error al obtener líneas: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
 }
 ?>

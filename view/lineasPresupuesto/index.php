@@ -344,6 +344,7 @@
                             <th>Descripción</th>
                             <th>Fecha Fin</th>
                             <th>Días</th>
+                            <th>Cantidad</th>
                             <th>Coef.</th>
                             <th>Total<span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span></th>
                             <th>Total Final (Hotel)</th>
@@ -365,6 +366,7 @@
                             <th><input type="text" placeholder="Descripción" class="form-control form-control-sm" /></th>
                             <th></th><!-- Fecha Fin -->
                             <th></th><!-- Días -->
+                            <th></th><!-- Cantidad -->
                             <th></th><!-- Coeficiente -->
                             <th></th><!-- Total -->
                             <th></th><!-- Total Final (Hotel) -->

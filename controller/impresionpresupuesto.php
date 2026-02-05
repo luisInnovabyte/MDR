@@ -108,20 +108,84 @@ switch ($_GET["op"]) {
                 ? date('d/m/Y', strtotime($datos_presupuesto['fecha_fin_evento_presupuesto'])) 
                 : '';
             
-            // 6. Registrar actividad
+            // 6. Obtener líneas del presupuesto
+            $lineas = $impresion->get_lineas_impresion($id_presupuesto);
+            
+            if ($lineas === false) {
+                throw new Exception("Error al obtener las líneas del presupuesto");
+            }
+            
+            // 7. Agrupar líneas por fecha de inicio y luego por ubicación
+            $lineas_agrupadas = [];
+            $totales_generales = [
+                'subtotal' => 0,
+                'total_iva' => 0,
+                'total' => 0
+            ];
+            
+            foreach ($lineas as $linea) {
+                $fecha_inicio = $linea['fecha_inicio_linea_ppto'];
+                $id_ubicacion = $linea['id_ubicacion'] ?? 0;
+                
+                // Inicializar fecha si no existe
+                if (!isset($lineas_agrupadas[$fecha_inicio])) {
+                    $lineas_agrupadas[$fecha_inicio] = [
+                        'ubicaciones' => [],
+                        'subtotal_fecha' => 0,
+                        'total_iva_fecha' => 0,
+                        'total_fecha' => 0
+                    ];
+                }
+                
+                // Inicializar ubicación si no existe
+                if (!isset($lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion])) {
+                    $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion] = [
+                        'nombre_ubicacion' => $linea['nombre_ubicacion'] ?? 'Sin ubicación',
+                        'ubicacion_completa' => $linea['ubicacion_completa_agrupacion'] ?? '',
+                        'lineas' => [],
+                        'subtotal_ubicacion' => 0,
+                        'total_iva_ubicacion' => 0,
+                        'total_ubicacion' => 0
+                    ];
+                }
+                
+                // Añadir línea al grupo
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['lineas'][] = $linea;
+                
+                // Acumular subtotales de ubicación
+                $base = floatval($linea['base_imponible'] ?? 0);
+                $iva = floatval($linea['importe_iva'] ?? 0);
+                $total = floatval($linea['total_linea'] ?? 0);
+                
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['subtotal_ubicacion'] += $base;
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_iva_ubicacion'] += $iva;
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_ubicacion'] += $total;
+                
+                // Acumular subtotales de fecha
+                $lineas_agrupadas[$fecha_inicio]['subtotal_fecha'] += $base;
+                $lineas_agrupadas[$fecha_inicio]['total_iva_fecha'] += $iva;
+                $lineas_agrupadas[$fecha_inicio]['total_fecha'] += $total;
+                
+                // Acumular totales generales
+                $totales_generales['subtotal'] += $base;
+                $totales_generales['total_iva'] += $iva;
+                $totales_generales['total'] += $total;
+            }
+            
+            // 8. Registrar actividad
             $registro->registrarActividad(
                 'admin',
                 'impresionpresupuesto.php',
                 'cli_esp',
                 "Generando impresión para presupuesto: " . $datos_presupuesto['numero_presupuesto'] . 
-                " (Versión: " . $datos_presupuesto['numero_version_presupuesto'] . ")",
+                " (Versión: " . $datos_presupuesto['numero_version_presupuesto'] . ") - " . count($lineas) . " líneas",
                 'info'
             );
             
-            // 7. Configurar headers para HTML
+            // 9. Configurar headers para HTML
             header('Content-Type: text/html; charset=utf-8');
             
-            // 8. Generar HTML
+            // 10. Generar HTML
             $html = '<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -134,68 +198,74 @@ switch ($_GET["op"]) {
         /* ============================================ */
         @page {
             size: A4;
-            margin: 12mm 15mm 20mm 15mm;
+            margin: 15mm 15mm 15mm 15mm;
         }
         
         @media print {
             .no-print { display: none !important; }
-            body { 
-                margin: 0; 
+            
+            body {
+                margin: 0;
                 padding: 0;
                 font-size: 9pt;
                 line-height: 1.3;
-                padding-bottom: 30mm;
+                counter-reset: page;
             }
+            
             .header-section { page-break-after: avoid; }
             
-            /* Pie de página fijo en todas las páginas */
+            /* Footers al final del contenido (última página) - con espaciado visual mejorado */
             .footer-observaciones {
-                position: fixed;
-                bottom: 20mm;
-                left: 0;
-                right: 0;
-                padding: 8px 15mm;
-                border-top: 2px solid #dfe6e9;
+                margin-top: 30px;
+                padding: 12px 15px;
+                border-top: 3px solid #2c3e50;
+                border-bottom: 1px solid #dfe6e9;
                 background: #f8f9fa;
                 font-size: 8pt;
                 line-height: 1.4;
                 color: #636e72;
                 text-align: center;
+                page-break-inside: avoid;
             }
             
             .footer-page {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 20mm;
-                padding: 8px 15mm;
-                border-top: 2px solid #dfe6e9;
+                padding: 12px 15px;
+                border-top: 3px solid #2c3e50;
                 background: #f8f9fa;
-                font-size: 7.5pt;
+                font-size: 8pt;
                 line-height: 1.4;
                 color: #636e72;
                 text-align: center;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
+                margin-bottom: 15mm;
+                page-break-inside: avoid;
             }
             
-            /* Numeración de páginas */
+            /* Número de página al final del documento (última página) */
             .page-number {
-                position: fixed;
-                bottom: 3mm;
-                right: 15mm;
-                font-size: 7pt;
+                text-align: right;
+                font-size: 9pt;
                 font-weight: 600;
                 color: #2c3e50;
+                background: white;
+                padding: 3px 8px;
+                margin-top: 5px;
+                border-radius: 3px;
+                /* JavaScript maneja el contenido */
             }
-            
-            .page-number::after {
-                counter-increment: page;
-                content: "Página " counter(page);
-            }
+        }
+        
+        /* Contador de páginas para vista en pantalla */
+        .page-number {
+            text-align: right;
+            font-size: 9pt;
+            font-weight: 600;
+            color: #2c3e50;
+            background: white;
+            padding: 5px 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            /* JavaScript maneja el contenido */
         }
         
         /* ============================================ */
@@ -458,6 +528,175 @@ switch ($_GET["op"]) {
             color: #636e72;
             text-align: center;
         }
+        
+        /* ============================================ */
+        /* TABLA DE LÍNEAS DEL PRESUPUESTO */
+        /* ============================================ */
+        .lineas-section {
+            margin-top: 15px;
+            /* Permitir que las líneas fluyan naturalmente entre páginas */
+        }
+        
+        .fecha-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 6px 10px;
+            margin: 12px 0 6px 0;
+            border-radius: 4px;
+            font-size: 10pt;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ubicacion-header {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 5px 10px;
+            margin: 8px 0 4px 0;
+            font-size: 9pt;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .ubicacion-header .codigo {
+            color: #7f8c8d;
+            font-size: 8pt;
+            margin-left: 8px;
+        }
+        
+        .lineas-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+            font-size: 8pt;
+        }
+        
+        .lineas-table thead {
+            background: #34495e;
+            color: white;
+        }
+        
+        .lineas-table th {
+            padding: 5px 4px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 7.5pt;
+            border: 1px solid #2c3e50;
+        }
+        
+        .lineas-table th.text-center {
+            text-align: center;
+        }
+        
+        .lineas-table th.text-right {
+            text-align: right;
+        }
+        
+        .lineas-table tbody tr {
+            border-bottom: 1px solid #dfe6e9;
+        }
+        
+        .lineas-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .lineas-table td {
+            padding: 4px;
+            font-size: 7.5pt;
+            border: 1px solid #dfe6e9;
+        }
+        
+        .lineas-table td.text-center {
+            text-align: center;
+        }
+        
+        .lineas-table td.text-right {
+            text-align: right;
+        }
+        
+        .subtotal-row {
+            background: #ecf0f1;
+            font-weight: 600;
+        }
+        
+        .subtotal-row td {
+            padding: 5px 4px;
+            border-top: 2px solid #95a5a6;
+        }
+        
+        .total-fecha-row {
+            background: #d5dbdb;
+            font-weight: 700;
+        }
+        
+        .total-fecha-row td {
+            padding: 6px 4px;
+            border-top: 2px solid #7f8c8d;
+        }
+        
+        .total-general-section {
+            margin-top: 15px;
+            border-top: 3px solid #2c3e50;
+            padding-top: 10px;
+        }
+        
+        .total-general-table {
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+        
+        .total-general-table td {
+            padding: 5px 10px;
+            border: 1px solid #dfe6e9;
+        }
+        
+        .total-general-table td.label {
+            font-weight: 600;
+            text-align: right;
+            background: #ecf0f1;
+            width: 60%;
+        }
+        
+        .total-general-table td.valor {
+            text-align: right;
+            font-weight: 700;
+        }
+        
+        .total-general-table tr.total-final td {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            font-size: 11pt;
+            padding: 8px 10px;
+        }
+        
+        @media print {
+            /* Evitar que encabezados queden huérfanos al final de página */
+            .fecha-header {
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+            
+            .ubicacion-header {
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+            
+            /* Evitar que una fila de la tabla quede partida entre páginas */
+            .lineas-table tr {
+                page-break-inside: avoid;
+            }
+            
+            /* Mantener subtotales con su tabla */
+            .subtotal-row,
+            .total-fecha-row {
+                page-break-before: avoid;
+            }
+        }
     </style>
 </head>
 <body>
@@ -466,6 +705,9 @@ switch ($_GET["op"]) {
     <button class="print-button no-print" onclick="window.print()">
         🖨️ Imprimir / PDF
     </button>
+
+    <!-- Contenedor principal que crece para llenar espacio -->
+    <div class="main-content">
 
     <!-- ============================================ -->
     <!-- HEADER PRINCIPAL -->
@@ -809,8 +1051,201 @@ switch ($_GET["op"]) {
         nl2br(htmlspecialchars($datos_presupuesto['observaciones_cabecera_presupuesto'])) . 
     '</div>';
     }
+    
+    // ============================================
+    // SECCIÓN DE LÍNEAS DEL PRESUPUESTO
+    // ============================================
+    if (!empty($lineas_agrupadas)) {
+        $html .= '
+    
+    <!-- ============================================ -->
+    <!-- DETALLE DE LÍNEAS DEL PRESUPUESTO -->
+    <!-- ============================================ -->
+    <div class="lineas-section">';
+        
+        // Recorrer por fecha de inicio
+        foreach ($lineas_agrupadas as $fecha => $datos_fecha) {
+            $fecha_formateada = !empty($fecha) ? date('d/m/Y', strtotime($fecha)) : 'Sin fecha';
+            
+            $html .= '
+        
+        <!-- Encabezado de fecha -->
+        <div class="fecha-header">
+            <span>📅 Fecha de inicio: ' . htmlspecialchars($fecha_formateada) . '</span>
+        </div>';
+            
+            // Recorrer por ubicación dentro de cada fecha
+            foreach ($datos_fecha['ubicaciones'] as $id_ubicacion => $datos_ubicacion) {
+                $nombre_ubicacion = $datos_ubicacion['nombre_ubicacion'];
+                $ubicacion_completa = $datos_ubicacion['ubicacion_completa'];
+                
+                $html .= '
+        
+        <!-- Encabezado de ubicación -->
+        <div class="ubicacion-header">
+            📍 ' . htmlspecialchars($nombre_ubicacion);
+                
+                if (!empty($id_ubicacion) && $id_ubicacion > 0) {
+                    $html .= ' <span class="codigo">(ID: ' . htmlspecialchars($id_ubicacion) . ')</span>';
+                }
+                
+                $html .= '
+        </div>
+        
+        <!-- Tabla de líneas -->
+        <table class="lineas-table">
+            <thead>
+                <tr>
+                    <th style="width: 8%;">Fecha Inicio</th>
+                    <th style="width: 8%;">Fecha Fin</th>
+                    <th class="text-center" style="width: 5%;">Días</th>
+                    <th class="text-center" style="width: 6%;">Coef.</th>
+                    <th style="width: 28%;">Descripción</th>
+                    <th class="text-center" style="width: 6%;">Cant.</th>
+                    <th class="text-right" style="width: 9%;">P. Unit.</th>
+                    <th class="text-center" style="width: 5%;">%Dto</th>
+                    <th class="text-center" style="width: 5%;">%IVA</th>
+                    <th class="text-right" style="width: 11%;">Base Imp.</th>
+                    <th class="text-right" style="width: 9%;">Total</th>
+                </tr>
+            </thead>
+            <tbody>';
+                
+                // Recorrer líneas de la ubicación
+                foreach ($datos_ubicacion['lineas'] as $linea) {
+                    $fecha_inicio_linea = !empty($linea['fecha_inicio_linea_ppto']) 
+                        ? date('d/m/Y', strtotime($linea['fecha_inicio_linea_ppto'])) 
+                        : '-';
+                    
+                    $fecha_fin_linea = !empty($linea['fecha_fin_linea_ppto']) 
+                        ? date('d/m/Y', strtotime($linea['fecha_fin_linea_ppto'])) 
+                        : '-';
+                    
+                    $jornadas = !empty($linea['jornadas_linea_ppto']) ? intval($linea['jornadas_linea_ppto']) : 0;
+                    $coeficiente = !empty($linea['valor_coeficiente_linea_ppto']) 
+                        ? number_format(floatval($linea['valor_coeficiente_linea_ppto']), 2, ',', '.') 
+                        : '1,00';
+                    
+                    $descripcion = !empty($linea['nombre_articulo']) 
+                        ? $linea['nombre_articulo'] 
+                        : $linea['descripcion_linea_ppto'] ?? '';
+                    
+                    $cantidad = !empty($linea['cantidad_linea_ppto']) 
+                        ? number_format(floatval($linea['cantidad_linea_ppto']), 0, ',', '.') 
+                        : '0';
+                    
+                    $precio_unitario = !empty($linea['precio_unitario_linea_ppto']) 
+                        ? number_format(floatval($linea['precio_unitario_linea_ppto']), 2, ',', '.') . ' €' 
+                        : '0,00 €';
+                    
+                    $descuento = !empty($linea['descuento_linea_ppto']) 
+                        ? number_format(floatval($linea['descuento_linea_ppto']), 2, ',', '.') 
+                        : '0,00';
+                    
+                    $iva = !empty($linea['porcentaje_iva_linea_ppto']) 
+                        ? number_format(floatval($linea['porcentaje_iva_linea_ppto']), 2, ',', '.') 
+                        : '0,00';
+                    
+                    $base_imponible = !empty($linea['base_imponible']) 
+                        ? number_format(floatval($linea['base_imponible']), 2, ',', '.') . ' €' 
+                        : '0,00 €';
+                    
+                    $total_linea = !empty($linea['total_linea']) 
+                        ? number_format(floatval($linea['total_linea']), 2, ',', '.') . ' €' 
+                        : '0,00 €';
+                    
+                    $html .= '
+                <tr>
+                    <td>' . htmlspecialchars($fecha_inicio_linea) . '</td>
+                    <td>' . htmlspecialchars($fecha_fin_linea) . '</td>
+                    <td class="text-center">' . htmlspecialchars($jornadas) . '</td>
+                    <td class="text-center">' . htmlspecialchars($coeficiente) . '</td>
+                    <td>' . htmlspecialchars($descripcion) . '</td>
+                    <td class="text-center">' . htmlspecialchars($cantidad) . '</td>
+                    <td class="text-right">' . $precio_unitario . '</td>
+                    <td class="text-center">' . htmlspecialchars($descuento) . '</td>
+                    <td class="text-center">' . htmlspecialchars($iva) . '</td>
+                    <td class="text-right">' . $base_imponible . '</td>
+                    <td class="text-right">' . $total_linea . '</td>
+                </tr>';
+                }
+                
+                // Subtotal de ubicación
+                $html .= '
+                <tr class="subtotal-row">
+                    <td colspan="9" style="text-align: right; font-weight: 700;">
+                        Subtotal ' . htmlspecialchars($nombre_ubicacion) . ':
+                    </td>
+                    <td class="text-right">' . 
+                        number_format($datos_ubicacion['subtotal_ubicacion'], 2, ',', '.') . ' €' . 
+                    '</td>
+                    <td class="text-right">' . 
+                        number_format($datos_ubicacion['total_ubicacion'], 2, ',', '.') . ' €' . 
+                    '</td>
+                </tr>';
+                
+                $html .= '
+            </tbody>
+        </table>';
+            }
+            
+            // Total por fecha
+            $html .= '
+        <table class="lineas-table">
+            <tbody>
+                <tr class="total-fecha-row">
+                    <td colspan="9" style="text-align: right; font-weight: 700; font-size: 9pt;">
+                        TOTAL FECHA ' . htmlspecialchars($fecha_formateada) . ':
+                    </td>
+                    <td class="text-right" style="font-size: 9pt;">' . 
+                        number_format($datos_fecha['subtotal_fecha'], 2, ',', '.') . ' €' . 
+                    '</td>
+                    <td class="text-right" style="font-size: 9pt;">' . 
+                        number_format($datos_fecha['total_fecha'], 2, ',', '.') . ' €' . 
+                    '</td>
+                </tr>
+            </tbody>
+        </table>';
+        }
+        
+        // Totales generales
+        $html .= '
+        
+        <!-- Totales generales -->
+        <div class="total-general-section">
+            <table class="total-general-table">
+                <tbody>
+                    <tr>
+                        <td class="label">Subtotal (Base Imponible):</td>
+                        <td class="valor">' . 
+                            number_format($totales_generales['subtotal'], 2, ',', '.') . ' €' . 
+                        '</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Total IVA:</td>
+                        <td class="valor">' . 
+                            number_format($totales_generales['total_iva'], 2, ',', '.') . ' €' . 
+                        '</td>
+                    </tr>
+                    <tr class="total-final">
+                        <td class="label">TOTAL PRESUPUESTO:</td>
+                        <td class="valor">' . 
+                            number_format($totales_generales['total'], 2, ',', '.') . ' €' . 
+                        '</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div><!-- fin lineas-section -->';
+    }
         
         $html .= '
+
+    </div><!-- fin main-content -->
+    
+    <!-- Contenedor de footers al final de la última página -->
+    <div class="footer-container">
 
     <!-- ============================================ -->
     <!-- PIE DE PÁGINA -->
@@ -832,11 +1267,54 @@ switch ($_GET["op"]) {
     '</div>';
     }
     
-    // Añadir numeración de páginas
     $html .= '
-    <div class="page-number"></div>';
     
-    $html .= '
+    </div><!-- fin footer-container -->
+    
+    <!-- Numeración de páginas -->
+    <div class="page-number"></div>
+    
+    <!-- Script para numeración de páginas -->
+    <script>
+        // Calcular y mostrar número de páginas
+        function actualizarNumeroPagina() {
+            var pageNumberEl = document.querySelector(\'.page-number\');
+            if (pageNumberEl) {
+                // Calcular páginas aproximadas (A4 = ~1056px en altura útil con márgenes)
+                var altoPagina = 1056;
+                var altoContenido = document.body.scrollHeight;
+                var totalPaginas = Math.ceil(altoContenido / altoPagina);
+                
+                // Mostrar en pantalla
+                pageNumberEl.textContent = \'Página 1 de \' + totalPaginas;
+            }
+        }
+        
+        // Actualizar al cargar
+        window.addEventListener(\'load\', function() {
+            setTimeout(actualizarNumeroPagina, 100);
+        });
+        
+        // Al imprimir, el CSS counter se encarga automáticamente
+        window.addEventListener(\'beforeprint\', function() {
+            try {
+                var pageNumbers = document.querySelectorAll(\'.page-number\');
+                pageNumbers.forEach(function(el) {
+                    el.style.display = \'block\';
+                });
+            } catch(e) {
+                console.log(\'Error en numeración:\', e);
+            }
+        });
+        
+        // Forzar impresión con Ctrl+P
+        document.addEventListener(\'keydown\', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === \'p\') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
 
 </body>
 </html>';
