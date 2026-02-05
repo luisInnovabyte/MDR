@@ -242,7 +242,16 @@
                 <div class="card card-total base">
                     <div class="card-body">
                         <h6 class="text-muted mb-1">Base Imponible</h6>
-                        <h4 class="mb-0" id="total-base">0,00 €</h4>
+                        <div class="d-flex flex-column gap-1">
+                            <div>
+                                <small class="text-muted">Normal:</small>
+                                <h5 class="mb-0 d-inline ms-1" id="total-base">0,00 €</h5>
+                            </div>
+                            <div class="border-top pt-1">
+                                <small class="text-primary fw-bold">Hotel:</small>
+                                <h5 class="mb-0 d-inline ms-1 text-primary" id="total-base-hotel">0,00 €</h5>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -250,7 +259,16 @@
                 <div class="card card-total iva">
                     <div class="card-body">
                         <h6 class="text-muted mb-1">IVA Total</h6>
-                        <h4 class="mb-0" id="total-iva">0,00 €</h4>
+                        <div class="d-flex flex-column gap-1">
+                            <div>
+                                <small class="text-muted">Normal:</small>
+                                <h5 class="mb-0 d-inline ms-1" id="total-iva">0,00 €</h5>
+                            </div>
+                            <div class="border-top pt-1">
+                                <small class="text-primary fw-bold">Hotel:</small>
+                                <h5 class="mb-0 d-inline ms-1 text-primary" id="total-iva-hotel">0,00 €</h5>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -258,7 +276,16 @@
                 <div class="card card-total total">
                     <div class="card-body">
                         <h6 class="text-muted mb-1 fw-bold">TOTAL con IVA</h6>
-                        <h3 class="mb-0 fw-bold text-success" id="total-con-iva">0,00 €</h3>
+                        <div class="d-flex flex-column gap-1">
+                            <div>
+                                <small class="text-muted">Normal:</small>
+                                <h4 class="mb-0 d-inline ms-1 fw-bold text-success" id="total-con-iva">0,00 €</h4>
+                            </div>
+                            <div class="border-top pt-1">
+                                <small class="text-primary fw-bold">Hotel:</small>
+                                <h4 class="mb-0 d-inline ms-1 fw-bold text-primary" id="total-con-iva-hotel">0,00 €</h4>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

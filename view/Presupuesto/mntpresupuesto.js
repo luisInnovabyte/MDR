@@ -62,7 +62,8 @@ $(document).ready(function () {
             { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center align-middle" }, // Columna 12: ACTIVO
             { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 13: ACTIVAR/DESACTIVAR
             { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" }, // Columna 14: EDITAR
-            { name: 'lineas', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 15: LÍNEAS
+            { name: 'lineas', data: null, defaultContent: '', className: "text-center align-middle" }, // Columna 15: LÍNEAS
+            { name: 'imprimir', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 16: IMPRIMIR
         ],
         columnDefs: [
             // Columna 0: id_presupuesto
@@ -225,6 +226,17 @@ $(document).ready(function () {
                              data-id_version_presupuesto="${row.id_version_actual}"
                              data-numero_version="${row.numero_version_actual || 1}"> 
                              <i class="fas fa-list"></i>
+                             </button>`;
+                }
+            },
+            // Columna 16: BOTON PARA IMPRIMIR PRESUPUESTO
+            {
+                targets: 16, width: '5%', searchable: false, orderable: false, class: "text-center",
+                render: function (data, type, row) {
+                    return `<button type="button" class="btn btn-success btn-sm imprimirPresupuesto" 
+                             data-toggle="tooltip-primary" data-placement="top" title="Imprimir presupuesto"  
+                             data-id_presupuesto="${row.id_presupuesto}"> 
+                             <i class="fas fa-print"></i>
                              </button>`;
                 }
             }
@@ -559,6 +571,91 @@ $(document).ready(function () {
         });
         
         window.location.href = '../lineasPresupuesto/index.php?id_version_presupuesto=' + id_version_presupuesto;
+    });
+
+    // ============================================
+    // IMPRIMIR PRESUPUESTO
+    // ============================================
+    
+    // Abrir modal de impresión
+    $(document).on('click', '.imprimirPresupuesto', function () {
+        var id_presupuesto = $(this).data('id_presupuesto');
+        
+        console.log('Abriendo modal de impresión para presupuesto:', id_presupuesto);
+        
+        // Guardar el ID en el campo oculto del formulario
+        $('#impresion_id_presupuesto').val(id_presupuesto);
+        
+        // Resetear opciones del modal a valores por defecto
+        $('#tipo_cliente').prop('checked', true);
+        $('#idioma_espanol').prop('checked', true);
+        
+        // Mostrar el modal
+        $('#modalImpresionPresupuesto').modal('show');
+    });
+    
+    // Procesar impresión cuando se hace clic en el botón "Imprimir" del modal
+    $(document).on('click', '#btnImprimirPresupuesto', function () {
+        var id_presupuesto = $('#impresion_id_presupuesto').val();
+        var tipo = $('input[name="tipo_presupuesto"]:checked').val();
+        var idioma = $('input[name="idioma"]:checked').val();
+        
+        console.log('Procesando impresión:', {
+            id_presupuesto: id_presupuesto,
+            tipo: tipo,
+            idioma: idioma
+        });
+        
+        // Validar que se haya seleccionado un presupuesto
+        if (!id_presupuesto) {
+            Swal.fire('Error', 'No se ha seleccionado ningún presupuesto', 'error');
+            return;
+        }
+        
+        // Determinar la operación según las selecciones
+        // Por ahora solo tenemos cli_esp (cliente en español)
+        var operacion = 'cli_esp';
+        
+        if (tipo === 'intermediario') {
+            Swal.fire('Próximamente', 'El presupuesto para intermediario estará disponible pronto', 'info');
+            return;
+        }
+        
+        if (idioma === 'ingles') {
+            Swal.fire('Próximamente', 'El presupuesto en inglés estará disponible pronto', 'info');
+            return;
+        }
+        
+        // Crear formulario temporal para enviar por POST y abrir en nueva ventana
+        var form = $('<form>', {
+            'method': 'POST',
+            'action': '../../controller/impresionpresupuesto.php?op=' + operacion,
+            'target': '_blank'
+        });
+        
+        // Añadir campo oculto con el ID del presupuesto
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': 'id_presupuesto',
+            'value': id_presupuesto
+        }));
+        
+        // Añadir el formulario al body, enviarlo y eliminarlo
+        $('body').append(form);
+        form.submit();
+        form.remove();
+        
+        // Cerrar el modal
+        $('#modalImpresionPresupuesto').modal('hide');
+        
+        // Notificar al usuario
+        Swal.fire({
+            icon: 'success',
+            title: 'Generando impresión',
+            text: 'Se abrirá el presupuesto en una nueva ventana',
+            timer: 2000,
+            showConfirmButton: false
+        });
     });
 
     /************************************/

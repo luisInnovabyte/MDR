@@ -204,6 +204,7 @@
                             <th rowspan="2">Act./Desac.</th>
                             <th rowspan="2">Edit.</th>
                             <th rowspan="2">Líneas</th>
+                            <th rowspan="2">Imprimir</th>
                         </tr>
                         <tr>
                             <th>Número</th>
@@ -263,8 +264,7 @@
                             </th>
                             <th></th>
                             <th></th>
-                            <th></th>
-                        </tr>
+                            <th></th>                            <th></th>                        </tr>
                     </tfoot>
                 </table>
             </div><!-- table-wrapper -->
@@ -282,6 +282,82 @@
 
 <!-- Modal de estadísticas -->
 <?php include_once('estadisticas.php') ?>
+
+<!-- ============================================ -->
+<!-- MODAL DE IMPRESIÓN DE PRESUPUESTO -->
+<!-- ============================================ -->
+<div class="modal fade" id="modalImpresionPresupuesto" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-print me-2"></i>Imprimir Presupuesto
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formImpresionPresupuesto">
+                    <input type="hidden" id="impresion_id_presupuesto" name="id_presupuesto">
+                    
+                    <!-- Tipo de presupuesto -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-file-alt me-2"></i>Tipo de presupuesto:
+                        </label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="tipo_presupuesto" id="tipo_cliente" value="cliente" checked>
+                            <label class="form-check-label" for="tipo_cliente">
+                                <strong>Cliente Final</strong> - Presupuesto detallado para el cliente
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo_presupuesto" id="tipo_intermediario" value="intermediario" disabled>
+                            <label class="form-check-label text-muted" for="tipo_intermediario">
+                                <strong>Intermediario</strong> - Presupuesto para empresa intermediaria <small>(Próximamente)</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Idioma -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-language me-2"></i>Idioma:
+                        </label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="idioma" id="idioma_espanol" value="espanol" checked>
+                            <label class="form-check-label" for="idioma_espanol">
+                                <strong>Español</strong> 🇪🇸
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="idioma" id="idioma_ingles" value="ingles" disabled>
+                            <label class="form-check-label text-muted" for="idioma_ingles">
+                                <strong>Inglés</strong> 🇬🇧 <small>(Próximamente)</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Información adicional -->
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Se imprimirá la <strong>versión actual</strong> del presupuesto con formato europeo.
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="btnImprimirPresupuesto">
+                    <i class="fas fa-print me-2"></i>Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ============================================ -->
+<!-- FIN MODAL DE IMPRESIÓN -->
+<!-- ============================================ -->
 
 <!-- MainJs.php -->
 <?php include_once('../../config/template/mainJs.php') ?>

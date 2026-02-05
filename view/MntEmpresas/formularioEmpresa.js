@@ -101,9 +101,10 @@ $(document).ready(function () {
 
                     // Logotipos y textos
                     $('#logotipo_empresa').val(data.logotipo_empresa);
-                    $('#logotipo2_empresa').val(data.logotipo2_empresa);
-                    $('#texto_legal_empresa').val(data.texto_legal_empresa);
-                    $('#texto_pie_empresa').val(data.texto_pie_empresa);
+                    $('#logotipo_pie_empresa').val(data.logotipo_pie_empresa);
+                    $('#texto_legal_factura_empresa').val(data.texto_legal_factura_empresa);
+                    $('#texto_pie_presupuesto_empresa').val(data.texto_pie_presupuesto_empresa);
+                    $('#texto_pie_factura_empresa').val(data.texto_pie_factura_empresa);
 
                     // Estado activo
                     $('#activo_empresa_hidden').val(data.activo_empresa);
@@ -226,9 +227,10 @@ $(document).ready(function () {
         
         // Logotipos y textos
         var logotipo_empresa = $('#logotipo_empresa').val().trim();
-        var logotipo2_empresa = $('#logotipo2_empresa').val().trim();
-        var texto_legal_empresa = $('#texto_legal_empresa').val().trim();
-        var texto_pie_empresa = $('#texto_pie_empresa').val().trim();
+        var logotipo_pie_empresa = $('#logotipo_pie_empresa').val().trim();
+        var texto_legal_factura_empresa = $('#texto_legal_factura_empresa').val().trim();
+        var texto_pie_presupuesto_empresa = $('#texto_pie_presupuesto_empresa').val().trim();
+        var texto_pie_factura_empresa = $('#texto_pie_factura_empresa').val().trim();
         
         // Estado
         var activo_empresa;
@@ -252,7 +254,8 @@ $(document).ready(function () {
             verifactu_nombre_empresa, verifactu_nombre_comercial_empresa,
             verifactu_id_software_empresa, verifactu_nombre_software_empresa,
             verifactu_version_software_empresa, verifactu_numero_instalacion_empresa,
-            logotipo_empresa, logotipo2_empresa, texto_legal_empresa, texto_pie_empresa,
+            logotipo_empresa, logotipo_pie_empresa, texto_legal_factura_empresa, 
+            texto_pie_presupuesto_empresa, texto_pie_factura_empresa,
             activo_empresa
         );
     });
@@ -386,10 +389,11 @@ $(document).ready(function () {
             verifactu_version_software_empresa: params[34],
             verifactu_numero_instalacion_empresa: params[35],
             logotipo_empresa: params[36],
-            logotipo2_empresa: params[37],
-            texto_legal_empresa: params[38],
-            texto_pie_empresa: params[39],
-            activo_empresa: params[40]
+            logotipo_pie_empresa: params[37],
+            texto_legal_factura_empresa: params[38],
+            texto_pie_presupuesto_empresa: params[39],
+            texto_pie_factura_empresa: params[40],
+            activo_empresa: params[41]
         };
         
         console.log('💾 Datos a guardar:', datosEnvio);

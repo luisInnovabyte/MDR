@@ -436,24 +436,32 @@
                                     <input type="text" class="form-control" name="logotipo_empresa" id="logotipo_empresa" maxlength="255" placeholder="/images/logos/empresa.png">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="logotipo2_empresa" class="form-label">Ruta Logotipo Secundario:</label>
-                                    <input type="text" class="form-control" name="logotipo2_empresa" id="logotipo2_empresa" maxlength="255" placeholder="/images/logos/marca.png">
+                                    <label for="logotipo_pie_empresa" class="form-label">Ruta Logotipo Secundario:</label>
+                                    <input type="text" class="form-control" name="logotipo_pie_empresa" id="logotipo_pie_empresa" maxlength="255" placeholder="/images/logos/marca.png">
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-12">
-                                    <label for="texto_legal_empresa" class="form-label">Texto Legal:</label>
-                                    <textarea class="form-control" name="texto_legal_empresa" id="texto_legal_empresa" rows="3"></textarea>
+                                    <label for="texto_legal_factura_empresa" class="form-label">Texto Legal:</label>
+                                    <textarea class="form-control" name="texto_legal_factura_empresa" id="texto_legal_factura_empresa" rows="3"></textarea>
                                     <small class="form-text text-muted">Texto legal para facturas</small>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-12">
-                                    <label for="texto_pie_empresa" class="form-label">Texto Pie de Página:</label>
-                                    <textarea class="form-control" name="texto_pie_empresa" id="texto_pie_empresa" rows="2"></textarea>
-                                    <small class="form-text text-muted">Texto pie para documentos</small>
+                                    <label for="texto_pie_presupuesto_empresa" class="form-label">Texto Pie Presupuesto:</label>
+                                    <textarea class="form-control" name="texto_pie_presupuesto_empresa" id="texto_pie_presupuesto_empresa" rows="2"></textarea>
+                                    <small class="form-text text-muted">Texto pie para presupuestos</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="texto_pie_factura_empresa" class="form-label">Texto Pie Factura:</label>
+                                    <textarea class="form-control" name="texto_pie_factura_empresa" id="texto_pie_factura_empresa" rows="2"></textarea>
+                                    <small class="form-text text-muted">Texto pie para facturas</small>
                                 </div>
                             </div>
                         </div>

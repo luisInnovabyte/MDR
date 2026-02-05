@@ -703,8 +703,11 @@ function cargarTotales() {
                 
                 // Actualizar valores
                 $('#total-base').text(formatearMoneda(data.total_base_imponible || 0));
+                $('#total-base-hotel').text(formatearMoneda(data.total_despues_descuento_linea_hotel || 0));
                 $('#total-iva').text(formatearMoneda(data.total_iva || 0));
+                $('#total-iva-hotel').text(formatearMoneda(data.total_iva_hotel || 0));
                 $('#total-con-iva').text(formatearMoneda(data.total_con_iva || 0));
+                $('#total-con-iva-hotel').text(formatearMoneda(data.total_con_iva_hotel || 0));
                 $('#cantidad-lineas').text(data.cantidad_lineas_total || 0);
                 
                 // Desglose de IVA
