@@ -3,10 +3,12 @@
 require_once __DIR__ . "/../config/conexion.php";
 require_once __DIR__ . "/../config/funciones.php";
 require_once __DIR__ . "/../models/ImpresionPresupuesto.php";
+require_once __DIR__ . "/../models/Kit.php";
 
 // Inicializar clases
 $registro = new RegistroActividad();
 $impresion = new ImpresionPresupuesto();
+$kitModel = new Kit();
 
 // Switch principal basado en operación
 switch ($_GET["op"]) {
@@ -1237,6 +1239,50 @@ switch ($_GET["op"]) {
                     <td class="text-right">' . $base_imponible . '</td>
                     <td class="text-right">' . $total_linea . '</td>
                 </tr>';
+                    
+                    // ========== COMPONENTES DEL KIT ==========
+                    // Si es un KIT y no está oculto el detalle, mostrar componentes
+                    if (!empty($linea['es_kit_articulo']) && $linea['es_kit_articulo'] == 1 && 
+                        isset($linea['ocultar_detalle_kit_linea_ppto']) && $linea['ocultar_detalle_kit_linea_ppto'] == 0) {
+                        
+                        // Obtener componentes del KIT
+                        $componentes = $kitModel->get_kits_by_articulo_maestro($linea['id_articulo']);
+                        
+                        if (!empty($componentes)) {
+                            // Filtrar solo componentes activos
+                            $componentesActivos = array_filter($componentes, function($comp) {
+                                return isset($comp['activo_articulo_componente']) && $comp['activo_articulo_componente'] != 0;
+                            });
+                            
+                            if (!empty($componentesActivos)) {
+                                $html .= '
+                <tr>
+                    <td colspan="11" style="padding: 8px 4px 8px 30px; background: #f8f9fa; border-left: 3px solid #28a745;">
+                        <div style="font-size: 7.5pt; color: #495057;">
+                            <strong style="color: #28a745;">✓ Componentes del KIT:</strong>
+                            <ul style="margin: 4px 0 0 15px; padding: 0; list-style: none;">';
+                                
+                                foreach ($componentesActivos as $comp) {
+                                    $cantidad_comp = $comp['cantidad_kit'] ?? $comp['total_componente_kit'] ?? 1;
+                                    $nombre_comp = $comp['nombre_articulo_componente'] ?? 'Sin nombre';
+                                    
+                                    $html .= '
+                                <li style="margin: 2px 0; color: #6c757d;">
+                                    <span style="color: #28a745;">•</span> 
+                                    <strong>' . htmlspecialchars($cantidad_comp) . 'x</strong> ' . 
+                                    htmlspecialchars($nombre_comp) . '
+                                </li>';
+                                }
+                                
+                                $html .= '
+                            </ul>
+                        </div>
+                    </td>
+                </tr>';
+                            }
+                        }
+                    }
+                    // ========== FIN COMPONENTES DEL KIT ==========
                 }
                 
                 // Subtotal de ubicación

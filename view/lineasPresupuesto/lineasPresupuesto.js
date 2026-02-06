@@ -675,6 +675,12 @@ function inicializarDataTable() {
             row.child(formatLineaDetalle(row.data())).show();
             tr.addClass('shown');
             btn.html('<i class="bi bi-dash-circle"></i>');
+            
+            // Cargar componentes del KIT si corresponde
+            const d = row.data();
+            if (d.es_kit_articulo == 1 && d.ocultar_detalle_kit_linea_ppto == 0) {
+                cargarComponentesKitEnChildRow(d.id_articulo, `componentes_kit_${d.id_linea_ppto}`);
+            }
         }
     });
     
@@ -1982,6 +1988,19 @@ function formatLineaDetalle(d) {
                                 </td>
                             </tr>
                         </table>
+                        ${d.ocultar_detalle_kit_linea_ppto == 0 ? `
+                        <div class="mt-2">
+                            <h6 class="text-success mb-2">
+                                <i class="bi bi-box-seam"></i> Componentes del KIT:
+                            </h6>
+                            <div id="componentes_kit_${d.id_linea_ppto}" class="componentes-kit-container">
+                                <div class="text-muted small">
+                                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                                    Cargando componentes...
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
                         ` : ''}
                     </div>
                     
@@ -2347,4 +2366,51 @@ function formatLineaDetalle(d) {
             </div>
         </div>
     `;
+}
+
+/**
+ * Carga y muestra los componentes de un KIT en el child row
+ * @param {number} id_articulo - ID del artículo KIT (id_articulo_maestro)
+ * @param {string} contenedor_id - ID del div contenedor donde se renderizará la lista
+ */
+function cargarComponentesKitEnChildRow(id_articulo, contenedor_id) {
+    $.ajax({
+        url: '../../controller/kit.php?op=listar',
+        type: 'GET',
+        data: { id_articulo_maestro: id_articulo },
+        dataType: 'json',
+        success: function(response) {
+            if (response.data && response.data.length > 0) {
+                // Filtrar solo componentes activos
+                const componentesActivos = response.data.filter(comp => comp.activo_articulo_componente != 0);
+                
+                if (componentesActivos.length > 0) {
+                    let html = '<ul class="list-unstyled mb-0 small">';
+                    
+                    componentesActivos.forEach(function(comp) {
+                        const cantidad = comp.cantidad_kit || comp.total_componente_kit || 1;
+                        const nombre = comp.nombre_articulo_componente || 'Sin nombre';
+                        
+                        html += `
+                            <li class="mb-1">
+                                <i class="bi bi-check-circle text-success me-1"></i>
+                                <strong>${cantidad}x</strong> ${nombre}
+                            </li>
+                        `;
+                    });
+                    
+                    html += '</ul>';
+                    $(`#${contenedor_id}`).html(html);
+                } else {
+                    $(`#${contenedor_id}`).html('<span class="text-muted small">No hay componentes activos</span>');
+                }
+            } else {
+                $(`#${contenedor_id}`).html('<span class="text-muted small">Este KIT no tiene componentes</span>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error al cargar componentes del KIT:', error);
+            $(`#${contenedor_id}`).html('<span class="text-danger small"><i class="bi bi-exclamation-triangle"></i> Error al cargar componentes</span>');
+        }
+    });
 }
