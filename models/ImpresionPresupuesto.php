@@ -383,7 +383,7 @@ class ImpresionPresupuesto
                         vlpc.id_linea_ppto,
                         vlpc.fecha_inicio_linea_ppto,
                         vlpc.fecha_fin_linea_ppto,
-                        vlpc.jornadas_linea_ppto,
+                        vlpc.dias_linea,
                         vlpc.id_ubicacion,
                         vlpc.nombre_ubicacion,
                         vlpc.ubicacion_completa_agrupacion,

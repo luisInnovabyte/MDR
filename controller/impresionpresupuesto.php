@@ -1190,7 +1190,7 @@ switch ($_GET["op"]) {
                         ? date('d/m/Y', strtotime($linea['fecha_fin_linea_ppto'])) 
                         : '-';
                     
-                    $jornadas = !empty($linea['jornadas_linea_ppto']) ? intval($linea['jornadas_linea_ppto']) : 0;
+                    $jornadas = !empty($linea['dias_linea']) ? intval($linea['dias_linea']) : 0;
                     $coeficiente = !empty($linea['valor_coeficiente_linea_ppto']) 
                         ? number_format(floatval($linea['valor_coeficiente_linea_ppto']), 2, ',', '.') 
                         : '1,00';

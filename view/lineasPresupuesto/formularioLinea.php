@@ -202,6 +202,9 @@
                                     <div class="alert alert-success mb-0 py-2 text-center">
                                         <strong class="fs-5" id="preview_total">0,00 €</strong>
                                     </div>
+                                    <small class="text-muted d-block text-center mt-1">
+                                        Base: <span id="preview_subtotal">0,00 €</span>
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -251,6 +254,9 @@
                                     <div class="alert alert-info mb-0 py-2 text-center">
                                         <strong class="fs-5" id="preview_precio_coef">0,00 €</strong>
                                     </div>
+                                    <small class="text-muted d-block text-center mt-1">
+                                        Base: <span id="preview_precio_coef_base">0,00 €</span>
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -716,6 +722,7 @@ function calcularPreview() {
     
     // Mostrar el total en la interfaz (SECCIÓN 3)
     $('#preview_total').text(formatearMoneda(total));
+    $('#preview_subtotal').text(formatearMoneda(conDescuento));
     
     // Si el coeficiente está activo, actualizar preview de SECCIÓN 4
     const aplicarCoeficiente = $('#aplicar_coeficiente_linea_ppto').is(':checked');
@@ -729,6 +736,7 @@ function calcularPreview() {
         const totalConCoef = subtotalConCoef + ivaConCoef;
         
         $('#preview_precio_coef').text(formatearMoneda(totalConCoef));
+        $('#preview_precio_coef_base').text(formatearMoneda(subtotalConCoef));
     }
 }
 
