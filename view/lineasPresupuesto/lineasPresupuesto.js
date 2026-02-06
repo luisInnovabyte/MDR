@@ -238,8 +238,8 @@ function inicializarDataTable() {
             { name: 'dias_duracion', data: null, defaultContent: '', className: "text-center align-middle" },
             { name: 'cantidad_linea_ppto', data: 'cantidad_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
             { name: 'valor_coeficiente_linea_ppto', data: 'valor_coeficiente_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
-            { name: 'total_linea', data: 'total_linea', defaultContent: '0', className: "text-end align-middle" },
-            { name: 'TotalImporte_iva_linea_ppto_hotel', data: 'TotalImporte_iva_linea_ppto_hotel', defaultContent: '0', className: "text-end align-middle" },
+            { name: 'base_imponible', data: 'base_imponible', defaultContent: '0', className: "text-end align-middle" },
+            { name: 'TotalImporte_descuento_linea_ppto_hotel', data: 'TotalImporte_descuento_linea_ppto_hotel', defaultContent: '0', className: "text-end align-middle" },
             { name: 'activo_linea_ppto', data: 'activo_linea_ppto', defaultContent: '1', className: "text-center align-middle" },
             { name: 'acciones', data: null, defaultContent: '', className: "text-center align-middle" }
         ],
@@ -401,42 +401,42 @@ function inicializarDataTable() {
                     return data;
                 }
             },
-            // Columna 11: Total
+            // Columna 11: Base Imponible
             {
-                targets: "total_linea:name",
+                targets: "base_imponible:name",
                 width: '110px',
                 searchable: false,
                 orderable: true,
                 className: "text-end fw-bold",
                 render: function (data, type, row) {
                     if (type === "display") {
-                        let total = parseFloat(data);
+                        let baseImponible = parseFloat(data) || 0;
                         return `<span class="text-success" style="font-size: 1.05rem;">
-                                    ${formatearMoneda(total)}
+                                    ${formatearMoneda(baseImponible)}
                                 </span>`;
                     }
                     return data;
                 }
             },
-            // Columna 12: Total Final (Hotel)
+            // Columna 12: Total Final con Descuento Hotel
             {
-                targets: "TotalImporte_iva_linea_ppto_hotel:name",
+                targets: "TotalImporte_descuento_linea_ppto_hotel:name",
                 width: '130px',
                 searchable: false,
                 orderable: true,
                 className: "text-end fw-bold",
                 render: function (data, type, row) {
                     if (type === "display") {
-                        let totalHotel = parseFloat(data) || 0;
+                        let totalDescuentoHotel = parseFloat(data) || 0;
                         let porcentajeDesc = parseFloat(row.porcentaje_descuento_cliente) || 0;
                         
                         if (porcentajeDesc > 0) {
-                            return `<span class="text-warning" style="font-size: 1.05rem;" title="Precio con descuento de cliente (${porcentajeDesc.toFixed(2)}%)">
-                                        <i class="bi bi-building me-1"></i>${formatearMoneda(totalHotel)}
+                            return `<span class="text-warning" style="font-size: 1.05rem;" title="Total con descuento de cliente (${porcentajeDesc.toFixed(2)}%)">
+                                        <i class="bi bi-building me-1"></i>${formatearMoneda(totalDescuentoHotel)}
                                     </span>`;
                         } else {
-                            return `<span class="text-muted" style="font-size: 0.9rem;" title="Sin descuento de cliente">
-                                        ${formatearMoneda(totalHotel)}
+                            return `<span class="text-muted" style="font-size: 0.9rem;" title="Total sin descuento de cliente">
+                                        ${formatearMoneda(totalDescuentoHotel)}
                                     </span>`;
                         }
                     }

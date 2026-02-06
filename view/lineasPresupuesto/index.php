@@ -347,7 +347,7 @@
                             <th>Cantidad</th>
                             <th>Coef.</th>
                             <th>Total<span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span></th>
-                            <th>Total Final (Hotel)</th>
+                            <th>Total Final (Inter.)<span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span></th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -387,7 +387,7 @@
                     <small class="text-muted">
                         <span class="text-danger fw-bold" style="font-size: 1.1rem;">*</span>
                         <strong>Nota:</strong> El total mostrado incluye el descuento aplicado en la línea de presupuesto del artículo 
-                        y el coeficiente (si procede), pero <strong>no está incluido el descuento global del cliente</strong>.
+                        y el coeficiente (si procede), <strong>SIN IMPUESTOS INCLUIDOS</strong>.
                     </small>
                 </div>
                 <div class="mt-2 px-2">

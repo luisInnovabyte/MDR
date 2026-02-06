@@ -123,6 +123,9 @@ switch ($_GET["op"]) {
                 'total' => 0
             ];
             
+            // Desglose de IVA por porcentaje
+            $desglose_iva = [];
+            
             foreach ($lineas as $linea) {
                 $fecha_inicio = $linea['fecha_inicio_linea_ppto'];
                 $id_ubicacion = $linea['id_ubicacion'] ?? 0;
@@ -170,6 +173,17 @@ switch ($_GET["op"]) {
                 $totales_generales['subtotal'] += $base;
                 $totales_generales['total_iva'] += $iva;
                 $totales_generales['total'] += $total;
+                
+                // Agrupar por porcentaje de IVA para desglose
+                $porcentaje_iva = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
+                if (!isset($desglose_iva[$porcentaje_iva])) {
+                    $desglose_iva[$porcentaje_iva] = [
+                        'base_imponible' => 0,
+                        'importe_iva' => 0
+                    ];
+                }
+                $desglose_iva[$porcentaje_iva]['base_imponible'] += $base;
+                $desglose_iva[$porcentaje_iva]['importe_iva'] += $iva;
             }
             
             // 8. Registrar actividad
@@ -198,7 +212,7 @@ switch ($_GET["op"]) {
         /* ============================================ */
         @page {
             size: A4;
-            margin: 15mm 15mm 15mm 15mm;
+            margin: 0;
         }
         
         @media print {
@@ -636,6 +650,56 @@ switch ($_GET["op"]) {
             border-top: 2px solid #7f8c8d;
         }
         
+        /* Tabla de desglose de IVA */
+        .desglose-iva-section {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .desglose-iva-table {
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            border-collapse: collapse;
+            font-size: 8.5pt;
+        }
+        
+        .desglose-iva-table thead th {
+            background: #34495e;
+            color: white;
+            padding: 6px 8px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid #2c3e50;
+        }
+        
+        .desglose-iva-table tbody td {
+            padding: 5px 8px;
+            border: 1px solid #bdc3c7;
+            text-align: right;
+        }
+        
+        .desglose-iva-table tbody td:first-child {
+            text-align: center;
+        }
+        
+        .desglose-iva-table tbody tr:nth-child(odd) {
+            background: #ecf0f1;
+        }
+        
+        .desglose-iva-table tfoot td {
+            background: #95a5a6;
+            color: white;
+            font-weight: 700;
+            padding: 6px 8px;
+            border: 1px solid #7f8c8d;
+            text-align: right;
+        }
+        
+        .desglose-iva-table tfoot td:first-child {
+            text-align: center;
+        }
+        
         .total-general-section {
             margin-top: 15px;
             border-top: 3px solid #2c3e50;
@@ -695,6 +759,11 @@ switch ($_GET["op"]) {
             .subtotal-row,
             .total-fecha-row {
                 page-break-before: avoid;
+            }
+            
+            /* Mantener tabla de desglose de IVA unida */
+            .desglose-iva-section {
+                page-break-inside: avoid;
             }
         }
     </style>
@@ -1206,6 +1275,52 @@ switch ($_GET["op"]) {
                 </tr>
             </tbody>
         </table>';
+        }
+        
+        // Tabla de desglose de IVA
+        if (!empty($desglose_iva)) {
+            // Ordenar por porcentaje de IVA
+            ksort($desglose_iva);
+            
+            $html .= '
+        
+        <!-- Desglose de IVA -->
+        <div class="desglose-iva-section">
+            <h4 style="font-size: 10pt; margin-bottom: 8px; color: #2c3e50;">Desglose de IVA</h4>
+            <table class="desglose-iva-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">% IVA</th>
+                        <th style="width: 40%;">Base Imponible</th>
+                        <th style="width: 40%;">Importe IVA</th>
+                    </tr>
+                </thead>
+                <tbody>';
+            
+            $total_iva_desglose = 0;
+            
+            foreach ($desglose_iva as $porcentaje => $datos) {
+                $total_iva_desglose += $datos['importe_iva'];
+                
+                $html .= '
+                    <tr>
+                        <td>' . number_format($porcentaje, 2, ',', '.') . ' %</td>
+                        <td>' . number_format($datos['base_imponible'], 2, ',', '.') . ' €</td>
+                        <td>' . number_format($datos['importe_iva'], 2, ',', '.') . ' €</td>
+                    </tr>';
+            }
+            
+            $html .= '
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>TOTAL</td>
+                        <td></td>
+                        <td>' . number_format($total_iva_desglose, 2, ',', '.') . ' €</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>';
         }
         
         // Totales generales
