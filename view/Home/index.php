@@ -23,10 +23,10 @@
           <div class="mb-3">
             <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
                  style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2);">
-              <img src="../../config/template/Logo.png" alt="MDR Logo" style="height: 50px; width: auto;">
+              <img src="../../config/template/Logo.png" alt="AssetTrack Logo" style="height: 50px; width: auto;">
             </div>
           </div>
-          <h4 class="text-white fw-bold mb-1">MDR ERP Manager</h4>
+          <h4 class="text-white fw-bold mb-1">AssetTrack ERP Manager</h4>
           <p class="text-white-50 mb-0 small">Sistema de Gestión Empresarial</p>
         </div>
 
@@ -94,7 +94,7 @@
         <!-- Pie del card -->
         <div class="card-footer border-0 bg-light text-center py-3">
           <small class="text-muted">
-            © 2025 MDR ERP Manager. Todos los derechos reservados.
+            © 2026 AssetTrack. Todos los derechos reservados.
           </small>
         </div>
 
