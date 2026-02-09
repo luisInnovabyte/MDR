@@ -188,13 +188,16 @@ switch ($_GET["op"]) {
                 $desglose_iva[$porcentaje_iva]['importe_iva'] += $iva;
             }
             
-            // 8. Registrar actividad
+            // 8. Obtener observaciones de familias/artículos
+            $observaciones = $impresion->get_observaciones_presupuesto($id_presupuesto, 'es');
+            
+            // 9. Registrar actividad
             $registro->registrarActividad(
                 'admin',
                 'impresionpresupuesto.php',
                 'cli_esp',
                 "Generando impresión para presupuesto: " . $datos_presupuesto['numero_presupuesto'] . 
-                " (Versión: " . $datos_presupuesto['numero_version_presupuesto'] . ") - " . count($lineas) . " líneas",
+                " (Versión: " . $datos_presupuesto['numero_version_presupuesto'] . ") - " . count($lineas) . " líneas, " . count($observaciones) . " observaciones",
                 'info'
             );
             
@@ -738,6 +741,51 @@ switch ($_GET["op"]) {
             color: white;
             font-size: 11pt;
             padding: 8px 10px;
+        }
+        
+        /* Observaciones de familias y artículos */
+        .observaciones-familias-articulos-section {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fafafa;
+            border-left: 3px solid #e0e0e0;
+            page-break-inside: avoid;
+        }
+        
+        .titulo-observaciones {
+            font-size: 9.5pt;
+            font-weight: 600;
+            color: #424242;
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .observacion-item {
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 2px;
+            border-left: 2px solid #e8e8e8;
+        }
+        
+        .observacion-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .observacion-tipo {
+            font-weight: 600;
+            font-size: 8pt;
+            color: #757575;
+            margin-bottom: 4px;
+            text-transform: capitalize;
+        }
+        
+        .observacion-texto {
+            font-size: 8pt;
+            color: #616161;
+            line-height: 1.5;
         }
         
         @media print {
@@ -1396,7 +1444,44 @@ switch ($_GET["op"]) {
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div>';
+        
+        // Observaciones de familias y artículos
+        if (!empty($observaciones)) {
+            $html .= '
+        
+        <!-- Observaciones de familias y artículos -->
+        <div class="observaciones-familias-articulos-section">
+            <h4 class="titulo-observaciones">Observaciones del Presupuesto</h4>';
+            
+            foreach ($observaciones as $obs) {
+                // Obtener nombre según tipo
+                $nombre = '';
+                if ($obs['tipo_observacion'] == 'familia' && !empty($obs['nombre_familia'])) {
+                    $nombre = $obs['nombre_familia'];
+                } elseif ($obs['tipo_observacion'] == 'articulo' && !empty($obs['nombre_articulo'])) {
+                    $nombre = $obs['nombre_articulo'];
+                }
+                
+                // Obtener texto de observación
+                $texto = $obs['observacion_es'] ?? '';
+                
+                // Solo mostrar si hay nombre y texto
+                if (!empty($nombre) && !empty(trim($texto))) {
+                    $tipo_label = ucfirst(strtolower($obs['tipo_observacion']));
+                    $html .= '
+            <div class="observacion-item">
+                <div class="observacion-tipo">' . $tipo_label . ': ' . htmlspecialchars($nombre) . '</div>
+                <div class="observacion-texto">' . nl2br(htmlspecialchars($texto)) . '</div>
+            </div>';
+                }
+            }
+            
+            $html .= '
+        </div>';
+        }
+        
+        $html .= '
         
     </div><!-- fin lineas-section -->';
     }

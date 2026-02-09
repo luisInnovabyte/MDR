@@ -96,11 +96,11 @@
         <div class="br-section-wrapper">
                 <!-- ESte div se hace para poder centrarlo  -->
                 
-                <!-- Logo centrado de MDR -->
+                <!-- Logo centrado de AssetTrack -->
                 <div class="d-flex justify-content-center align-items-center" style="min-height: 20vh;">
                     <div class="text-center">
-                        <img src="../../config/template/Logo.png" alt="MDR ERP Manager" class="img-fluid" style="max-width: 280px; width: 100%; height: auto;">
-                        <h3 class="mt-3 mb-2" style="color: #333; font-weight: 300;">MDR ERP Manager</h3>
+                        <img src="../../config/template/Logo.png" alt="AssetTrack ERP Manager" class="img-fluid" style="max-width: 280px; width: 100%; height: auto;">
+                        <h3 class="mt-3 mb-2" style="color: #333; font-weight: 300;">AssetTrack ERP Manager</h3>
                         <p class="text-muted" style="font-size: 14px;">Sistema de Gestión para Alquiler de Equipos Audiovisuales</p>
                     </div>
                 </div>
