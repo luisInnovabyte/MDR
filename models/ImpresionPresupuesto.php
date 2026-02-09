@@ -15,7 +15,10 @@ require_once '../config/funciones.php';
  */
 class ImpresionPresupuesto
 {
+    /** @var PDO Conexión a la base de datos */
     private $conexion;
+    
+    /** @var RegistroActividad Sistema de logging */
     private $registro;
 
     /**
@@ -24,7 +27,9 @@ class ImpresionPresupuesto
     public function __construct()
     {
         // 1. Inicializar conexión PDO
-        $this->conexion = (new Conexion())->getConexion();
+        /** @var Conexion $conexionObj */
+        $conexionObj = new Conexion();
+        $this->conexion = $conexionObj->getConexion();
         
         // 2. Inicializar registro de actividad
         $this->registro = new RegistroActividad();
@@ -443,6 +448,101 @@ class ImpresionPresupuesto
                 'error'
             );
             return false;
+        }
+    }
+
+    /**
+     * Obtener observaciones de familias y artículos del presupuesto
+     * 
+     * Consulta la vista v_observaciones_presupuesto que consolida
+     * las observaciones de familias y artículos asociados al presupuesto,
+     * respetando los flags de visibilidad configurados.
+     * 
+     * @param int $id_presupuesto ID del presupuesto
+     * @param string $idioma Idioma de las observaciones ('es' o 'en')
+     * @return array Array de observaciones ordenadas (familias primero, luego artículos)
+     */
+    public function get_observaciones_presupuesto($id_presupuesto, $idioma = 'es')
+    {
+        try {
+            // NO usar v_observaciones_presupuesto porque depende de vista_presupuesto_completa
+            // que puede filtrar presupuestos. Usar consulta directa que sabemos que funciona.
+            $sql = "
+            -- Observaciones de FAMILIAS
+            SELECT 
+                'familia' AS tipo_observacion,
+                f.nombre_familia,
+                NULL AS nombre_articulo,
+                f.observaciones_presupuesto_familia AS observacion_es,
+                f.orden_obs_familia AS orden_observacion
+            FROM presupuesto p
+            JOIN presupuesto_version pv ON p.id_presupuesto = pv.id_presupuesto 
+                AND pv.numero_version_presupuesto = p.version_actual_presupuesto
+            JOIN linea_presupuesto lp ON pv.id_version_presupuesto = lp.id_version_presupuesto
+                AND lp.activo_linea_ppto = 1
+            JOIN articulo a ON lp.id_articulo = a.id_articulo
+                AND a.activo_articulo = 1
+            JOIN familia f ON a.id_familia = f.id_familia
+                AND f.activo_familia = 1
+            WHERE p.id_presupuesto = ?
+              AND p.activo_presupuesto = 1
+              AND p.mostrar_obs_familias_presupuesto = 1
+              AND f.observaciones_presupuesto_familia IS NOT NULL
+              AND TRIM(f.observaciones_presupuesto_familia) != ''
+            GROUP BY f.id_familia, f.nombre_familia, f.observaciones_presupuesto_familia, f.orden_obs_familia
+            
+            UNION ALL
+            
+            -- Observaciones de ARTÍCULOS
+            SELECT 
+                'articulo' AS tipo_observacion,
+                NULL AS nombre_familia,
+                a.nombre_articulo,
+                a.notas_presupuesto_articulo AS observacion_es,
+                a.orden_obs_articulo AS orden_observacion
+            FROM presupuesto p
+            JOIN presupuesto_version pv ON p.id_presupuesto = pv.id_presupuesto 
+                AND pv.numero_version_presupuesto = p.version_actual_presupuesto
+            JOIN linea_presupuesto lp ON pv.id_version_presupuesto = lp.id_version_presupuesto
+                AND lp.activo_linea_ppto = 1
+            JOIN articulo a ON lp.id_articulo = a.id_articulo
+                AND a.activo_articulo = 1
+            WHERE p.id_presupuesto = ?
+              AND p.activo_presupuesto = 1
+              AND p.mostrar_obs_articulos_presupuesto = 1
+              AND a.notas_presupuesto_articulo IS NOT NULL
+              AND TRIM(a.notas_presupuesto_articulo) != ''
+              AND lp.mostrar_obs_articulo_linea_ppto = 1
+            GROUP BY a.id_articulo, a.nombre_articulo, a.notas_presupuesto_articulo, a.orden_obs_articulo
+            
+            ORDER BY orden_observacion, tipo_observacion";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $observaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_observaciones_presupuesto',
+                "Observaciones obtenidas (consulta directa) para presupuesto ID: $id_presupuesto - Total: " . count($observaciones),
+                'info'
+            );
+            
+            return $observaciones;
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_observaciones_presupuesto',
+                "Error al obtener observaciones: " . $e->getMessage(),
+                'error'
+            );
+            return [];
         }
     }
 }

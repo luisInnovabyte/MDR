@@ -1,7 +1,10 @@
 <?php
 
+/**
+ * Clase para registro de actividades del sistema
+ * Guarda logs diarios en formato JSON
+ */
 class RegistroActividad
-
 {
   private $directorio = '../public/logs/'; // Directorio donde se guardarán los archivos JSON
 

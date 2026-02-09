@@ -1,8 +1,11 @@
 <?php
 
-require_once '../config/conexion.php';
-require_once '../config/funciones.php';
+require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/../config/funciones.php';
 
+/**
+ * Modelo Kit - Gestión de kits de artículos
+ */
 class Kit
 {
     private $conexion;
