@@ -67,6 +67,7 @@ class ImpresionPresupuesto
             // Similar a vista_presupuesto_completa pero solo para un presupuesto específico
             $sql = "SELECT 
                         p.id_presupuesto,
+                        p.id_empresa,
                         p.numero_presupuesto,
                         p.numero_pedido_cliente_presupuesto,
                         p.fecha_presupuesto,
@@ -137,7 +138,6 @@ class ImpresionPresupuesto
                     LEFT JOIN metodo_pago mp
                         ON fp.id_metodo_pago = mp.id_metodo_pago
                     WHERE p.id_presupuesto = ?
-                    AND p.activo_presupuesto = 1
                     LIMIT 1";
             
             $stmt = $this->conexion->prepare($sql);
@@ -388,6 +388,8 @@ class ImpresionPresupuesto
                         vlpc.id_linea_ppto,
                         vlpc.fecha_inicio_linea_ppto,
                         vlpc.fecha_fin_linea_ppto,
+                        vlpc.fecha_montaje_linea_ppto,
+                        vlpc.fecha_desmontaje_linea_ppto,
                         vlpc.dias_linea,
                         vlpc.id_ubicacion,
                         vlpc.nombre_ubicacion,
@@ -445,6 +447,133 @@ class ImpresionPresupuesto
                 'ImpresionPresupuesto',
                 'get_lineas_impresion',
                 "Error al obtener líneas: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Obtener líneas agrupadas del presupuesto con totales calculados
+     * 
+     * Agrupa las líneas del presupuesto por:
+     * 1. Fecha de inicio
+     * 2. Ubicación
+     * 
+     * Calcula subtotales por ubicación, fecha y totales generales
+     * Genera desglose de IVA por porcentaje
+     * 
+     * @param int $id_presupuesto ID del presupuesto
+     * @return array|false Array con estructura:
+     *   - lineas_agrupadas: Array agrupado por fecha y ubicación
+     *   - totales_generales: subtotal, total_iva, total
+     *   - desglose_iva: Array con base_imponible e importe_iva por % IVA
+     */
+    public function get_lineas_agrupadas($id_presupuesto)
+    {
+        try {
+            // 1. Obtener líneas del presupuesto
+            $lineas = $this->get_lineas_impresion($id_presupuesto);
+            
+            if ($lineas === false) {
+                throw new Exception("Error al obtener las líneas del presupuesto");
+            }
+            
+            // 2. Inicializar estructuras de datos
+            $lineas_agrupadas = [];
+            $totales_generales = [
+                'subtotal' => 0,
+                'total_iva' => 0,
+                'total' => 0
+            ];
+            $desglose_iva = [];
+            
+            // 3. Agrupar líneas por fecha de inicio y ubicación
+            foreach ($lineas as $linea) {
+                $fecha_inicio = $linea['fecha_inicio_linea_ppto'];
+                $id_ubicacion = $linea['id_ubicacion'] ?? 0;
+                
+                // Inicializar fecha si no existe
+                if (!isset($lineas_agrupadas[$fecha_inicio])) {
+                    $lineas_agrupadas[$fecha_inicio] = [
+                        'ubicaciones' => [],
+                        'subtotal_fecha' => 0,
+                        'total_iva_fecha' => 0,
+                        'total_fecha' => 0
+                    ];
+                }
+                
+                // Inicializar ubicación si no existe
+                if (!isset($lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion])) {
+                    $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion] = [
+                        'nombre_ubicacion' => $linea['nombre_ubicacion'] ?? 'Sin ubicación',
+                        'ubicacion_completa' => $linea['ubicacion_completa_agrupacion'] ?? '',
+                        'lineas' => [],
+                        'subtotal_ubicacion' => 0,
+                        'total_iva_ubicacion' => 0,
+                        'total_ubicacion' => 0
+                    ];
+                }
+                
+                // Añadir línea al grupo
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['lineas'][] = $linea;
+                
+                // Acumular subtotales de ubicación
+                $base = floatval($linea['base_imponible'] ?? 0);
+                $iva = floatval($linea['importe_iva'] ?? 0);
+                $total = floatval($linea['total_linea'] ?? 0);
+                
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['subtotal_ubicacion'] += $base;
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_iva_ubicacion'] += $iva;
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_ubicacion'] += $total;
+                
+                // Acumular subtotales de fecha
+                $lineas_agrupadas[$fecha_inicio]['subtotal_fecha'] += $base;
+                $lineas_agrupadas[$fecha_inicio]['total_iva_fecha'] += $iva;
+                $lineas_agrupadas[$fecha_inicio]['total_fecha'] += $total;
+                
+                // Acumular totales generales
+                $totales_generales['subtotal'] += $base;
+                $totales_generales['total_iva'] += $iva;
+                $totales_generales['total'] += $total;
+                
+                // Agrupar por porcentaje de IVA para desglose
+                $porcentaje_iva = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
+                if (!isset($desglose_iva[$porcentaje_iva])) {
+                    $desglose_iva[$porcentaje_iva] = [
+                        'base_imponible' => 0,
+                        'importe_iva' => 0
+                    ];
+                }
+                $desglose_iva[$porcentaje_iva]['base_imponible'] += $base;
+                $desglose_iva[$porcentaje_iva]['importe_iva'] += $iva;
+            }
+            
+            // 4. Ordenar desglose de IVA por porcentaje
+            ksort($desglose_iva);
+            
+            // 5. Registrar actividad
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_agrupadas',
+                "Líneas agrupadas para presupuesto ID: $id_presupuesto - Total: " . count($lineas) . " líneas en " . count($lineas_agrupadas) . " fechas",
+                'info'
+            );
+            
+            // 6. Retornar estructura completa
+            return [
+                'lineas_agrupadas' => $lineas_agrupadas,
+                'totales_generales' => $totales_generales,
+                'desglose_iva' => $desglose_iva
+            ];
+            
+        } catch (Exception $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_agrupadas',
+                "Error: " . $e->getMessage(),
                 'error'
             );
             return false;
@@ -543,6 +672,75 @@ class ImpresionPresupuesto
                 'error'
             );
             return [];
+        }
+    }
+
+    /**
+     * Obtener modelo de impresión configurado para la empresa
+     * 
+     * Obtiene el nombre del archivo de controller que debe usarse para imprimir
+     * presupuestos de una empresa específica. Si no está configurado o hay error,
+     * retorna el modelo por defecto (impresionpresupuesto_m1_es.php)
+     * 
+     * @param int $id_empresa ID de la empresa
+     * @return string Nombre del archivo controller (ej: 'impresionpresupuesto_m1_es.php')
+     */
+    public function get_modelo_impresion($id_empresa)
+    {
+        try {
+            $sql = "SELECT modelo_impresion_empresa 
+                    FROM empresa 
+                    WHERE id_empresa = ? 
+                    AND activo_empresa = 1
+                    LIMIT 1";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_empresa, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Si se encuentra y tiene valor, retornar el modelo configurado
+            if ($resultado && !empty($resultado['modelo_impresion_empresa'])) {
+                $modelo = $resultado['modelo_impresion_empresa'];
+                
+                $this->registro->registrarActividad(
+                    'admin',
+                    'ImpresionPresupuesto',
+                    'get_modelo_impresion',
+                    "Modelo de impresión obtenido para empresa ID $id_empresa: $modelo",
+                    'info'
+                );
+                
+                return $modelo;
+            } else {
+                // Retornar modelo por defecto
+                $modelo_defecto = 'impresionpresupuesto_m1_es.php';
+                
+                $this->registro->registrarActividad(
+                    'admin',
+                    'ImpresionPresupuesto',
+                    'get_modelo_impresion',
+                    "No se encontró modelo configurado para empresa ID $id_empresa, usando modelo por defecto: $modelo_defecto",
+                    'info'
+                );
+                
+                return $modelo_defecto;
+            }
+            
+        } catch (PDOException $e) {
+            // En caso de error, retornar modelo por defecto
+            $modelo_defecto = 'impresionpresupuesto_m1_es.php';
+            
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_modelo_impresion',
+                "Error al obtener modelo de impresión: " . $e->getMessage() . " - Usando modelo por defecto: $modelo_defecto",
+                'error'
+            );
+            
+            return $modelo_defecto;
         }
     }
 }

@@ -298,6 +298,7 @@
             <div class="modal-body">
                 <form id="formImpresionPresupuesto">
                     <input type="hidden" id="impresion_id_presupuesto" name="id_presupuesto">
+                    <input type="hidden" id="impresion_id_empresa" name="id_empresa">
                     
                     <!-- Tipo de presupuesto -->
                     <div class="mb-4">
@@ -333,6 +334,25 @@
                             <input class="form-check-input" type="radio" name="idioma" id="idioma_ingles" value="ingles" disabled>
                             <label class="form-check-label text-muted" for="idioma_ingles">
                                 <strong>Inglés</strong> 🇬🇧 <small>(Próximamente)</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Formato -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-file-pdf me-2"></i>Formato de salida:
+                        </label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="formato" id="formato_pdf" value="pdf" checked>
+                            <label class="form-check-label" for="formato_pdf">
+                                <strong>PDF</strong> - Archivo PDF con cabecera en cada página
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="formato" id="formato_html" value="html">
+                            <label class="form-check-label" for="formato_html">
+                                <strong>HTML</strong> - Vista previa en navegador
                             </label>
                         </div>
                     </div>

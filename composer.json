@@ -1,0 +1,9 @@
+{
+    "require": {
+        "mpdf/mpdf": "^8.1"
+    },
+    "config": {
+        "disable-tls": true,
+        "secure-http": false
+    }
+}

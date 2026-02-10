@@ -14,7 +14,7 @@ Thumbs.db
 BD/Importacion_BD_VerI/**/*.accdb
 *.accdb
 
-<<<<<<< HEAD
+
 # Claude AI files
 CLAUDE.md
 .claude/
@@ -35,4 +35,27 @@ CLAUDE.md
 public/logs/
 public/logs/*.json
 *.log
->>>>>>> furgoneta
+
+# Dependencias
+vendor/
+composer.lock
+
+# Configuración sensible
+config/conexion.json
+
+# Logs
+public/logs/
+*.log
+
+# Documentos generados
+public/documentos/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo

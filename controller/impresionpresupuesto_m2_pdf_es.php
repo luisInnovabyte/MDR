@@ -1,0 +1,1248 @@
+<?php
+// Iniciar buffer de salida para capturar cualquier output no deseado
+while (ob_get_level()) {
+    ob_end_clean();
+}
+ob_start();
+
+// Configurar errores para logging pero NO mostrarlos
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
+require_once __DIR__ . "/../config/conexion.php";
+require_once __DIR__ . "/../config/funciones.php";
+require_once __DIR__ . "/../models/ImpresionPresupuesto.php";
+require_once __DIR__ . "/../models/Kit.php";
+require_once __DIR__ . "/../vendor/tcpdf/tcpdf.php";
+
+// =====================================================
+// CLASE PERSONALIZADA TCPDF CON CABECERA/PIE
+// =====================================================
+class MYPDF extends TCPDF {
+    private $datos_empresa;
+    private $mostrar_logo;
+    private $path_logo;
+    private $datos_presupuesto;
+    private $fecha_presupuesto;
+    private $fecha_validez;
+    private $fecha_evento;
+    private $observaciones;
+    private $observaciones_cabecera;
+    
+    public function setDatosHeader($empresa, $presupuesto, $logo, $path_logo, $fecha_ppto, $fecha_val, $fecha_ev, $obs, $obs_cabecera) {
+        $this->datos_empresa = $empresa;
+        $this->datos_presupuesto = $presupuesto;
+        $this->mostrar_logo = $logo;
+        $this->path_logo = $path_logo;
+        $this->fecha_presupuesto = $fecha_ppto;
+        $this->fecha_validez = $fecha_val;
+        $this->fecha_evento = $fecha_ev;
+        $this->observaciones = $obs;
+        $this->observaciones_cabecera = $obs_cabecera;
+    }
+    
+    // Cabecera repetida en cada página
+    public function Header() {
+        $y_start = 10;
+        
+        // ============================================
+        // COLUMNA IZQUIERDA: Logo + Datos Empresa
+        // ============================================
+        
+        // Logo en la parte superior izquierda
+        if ($this->mostrar_logo && !empty($this->path_logo) && file_exists($this->path_logo)) {
+            // Logo compacto
+            $this->Image($this->path_logo, 15, $y_start, 35, 0, '', '', '', false, 300, '', false, false, 0);
+            $logo_height = 18; // Altura reducida del logo
+        } else {
+            $logo_height = 0;
+        }
+        
+        // Datos de la empresa (debajo del logo, más cerca)
+        $y_empresa = $y_start + $logo_height + 1;
+        $this->SetY($y_empresa);
+        $this->SetX(15);
+        
+        // Nombre comercial empresa (negrita, tamaño grande)
+        $this->SetFont('helvetica', 'B', 9);
+        $this->SetTextColor(44, 62, 80); // Color oscuro
+        $this->Cell(80, 3.5, $this->datos_empresa['nombre_comercial_empresa'] ?? '', 0, 1, 'L');
+        
+        // NIF en rojo
+        $this->SetX(15);
+        $this->SetFont('helvetica', 'B', 8);
+        $this->SetTextColor(231, 76, 60); // Rojo
+        $this->Cell(80, 2.5, 'NIF: ' . ($this->datos_empresa['nif_empresa'] ?? ''), 0, 1, 'L');
+        
+        // Dirección fiscal
+        $this->SetX(15);
+        $this->SetFont('helvetica', '', 7.5);
+        $this->SetTextColor(52, 73, 94); // Color normal
+        $direccion_completa = ($this->datos_empresa['direccion_fiscal_empresa'] ?? '') . ', ' .
+                              ($this->datos_empresa['cp_fiscal_empresa'] ?? '') . ' ' .
+                              ($this->datos_empresa['poblacion_fiscal_empresa'] ?? '') . ' (' .
+                              ($this->datos_empresa['provincia_fiscal_empresa'] ?? '') . ')';
+        $this->MultiCell(80, 3, $direccion_completa, 0, 'L');
+        
+        // Teléfono, móvil y email
+        $this->SetX(15);
+        $contacto = 'Tel: ' . ($this->datos_empresa['telefono_empresa'] ?? '');
+        if (!empty($this->datos_empresa['movil_empresa'])) {
+            $contacto .= ' | ' . $this->datos_empresa['movil_empresa'];
+        }
+        $this->Cell(80, 2.5, $contacto, 0, 1, 'L');
+        
+        $this->SetX(15);
+        $this->Cell(80, 2.5, ($this->datos_empresa['email_empresa'] ?? ''), 0, 1, 'L');
+        
+        // Web (si existe)
+        if (!empty($this->datos_empresa['web_empresa'])) {
+            $this->SetX(15);
+            $this->Cell(80, 2.5, $this->datos_empresa['web_empresa'], 0, 1, 'L');
+        }
+        
+        // Caja con info del presupuesto (más cerca, sin espacio extra)
+        $y_info = $this->GetY() + 1;
+        $this->SetY($y_info);
+        
+        // Fondo de color para la caja de info
+        $this->SetFillColor(102, 126, 234); // Color azul/morado
+        $this->SetTextColor(255, 255, 255); // Texto blanco
+        $this->SetFont('helvetica', 'B', 7);
+        
+        $this->SetXY(15, $y_info);
+        $this->Cell(95, 10, '', 0, 0, 'L', true); // Fondo de la caja más compacto
+        
+        // Contenido de la caja en dos líneas
+        $this->SetXY(16, $y_info + 1);
+        $info_text_linea1 = 'N°: ' . ($this->datos_presupuesto['numero_presupuesto'] ?? '') .
+                     '  |  F: ' . $this->fecha_presupuesto .
+                     '  |  Val: ' . ($this->fecha_validez ?: 'N/A') .
+                     '  |  Ver: ' . ($this->datos_presupuesto['numero_version_presupuesto'] ?? '1');
+        
+        $this->Cell(93, 3, $info_text_linea1, 0, 1, 'L');
+        
+        // Segunda línea con referencia del cliente (si existe)
+        if (!empty($this->datos_presupuesto['numero_pedido_cliente_presupuesto'])) {
+            $this->SetXY(16, $y_info + 5);
+            $info_text_linea2 = 'Ref. Cliente: ' . $this->datos_presupuesto['numero_pedido_cliente_presupuesto'];
+            $this->Cell(93, 3, $info_text_linea2, 0, 1, 'L');
+        }
+        
+        // Restaurar color de texto
+        $this->SetTextColor(0, 0, 0);
+        
+        // ============================================
+        // OBSERVACIONES DE CABECERA (COLUMNA IZQUIERDA)
+        // ============================================
+        
+        if (!empty($this->observaciones)) {
+            $y_obs = $this->GetY();
+            $this->SetY($y_obs);
+            $this->SetX(15);
+            
+            // Sin título, solo el texto de las observaciones
+            $this->SetFont('helvetica', '', 6.5);
+            $this->SetTextColor(99, 110, 114);
+            $this->MultiCell(95, 3, $this->observaciones, 0, 'L');
+        }
+        
+        // ============================================
+        // COLUMNA DERECHA: Box Verde con Datos Cliente
+        // ============================================
+        
+        $col2_x = 115;
+        $col2_width = 80;
+        $box_y_start = $y_start;
+        
+        // Calcular altura necesaria para el box del cliente
+        $client_box_height = 26; // Altura base para cliente (más compacta)
+        
+        // Si hay contacto, aumentar altura
+        if (!empty($this->datos_presupuesto['nombre_contacto_cliente'])) {
+            $client_box_height += 10; // Espacio adicional para "A la atención de"
+        }
+        
+        // Fondo verde claro
+        $this->SetFillColor(248, 249, 250); // Gris muy claro
+        $this->Rect($col2_x, $box_y_start, $col2_width, $client_box_height, 'F');
+        
+        // Borde verde
+        $this->SetDrawColor(39, 174, 96); // Verde
+        $this->SetLineWidth(0.5);
+        $this->Rect($col2_x, $box_y_start, $col2_width, $client_box_height);
+        $this->SetLineWidth(0.2); // Restaurar
+        
+        // Título "CLIENTE" (sin emoji para evitar caracteres extraños)
+        $this->SetXY($col2_x + 2, $box_y_start + 1.5);
+        $this->SetFont('helvetica', 'B', 8);
+        $this->SetTextColor(44, 62, 80);
+        $this->Cell($col2_width - 4, 3.5, 'CLIENTE', 0, 1, 'L');
+        
+        // Línea bajo el título
+        $this->SetDrawColor(39, 174, 96);
+        $this->Line($col2_x + 2, $box_y_start + 5.5, $col2_x + $col2_width - 2, $box_y_start + 5.5);
+        
+        // Datos del cliente
+        $this->SetXY($col2_x + 2, $box_y_start + 6.5);
+        $this->SetFont('helvetica', '', 7);
+        $this->SetTextColor(52, 73, 94);
+        
+        $nombre_completo = trim(
+            ($this->datos_presupuesto['nombre_cliente'] ?? '') . ' ' . 
+            ($this->datos_presupuesto['apellido_cliente'] ?? '')
+        );
+        
+        // Nombre completo
+        if (!empty($nombre_completo)) {
+            $this->SetFont('helvetica', 'B', 7.5);
+            $this->Cell($col2_width - 4, 3, $nombre_completo, 0, 1, 'L');
+            $this->SetX($col2_x + 2);
+            $this->SetFont('helvetica', '', 6.5);
+        }
+        
+        // NIF/CIF si existe
+        if (!empty($this->datos_presupuesto['nif_cliente'])) {
+            $this->SetFont('helvetica', '', 6.5);
+            $this->Cell(15, 2.5, 'NIF/CIF:', 0, 0, 'L');
+            $this->SetFont('helvetica', 'B', 6.5);
+            $this->Cell($col2_width - 19, 2.5, $this->datos_presupuesto['nif_cliente'], 0, 1, 'L');
+            $this->SetX($col2_x + 2);
+        }
+        
+        // Dirección
+        if (!empty($this->datos_presupuesto['direccion_cliente'])) {
+            $this->SetFont('helvetica', '', 6.5);
+            $this->Cell(15, 2.5, 'Direccion:', 0, 0, 'L');
+            
+            $direccion_cliente = $this->datos_presupuesto['direccion_cliente'];
+            // Añadir CP y población si existen
+            $partes = [];
+            if (!empty($this->datos_presupuesto['cp_cliente'])) {
+                $partes[] = $this->datos_presupuesto['cp_cliente'];
+            }
+            if (!empty($this->datos_presupuesto['poblacion_cliente'])) {
+                $partes[] = $this->datos_presupuesto['poblacion_cliente'];
+            }
+            if (!empty($partes)) {
+                $direccion_cliente .= ', ' . implode(' ', $partes);
+            }
+            
+            $this->MultiCell($col2_width - 19, 2.5, $direccion_cliente, 0, 'L');
+            $this->SetX($col2_x + 2);
+        }
+        
+        // Email
+        if (!empty($this->datos_presupuesto['email_cliente'])) {
+            $this->SetFont('helvetica', '', 6.5);
+            $this->Cell(15, 2.5, 'Email:', 0, 0, 'L');
+            $this->Cell($col2_width - 19, 2.5, $this->datos_presupuesto['email_cliente'], 0, 1, 'L');
+            $this->SetX($col2_x + 2);
+        }
+        
+        // Teléfono
+        if (!empty($this->datos_presupuesto['telefono_cliente'])) {
+            $this->SetFont('helvetica', '', 6.5);
+            $this->Cell(15, 2.5, 'Telefono:', 0, 0, 'L');
+            $this->Cell($col2_width - 19, 2.5, $this->datos_presupuesto['telefono_cliente'], 0, 1, 'L');
+            $this->SetX($col2_x + 2);
+        }
+        
+        // ============================================
+        // A LA ATENCIÓN DE (Contacto del cliente)
+        // ============================================
+        if (!empty($this->datos_presupuesto['nombre_contacto_cliente'])) {
+            $this->Ln(1);
+            
+            // Título "A la atención de:"
+            $this->SetXY($col2_x + 2, $this->GetY());
+            $this->SetFont('helvetica', 'B', 7);
+            $this->SetTextColor(156, 89, 182); // Color morado
+            $this->Cell($col2_width - 4, 3, 'A la atencion de:', 0, 1, 'L');
+            
+            $this->SetX($col2_x + 2);
+            $this->SetFont('helvetica', '', 6.5);
+            $this->SetTextColor(52, 73, 94);
+            
+            // Nombre contacto
+            $nombre_contacto = trim(
+                ($this->datos_presupuesto['nombre_contacto_cliente'] ?? '') . ' ' .
+                ($this->datos_presupuesto['apellidos_contacto_cliente'] ?? '')
+            );
+            
+            if (!empty($nombre_contacto)) {
+                $this->Cell(15, 2.5, 'Nombre:', 0, 0, 'L');
+                $this->SetFont('helvetica', 'B', 6.5);
+                $this->Cell($col2_width - 19, 2.5, $nombre_contacto, 0, 1, 'L');
+                $this->SetX($col2_x + 2);
+                $this->SetFont('helvetica', '', 6.5);
+            }
+            
+            // Teléfono contacto
+            if (!empty($this->datos_presupuesto['telefono_contacto_cliente'])) {
+                $this->Cell(15, 2.5, 'Telefono:', 0, 0, 'L');
+                $this->Cell($col2_width - 19, 2.5, $this->datos_presupuesto['telefono_contacto_cliente'], 0, 1, 'L');
+                $this->SetX($col2_x + 2);
+            }
+            
+            // Email contacto
+            if (!empty($this->datos_presupuesto['email_contacto_cliente'])) {
+                $this->Cell(15, 2.5, 'Email:', 0, 0, 'L');
+                $this->Cell($col2_width - 19, 2.5, $this->datos_presupuesto['email_contacto_cliente'], 0, 1, 'L');
+            }
+        }
+        
+        // ============================================
+        // DATOS DEL EVENTO Y UBICACIÓN (COLUMNA DERECHA, DEBAJO DEL CLIENTE)
+        // ============================================
+        
+        // Solo mostrar si hay información del evento
+        if (!empty($this->datos_presupuesto['nombre_evento_presupuesto'])) {
+            $y_evento = $box_y_start + $client_box_height + 3; // Debajo del box del cliente
+            
+            // Ancho de la columna derecha
+            $evento_x = 115;
+            $evento_width = 80;
+            
+            $this->SetXY($evento_x, $y_evento);
+            
+            // Título de la sección de evento
+            $this->SetFont('helvetica', 'B', 8);
+            $this->SetTextColor(243, 156, 18); // Color naranja
+            $this->Cell($evento_width, 4, 'DATOS DEL EVENTO', 0, 1, 'L');
+            
+            // Nombre del evento (destacado)
+            $this->SetX($evento_x);
+            $this->SetFont('helvetica', 'B', 7.5);
+            $this->SetFillColor(255, 243, 205); // Fondo amarillo claro
+            $this->SetTextColor(133, 100, 4); // Texto oscuro
+            $this->MultiCell($evento_width, 4, $this->datos_presupuesto['nombre_evento_presupuesto'], 0, 'L', true);
+            
+            // Fechas del evento en formato tabla compacta (3 columnas)
+            $this->SetX($evento_x);
+            $this->SetFont('helvetica', '', 6.5);
+            $this->SetTextColor(127, 140, 141); // Gris para labels
+            
+            // Crear mini tabla de 3 columnas: Inicio | Fin | Duración
+            $mini_col_width = $evento_width / 3;
+            
+            // Labels
+            $this->Cell($mini_col_width, 3, 'Inicio', 0, 0, 'C');
+            $this->Cell($mini_col_width, 3, 'Fin', 0, 0, 'C');
+            $this->Cell($mini_col_width, 3, 'Duracion', 0, 1, 'C');
+            
+            // Valores
+            $this->SetX($evento_x);
+            $this->SetFont('helvetica', 'B', 6.5);
+            $this->SetTextColor(52, 73, 94);
+            
+            $fecha_inicio_str = '';
+            if (!empty($this->fecha_evento)) {
+                $fecha_inicio_str = $this->fecha_evento;
+            }
+            
+            $fecha_fin_str = '';
+            if (!empty($this->datos_presupuesto['fecha_fin_evento_presupuesto'])) {
+                $fecha_fin_str = date('d/m/Y', strtotime($this->datos_presupuesto['fecha_fin_evento_presupuesto']));
+            }
+            
+            $duracion_str = '';
+            if (!empty($this->datos_presupuesto['duracion_evento_dias'])) {
+                $duracion_str = $this->datos_presupuesto['duracion_evento_dias'] . ' dias';
+            }
+            
+            $this->Cell($mini_col_width, 4, $fecha_inicio_str, 0, 0, 'C');
+            $this->Cell($mini_col_width, 4, $fecha_fin_str, 0, 0, 'C');
+            $this->Cell($mini_col_width, 4, $duracion_str, 0, 1, 'C');
+            
+            $this->Ln(2);
+            
+            // ========== UBICACIÓN DEL EVENTO ==========
+            // Solo mostrar ubicación si hay datos
+            if (!empty($this->datos_presupuesto['direccion_evento_presupuesto']) || 
+                !empty($this->datos_presupuesto['poblacion_evento_presupuesto'])) {
+                
+                $this->SetX($evento_x);
+                $this->SetFont('helvetica', 'B', 8);
+                $this->SetTextColor(243, 156, 18); // Color naranja
+                $this->Cell($evento_width, 4, 'UBICACION DEL EVENTO', 0, 1, 'L');
+                
+                $this->SetX($evento_x);
+                $this->SetFont('helvetica', '', 7);
+                $this->SetTextColor(52, 73, 94);
+                
+                // Construir ubicación completa en una sola línea
+                $ubicacion_completa = '';
+                
+                if (!empty($this->datos_presupuesto['direccion_evento_presupuesto'])) {
+                    $ubicacion_completa .= $this->datos_presupuesto['direccion_evento_presupuesto'];
+                }
+                
+                if (!empty($this->datos_presupuesto['cp_evento_presupuesto']) || 
+                    !empty($this->datos_presupuesto['poblacion_evento_presupuesto'])) {
+                    
+                    if (!empty($ubicacion_completa)) {
+                        $ubicacion_completa .= ', ';
+                    }
+                    
+                    if (!empty($this->datos_presupuesto['cp_evento_presupuesto'])) {
+                        $ubicacion_completa .= $this->datos_presupuesto['cp_evento_presupuesto'] . ' ';
+                    }
+                    
+                    if (!empty($this->datos_presupuesto['poblacion_evento_presupuesto'])) {
+                        $ubicacion_completa .= $this->datos_presupuesto['poblacion_evento_presupuesto'];
+                    }
+                }
+                
+                if (!empty($this->datos_presupuesto['provincia_evento_presupuesto'])) {
+                    if (!empty($ubicacion_completa)) {
+                        $ubicacion_completa .= ', ';
+                    }
+                    $ubicacion_completa .= $this->datos_presupuesto['provincia_evento_presupuesto'];
+                }
+                
+                // Mostrar en una sola línea alineada a la izquierda
+                if (!empty($ubicacion_completa)) {
+                    $this->Cell($evento_width, 3.5, $ubicacion_completa, 0, 1, 'L');
+                }
+            }
+        }
+        
+        // Restaurar colores
+        $this->SetDrawColor(0, 0, 0);
+        $this->SetTextColor(0, 0, 0);
+        
+        // ============================================
+        // OBSERVACIONES DE CABECERA (TODO EL ANCHO)
+        // ============================================
+        
+        // Calcular Y máxima entre columna izquierda y derecha
+        $y_final_izquierda = $this->GetY(); // Y actual de la columna izquierda
+        $y_final_derecha = $y_evento; // Y inicial del evento
+        
+        // Si hay evento, calcular la altura final de la sección de evento
+        if (!empty($this->datos_presupuesto['nombre_evento_presupuesto'])) {
+            // Estimar altura del evento: título + nombre + tabla + ubicación
+            $y_final_derecha = $box_y_start + $client_box_height + 3 + 35; // Aprox. 35mm para eventos
+        } else {
+            $y_final_derecha = $box_y_start + $client_box_height;
+        }
+        
+        // Posicionar después de la columna más larga
+        $y_observaciones_cabecera = max($y_final_izquierda, $y_final_derecha);
+        
+        // Mostrar observaciones de cabecera si existen
+        if (!empty($this->observaciones_cabecera)) {
+            $this->SetXY(15, $y_observaciones_cabecera);
+            
+            // Estilo para las observaciones
+            $this->SetFont('helvetica', '', 8);
+            $this->SetTextColor(44, 62, 80); // Color oscuro
+            
+            // Usar todo el ancho disponible (ambas columnas)
+            $ancho_total = 180; // 210mm (ancho A4) - 15mm (margen izq) - 15mm (margen der)
+            
+            $this->MultiCell($ancho_total, 4, $this->observaciones_cabecera, 0, 'L');
+        }
+        
+        // Posicionar cursor para contenido (después de todo)
+        $final_y = $this->GetY();
+        $this->SetY($final_y);
+    }
+    
+    // Pie de página repetido
+    public function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('helvetica', 'I', 8);
+        $this->Cell(0, 10, 'Página ' . $this->getAliasNumPage() . ' de ' . $this->getAliasNbPages(), 0, 0, 'C');
+    }
+}
+
+// =====================================================
+// INICIALIZAR CLASES
+// =====================================================
+$registro = new RegistroActividad();
+$impresion = new ImpresionPresupuesto();
+$kitModel = new Kit();
+
+// Switch principal basado en operación
+switch ($_GET["op"]) {
+    
+    case "cli_esp":
+        try {
+            // 1. Validar que se recibió el ID del presupuesto
+            if (!isset($_POST['id_presupuesto']) || empty($_POST['id_presupuesto'])) {
+                throw new Exception("No se recibió el ID del presupuesto");
+            }
+            
+            $id_presupuesto = intval($_POST['id_presupuesto']);
+            
+            // 2. Obtener datos del presupuesto
+            $datos_presupuesto = $impresion->get_datos_cabecera($id_presupuesto);
+            
+            if (!$datos_presupuesto) {
+                throw new Exception("No se encontraron datos del presupuesto ID: $id_presupuesto");
+            }
+            
+            // 3. Obtener datos de la empresa
+            $datos_empresa = $impresion->get_empresa_datos();
+            
+            if (!$datos_empresa) {
+                throw new Exception("No se encontraron datos de la empresa");
+            }
+            
+            // 4. Validar logo de empresa
+            $mostrar_logo = false;
+            $path_logo = '';
+            
+            if (!empty($datos_empresa['logotipo_empresa'])) {
+                if ($impresion->validar_logo($datos_empresa['logotipo_empresa'])) {
+                    $mostrar_logo = true;
+                    
+                    // Limpiar el nombre del logo
+                    $logo_name = $datos_empresa['logotipo_empresa'];
+                    // Eliminar barra inicial si existe
+                    $logo_name = ltrim($logo_name, '/');
+                    // Eliminar prefijo 'public/' si existe
+                    if (strpos($logo_name, 'public/') === 0) {
+                        $logo_name = substr($logo_name, 7); // Quitar 'public/'
+                    }
+                    
+                    // Construir ruta absoluta
+                    $path_logo = __DIR__ . '/../public/' . $logo_name;
+                    
+                    // Verificar que el archivo existe
+                    if (!file_exists($path_logo)) {
+                        $mostrar_logo = false;
+                        $path_logo = null;
+                    } else {
+                        $path_logo = realpath($path_logo);
+                    }
+                }
+            }
+            
+            // 5. Formatear fechas
+            $fecha_presupuesto = !empty($datos_presupuesto['fecha_presupuesto']) 
+                ? date('d/m/Y', strtotime($datos_presupuesto['fecha_presupuesto'])) 
+                : '';
+            
+            $fecha_validez = !empty($datos_presupuesto['fecha_validez_presupuesto']) 
+                ? date('d/m/Y', strtotime($datos_presupuesto['fecha_validez_presupuesto'])) 
+                : '';
+            
+            // Formatear fechas del evento
+            $fecha_inicio_evento = !empty($datos_presupuesto['fecha_inicio_evento_presupuesto']) 
+                ? date('d/m/Y', strtotime($datos_presupuesto['fecha_inicio_evento_presupuesto'])) 
+                : '';
+            
+            $fecha_fin_evento = !empty($datos_presupuesto['fecha_fin_evento_presupuesto']) 
+                ? date('d/m/Y', strtotime($datos_presupuesto['fecha_fin_evento_presupuesto'])) 
+                : '';
+            
+            // 6. Obtener líneas del presupuesto
+            $lineas = $impresion->get_lineas_impresion($id_presupuesto);
+            
+            // 6.1 Agrupar líneas por fecha de inicio y ubicación
+            $lineas_agrupadas = [];
+            foreach ($lineas as $linea) {
+                $fecha_inicio = $linea['fecha_inicio_linea_ppto'];
+                $id_ubicacion = $linea['id_ubicacion'] ?? 0;
+                
+                // Inicializar grupo de fecha si no existe
+                if (!isset($lineas_agrupadas[$fecha_inicio])) {
+                    $lineas_agrupadas[$fecha_inicio] = [
+                        'ubicaciones' => [],
+                        'subtotal_fecha' => 0,
+                        'total_iva_fecha' => 0,
+                        'total_fecha' => 0
+                    ];
+                }
+                
+                // Inicializar grupo de ubicación si no existe
+                if (!isset($lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion])) {
+                    $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion] = [
+                        'nombre_ubicacion' => $linea['nombre_ubicacion'] ?? 'Sin ubicación',
+                        'ubicacion_completa' => $linea['ubicacion_completa_agrupacion'] ?? '',
+                        'lineas' => [],
+                        'subtotal_ubicacion' => 0,
+                        'total_iva_ubicacion' => 0,
+                        'total_ubicacion' => 0
+                    ];
+                }
+                
+                // Agregar línea al grupo
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['lineas'][] = $linea;
+                
+                // Acumular subtotales
+                $base_imponible = floatval($linea['base_imponible']);
+                $total_linea = floatval($linea['total_linea']);
+                $total_iva_linea = $total_linea - $base_imponible;
+                
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['subtotal_ubicacion'] += $base_imponible;
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_iva_ubicacion'] += $total_iva_linea;
+                $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_ubicacion'] += $total_linea;
+                
+                $lineas_agrupadas[$fecha_inicio]['subtotal_fecha'] += $base_imponible;
+                $lineas_agrupadas[$fecha_inicio]['total_iva_fecha'] += $total_iva_linea;
+                $lineas_agrupadas[$fecha_inicio]['total_fecha'] += $total_linea;
+            }
+            
+            // 7. Obtener observaciones (convertir a string si es necesario)
+            $observaciones_array = $impresion->get_observaciones_presupuesto($id_presupuesto, 'es');
+            $observaciones = '';
+            if (!empty($observaciones_array) && is_array($observaciones_array)) {
+                $textos = [];
+                foreach ($observaciones_array as $obs) {
+                    if (!empty($obs['texto_observacion'])) {
+                        $textos[] = $obs['texto_observacion'];
+                    }
+                }
+                $observaciones = implode("\n\n", $textos);
+            } elseif (is_string($observaciones_array)) {
+                $observaciones = $observaciones_array;
+            }
+            
+            // 8. Calcular desglose de IVA
+            $desglose_iva = [];
+            $subtotal_sin_iva = 0;
+            
+            foreach ($lineas as $linea) {
+                $base_imponible = floatval($linea['base_imponible'] ?? 0);
+                $porcentaje_iva = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
+                
+                $subtotal_sin_iva += $base_imponible;
+                
+                if (!isset($desglose_iva[$porcentaje_iva])) {
+                    $desglose_iva[$porcentaje_iva] = [
+                        'base' => 0,
+                        'cuota' => 0
+                    ];
+                }
+                
+                $cuota_iva = $base_imponible * ($porcentaje_iva / 100);
+                $desglose_iva[$porcentaje_iva]['base'] += $base_imponible;
+                $desglose_iva[$porcentaje_iva]['cuota'] += $cuota_iva;
+            }
+            
+            ksort($desglose_iva);
+            
+            $total_iva = 0;
+            foreach ($desglose_iva as $iva) {
+                $total_iva += $iva['cuota'];
+            }
+            
+            $total_presupuesto = $subtotal_sin_iva + $total_iva;
+            
+            // =====================================================
+            // CREAR PDF CON TCPDF
+            // =====================================================
+            
+            // Crear instancia de PDF
+            // Parámetros: orientación, unidad, formato, unicode, encoding, diskcache
+            $pdf = new MYPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+            
+            // Configurar PDF
+            $pdf->SetCreator('MDR ERP');
+            $pdf->SetAuthor($datos_empresa['nombre_empresa'] ?? 'MDR');
+            $pdf->SetTitle('Presupuesto ' . ($datos_presupuesto['numero_presupuesto'] ?? ''));
+            $pdf->SetSubject('Presupuesto para ' . ($datos_presupuesto['nombre_evento_presupuesto'] ?? ''));
+            
+            // Establecer márgenes
+            $pdf->SetMargins(8, 95, 8); // Márgenes mínimos para maximizar espacio de tabla
+            $pdf->SetHeaderMargin(5);
+            $pdf->SetFooterMargin(10);
+            $pdf->SetAutoPageBreak(TRUE, 15);
+            
+            // Pasar datos a la cabecera
+            $pdf->setDatosHeader(
+                $datos_empresa,
+                $datos_presupuesto,
+                $mostrar_logo,
+                $path_logo,
+                $fecha_presupuesto,
+                $fecha_validez,
+                $fecha_inicio_evento,
+                $observaciones,
+                $datos_presupuesto['observaciones_cabecera_presupuesto'] ?? ''
+            );
+            
+            // Añadir página
+            $pdf->AddPage();
+            
+            // =====================================================
+            // TABLA DE LÍNEAS AGRUPADAS POR FECHA Y UBICACIÓN
+            // =====================================================
+            
+            $pdf->SetFont('helvetica', 'B', 8);
+            
+            // Iterar por cada fecha de inicio
+            foreach ($lineas_agrupadas as $fecha_inicio => $grupo_fecha) {
+                // =====================================================
+                // CABECERA DE FECHA DE INICIO
+                // =====================================================
+                
+                $fecha_formateada = date('d/m/Y', strtotime($fecha_inicio));
+                
+                // Fecha de inicio con fondo azul
+                $pdf->SetFillColor(52, 152, 219); // Azul
+                $pdf->SetTextColor(255, 255, 255); // Texto blanco
+                $pdf->SetFont('helvetica', 'B', 9);
+                $pdf->Cell(194, 6, 'Fecha de inicio: ' . $fecha_formateada, 0, 1, 'L', true);
+                
+                // Restaurar colores
+                $pdf->SetFillColor(255, 255, 255);
+                $pdf->SetTextColor(0, 0, 0);
+                
+                // Iterar por cada ubicación dentro de la fecha
+                foreach ($grupo_fecha['ubicaciones'] as $id_ubicacion => $grupo_ubicacion) {
+                    // Mostrar nombre de ubicación
+                    $pdf->SetFont('helvetica', 'B', 8);
+                    $ubicacion_text = $grupo_ubicacion['nombre_ubicacion'];
+                    if ($id_ubicacion > 0) {
+                        $ubicacion_text .= ' (ID: ' . $id_ubicacion . ')';
+                    }
+                    $pdf->Cell(194, 5, $ubicacion_text, 0, 1, 'L');
+                    
+                    $pdf->Ln(1);
+                    
+                    // Cabecera de tabla
+                    $pdf->SetFont('helvetica', 'B', 8);
+                    $pdf->SetFillColor(240, 240, 240);
+                    $pdf->Cell(17, 6, 'Inicio', 1, 0, 'C', 1);
+                    $pdf->Cell(17, 6, 'Fin', 1, 0, 'C', 1);
+                    $pdf->Cell(15, 6, 'Mtje', 1, 0, 'C', 1);
+                    $pdf->Cell(15, 6, 'Dsmtje', 1, 0, 'C', 1);
+                    $pdf->Cell(8, 6, 'Días', 1, 0, 'C', 1);
+                    $pdf->Cell(10, 6, 'Coef.', 1, 0, 'C', 1);
+                    $pdf->Cell(49, 6, 'Descripción', 1, 0, 'C', 1);
+                    $pdf->Cell(12, 6, 'Cant.', 1, 0, 'C', 1);
+                    $pdf->Cell(15, 6, 'P.Unit.', 1, 0, 'C', 1);
+                    $pdf->Cell(12, 6, '%Dto', 1, 0, 'C', 1);
+                    $pdf->Cell(24, 6, 'Importe(€)', 1, 1, 'C', 1);
+                    
+                    // Datos de líneas de esta ubicación
+                    $pdf->SetFont('helvetica', '', 7);
+                    
+                    foreach ($grupo_ubicacion['lineas'] as $linea) {
+                        // Formatear fechas
+                        $fecha_inicio_linea = !empty($linea['fecha_inicio_linea_ppto']) ? date('d/m/Y', strtotime($linea['fecha_inicio_linea_ppto'])) : '-';
+                        $fecha_fin = !empty($linea['fecha_fin_linea_ppto']) ? date('d/m/Y', strtotime($linea['fecha_fin_linea_ppto'])) : '-';
+                        $fecha_montaje = !empty($linea['fecha_montaje_linea_ppto']) ? date('d/m/Y', strtotime($linea['fecha_montaje_linea_ppto'])) : '-';
+                        $fecha_desmontaje = !empty($linea['fecha_desmontaje_linea_ppto']) ? date('d/m/Y', strtotime($linea['fecha_desmontaje_linea_ppto'])) : '-';
+                        
+                        // Línea normal o KIT
+                        $es_kit = (isset($linea['es_kit_articulo']) && $linea['es_kit_articulo'] == 1);
+                        
+                        if ($es_kit) {
+                            $pdf->SetFont('helvetica', 'B', 7);
+                        }
+                        
+                        $descripcion = $linea['descripcion_linea_ppto'] ?? '';
+                        $cantidad = floatval($linea['cantidad_linea_ppto']);
+                        $precio_unitario = floatval($linea['precio_unitario_linea_ppto']);
+                        $descuento = floatval($linea['descuento_linea_ppto']);
+                        $base_imponible = floatval($linea['base_imponible']);
+                        
+                        // Calcular si la descripción necesita 1 o 2 líneas
+                        $descripcion_corta = substr($descripcion, 0, 30); // ~30 caracteres caben en 45mm
+                        $necesita_dos_lineas = strlen($descripcion) > 30;
+                        $altura_fila = $necesita_dos_lineas ? 10 : 5;
+                        
+                        // VERIFICAR SI HAY ESPACIO SUFICIENTE ANTES DE EMPEZAR LA FILA
+                        $espacio_necesario = $altura_fila + 5; // Altura de fila + margen de seguridad
+                        $espacio_disponible = $pdf->getPageHeight() - $pdf->GetY() - $pdf->getBreakMargin();
+                        
+                        if ($espacio_disponible < $espacio_necesario) {
+                            // No hay espacio suficiente, forzar salto de página AHORA
+                            $pdf->AddPage();
+                        }
+                        
+                        // Guardar posición inicial
+                        $x_inicial = $pdf->GetX();
+                        $y_inicial = $pdf->GetY();
+                        
+                        $pdf->Cell(17, $altura_fila, $fecha_inicio_linea, 1, 0, 'C');
+                        $pdf->Cell(17, $altura_fila, $fecha_fin, 1, 0, 'C');
+                        $pdf->Cell(15, $altura_fila, $fecha_montaje, 1, 0, 'C');
+                        $pdf->Cell(15, $altura_fila, $fecha_desmontaje, 1, 0, 'C');
+                        $pdf->Cell(8, $altura_fila, $linea['dias_linea'] ?? '0', 1, 0, 'C');
+                        $pdf->Cell(10, $altura_fila, number_format(floatval($linea['valor_coeficiente_linea_ppto'] ?? 1.00), 2), 1, 0, 'C');
+                        
+                        // Descripción: usar Cell si cabe en 1 línea, MultiCell si necesita 2
+                        $x_desc = $pdf->GetX();
+                        if ($necesita_dos_lineas) {
+                            // Dibujar borde exterior primero
+                            $pdf->Rect($x_desc, $y_inicial, 49, $altura_fila);
+                            // MultiCell sin borde interno
+                            $pdf->SetXY($x_desc + 0.5, $y_inicial + 0.5);
+                            $pdf->MultiCell(48, 4.5, substr($descripcion, 0, 60), 0, 'L');
+                        } else {
+                            // Una sola línea
+                            $pdf->Cell(49, $altura_fila, $descripcion_corta, 1, 0, 'L');
+                        }
+                        
+                        // Volver a la misma línea para las siguientes celdas
+                        $pdf->SetXY($x_desc + 49, $y_inicial);
+                        
+                        $pdf->Cell(12, $altura_fila, number_format($cantidad, 0), 1, 0, 'C');
+                        $pdf->Cell(15, $altura_fila, number_format($precio_unitario, 2, ',', '.'), 1, 0, 'R');
+                        $pdf->Cell(12, $altura_fila, number_format($descuento, 0), 1, 0, 'C');
+                        $pdf->Cell(24, $altura_fila, number_format($base_imponible, 2, ',', '.'), 1, 0, 'R');
+                        
+                        // Mover cursor manualmente a la siguiente fila
+                        $pdf->SetXY($x_inicial, $y_inicial + $altura_fila);
+                        
+                        if ($es_kit) {
+                            $pdf->SetFont('helvetica', '', 7);
+                        }
+                        
+                        // Componentes del KIT
+                        // Mostrar solo si es KIT Y el detalle NO está oculto
+                        if ($es_kit && !empty($linea['id_articulo']) && 
+                            isset($linea['ocultar_detalle_kit_linea_ppto']) && 
+                            $linea['ocultar_detalle_kit_linea_ppto'] == 0) {
+                            
+                            $componentes = $kitModel->get_kits_by_articulo_maestro($linea['id_articulo']);
+                            
+                            // Filtrar solo componentes activos
+                            if (!empty($componentes)) {
+                                $componentesActivos = array_filter($componentes, function($comp) {
+                                    return isset($comp['activo_articulo_componente']) && $comp['activo_articulo_componente'] != 0;
+                                });
+                                
+                                foreach ($componentesActivos as $comp) {
+                                    $pdf->SetFont('helvetica', 'I', 6);
+                                    $pdf->SetTextColor(100, 100, 100);
+                                    $pdf->Cell(17, 4, '', 0, 0, 'C');
+                                    $pdf->Cell(17, 4, '', 0, 0, 'C');
+                                    $pdf->Cell(15, 4, '', 0, 0, 'C');
+                                    $pdf->Cell(15, 4, '', 0, 0, 'C');
+                                    $pdf->Cell(8, 4, '', 0, 0, 'C');
+                                    $pdf->Cell(10, 4, '', 0, 0, 'C');
+                                    
+                                    $cantidad_comp = $comp['cantidad_kit'] ?? $comp['total_componente_kit'] ?? 1;
+                                    $nombre_comp = $comp['nombre_articulo_componente'] ?? $comp['nombre_articulo'] ?? 'Sin nombre';
+                                    
+                                    $pdf->Cell(49, 4, '    • ' . $cantidad_comp . 'x ' . substr($nombre_comp, 0, 30), 0, 0, 'L');
+                                    $pdf->Cell(12, 4, '', 0, 0, 'C');
+                                    $pdf->Cell(51, 4, '', 0, 1, 'R');
+                                    
+                                    $pdf->SetFont('helvetica', '', 7);
+                                    $pdf->SetTextColor(0, 0, 0);
+                                }
+                            }
+                        }
+                    } // Fin foreach líneas
+                    
+                    // Subtotal por ubicación
+                    $pdf->SetFont('helvetica', 'B', 7);
+                    $pdf->SetFillColor(245, 245, 245);
+                    $pdf->Cell(170, 5, 'Subtotal ' . $grupo_ubicacion['nombre_ubicacion'], 1, 0, 'R', 1);
+                    $pdf->Cell(24, 5, number_format($grupo_ubicacion['subtotal_ubicacion'], 2, ',', '.'), 1, 1, 'R', 1);
+                    $pdf->Ln(2);
+                    
+                } // Fin foreach ubicaciones
+                
+                // Subtotal por fecha
+                $pdf->SetFont('helvetica', 'B', 8);
+                $pdf->SetFillColor(220, 220, 220);
+                $pdf->Cell(170, 6, 'Subtotal Fecha ' . $fecha_formateada, 1, 0, 'R', 1);
+                $pdf->Cell(24, 6, number_format($grupo_fecha['subtotal_fecha'], 2, ',', '.'), 1, 1, 'R', 1);
+                $pdf->Ln(3);
+                
+            } // Fin foreach fechas
+            
+            // =====================================================
+            // TOTALES
+            // =====================================================
+            
+            $pdf->Ln(5);
+            
+            // Línea separadora sutil antes de los totales
+            $pdf->SetDrawColor(200, 200, 200);
+            $pdf->Line(145, $pdf->GetY(), 200, $pdf->GetY());
+            $pdf->Ln(3);
+            
+            // Base Imponible (Subtotal sin IVA) - Con fondo y borde sutil
+            $pdf->SetFont('helvetica', '', 9);
+            $pdf->SetFillColor(248, 249, 250); // Fondo gris muy claro
+            $pdf->SetDrawColor(220, 220, 220); // Borde gris suave
+            $pdf->Cell(150, 6, '', 0, 0);
+            $pdf->Cell(30, 6, 'Base Imponible:', 1, 0, 'R', 1);
+            $pdf->SetFont('helvetica', 'B', 9);
+            $pdf->Cell(20, 6, number_format($subtotal_sin_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+            
+            // Desglose de IVA (solo si hay más de un tipo)
+            if (count($desglose_iva) > 1) {
+                $pdf->SetFont('helvetica', '', 8);
+                $pdf->Cell(150, 5, '', 0, 0);
+                $pdf->Cell(30, 5, 'Desglose de IVA:', 0, 1, 'R');
+                
+                foreach ($desglose_iva as $porcentaje => $valores) {
+                    $pdf->Cell(150, 4, '', 0, 0);
+                    $pdf->Cell(30, 4, "Base IVA {$porcentaje}%:", 0, 0, 'R');
+                    $pdf->Cell(20, 4, number_format($valores['base'], 2, ',', '.') . ' €', 0, 1, 'R');
+                    
+                    $pdf->Cell(150, 4, '', 0, 0);
+                    $pdf->Cell(30, 4, "IVA {$porcentaje}%:", 0, 0, 'R');
+                    $pdf->Cell(20, 4, number_format($valores['cuota'], 2, ',', '.') . ' €', 0, 1, 'R');
+                }
+            }
+            
+            // Total IVA - Con fondo sutil
+            $pdf->SetFont('helvetica', '', 9);
+            $pdf->SetFillColor(248, 249, 250);
+            $pdf->SetDrawColor(220, 220, 220);
+            $pdf->Cell(150, 6, '', 0, 0);
+            
+            // Si solo hay un tipo de IVA, mostrar el porcentaje en la etiqueta
+            if (count($desglose_iva) == 1) {
+                $porcentaje_unico = key($desglose_iva);
+                $pdf->Cell(30, 6, "Total IVA ({$porcentaje_unico}%):", 1, 0, 'R', 1);
+            } else {
+                $pdf->Cell(30, 6, 'Total IVA:', 1, 0, 'R', 1);
+            }
+            
+            $pdf->Cell(20, 6, number_format($total_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+            
+            $pdf->Ln(2);
+            
+            // Total presupuesto - Destacado con color más oscuro y bordes más gruesos
+            $pdf->SetFont('helvetica', 'B', 11);
+            $pdf->SetFillColor(102, 126, 234); // Azul elegante (mismo que caja de info)
+            $pdf->SetTextColor(255, 255, 255); // Texto blanco
+            $pdf->SetDrawColor(80, 100, 200); // Borde azul más oscuro
+            $pdf->SetLineWidth(0.5);
+            $pdf->Cell(150, 8, '', 0, 0);
+            $pdf->Cell(20, 8, 'TOTAL:', 1, 0, 'R', 1);
+            $pdf->Cell(30, 8, number_format($total_presupuesto, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+            
+            // Restaurar colores y grosor de línea
+            $pdf->SetTextColor(0, 0, 0);
+            $pdf->SetDrawColor(0, 0, 0);
+            $pdf->SetLineWidth(0.2);
+            
+            // =====================================================
+            // FORMA DE PAGO
+            // =====================================================
+            
+            if (!empty($datos_presupuesto['nombre_pago'])) {
+                $pdf->Ln(6);
+                
+                // Título "FORMA DE PAGO:"
+                $pdf->SetFont('helvetica', 'B', 9);
+                $pdf->SetTextColor(52, 73, 94); // Color oscuro
+                $pdf->Cell(40, 5, 'FORMA DE PAGO:', 0, 0, 'L');
+                
+                // Construir frase de forma de pago
+                $frase_pago = [];
+                
+                // Método de pago
+                if (!empty($datos_presupuesto['nombre_metodo_pago'])) {
+                    $frase_pago[] = $datos_presupuesto['nombre_metodo_pago'];
+                }
+                
+                // Anticipo
+                if (!empty($datos_presupuesto['porcentaje_anticipo_pago'])) {
+                    $texto_anticipo = 'Anticipo del ' . $datos_presupuesto['porcentaje_anticipo_pago'] . '%';
+                    
+                    if (isset($datos_presupuesto['dias_anticipo_pago'])) {
+                        $dias_anticipo = intval($datos_presupuesto['dias_anticipo_pago']);
+                        
+                        if ($dias_anticipo < 0) {
+                            $texto_anticipo .= ' (' . abs($dias_anticipo) . ' dias antes del inicio)';
+                        } elseif ($dias_anticipo > 0) {
+                            $texto_anticipo .= ' (' . $dias_anticipo . ' dias despues del inicio)';
+                        } else {
+                            $texto_anticipo .= ' (el dia de inicio)';
+                        }
+                    }
+                    
+                    $frase_pago[] = $texto_anticipo;
+                }
+                
+                // Pago final
+                if (!empty($datos_presupuesto['porcentaje_final_pago']) && 
+                    $datos_presupuesto['porcentaje_anticipo_pago'] < 100) {
+                    $texto_final = 'Pago final del ' . $datos_presupuesto['porcentaje_final_pago'] . '%';
+                    
+                    if (isset($datos_presupuesto['dias_final_pago'])) {
+                        $dias_final = intval($datos_presupuesto['dias_final_pago']);
+                        
+                        if ($dias_final < 0) {
+                            $texto_final .= ' (' . abs($dias_final) . ' dias antes del fin)';
+                        } elseif ($dias_final > 0) {
+                            $texto_final .= ' (' . $dias_final . ' dias despues del fin)';
+                        } else {
+                            $texto_final .= ' (el dia de fin)';
+                        }
+                    }
+                    
+                    $frase_pago[] = $texto_final;
+                }
+                
+                // Descuento
+                if (!empty($datos_presupuesto['descuento_pago']) && $datos_presupuesto['descuento_pago'] > 0) {
+                    $frase_pago[] = 'Descuento aplicado: ' . $datos_presupuesto['descuento_pago'] . '%';
+                }
+                
+                // Unir todas las partes con punto y coma y mostrar
+                $texto_forma_pago = implode('; ', $frase_pago) . '.';
+                
+                $pdf->SetFont('helvetica', '', 8);
+                $pdf->SetTextColor(70, 70, 70); // Gris oscuro
+                $pdf->MultiCell(160, 4, $texto_forma_pago, 0, 'L');
+            }
+            
+            // =====================================================
+            // OBSERVACIONES DE FAMILIAS Y ARTÍCULOS
+            // =====================================================
+            
+            if (!empty($observaciones_array) && is_array($observaciones_array)) {
+                $pdf->Ln(8);
+                
+                // Título de la sección
+                $pdf->SetFont('helvetica', 'B', 9.5);
+                $pdf->SetTextColor(66, 66, 66);
+                $pdf->Cell(0, 6, 'OBSERVACIONES DEL PRESUPUESTO', 0, 1, 'L');
+                
+                $pdf->Ln(2);
+                
+                // Recorrer cada observación
+                foreach ($observaciones_array as $obs) {
+                    // Obtener nombre según tipo
+                    $nombre = '';
+                    if ($obs['tipo_observacion'] == 'familia' && !empty($obs['nombre_familia'])) {
+                        $nombre = $obs['nombre_familia'];
+                    } elseif ($obs['tipo_observacion'] == 'articulo' && !empty($obs['nombre_articulo'])) {
+                        $nombre = $obs['nombre_articulo'];
+                    }
+                    
+                    // Obtener texto de observación
+                    $texto = $obs['observacion_es'] ?? '';
+                    
+                    // Solo mostrar si hay nombre y texto
+                    if (!empty($nombre) && !empty(trim($texto))) {
+                        $tipo_label = ucfirst(strtolower($obs['tipo_observacion']));
+                        
+                        // Fondo gris claro para cada observación
+                        $pdf->SetFillColor(250, 250, 250);
+                        
+                        // Tipo y nombre (en negrita)
+                        $pdf->SetFont('helvetica', 'B', 8);
+                        $pdf->SetTextColor(117, 117, 117);
+                        $pdf->Cell(0, 5, $tipo_label . ': ' . $nombre, 0, 1, 'L', 1);
+                        
+                        // Texto de la observación
+                        $pdf->SetFont('helvetica', '', 8);
+                        $pdf->SetTextColor(97, 97, 97);
+                        $pdf->MultiCell(0, 4, $texto, 0, 'L', 1);
+                        
+                        $pdf->Ln(3);
+                    }
+                }
+            }
+            
+            // =====================================================
+            // OBSERVACIONES DE PIE DEL PRESUPUESTO
+            // =====================================================
+            
+            if (!empty($datos_presupuesto['observaciones_pie_presupuesto'])) {
+                $pdf->Ln(10);
+                
+                // Línea superior decorativa
+                $pdf->SetDrawColor(44, 62, 80); // Color oscuro
+                $pdf->SetLineWidth(0.8);
+                $pdf->Line(8, $pdf->GetY(), 202, $pdf->GetY());
+                $pdf->Ln(3);
+                
+                // Fondo gris claro
+                $y_inicio = $pdf->GetY();
+                $texto_altura = $pdf->getStringHeight(0, $datos_presupuesto['observaciones_pie_presupuesto']);
+                $pdf->SetFillColor(248, 249, 250);
+                $pdf->Rect(8, $y_inicio, 194, $texto_altura + 6, 'F');
+                
+                // Texto centrado
+                $pdf->SetFont('helvetica', '', 8);
+                $pdf->SetTextColor(99, 110, 114);
+                $pdf->SetXY(8, $y_inicio + 3);
+                $pdf->MultiCell(194, 4, $datos_presupuesto['observaciones_pie_presupuesto'], 0, 'C');
+                
+                // Línea inferior
+                $pdf->SetDrawColor(223, 230, 233); // Color gris claro
+                $pdf->SetLineWidth(0.3);
+                $pdf->Line(8, $pdf->GetY() + 3, 202, $pdf->GetY() + 3);
+            }
+            
+            // =====================================================
+            // PIE DE PÁGINA EMPRESA
+            // =====================================================
+            
+            if (!empty($datos_empresa['texto_pie_presupuesto_empresa'])) {
+                $pdf->Ln(5);
+                
+                // Línea superior decorativa
+                $pdf->SetDrawColor(44, 62, 80);
+                $pdf->SetLineWidth(0.8);
+                $pdf->Line(8, $pdf->GetY(), 202, $pdf->GetY());
+                $pdf->Ln(3);
+                
+                // Fondo gris claro
+                $y_inicio = $pdf->GetY();
+                $texto_altura = $pdf->getStringHeight(0, $datos_empresa['texto_pie_presupuesto_empresa']);
+                $pdf->SetFillColor(248, 249, 250);
+                $pdf->Rect(8, $y_inicio, 194, $texto_altura + 6, 'F');
+                
+                // Texto centrado
+                $pdf->SetFont('helvetica', '', 8);
+                $pdf->SetTextColor(99, 110, 114);
+                $pdf->SetXY(8, $y_inicio + 3);
+                $pdf->MultiCell(194, 4, $datos_empresa['texto_pie_presupuesto_empresa'], 0, 'C');
+            }
+            
+            // =====================================================
+            // CASILLAS DE FIRMA (AL PIE DE LA ÚLTIMA PÁGINA)
+            // =====================================================
+            
+            // Guardar auto page break temporalmente
+            $auto_page_break = $pdf->getAutoPageBreak();
+            $pdf->SetAutoPageBreak(false, 0);
+            
+            // Restaurar colores y configuración
+            $pdf->SetTextColor(0, 0, 0);
+            $pdf->SetDrawColor(0, 0, 0);
+            $pdf->SetLineWidth(0.2);
+            
+            // Calcular posición fija en el pie de página (35mm desde el final)
+            $altura_pagina = $pdf->getPageHeight();
+            $y_inicio_firmas = $altura_pagina - 35;
+            
+            // Ancho de cada casilla de firma
+            $ancho_casilla = 90;
+            $separacion = 7;
+            $x_inicio_izq = 8;
+            $x_inicio_der = $x_inicio_izq + $ancho_casilla + $separacion;
+            
+            // ======== CASILLA IZQUIERDA: FIRMA MDR (EMPRESA) ========
+            
+            $pdf->SetXY($x_inicio_izq, $y_inicio_firmas);
+            
+            // Título
+            $pdf->SetFont('helvetica', 'B', 9);
+            $pdf->Cell($ancho_casilla, 5, 'FIRMA DE ' . strtoupper($datos_empresa['nombre_empresa'] ?? 'MDR'), 0, 1, 'C');
+            
+            $pdf->SetX($x_inicio_izq);
+            $pdf->Ln(10);
+            
+            // Línea para firmar
+            $y_linea_izq = $pdf->GetY();
+            $pdf->Line($x_inicio_izq + 10, $y_linea_izq, $x_inicio_izq + $ancho_casilla - 10, $y_linea_izq);
+            
+            $pdf->SetXY($x_inicio_izq, $y_linea_izq + 2);
+            $pdf->SetFont('helvetica', '', 8);
+            $pdf->Cell($ancho_casilla, 4, 'Firma y Sello', 0, 1, 'C');
+            
+            $pdf->SetX($x_inicio_izq);
+            $pdf->Ln(2);
+            
+            // Fecha
+            $pdf->SetXY($x_inicio_izq, $pdf->GetY());
+            $pdf->SetFont('helvetica', '', 7);
+            $pdf->Cell($ancho_casilla, 4, 'Fecha: ___/___/______', 0, 1, 'C');
+            
+            // ======== CASILLA DERECHA: FIRMA CLIENTE (VISTO BUENO) ========
+            
+            $pdf->SetXY($x_inicio_der, $y_inicio_firmas);
+            
+            // Título
+            $pdf->SetFont('helvetica', 'B', 9);
+            $pdf->Cell($ancho_casilla, 5, 'VISTO BUENO DEL CLIENTE', 0, 1, 'C');
+            
+            $pdf->SetX($x_inicio_der);
+            $pdf->Ln(10);
+            
+            // Línea para firmar
+            $y_linea_der = $pdf->GetY();
+            $pdf->Line($x_inicio_der + 10, $y_linea_der, $x_inicio_der + $ancho_casilla - 10, $y_linea_der);
+            
+            $pdf->SetXY($x_inicio_der, $y_linea_der + 2);
+            $pdf->SetFont('helvetica', '', 8);
+            
+            // Mostrar nombre del cliente si está disponible
+            $nombre_completo_cliente = trim(
+                ($datos_presupuesto['nombre_cliente'] ?? '') . ' ' . 
+                ($datos_presupuesto['apellido_cliente'] ?? '')
+            );
+            
+            if (!empty($nombre_completo_cliente)) {
+                $pdf->Cell($ancho_casilla, 4, $nombre_completo_cliente, 0, 1, 'C');
+            } else {
+                $pdf->Cell($ancho_casilla, 4, 'Firma del Cliente', 0, 1, 'C');
+            }
+            
+            $pdf->SetX($x_inicio_der);
+            $pdf->Ln(2);
+            
+            // Fecha
+            $pdf->SetXY($x_inicio_der, $pdf->GetY());
+            $pdf->SetFont('helvetica', '', 7);
+            $pdf->Cell($ancho_casilla, 4, 'Fecha: ___/___/______', 0, 1, 'C');
+            
+            // Restaurar auto page break
+            $pdf->SetAutoPageBreak($auto_page_break, 15);
+            
+            // =====================================================
+            // SALIDA DEL PDF
+            // =====================================================
+            
+            // Limpiar cualquier output previo
+            ob_end_clean();
+            
+            $nombre_archivo = 'Presupuesto_' . ($datos_presupuesto['numero_presupuesto'] ?? 'SN') . '.pdf';
+            
+            $pdf->Output($nombre_archivo, 'I'); // 'I' = inline en navegador
+            
+            $registro->registrarActividad(
+                'admin',
+                'impresionpresupuesto_m2_pdf_es.php',
+                'cli_esp',
+                "PDF generado para presupuesto ID: $id_presupuesto",
+                'info'
+            );
+            
+            exit; // Importante: terminar la ejecución después de enviar el PDF
+            
+        } catch (Exception $e) {
+            ob_end_clean(); // Limpiar buffer en caso de error
+            
+            $registro->registrarActividad(
+                'admin',
+                'impresionpresupuesto_m2_pdf_es.php',
+                'cli_esp',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+            
+            // Mostrar error al usuario
+            header('Content-Type: text/html; charset=utf-8');
+            echo '<!DOCTYPE html>';
+            echo '<html><head><meta charset="UTF-8"><title>Error</title></head><body>';
+            echo '<h2>Error al generar el PDF</h2>';
+            echo '<p>' . htmlspecialchars($e->getMessage()) . '</p>';
+            echo '<p><a href="javascript:history.back()">Volver</a></p>';
+            echo '</body></html>';
+            exit;
+        }
+        break;
+        
+    default:
+        ob_end_clean();
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Operación no válida'
+        ]);
+        exit;
+}
+?>

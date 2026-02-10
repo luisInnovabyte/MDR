@@ -235,7 +235,8 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     return `<button type="button" class="btn btn-success btn-sm imprimirPresupuesto" 
                              data-toggle="tooltip-primary" data-placement="top" title="Imprimir presupuesto"  
-                             data-id_presupuesto="${row.id_presupuesto}"> 
+                             data-id_presupuesto="${row.id_presupuesto}"
+                             data-id_empresa="${row.id_empresa}"> 
                              <i class="fas fa-print"></i>
                              </button>`;
                 }
@@ -580,11 +581,13 @@ $(document).ready(function () {
     // Abrir modal de impresión
     $(document).on('click', '.imprimirPresupuesto', function () {
         var id_presupuesto = $(this).data('id_presupuesto');
+        var id_empresa = $(this).data('id_empresa');
         
-        console.log('Abriendo modal de impresión para presupuesto:', id_presupuesto);
+        console.log('Abriendo modal de impresión para presupuesto:', id_presupuesto, 'Empresa:', id_empresa);
         
-        // Guardar el ID en el campo oculto del formulario
+        // Guardar el ID del presupuesto y empresa en campos ocultos del formulario
         $('#impresion_id_presupuesto').val(id_presupuesto);
+        $('#impresion_id_empresa').val(id_empresa);
         
         // Resetear opciones del modal a valores por defecto
         $('#tipo_cliente').prop('checked', true);
@@ -597,13 +600,17 @@ $(document).ready(function () {
     // Procesar impresión cuando se hace clic en el botón "Imprimir" del modal
     $(document).on('click', '#btnImprimirPresupuesto', function () {
         var id_presupuesto = $('#impresion_id_presupuesto').val();
+        var id_empresa = $('#impresion_id_empresa').val();
         var tipo = $('input[name="tipo_presupuesto"]:checked').val();
         var idioma = $('input[name="idioma"]:checked').val();
+        var formato = $('input[name="formato"]:checked').val();
         
         console.log('Procesando impresión:', {
             id_presupuesto: id_presupuesto,
+            id_empresa: id_empresa,
             tipo: tipo,
-            idioma: idioma
+            idioma: idioma,
+            formato: formato
         });
         
         // Validar que se haya seleccionado un presupuesto
@@ -626,36 +633,72 @@ $(document).ready(function () {
             return;
         }
         
-        // Crear formulario temporal para enviar por POST y abrir en nueva ventana
-        var form = $('<form>', {
-            'method': 'POST',
-            'action': '../../controller/impresionpresupuesto.php?op=' + operacion,
-            'target': '_blank'
-        });
+        // Función para generar la impresión
+        function generarImpresion(controller) {
+            // Crear formulario temporal para enviar por POST y abrir en nueva ventana
+            var form = $('<form>', {
+                'method': 'POST',
+                'action': '../../controller/' + controller + '?op=' + operacion,
+                'target': '_blank'
+            });
+            
+            // Añadir campo oculto con el ID del presupuesto
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'id_presupuesto',
+                'value': id_presupuesto
+            }));
+            
+            // Añadir el formulario al body, enviarlo y eliminarlo
+            $('body').append(form);
+            form.submit();
+            form.remove();
+            
+            // Cerrar el modal
+            $('#modalImpresionPresupuesto').modal('hide');
+            
+            // Notificar al usuario
+            Swal.fire({
+                icon: 'success',
+                title: 'Generando impresión',
+                text: 'Se abrirá el presupuesto en una nueva ventana',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
         
-        // Añadir campo oculto con el ID del presupuesto
-        form.append($('<input>', {
-            'type': 'hidden',
-            'name': 'id_presupuesto',
-            'value': id_presupuesto
-        }));
+        // Determinar el controlador según el formato seleccionado
+        var modeloController;
         
-        // Añadir el formulario al body, enviarlo y eliminarlo
-        $('body').append(form);
-        form.submit();
-        form.remove();
-        
-        // Cerrar el modal
-        $('#modalImpresionPresupuesto').modal('hide');
-        
-        // Notificar al usuario
-        Swal.fire({
-            icon: 'success',
-            title: 'Generando impresión',
-            text: 'Se abrirá el presupuesto en una nueva ventana',
-            timer: 2000,
-            showConfirmButton: false
-        });
+        if (formato === 'pdf') {
+            // Usar controlador PDF
+            modeloController = 'impresionpresupuesto_m2_pdf_es.php';
+            console.log('Usando controlador PDF:', modeloController);
+            generarImpresion(modeloController);
+        } else {
+            // Usar HTML dinámico desde BD
+            $.ajax({
+                url: '../../controller/presupuesto.php?op=obtener_modelo_impresion',
+                type: 'POST',
+                data: {
+                    id_empresa: id_empresa
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        modeloController = response.modelo;
+                        console.log('Usando modelo HTML:', modeloController);
+                        generarImpresion(modeloController);
+                    } else {
+                        Swal.fire('Error', response.message || 'No se pudo obtener el modelo de impresión', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error al obtener modelo:', error);
+                    Swal.fire('Error', 'Error al obtener el modelo de impresión', 'error');
+                }
+            });
+        }
     });
 
     /************************************/
