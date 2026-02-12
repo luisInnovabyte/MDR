@@ -467,6 +467,66 @@
                         </div>
                     </div>
 
+                    <!-- ========================================== -->
+                    <!-- J. OBSERVACIONES POR DEFECTO PRESUPUESTOS -->
+                    <!-- ========================================== -->
+                    <div class="card mb-4 border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0 tx-bold">
+                                <i class="bi bi-file-earmark-text me-2"></i>Observaciones por Defecto para Nuevos Presupuestos
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-1"></i>
+                                <strong>Nota:</strong> Estos textos se cargarán automáticamente en las observaciones de cabecera
+                                cuando se cree un <strong>nuevo presupuesto</strong>. Los presupuestos existentes no se modificarán.
+                            </div>
+
+                            <div class="row">
+                                <!-- Observaciones Cabecera - Español -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="observaciones_cabecera_presupuesto_empresa" class="form-label">
+                                        <strong>Observaciones de Cabecera (Español)</strong>
+                                        <i class="bi bi-flag-fill text-danger ms-1" title="Español"></i>
+                                    </label>
+                                    <textarea
+                                        class="form-control"
+                                        name="observaciones_cabecera_presupuesto_empresa"
+                                        id="observaciones_cabecera_presupuesto_empresa"
+                                        rows="4"
+                                        placeholder="Ej: Montaje de material audiovisual en regimen de alquiler"></textarea>
+                                    <small class="text-muted">
+                                        Texto personalizado que aparece en la cabecera del presupuesto (sin fechas)
+                                    </small>
+                                </div>
+
+                                <!-- Observaciones Cabecera - Inglés -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="observaciones_cabecera_ingles_presupuesto_empresa" class="form-label">
+                                        <strong>Observaciones de Cabecera (Inglés)</strong>
+                                        <i class="bi bi-translate text-info ms-1" title="English"></i>
+                                    </label>
+                                    <textarea
+                                        class="form-control"
+                                        name="observaciones_cabecera_ingles_presupuesto_empresa"
+                                        id="observaciones_cabecera_ingles_presupuesto_empresa"
+                                        rows="4"
+                                        placeholder="Ex: Audiovisual equipment assembly for rental"></textarea>
+                                    <small class="text-muted">
+                                        Versión en inglés de las observaciones de cabecera
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-warning mt-3 mb-0">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                <strong>Importante:</strong> Estos valores son plantillas que se copiarán a nuevos presupuestos.
+                                Una vez creado el presupuesto, las modificaciones aquí no afectarán presupuestos existentes.
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SECCIÓN: Estado de la Empresa -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-info text-white">

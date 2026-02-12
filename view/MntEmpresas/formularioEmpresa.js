@@ -106,6 +106,19 @@ $(document).ready(function () {
                     $('#texto_pie_presupuesto_empresa').val(data.texto_pie_presupuesto_empresa);
                     $('#texto_pie_factura_empresa').val(data.texto_pie_factura_empresa);
 
+                    // Observaciones por defecto para presupuestos
+                    if (data.observaciones_cabecera_presupuesto_empresa !== undefined) {
+                        $('#observaciones_cabecera_presupuesto_empresa').val(
+                            data.observaciones_cabecera_presupuesto_empresa || ''
+                        );
+                    }
+
+                    if (data.observaciones_cabecera_ingles_presupuesto_empresa !== undefined) {
+                        $('#observaciones_cabecera_ingles_presupuesto_empresa').val(
+                            data.observaciones_cabecera_ingles_presupuesto_empresa || ''
+                        );
+                    }
+
                     // Estado activo
                     $('#activo_empresa_hidden').val(data.activo_empresa);
                     $('#activo_empresa_display').prop('checked', data.activo_empresa == 1);
@@ -231,7 +244,11 @@ $(document).ready(function () {
         var texto_legal_factura_empresa = $('#texto_legal_factura_empresa').val().trim();
         var texto_pie_presupuesto_empresa = $('#texto_pie_presupuesto_empresa').val().trim();
         var texto_pie_factura_empresa = $('#texto_pie_factura_empresa').val().trim();
-        
+
+        // Observaciones por defecto para presupuestos
+        var observaciones_cabecera_presupuesto_empresa = $('#observaciones_cabecera_presupuesto_empresa').val().trim();
+        var observaciones_cabecera_ingles_presupuesto_empresa = $('#observaciones_cabecera_ingles_presupuesto_empresa').val().trim();
+
         // Estado
         var activo_empresa;
         if (id_empresa) {
@@ -254,8 +271,9 @@ $(document).ready(function () {
             verifactu_nombre_empresa, verifactu_nombre_comercial_empresa,
             verifactu_id_software_empresa, verifactu_nombre_software_empresa,
             verifactu_version_software_empresa, verifactu_numero_instalacion_empresa,
-            logotipo_empresa, logotipo_pie_empresa, texto_legal_factura_empresa, 
+            logotipo_empresa, logotipo_pie_empresa, texto_legal_factura_empresa,
             texto_pie_presupuesto_empresa, texto_pie_factura_empresa,
+            observaciones_cabecera_presupuesto_empresa, observaciones_cabecera_ingles_presupuesto_empresa,
             activo_empresa
         );
     });
@@ -393,7 +411,9 @@ $(document).ready(function () {
             texto_legal_factura_empresa: params[38],
             texto_pie_presupuesto_empresa: params[39],
             texto_pie_factura_empresa: params[40],
-            activo_empresa: params[41]
+            observaciones_cabecera_presupuesto_empresa: params[41],
+            observaciones_cabecera_ingles_presupuesto_empresa: params[42],
+            activo_empresa: params[43]
         };
         
         console.log('💾 Datos a guardar:', datosEnvio);
@@ -405,7 +425,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function(res) {
                 console.log('📋 Respuesta del guardado:', res);
-                
+
                 if (res.status === 'success' || res.success) {
                     formSaved = true;
                     toastr.success(res.message || "Empresa guardada correctamente");

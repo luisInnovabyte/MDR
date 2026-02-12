@@ -193,7 +193,7 @@ class MYPDF extends TCPDF {
         
         // Título "CLIENTE" (sin emoji para evitar caracteres extraños)
         $this->SetXY($col2_x + 2, $box_y_start + 1.5);
-        $this->SetFont('helvetica', 'B', 8);
+        $this->SetFont('helvetica', 'B', 9);
         $this->SetTextColor(44, 62, 80);
         $this->Cell($col2_width - 4, 3.5, 'CLIENTE', 0, 1, 'L');
         
@@ -203,7 +203,7 @@ class MYPDF extends TCPDF {
         
         // Datos del cliente
         $this->SetXY($col2_x + 2, $box_y_start + 6.5);
-        $this->SetFont('helvetica', '', 7);
+        $this->SetFont('helvetica', '', 8);
         $this->SetTextColor(52, 73, 94);
         
         $nombre_completo = trim(
@@ -213,24 +213,24 @@ class MYPDF extends TCPDF {
         
         // Nombre completo
         if (!empty($nombre_completo)) {
-            $this->SetFont('helvetica', 'B', 7.5);
+            $this->SetFont('helvetica', 'B', 8.5);
             $this->Cell($col2_width - 4, 3, $nombre_completo, 0, 1, 'L');
             $this->SetX($col2_x + 2);
-            $this->SetFont('helvetica', '', 6.5);
+            $this->SetFont('helvetica', '', 7.5);
         }
         
         // NIF/CIF si existe
         if (!empty($this->datos_presupuesto['nif_cliente'])) {
-            $this->SetFont('helvetica', '', 6.5);
+            $this->SetFont('helvetica', '', 7.5);
             $this->Cell(15, 2.5, 'NIF/CIF:', 0, 0, 'L');
-            $this->SetFont('helvetica', 'B', 6.5);
+            $this->SetFont('helvetica', 'B', 7.5);
             $this->Cell($col2_width - 19, 2.5, $this->datos_presupuesto['nif_cliente'], 0, 1, 'L');
             $this->SetX($col2_x + 2);
         }
         
         // Dirección
         if (!empty($this->datos_presupuesto['direccion_cliente'])) {
-            $this->SetFont('helvetica', '', 6.5);
+            $this->SetFont('helvetica', '', 7.5);
             $this->Cell(15, 2.5, 'Direccion:', 0, 0, 'L');
             
             $direccion_cliente = $this->datos_presupuesto['direccion_cliente'];
@@ -252,7 +252,7 @@ class MYPDF extends TCPDF {
         
         // Email
         if (!empty($this->datos_presupuesto['email_cliente'])) {
-            $this->SetFont('helvetica', '', 6.5);
+            $this->SetFont('helvetica', '', 7.5);
             $this->Cell(15, 2.5, 'Email:', 0, 0, 'L');
             $this->Cell($col2_width - 19, 2.5, $this->datos_presupuesto['email_cliente'], 0, 1, 'L');
             $this->SetX($col2_x + 2);
@@ -260,7 +260,7 @@ class MYPDF extends TCPDF {
         
         // Teléfono
         if (!empty($this->datos_presupuesto['telefono_cliente'])) {
-            $this->SetFont('helvetica', '', 6.5);
+            $this->SetFont('helvetica', '', 7.5);
             $this->Cell(15, 2.5, 'Telefono:', 0, 0, 'L');
             $this->Cell($col2_width - 19, 2.5, $this->datos_presupuesto['telefono_cliente'], 0, 1, 'L');
             $this->SetX($col2_x + 2);
@@ -274,12 +274,12 @@ class MYPDF extends TCPDF {
             
             // Título "A la atención de:"
             $this->SetXY($col2_x + 2, $this->GetY());
-            $this->SetFont('helvetica', 'B', 7);
+            $this->SetFont('helvetica', 'B', 8);
             $this->SetTextColor(156, 89, 182); // Color morado
             $this->Cell($col2_width - 4, 3, 'A la atencion de:', 0, 1, 'L');
-            
+
             $this->SetX($col2_x + 2);
-            $this->SetFont('helvetica', '', 6.5);
+            $this->SetFont('helvetica', '', 7.5);
             $this->SetTextColor(52, 73, 94);
             
             // Nombre contacto
@@ -290,10 +290,10 @@ class MYPDF extends TCPDF {
             
             if (!empty($nombre_contacto)) {
                 $this->Cell(15, 2.5, 'Nombre:', 0, 0, 'L');
-                $this->SetFont('helvetica', 'B', 6.5);
+                $this->SetFont('helvetica', 'B', 7.5);
                 $this->Cell($col2_width - 19, 2.5, $nombre_contacto, 0, 1, 'L');
                 $this->SetX($col2_x + 2);
-                $this->SetFont('helvetica', '', 6.5);
+                $this->SetFont('helvetica', '', 7.5);
             }
             
             // Teléfono contacto

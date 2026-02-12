@@ -147,7 +147,11 @@ switch ($_GET["op"]) {
                     $_POST["texto_legal_factura_empresa"],
                     $_POST["texto_pie_presupuesto_empresa"],
                     $_POST["texto_pie_factura_empresa"],
-                    $_POST["observaciones_empresa"]
+                    $_POST["observaciones_empresa"],
+                    isset($_POST["modelo_impresion_empresa"]) ? $_POST["modelo_impresion_empresa"] : 'impresionpresupuesto_m1_es.php',
+                    isset($_POST["configuracion_pdf_presupuesto_empresa"]) ? $_POST["configuracion_pdf_presupuesto_empresa"] : null,
+                    (isset($_POST["observaciones_cabecera_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_presupuesto_empresa"]) : null,
+                    (isset($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) : null
                 );
                 
                 if ($resultado !== false && $resultado > 0) {
@@ -215,9 +219,13 @@ switch ($_GET["op"]) {
                     $_POST["texto_legal_factura_empresa"],
                     $_POST["texto_pie_presupuesto_empresa"],
                     $_POST["texto_pie_factura_empresa"],
-                    $_POST["observaciones_empresa"]
+                    $_POST["observaciones_empresa"],
+                    isset($_POST["modelo_impresion_empresa"]) ? $_POST["modelo_impresion_empresa"] : 'impresionpresupuesto_m1_es.php',
+                    isset($_POST["configuracion_pdf_presupuesto_empresa"]) ? $_POST["configuracion_pdf_presupuesto_empresa"] : null,
+                    (isset($_POST["observaciones_cabecera_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_presupuesto_empresa"]) : null,
+                    (isset($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) : null
                 );
-                
+
                 if ($resultado !== false) {
                     $registro->registrarActividad(
                         'admin',
@@ -226,7 +234,7 @@ switch ($_GET["op"]) {
                         "Empresa actualizada exitosamente ID: " . $_POST["id_empresa"],
                         "info"
                     );
-                    
+
                     header('Content-Type: application/json');
                     echo json_encode([
                         'status' => 'success',
@@ -317,7 +325,7 @@ switch ($_GET["op"]) {
 
     case "validarEmpresaFicticia":
         $datos = $empresa->validar_empresaFicticia();
-        
+
         $registro->registrarActividad(
             'admin',
             'empresas.php',
@@ -328,6 +336,24 @@ switch ($_GET["op"]) {
 
         header('Content-Type: application/json');
         echo json_encode($datos, JSON_UNESCAPED_UNICODE);
+        break;
+
+    case "obtener_observaciones_por_defecto":
+        $observaciones = $empresa->get_observaciones_por_defecto();
+
+        $registro->registrarActividad(
+            'admin',
+            'empresas.php',
+            'Obtener observaciones por defecto',
+            "Observaciones por defecto obtenidas",
+            "info"
+        );
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            "status" => true,
+            "data" => $observaciones
+        ], JSON_UNESCAPED_UNICODE);
         break;
 }
 ?>

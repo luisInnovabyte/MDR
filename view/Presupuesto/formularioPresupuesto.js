@@ -177,6 +177,33 @@ $(document).ready(function () {
         });
     }
 
+    /**
+     * Carga las observaciones de cabecera por defecto desde la empresa
+     * Solo se ejecuta cuando se crea un nuevo presupuesto
+     */
+    function cargarObservacionesPorDefecto() {
+        $.ajax({
+            url: "../../controller/empresas.php?op=obtener_observaciones_por_defecto",
+            type: "POST",
+            dataType: "json",
+            success: function(response) {
+                if (response.status && response.data) {
+                    // Solo establecer valores si los campos están vacíos
+                    if (!$('#observaciones_cabecera_presupuesto').val()) {
+                        $('#observaciones_cabecera_presupuesto').val(response.data.observaciones_esp || '');
+                    }
+
+                    if (!$('#observaciones_cabecera_ingles_presupuesto').val()) {
+                        $('#observaciones_cabecera_ingles_presupuesto').val(response.data.observaciones_eng || '');
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                // Silencioso: no mostrar error al usuario, es opcional
+            }
+        });
+    }
+
     // Función para calcular fecha de validez basada en fecha de presupuesto
     function calcularFechaValidez(fechaPresupuesto) {
         if (!fechaPresupuesto) {
@@ -652,7 +679,10 @@ $(document).ready(function () {
             $('#fecha_validez_presupuesto').val(fechaValidez);
             console.log('✓ Fecha de validez calculada automáticamente:', fechaValidez, '(+' + diasValidezPresupuesto + ' días)');
         });
-        
+
+        // Cargar observaciones de cabecera por defecto desde la empresa
+        cargarObservacionesPorDefecto();
+
         $('#numero_presupuesto').focus();
         setTimeout(function() {
             captureOriginalValues();

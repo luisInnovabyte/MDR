@@ -249,7 +249,11 @@ class Empresas
         $texto_legal_factura_empresa,
         $texto_pie_presupuesto_empresa,
         $texto_pie_factura_empresa,
-        $observaciones_empresa
+        $observaciones_empresa,
+        $modelo_impresion_empresa,
+        $configuracion_pdf_presupuesto_empresa,
+        $observaciones_cabecera_presupuesto_empresa,
+        $observaciones_cabecera_ingles_presupuesto_empresa
     ) {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
@@ -267,7 +271,9 @@ class Empresas
                 verifactu_sistema_empresa, verifactu_url_empresa, verifactu_certificado_empresa,
                 logotipo_empresa, logotipo_pie_empresa,
                 texto_legal_factura_empresa, texto_pie_presupuesto_empresa, texto_pie_factura_empresa,
-                observaciones_empresa, activo_empresa, created_at_empresa, updated_at_empresa
+                observaciones_empresa, modelo_impresion_empresa, configuracion_pdf_presupuesto_empresa,
+                observaciones_cabecera_presupuesto_empresa, observaciones_cabecera_ingles_presupuesto_empresa,
+                activo_empresa, created_at_empresa, updated_at_empresa
             ) VALUES (
                 ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?,
@@ -281,7 +287,9 @@ class Empresas
                 ?, ?, ?,
                 ?, ?,
                 ?, ?, ?,
-                ?, 1, NOW(), NOW()
+                ?, ?, ?,
+                ?, ?,
+                1, NOW(), NOW()
             )";
             
             $stmt = $this->conexion->prepare($sql);
@@ -325,7 +333,11 @@ class Empresas
             $stmt->bindValue(38, $texto_pie_presupuesto_empresa, PDO::PARAM_STR);
             $stmt->bindValue(39, $texto_pie_factura_empresa, PDO::PARAM_STR);
             $stmt->bindValue(40, $observaciones_empresa, PDO::PARAM_STR);
-            
+            $stmt->bindValue(41, $modelo_impresion_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(42, $configuracion_pdf_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(43, $observaciones_cabecera_presupuesto_empresa, $observaciones_cabecera_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(44, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId();
 
@@ -392,11 +404,15 @@ class Empresas
         $texto_legal_factura_empresa,
         $texto_pie_presupuesto_empresa,
         $texto_pie_factura_empresa,
-        $observaciones_empresa
+        $observaciones_empresa,
+        $modelo_impresion_empresa,
+        $configuracion_pdf_presupuesto_empresa,
+        $observaciones_cabecera_presupuesto_empresa,
+        $observaciones_cabecera_ingles_presupuesto_empresa
     ) {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
-            
+
             $sql = "UPDATE empresa SET 
                 codigo_empresa = ?, nombre_empresa = ?, nombre_comercial_empresa = ?, ficticia_empresa = ?, empresa_ficticia_principal = ?,
                 nif_empresa = ?, direccion_fiscal_empresa = ?, cp_fiscal_empresa = ?, poblacion_fiscal_empresa = ?, provincia_fiscal_empresa = ?, pais_fiscal_empresa = ?,
@@ -410,7 +426,8 @@ class Empresas
                 verifactu_sistema_empresa = ?, verifactu_url_empresa = ?, verifactu_certificado_empresa = ?,
                 logotipo_empresa = ?, logotipo_pie_empresa = ?,
                 texto_legal_factura_empresa = ?, texto_pie_presupuesto_empresa = ?, texto_pie_factura_empresa = ?,
-                observaciones_empresa = ?, updated_at_empresa = NOW()
+                observaciones_empresa = ?, modelo_impresion_empresa = ?, configuracion_pdf_presupuesto_empresa = ?,
+                observaciones_cabecera_presupuesto_empresa = ?, observaciones_cabecera_ingles_presupuesto_empresa = ?, updated_at_empresa = NOW()
                 WHERE id_empresa = ?";
             
             $stmt = $this->conexion->prepare($sql);
@@ -454,8 +471,12 @@ class Empresas
             $stmt->bindValue(38, $texto_pie_presupuesto_empresa, PDO::PARAM_STR);
             $stmt->bindValue(39, $texto_pie_factura_empresa, PDO::PARAM_STR);
             $stmt->bindValue(40, $observaciones_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(41, $id_empresa, PDO::PARAM_INT);
-          
+            $stmt->bindValue(41, $modelo_impresion_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(42, $configuracion_pdf_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(43, $observaciones_cabecera_presupuesto_empresa, $observaciones_cabecera_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(44, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(45, $id_empresa, PDO::PARAM_INT);
+
             $stmt->execute();
 
             $this->registro->registrarActividad(
@@ -476,8 +497,9 @@ class Empresas
                 "Error al actualizar la empresa: " . $e->getMessage(),
                 'error'
             );
-            
-            return false;
+
+            // Lanzar excepción con mensaje detallado para debug
+            throw new Exception("Error al actualizar empresa: " . $e->getMessage() . " | SQL State: " . $e->getCode());
         }
     }
 
@@ -514,6 +536,57 @@ class Empresas
             return [
                 'existe' => false,
                 'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Obtiene las observaciones de cabecera por defecto de la empresa activa
+     * para pre-cargarlas en nuevos presupuestos
+     *
+     * @return array ['observaciones_esp' => '...', 'observaciones_eng' => '...']
+     */
+    public function get_observaciones_por_defecto()
+    {
+        try {
+            // Obtener empresa ficticia principal (la que se usa por defecto)
+            $sql = "SELECT
+                        observaciones_cabecera_presupuesto_empresa,
+                        observaciones_cabecera_ingles_presupuesto_empresa
+                    FROM empresa
+                    WHERE empresa_ficticia_principal = 1
+                      AND activo_empresa = 1
+                    LIMIT 1";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resultado) {
+                return [
+                    'observaciones_esp' => $resultado['observaciones_cabecera_presupuesto_empresa'] ?? '',
+                    'observaciones_eng' => $resultado['observaciones_cabecera_ingles_presupuesto_empresa'] ?? ''
+                ];
+            }
+
+            // Si no hay empresa ficticia principal, devolver vacío
+            return [
+                'observaciones_esp' => '',
+                'observaciones_eng' => ''
+            ];
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'system',
+                'Empresas',
+                'get_observaciones_por_defecto',
+                "Error al obtener observaciones por defecto: " . $e->getMessage(),
+                'error'
+            );
+
+            return [
+                'observaciones_esp' => '',
+                'observaciones_eng' => ''
             ];
         }
     }
