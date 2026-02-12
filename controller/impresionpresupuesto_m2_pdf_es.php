@@ -129,24 +129,27 @@ class MYPDF extends TCPDF {
             $info_text_linea2 = 'Ref. Cliente: ' . $this->datos_presupuesto['numero_pedido_cliente_presupuesto'];
             $this->Cell(93, 3, $info_text_linea2, 0, 1, 'L');
         }
-        
+
         // Restaurar color de texto
         $this->SetTextColor(0, 0, 0);
-        
+
         // ============================================
         // OBSERVACIONES DE CABECERA (COLUMNA IZQUIERDA)
         // ============================================
-        
+
         if (!empty($this->observaciones)) {
-            $y_obs = $this->GetY();
+            $y_obs = $this->GetY() + 2; // Agregar 2mm de margen
             $this->SetY($y_obs);
             $this->SetX(15);
-            
+
             // Sin título, solo el texto de las observaciones
             $this->SetFont('helvetica', '', 6.5);
             $this->SetTextColor(99, 110, 114);
             $this->MultiCell(95, 3, $this->observaciones, 0, 'L');
         }
+
+        // Guardar Y final de columna izquierda
+        $y_final_izquierda = $this->GetY();
         
         // ============================================
         // COLUMNA DERECHA: Box Verde con Datos Cliente
@@ -296,142 +299,140 @@ class MYPDF extends TCPDF {
         // ============================================
         // DATOS DEL EVENTO Y UBICACIÓN (COLUMNA DERECHA, DEBAJO DEL CLIENTE)
         // ============================================
-        
-        // Solo mostrar si hay información del evento
+
+        $y_evento = $box_y_start + $client_box_height + 3; // Debajo del box del cliente
+
+        // Ancho de la columna derecha
+        $evento_x = 115;
+        $evento_width = 80;
+
+        // Inicializar variable para tracking de posición en columna derecha
+        $y_despues_fechas_evento = $y_evento;
+
+        // ========== FECHAS DEL EVENTO (SIEMPRE SE MUESTRAN) ==========
+
+        $this->SetXY($evento_x, $y_evento);
+
+        // Título de la sección de evento
+        $this->SetFont('helvetica', 'B', 8);
+        $this->SetTextColor(243, 156, 18); // Color naranja
+        $this->Cell($evento_width, 4, 'DATOS DEL EVENTO', 0, 1, 'L');
+
+        // Fechas del evento en formato tabla compacta (3 columnas)
+        $this->SetX($evento_x);
+        $this->SetFont('helvetica', '', 6.5);
+        $this->SetTextColor(127, 140, 141); // Gris para labels
+
+        // Crear mini tabla de 3 columnas: Inicio | Fin | Duración
+        $mini_col_width = $evento_width / 3;
+
+        // Labels
+        $this->Cell($mini_col_width, 3, 'Inicio', 0, 0, 'C');
+        $this->Cell($mini_col_width, 3, 'Fin', 0, 0, 'C');
+        $this->Cell($mini_col_width, 3, 'Duracion', 0, 1, 'C');
+
+        // Valores
+        $this->SetX($evento_x);
+        $this->SetFont('helvetica', 'B', 6.5);
+        $this->SetTextColor(52, 73, 94);
+
+        $fecha_inicio_str = '';
+        if (!empty($this->fecha_evento)) {
+            $fecha_inicio_str = $this->fecha_evento;
+        }
+
+        $fecha_fin_str = '';
+        if (!empty($this->datos_presupuesto['fecha_fin_evento_presupuesto'])) {
+            $fecha_fin_str = date('d/m/Y', strtotime($this->datos_presupuesto['fecha_fin_evento_presupuesto']));
+        }
+
+        $duracion_str = '';
+        if (!empty($this->datos_presupuesto['duracion_evento_dias'])) {
+            $duracion_str = $this->datos_presupuesto['duracion_evento_dias'] . ' dias';
+        }
+
+        $this->Cell($mini_col_width, 4, $fecha_inicio_str, 0, 0, 'C');
+        $this->Cell($mini_col_width, 4, $fecha_fin_str, 0, 0, 'C');
+        $this->Cell($mini_col_width, 4, $duracion_str, 0, 1, 'C');
+
+        $this->Ln(4); // Aumentado a 4mm para dar más espacio cuando no hay ubicación
+
+        // Guardar posición Y después de las fechas del evento
+        $y_despues_fechas_evento = $this->GetY();
+
+        // ========== NOMBRE Y UBICACIÓN DEL EVENTO (CONDICIONAL) ==========
+
+        // Solo mostrar nombre del evento si existe
         if (!empty($this->datos_presupuesto['nombre_evento_presupuesto'])) {
-            $y_evento = $box_y_start + $client_box_height + 3; // Debajo del box del cliente
-            
-            // Ancho de la columna derecha
-            $evento_x = 115;
-            $evento_width = 80;
-            
-            $this->SetXY($evento_x, $y_evento);
-            
-            // Título de la sección de evento
-            $this->SetFont('helvetica', 'B', 8);
-            $this->SetTextColor(243, 156, 18); // Color naranja
-            $this->Cell($evento_width, 4, 'DATOS DEL EVENTO', 0, 1, 'L');
-            
-            // Nombre del evento (destacado)
             $this->SetX($evento_x);
             $this->SetFont('helvetica', 'B', 7.5);
             $this->SetFillColor(255, 243, 205); // Fondo amarillo claro
             $this->SetTextColor(133, 100, 4); // Texto oscuro
             $this->MultiCell($evento_width, 4, $this->datos_presupuesto['nombre_evento_presupuesto'], 0, 'L', true);
-            
-            // Fechas del evento en formato tabla compacta (3 columnas)
-            $this->SetX($evento_x);
-            $this->SetFont('helvetica', '', 6.5);
-            $this->SetTextColor(127, 140, 141); // Gris para labels
-            
-            // Crear mini tabla de 3 columnas: Inicio | Fin | Duración
-            $mini_col_width = $evento_width / 3;
-            
-            // Labels
-            $this->Cell($mini_col_width, 3, 'Inicio', 0, 0, 'C');
-            $this->Cell($mini_col_width, 3, 'Fin', 0, 0, 'C');
-            $this->Cell($mini_col_width, 3, 'Duracion', 0, 1, 'C');
-            
-            // Valores
-            $this->SetX($evento_x);
-            $this->SetFont('helvetica', 'B', 6.5);
-            $this->SetTextColor(52, 73, 94);
-            
-            $fecha_inicio_str = '';
-            if (!empty($this->fecha_evento)) {
-                $fecha_inicio_str = $this->fecha_evento;
+
+            $this->Ln(1);
+            $y_despues_fechas_evento = $this->GetY();
+        }
+
+        // ========== UBICACIÓN DEL EVENTO ==========
+        // Construir ubicación completa PRIMERO
+        $ubicacion_completa = '';
+
+        if (!empty($this->datos_presupuesto['direccion_evento_presupuesto'])) {
+            $ubicacion_completa .= $this->datos_presupuesto['direccion_evento_presupuesto'];
+        }
+
+        if (!empty($this->datos_presupuesto['cp_evento_presupuesto']) ||
+            !empty($this->datos_presupuesto['poblacion_evento_presupuesto'])) {
+
+            if (!empty($ubicacion_completa)) {
+                $ubicacion_completa .= ', ';
             }
-            
-            $fecha_fin_str = '';
-            if (!empty($this->datos_presupuesto['fecha_fin_evento_presupuesto'])) {
-                $fecha_fin_str = date('d/m/Y', strtotime($this->datos_presupuesto['fecha_fin_evento_presupuesto']));
+
+            if (!empty($this->datos_presupuesto['cp_evento_presupuesto'])) {
+                $ubicacion_completa .= $this->datos_presupuesto['cp_evento_presupuesto'] . ' ';
             }
-            
-            $duracion_str = '';
-            if (!empty($this->datos_presupuesto['duracion_evento_dias'])) {
-                $duracion_str = $this->datos_presupuesto['duracion_evento_dias'] . ' dias';
-            }
-            
-            $this->Cell($mini_col_width, 4, $fecha_inicio_str, 0, 0, 'C');
-            $this->Cell($mini_col_width, 4, $fecha_fin_str, 0, 0, 'C');
-            $this->Cell($mini_col_width, 4, $duracion_str, 0, 1, 'C');
-            
-            $this->Ln(2);
-            
-            // ========== UBICACIÓN DEL EVENTO ==========
-            // Solo mostrar ubicación si hay datos
-            if (!empty($this->datos_presupuesto['direccion_evento_presupuesto']) || 
-                !empty($this->datos_presupuesto['poblacion_evento_presupuesto'])) {
-                
-                $this->SetX($evento_x);
-                $this->SetFont('helvetica', 'B', 8);
-                $this->SetTextColor(243, 156, 18); // Color naranja
-                $this->Cell($evento_width, 4, 'UBICACION DEL EVENTO', 0, 1, 'L');
-                
-                $this->SetX($evento_x);
-                $this->SetFont('helvetica', '', 7);
-                $this->SetTextColor(52, 73, 94);
-                
-                // Construir ubicación completa en una sola línea
-                $ubicacion_completa = '';
-                
-                if (!empty($this->datos_presupuesto['direccion_evento_presupuesto'])) {
-                    $ubicacion_completa .= $this->datos_presupuesto['direccion_evento_presupuesto'];
-                }
-                
-                if (!empty($this->datos_presupuesto['cp_evento_presupuesto']) || 
-                    !empty($this->datos_presupuesto['poblacion_evento_presupuesto'])) {
-                    
-                    if (!empty($ubicacion_completa)) {
-                        $ubicacion_completa .= ', ';
-                    }
-                    
-                    if (!empty($this->datos_presupuesto['cp_evento_presupuesto'])) {
-                        $ubicacion_completa .= $this->datos_presupuesto['cp_evento_presupuesto'] . ' ';
-                    }
-                    
-                    if (!empty($this->datos_presupuesto['poblacion_evento_presupuesto'])) {
-                        $ubicacion_completa .= $this->datos_presupuesto['poblacion_evento_presupuesto'];
-                    }
-                }
-                
-                if (!empty($this->datos_presupuesto['provincia_evento_presupuesto'])) {
-                    if (!empty($ubicacion_completa)) {
-                        $ubicacion_completa .= ', ';
-                    }
-                    $ubicacion_completa .= $this->datos_presupuesto['provincia_evento_presupuesto'];
-                }
-                
-                // Mostrar en una sola línea alineada a la izquierda
-                if (!empty($ubicacion_completa)) {
-                    $this->Cell($evento_width, 3.5, $ubicacion_completa, 0, 1, 'L');
-                }
+
+            if (!empty($this->datos_presupuesto['poblacion_evento_presupuesto'])) {
+                $ubicacion_completa .= $this->datos_presupuesto['poblacion_evento_presupuesto'];
             }
         }
-        
+
+        if (!empty($this->datos_presupuesto['provincia_evento_presupuesto'])) {
+            if (!empty($ubicacion_completa)) {
+                $ubicacion_completa .= ', ';
+            }
+            $ubicacion_completa .= $this->datos_presupuesto['provincia_evento_presupuesto'];
+        }
+
+        // Solo mostrar si hay ubicación completa
+        if (!empty($ubicacion_completa)) {
+            $this->SetX($evento_x);
+            $this->SetFont('helvetica', 'B', 8);
+            $this->SetTextColor(243, 156, 18); // Color naranja
+            $this->Cell($evento_width, 4, 'UBICACION DEL EVENTO', 0, 1, 'L');
+
+            $this->SetX($evento_x);
+            $this->SetFont('helvetica', '', 7);
+            $this->SetTextColor(52, 73, 94);
+            $this->Cell($evento_width, 3.5, $ubicacion_completa, 0, 1, 'L');
+
+            // Actualizar posición final si se dibujó la ubicación
+            $y_despues_fechas_evento = $this->GetY();
+        }
+
         // Restaurar colores
         $this->SetDrawColor(0, 0, 0);
         $this->SetTextColor(0, 0, 0);
-        
+
         // ============================================
         // OBSERVACIONES DE CABECERA (TODO EL ANCHO)
         // ============================================
-        
+
         // Calcular Y máxima entre columna izquierda y derecha
-        $y_final_izquierda = $this->GetY(); // Y actual de la columna izquierda
-        $y_final_derecha = $y_evento; // Y inicial del evento
-        
-        // Si hay evento, calcular la altura final de la sección de evento
-        if (!empty($this->datos_presupuesto['nombre_evento_presupuesto'])) {
-            // Estimar altura del evento: título + nombre + tabla + ubicación
-            $y_final_derecha = $box_y_start + $client_box_height + 3 + 35; // Aprox. 35mm para eventos
-        } else {
-            $y_final_derecha = $box_y_start + $client_box_height;
-        }
-        
-        // Posicionar después de la columna más larga
-        $y_observaciones_cabecera = max($y_final_izquierda, $y_final_derecha);
-        
+        // Usar la posición real que fue actualizada según el contenido
+        $y_observaciones_cabecera = max($y_final_izquierda, $y_despues_fechas_evento) + 1; // +1mm de margen
+
         // Mostrar observaciones de cabecera si existen
         if (!empty($this->observaciones_cabecera)) {
             $this->SetXY(15, $y_observaciones_cabecera);
@@ -649,7 +650,7 @@ switch ($_GET["op"]) {
             $pdf->SetSubject('Presupuesto para ' . ($datos_presupuesto['nombre_evento_presupuesto'] ?? ''));
             
             // Establecer márgenes
-            $pdf->SetMargins(8, 95, 8); // Márgenes mínimos para maximizar espacio de tabla
+            $pdf->SetMargins(8, 85, 8); // Margen superior de 85mm para evitar superposiciones
             $pdf->SetHeaderMargin(5);
             $pdf->SetFooterMargin(10);
             $pdf->SetAutoPageBreak(TRUE, 15);

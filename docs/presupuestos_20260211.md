@@ -25,7 +25,7 @@
 
 ---
 
-### 3. Cabecera - Nº Presupuesto de Cliente
+### 3. Cabecera - Nº Presupuesto de Cliente ✅ **COMPLETADA**
 
 **Situación actual**: Se muestra la cabecera incluso cuando no hay número de presupuesto del cliente.
 
@@ -37,7 +37,7 @@
 
 ---
 
-### 4. Ubicación del Evento
+### 4. Ubicación del Evento ✅ **COMPLETADA**
 
 **Situación actual**: Se muestra la cabecera del campo incluso cuando está vacío.
 
