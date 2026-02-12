@@ -49,7 +49,7 @@
 
 ---
 
-### 5. Título Principal "PRESUPUESTO"
+### 5. Título Principal "PRESUPUESTO" ✅ **COMPLETADA**
 
 **Cambio requerido**:
 - ✅ Añadir la palabra **"PRESUPUESTO"** en letras grandes en la parte superior del documento

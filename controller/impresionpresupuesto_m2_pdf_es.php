@@ -45,77 +45,91 @@ class MYPDF extends TCPDF {
     // Cabecera repetida en cada página
     public function Header() {
         $y_start = 10;
-        
+
+        // ============================================
+        // TÍTULO "PRESUPUESTO" (JUSTIFICADO A LA DERECHA)
+        // ============================================
+
+        $this->SetY($y_start);
+        $this->SetFont('helvetica', 'B', 16);
+        $this->SetTextColor(102, 126, 234); // Color azul elegante (mismo que caja de info)
+        $this->Cell(0, 8, 'PRESUPUESTO', 0, 1, 'R'); // Alineado a la derecha
+
+        $this->Ln(2); // Pequeño margen después del título
+
+        // Ajustar y_start para el resto del contenido
+        $y_start = $this->GetY();
+
         // ============================================
         // COLUMNA IZQUIERDA: Logo + Datos Empresa
         // ============================================
-        
+
         // Logo en la parte superior izquierda
         if ($this->mostrar_logo && !empty($this->path_logo) && file_exists($this->path_logo)) {
             // Logo compacto
-            $this->Image($this->path_logo, 15, $y_start, 35, 0, '', '', '', false, 300, '', false, false, 0);
+            $this->Image($this->path_logo, 8, $y_start, 35, 0, '', '', '', false, 300, '', false, false, 0);
             $logo_height = 18; // Altura reducida del logo
         } else {
             $logo_height = 0;
         }
-        
+
         // Datos de la empresa (debajo del logo, más cerca)
         $y_empresa = $y_start + $logo_height + 1;
         $this->SetY($y_empresa);
-        $this->SetX(15);
+        $this->SetX(8);
         
         // Nombre comercial empresa (negrita, tamaño grande)
         $this->SetFont('helvetica', 'B', 9);
         $this->SetTextColor(44, 62, 80); // Color oscuro
-        $this->Cell(80, 3.5, $this->datos_empresa['nombre_comercial_empresa'] ?? '', 0, 1, 'L');
-        
+        $this->Cell(95, 3.5, $this->datos_empresa['nombre_comercial_empresa'] ?? '', 0, 1, 'L');
+
         // NIF en rojo
-        $this->SetX(15);
+        $this->SetX(8);
         $this->SetFont('helvetica', 'B', 8);
         $this->SetTextColor(231, 76, 60); // Rojo
-        $this->Cell(80, 2.5, 'NIF: ' . ($this->datos_empresa['nif_empresa'] ?? ''), 0, 1, 'L');
-        
+        $this->Cell(95, 2.5, 'NIF: ' . ($this->datos_empresa['nif_empresa'] ?? ''), 0, 1, 'L');
+
         // Dirección fiscal
-        $this->SetX(15);
+        $this->SetX(8);
         $this->SetFont('helvetica', '', 7.5);
         $this->SetTextColor(52, 73, 94); // Color normal
         $direccion_completa = ($this->datos_empresa['direccion_fiscal_empresa'] ?? '') . ', ' .
                               ($this->datos_empresa['cp_fiscal_empresa'] ?? '') . ' ' .
                               ($this->datos_empresa['poblacion_fiscal_empresa'] ?? '') . ' (' .
                               ($this->datos_empresa['provincia_fiscal_empresa'] ?? '') . ')';
-        $this->MultiCell(80, 3, $direccion_completa, 0, 'L');
-        
+        $this->MultiCell(95, 3, $direccion_completa, 0, 'L');
+
         // Teléfono, móvil y email
-        $this->SetX(15);
+        $this->SetX(8);
         $contacto = 'Tel: ' . ($this->datos_empresa['telefono_empresa'] ?? '');
         if (!empty($this->datos_empresa['movil_empresa'])) {
             $contacto .= ' | ' . $this->datos_empresa['movil_empresa'];
         }
-        $this->Cell(80, 2.5, $contacto, 0, 1, 'L');
-        
-        $this->SetX(15);
-        $this->Cell(80, 2.5, ($this->datos_empresa['email_empresa'] ?? ''), 0, 1, 'L');
-        
+        $this->Cell(95, 2.5, $contacto, 0, 1, 'L');
+
+        $this->SetX(8);
+        $this->Cell(95, 2.5, ($this->datos_empresa['email_empresa'] ?? ''), 0, 1, 'L');
+
         // Web (si existe)
         if (!empty($this->datos_empresa['web_empresa'])) {
-            $this->SetX(15);
-            $this->Cell(80, 2.5, $this->datos_empresa['web_empresa'], 0, 1, 'L');
+            $this->SetX(8);
+            $this->Cell(95, 2.5, $this->datos_empresa['web_empresa'], 0, 1, 'L');
         }
-        
+
         // Caja con info del presupuesto (más cerca, sin espacio extra)
         $y_info = $this->GetY() + 1;
         $this->SetY($y_info);
-        
+
         // Fondo de color para la caja de info
         $this->SetFillColor(102, 126, 234); // Color azul/morado
         $this->SetTextColor(255, 255, 255); // Texto blanco
         $this->SetFont('helvetica', 'B', 7);
-        
-        $this->SetXY(15, $y_info);
-        $this->Cell(95, 10, '', 0, 0, 'L', true); // Fondo de la caja más compacto
-        
+
+        $this->SetXY(8, $y_info);
+        $this->Cell(95, 10, '', 0, 0, 'L', true); // Fondo de la caja ajustado al nuevo ancho
+
         // Contenido de la caja en dos líneas
-        $this->SetXY(16, $y_info + 1);
+        $this->SetXY(9, $y_info + 1);
         $info_text_linea1 = 'N°: ' . ($this->datos_presupuesto['numero_presupuesto'] ?? '') .
                      '  |  F: ' . $this->fecha_presupuesto .
                      '  |  Val: ' . ($this->fecha_validez ?: 'N/A') .
@@ -125,7 +139,7 @@ class MYPDF extends TCPDF {
         
         // Segunda línea con referencia del cliente (si existe)
         if (!empty($this->datos_presupuesto['numero_pedido_cliente_presupuesto'])) {
-            $this->SetXY(16, $y_info + 5);
+            $this->SetXY(9, $y_info + 5);
             $info_text_linea2 = 'Ref. Cliente: ' . $this->datos_presupuesto['numero_pedido_cliente_presupuesto'];
             $this->Cell(93, 3, $info_text_linea2, 0, 1, 'L');
         }
@@ -140,7 +154,7 @@ class MYPDF extends TCPDF {
         if (!empty($this->observaciones)) {
             $y_obs = $this->GetY() + 2; // Agregar 2mm de margen
             $this->SetY($y_obs);
-            $this->SetX(15);
+            $this->SetX(8);
 
             // Sin título, solo el texto de las observaciones
             $this->SetFont('helvetica', '', 6.5);
@@ -154,9 +168,9 @@ class MYPDF extends TCPDF {
         // ============================================
         // COLUMNA DERECHA: Box Verde con Datos Cliente
         // ============================================
-        
-        $col2_x = 115;
-        $col2_width = 80;
+
+        $col2_x = 108; // Ajustado para margen de 8mm
+        $col2_width = 94; // Aumentado por el espacio ganado (210-8-8=194, 194-108=86, pero dejamos 94 para más espacio)
         $box_y_start = $y_start;
         
         // Calcular altura necesaria para el box del cliente
@@ -302,9 +316,9 @@ class MYPDF extends TCPDF {
 
         $y_evento = $box_y_start + $client_box_height + 3; // Debajo del box del cliente
 
-        // Ancho de la columna derecha
-        $evento_x = 115;
-        $evento_width = 80;
+        // Ancho de la columna derecha - ajustado para márgenes de 8mm
+        $evento_x = 108;
+        $evento_width = 94;
 
         // Inicializar variable para tracking de posición en columna derecha
         $y_despues_fechas_evento = $y_evento;
@@ -435,14 +449,14 @@ class MYPDF extends TCPDF {
 
         // Mostrar observaciones de cabecera si existen
         if (!empty($this->observaciones_cabecera)) {
-            $this->SetXY(15, $y_observaciones_cabecera);
-            
+            $this->SetXY(8, $y_observaciones_cabecera);
+
             // Estilo para las observaciones
             $this->SetFont('helvetica', '', 8);
             $this->SetTextColor(44, 62, 80); // Color oscuro
-            
+
             // Usar todo el ancho disponible (ambas columnas)
-            $ancho_total = 180; // 210mm (ancho A4) - 15mm (margen izq) - 15mm (margen der)
+            $ancho_total = 194; // 210mm (ancho A4) - 8mm (margen izq) - 8mm (margen der)
             
             $this->MultiCell($ancho_total, 4, $this->observaciones_cabecera, 0, 'L');
         }
@@ -650,7 +664,7 @@ switch ($_GET["op"]) {
             $pdf->SetSubject('Presupuesto para ' . ($datos_presupuesto['nombre_evento_presupuesto'] ?? ''));
             
             // Establecer márgenes
-            $pdf->SetMargins(8, 85, 8); // Margen superior de 85mm para evitar superposiciones
+            $pdf->SetMargins(8, 95, 8); // Margen superior ajustado a 95mm por el título "PRESUPUESTO"
             $pdf->SetHeaderMargin(5);
             $pdf->SetFooterMargin(10);
             $pdf->SetAutoPageBreak(TRUE, 15);
