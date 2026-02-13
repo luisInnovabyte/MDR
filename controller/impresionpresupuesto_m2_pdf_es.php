@@ -746,9 +746,12 @@ switch ($_GET["op"]) {
                     $pdf->Cell(24, 6, 'Importe(€)', 1, 1, 'C', 1);
                     
                     // Datos de líneas de esta ubicación
+                    // Asegurar que cada grupo inicia con fuente normal
                     $pdf->SetFont('helvetica', '', 7);
                     
                     foreach ($grupo_ubicacion['lineas'] as $linea) {
+                        // Reset de fuente al inicio de cada línea para evitar contaminación
+                        $pdf->SetFont('helvetica', '', 7);
                         // Formatear fechas
                         $fecha_inicio_linea = !empty($linea['fecha_inicio_linea_ppto']) ? date('d/m/Y', strtotime($linea['fecha_inicio_linea_ppto'])) : '-';
                         $fecha_fin = !empty($linea['fecha_fin_linea_ppto']) ? date('d/m/Y', strtotime($linea['fecha_fin_linea_ppto'])) : '-';
@@ -758,9 +761,7 @@ switch ($_GET["op"]) {
                         // Línea normal o KIT
                         $es_kit = (isset($linea['es_kit_articulo']) && $linea['es_kit_articulo'] == 1);
                         
-                        if ($es_kit) {
-                            $pdf->SetFont('helvetica', 'B', 7);
-                        }
+                        // No aplicar negrita a KITs - mantener formato consistente
                         
                         $descripcion = $linea['descripcion_linea_ppto'] ?? '';
                         $cantidad = floatval($linea['cantidad_linea_ppto']);
@@ -768,10 +769,19 @@ switch ($_GET["op"]) {
                         $descuento = floatval($linea['descuento_linea_ppto']);
                         $base_imponible = floatval($linea['base_imponible']);
                         
-                        // Calcular si la descripción necesita 1 o 2 líneas
-                        $descripcion_corta = substr($descripcion, 0, 30); // ~30 caracteres caben en 45mm
-                        $necesita_dos_lineas = strlen($descripcion) > 30;
-                        $altura_fila = $necesita_dos_lineas ? 10 : 5;
+                        // Calcular altura dinámica basada en el contenido real
+                        $ancho_desc = 49; // Ancho de la celda de descripción
+                        $altura_texto_desc = $pdf->getStringHeight($ancho_desc - 1, $descripcion);
+                        
+                        // Si la descripción necesita más de una línea, usar altura calculada + margen
+                        if ($altura_texto_desc > 5) {
+                            $altura_fila = ceil($altura_texto_desc) + 1; // +1mm de margen interno
+                        } else {
+                            $altura_fila = 5; // Altura mínima para una línea
+                        }
+                        
+                        $necesita_dos_lineas = ($altura_fila > 5);
+                        $descripcion_corta = substr($descripcion, 0, 30);
                         
                         // VERIFICAR SI HAY ESPACIO SUFICIENTE ANTES DE EMPEZAR LA FILA
                         $espacio_necesario = $altura_fila + 5; // Altura de fila + margen de seguridad
@@ -793,14 +803,16 @@ switch ($_GET["op"]) {
                         $pdf->Cell(8, $altura_fila, $linea['dias_linea'] ?? '0', 1, 0, 'C');
                         $pdf->Cell(10, $altura_fila, number_format(floatval($linea['valor_coeficiente_linea_ppto'] ?? 1.00), 2), 1, 0, 'C');
                         
-                        // Descripción: usar Cell si cabe en 1 línea, MultiCell si necesita 2
+                        // Descripción: usar Cell si cabe en 1 línea, MultiCell si necesita 2 o más
                         $x_desc = $pdf->GetX();
                         if ($necesita_dos_lineas) {
                             // Dibujar borde exterior primero
                             $pdf->Rect($x_desc, $y_inicial, 49, $altura_fila);
-                            // MultiCell sin borde interno
+                            // MultiCell sin borde interno, con altura que llena exactamente el rectángulo
+                            $margen_interno = 1;
+                            $altura_linea_mc = ($altura_fila - $margen_interno) / max(1, floor($altura_texto_desc / 5));
                             $pdf->SetXY($x_desc + 0.5, $y_inicial + 0.5);
-                            $pdf->MultiCell(48, 4.5, substr($descripcion, 0, 60), 0, 'L');
+                            $pdf->MultiCell(48, $altura_linea_mc, $descripcion, 0, 'L');
                         } else {
                             // Una sola línea
                             $pdf->Cell(49, $altura_fila, $descripcion_corta, 1, 0, 'L');
@@ -817,9 +829,7 @@ switch ($_GET["op"]) {
                         // Mover cursor manualmente a la siguiente fila
                         $pdf->SetXY($x_inicial, $y_inicial + $altura_fila);
                         
-                        if ($es_kit) {
-                            $pdf->SetFont('helvetica', '', 7);
-                        }
+                        // No es necesario restaurar fuente ya que se resetea al inicio de cada línea
                         
                         // Componentes del KIT
                         // Mostrar solo si es KIT Y el detalle NO está oculto
@@ -1053,20 +1063,16 @@ switch ($_GET["op"]) {
                     
                     // Solo mostrar si hay nombre y texto
                     if (!empty($nombre) && !empty(trim($texto))) {
-                        $tipo_label = ucfirst(strtolower($obs['tipo_observacion']));
+                        // Determinar símbolo según tipo: * para familia, ** para artículo
+                        $simbolo = ($obs['tipo_observacion'] == 'familia') ? '*' : '**';
                         
                         // Fondo gris claro para cada observación
                         $pdf->SetFillColor(250, 250, 250);
                         
-                        // Tipo y nombre (en negrita)
-                        $pdf->SetFont('helvetica', 'B', 8);
-                        $pdf->SetTextColor(117, 117, 117);
-                        $pdf->Cell(0, 5, $tipo_label . ': ' . $nombre, 0, 1, 'L', 1);
-                        
-                        // Texto de la observación
+                        // Símbolo y texto en la misma línea
                         $pdf->SetFont('helvetica', '', 8);
                         $pdf->SetTextColor(97, 97, 97);
-                        $pdf->MultiCell(0, 4, $texto, 0, 'L', 1);
+                        $pdf->MultiCell(0, 4, $simbolo . ' ' . $texto, 0, 'L', 1);
                         
                         $pdf->Ln(3);
                     }

@@ -16,7 +16,7 @@
 
 ---
 
-### 2. Formato de Líneas de Artículos
+### 2. Formato de Líneas de Artículos ✅ **COMPLETADA**
 
 **Cambios requeridos**:
 - ❌ **Eliminar negritas** de la primera línea de cada artículo
@@ -106,7 +106,7 @@
 
 ---
 
-### 10. Observaciones - Formato de Referencias
+### 10. Observaciones - Formato de Referencias ✅ **COMPLETADA**
 
 **Situación actual**: Se muestra texto como "Familia: XXX, Artículo: XXX, etc."
 
