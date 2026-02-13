@@ -119,7 +119,7 @@
 
 ---
 
-### 11. Pies de Empresa
+### 11. Pies de Empresa ✅ **COMPLETADA**
 
 **Situación actual**: Los pies de empresa (configurados en la pantalla de empresas) aparecen en posición incorrecta.
 
@@ -138,7 +138,7 @@
 
 ---
 
-### 12. Firmas - Posicionamiento
+### 12. Firmas - Posicionamiento ✅ **COMPLETADA**
 
 **Situación actual**: Las firmas están en la parte inferior del documento.
 

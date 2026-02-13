@@ -29,8 +29,9 @@ class MYPDF extends TCPDF {
     private $fecha_evento;
     private $observaciones;
     private $observaciones_cabecera;
+    private $texto_pie_empresa;
     
-    public function setDatosHeader($empresa, $presupuesto, $logo, $path_logo, $fecha_ppto, $fecha_val, $fecha_ev, $obs, $obs_cabecera) {
+    public function setDatosHeader($empresa, $presupuesto, $logo, $path_logo, $fecha_ppto, $fecha_val, $fecha_ev, $obs, $obs_cabecera, $pie_empresa) {
         $this->datos_empresa = $empresa;
         $this->datos_presupuesto = $presupuesto;
         $this->mostrar_logo = $logo;
@@ -40,6 +41,7 @@ class MYPDF extends TCPDF {
         $this->fecha_evento = $fecha_ev;
         $this->observaciones = $obs;
         $this->observaciones_cabecera = $obs_cabecera;
+        $this->texto_pie_empresa = $pie_empresa;
     }
     
     // Cabecera repetida en cada página
@@ -471,8 +473,26 @@ class MYPDF extends TCPDF {
     
     // Pie de página repetido
     public function Footer() {
+        // Pie de empresa (si existe)
+        if (!empty($this->texto_pie_empresa)) {
+            $this->SetY(-20); // Posición cerca del margen inferior
+            
+            // Línea superior decorativa
+            $this->SetDrawColor(44, 62, 80);
+            $this->SetLineWidth(0.5);
+            $this->Line(8, $this->GetY(), 202, $this->GetY());
+            $this->SetY($this->GetY() + 1);
+            
+            // Texto del pie de empresa
+            $this->SetFont('helvetica', '', 7);
+            $this->SetTextColor(99, 110, 114);
+            $this->MultiCell(0, 3, $this->texto_pie_empresa, 0, 'C');
+        }
+        
+        // Números de página (siempre al final)
         $this->SetY(-15);
         $this->SetFont('helvetica', 'I', 8);
+        $this->SetTextColor(0, 0, 0);
         $this->Cell(0, 10, 'Página ' . $this->getAliasNumPage() . ' de ' . $this->getAliasNbPages(), 0, 0, 'C');
     }
 }
@@ -676,7 +696,7 @@ switch ($_GET["op"]) {
             $pdf->SetMargins(8, 95, 8); // Margen superior ajustado a 95mm por el título "PRESUPUESTO"
             $pdf->SetHeaderMargin(5);
             $pdf->SetFooterMargin(10);
-            $pdf->SetAutoPageBreak(TRUE, 15);
+            $pdf->SetAutoPageBreak(TRUE, 25); // Aumentado a 25mm para dar espacio al pie de empresa
             
             // Pasar datos a la cabecera
             $pdf->setDatosHeader(
@@ -688,7 +708,8 @@ switch ($_GET["op"]) {
                 $fecha_validez,
                 $fecha_inicio_evento,
                 $observaciones,
-                $datos_presupuesto['observaciones_cabecera_presupuesto'] ?? ''
+                $datos_presupuesto['observaciones_cabecera_presupuesto'] ?? '',
+                $datos_empresa['texto_pie_presupuesto_empresa'] ?? ''
             );
             
             // Añadir página
@@ -1111,53 +1132,36 @@ switch ($_GET["op"]) {
             }
             
             // =====================================================
-            // PIE DE PÁGINA EMPRESA
+            // CASILLAS DE FIRMA (DESPUÉS DE OBSERVACIONES DE PIE)
             // =====================================================
             
-            if (!empty($datos_empresa['texto_pie_presupuesto_empresa'])) {
-                $pdf->Ln(5);
-                
-                // Línea superior decorativa
-                $pdf->SetDrawColor(44, 62, 80);
-                $pdf->SetLineWidth(0.8);
-                $pdf->Line(8, $pdf->GetY(), 202, $pdf->GetY());
-                $pdf->Ln(3);
-                
-                // Fondo gris claro
-                $y_inicio = $pdf->GetY();
-                $texto_altura = $pdf->getStringHeight(0, $datos_empresa['texto_pie_presupuesto_empresa']);
-                $pdf->SetFillColor(248, 249, 250);
-                $pdf->Rect(8, $y_inicio, 194, $texto_altura + 6, 'F');
-                
-                // Texto centrado
-                $pdf->SetFont('helvetica', '', 8);
-                $pdf->SetTextColor(99, 110, 114);
-                $pdf->SetXY(8, $y_inicio + 3);
-                $pdf->MultiCell(194, 4, $datos_empresa['texto_pie_presupuesto_empresa'], 0, 'C');
-            }
-            
-            // =====================================================
-            // CASILLAS DE FIRMA (AL PIE DE LA ÚLTIMA PÁGINA)
-            // =====================================================
-            
-            // Guardar auto page break temporalmente
-            $auto_page_break = $pdf->getAutoPageBreak();
-            $pdf->SetAutoPageBreak(false, 0);
+            $pdf->Ln(10);
             
             // Restaurar colores y configuración
             $pdf->SetTextColor(0, 0, 0);
             $pdf->SetDrawColor(0, 0, 0);
             $pdf->SetLineWidth(0.2);
             
-            // Calcular posición fija en el pie de página (35mm desde el final)
-            $altura_pagina = $pdf->getPageHeight();
-            $y_inicio_firmas = $altura_pagina - 35;
+            // CONTROL DE SALTO DE PÁGINA: Verificar si hay espacio suficiente para las firmas
+            $altura_necesaria_firmas = 45; // Altura aproximada de toda la sección de firmas (título + espacio + línea + textos + fechas)
+            $espacio_disponible = $pdf->getPageHeight() - $pdf->GetY() - $pdf->getBreakMargin();
+            
+            // Si no hay suficiente espacio, saltar a nueva página
+            if ($espacio_disponible < $altura_necesaria_firmas) {
+                $pdf->AddPage();
+            }
+            
+            // IMPORTANTE: Desactivar saltos automáticos durante las firmas para mantener todo junto
+            $pdf->SetAutoPageBreak(false);
             
             // Ancho de cada casilla de firma
             $ancho_casilla = 90;
             $separacion = 7;
             $x_inicio_izq = 8;
             $x_inicio_der = $x_inicio_izq + $ancho_casilla + $separacion;
+            
+            // Guardar posición Y inicial para alinear ambas casillas
+            $y_inicio_firmas = $pdf->GetY();
             
             // ======== CASILLA IZQUIERDA: FIRMA MDR (EMPRESA) ========
             
@@ -1172,7 +1176,7 @@ switch ($_GET["op"]) {
             $pdf->Cell($ancho_casilla, 5, $cabecera_firma, 0, 1, 'C');
             
             $pdf->SetX($x_inicio_izq);
-            $pdf->Ln(10);
+            $pdf->Ln(18);
             
             // Línea para firmar
             $y_linea_izq = $pdf->GetY();
@@ -1185,10 +1189,11 @@ switch ($_GET["op"]) {
             $pdf->SetX($x_inicio_izq);
             $pdf->Ln(2);
             
-            // Fecha
+            // Fecha (fecha actual de impresión)
             $pdf->SetXY($x_inicio_izq, $pdf->GetY());
             $pdf->SetFont('helvetica', '', 7);
-            $pdf->Cell($ancho_casilla, 4, 'Fecha: ___/___/______', 0, 1, 'C');
+            $fecha_impresion = date('d/m/Y');
+            $pdf->Cell($ancho_casilla, 4, 'Fecha: ' . $fecha_impresion, 0, 1, 'C');
             
             // ======== CASILLA DERECHA: FIRMA CLIENTE (VISTO BUENO) ========
             
@@ -1199,7 +1204,7 @@ switch ($_GET["op"]) {
             $pdf->Cell($ancho_casilla, 5, 'VISTO BUENO DEL CLIENTE', 0, 1, 'C');
             
             $pdf->SetX($x_inicio_der);
-            $pdf->Ln(10);
+            $pdf->Ln(18);
             
             // Línea para firmar
             $y_linea_der = $pdf->GetY();
@@ -1228,8 +1233,8 @@ switch ($_GET["op"]) {
             $pdf->SetFont('helvetica', '', 7);
             $pdf->Cell($ancho_casilla, 4, 'Fecha: ___/___/______', 0, 1, 'C');
             
-            // Restaurar auto page break
-            $pdf->SetAutoPageBreak($auto_page_break, 15);
+            // Restaurar saltos automáticos de página
+            $pdf->SetAutoPageBreak(TRUE, 25);
             
             // =====================================================
             // SALIDA DEL PDF
