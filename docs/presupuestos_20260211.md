@@ -234,6 +234,99 @@
 
 ---
 
+### 16. Fechas de Montaje y Desmontaje - Optimización de Espacio
+
+**Situación actual**: Las fechas de montaje y desmontaje se muestran como columnas en cada línea del cuerpo del presupuesto.
+
+**Problema identificado por el cliente**:
+- Por cada fecha de inicio (grupo de líneas), todas las fechas de montaje y desmontaje de todos los elementos son iguales
+- Las columnas ocupan espacio innecesario cuando los valores se repiten
+- El cliente solicita eliminar estas columnas del cuerpo y moverlas a la cabecera
+
+**Consideración técnica importante**:
+- El sistema permite definir fechas de montaje y desmontaje diferentes para cada artículo
+- No hay restricción a nivel de base de datos que garantice que sean iguales
+- Dependemos de que el usuario introduzca fechas consistentes por grupo de fecha de inicio
+
+**Propuesta de solución**:
+
+#### Opción A: Criterio de Mayoría
+1. **Análisis por grupo de fecha de inicio**: Dentro de cada grupo de líneas con la misma fecha de inicio, analizar las fechas de montaje y desmontaje
+2. **Detectar fecha predominante**: Si la mayoría de las líneas tienen las mismas fechas, mostrarlas en la cabecera del grupo
+3. **Excepciones en observaciones**: Si alguna línea tiene fechas diferentes, agregarlas automáticamente al campo de observaciones de esa línea
+   - Formato propuesto: `"Mtje: DD/MM/YYYY - Dsmtje: DD/MM/YYYY"`
+
+**Criterios a definir**:
+- ¿Qué porcentaje consideramos "mayoría"? (¿50%+1?, ¿80%?, ¿100%?)
+- ¿Cómo se muestra en la cabecera? "Fecha inicio: DD/MM - Mtje: DD/MM - Dsmtje: DD/MM"
+
+**Ventajas Opción A**:
+- ✅ Flexible y adaptable a diferentes escenarios
+- ✅ Optimiza espacio incluso con excepciones
+- ✅ Usa el campo de observaciones recién implementado
+
+**Desventajas Opción A**:
+- ⚠️ Requiere definir criterio de "mayoría" (puede ser ambiguo)
+- ⚠️ Mezcla observaciones del usuario con datos técnicos auto-generados
+- ⚠️ Mayor complejidad de implementación y mantenimiento
+
+#### Opción B: Criterio Estricto (Recomendada)
+1. **Análisis por grupo de fecha de inicio**: Verificar si TODAS las líneas del grupo tienen las mismas fechas de montaje y desmontaje
+2. **Caso de unanimidad**: Si todas coinciden, mostrar en cabecera y eliminar columnas del cuerpo
+3. **Caso de diferencias**: Si hay alguna diferencia, mantener las columnas en el cuerpo para todas las líneas del grupo
+   - Evita confusión al usuario
+   - No mezcla información de cabecera con observaciones
+
+**Ventajas Opción B**:
+- ✅ Comportamiento predecible y consistente
+- ✅ No requiere tomar decisiones de "mayoría"
+- ✅ Más fácil de entender para el usuario final
+- ✅ El campo de observaciones mantiene su propósito original
+- ✅ Lógica simple = más fácil de testear y mantener
+- ✅ Educativo: si el usuario ve las columnas, sabe que hay inconsistencias
+
+**Desventajas Opción B**:
+- ⚠️ Menos flexible: no optimiza espacio si hay una sola excepción
+
+#### Opción C: Híbrida
+1. **Análisis estricto**: Si todas las líneas coinciden → mostrar en cabecera
+2. **Aviso visual**: Si hay diferencias, mostrar en cabecera las fechas más comunes y añadir un asterisco (*) en las líneas excepcionales
+3. **Detalle en observaciones**: Las excepciones se detallan automáticamente en observaciones
+
+**Ventajas Opción C**:
+- ✅ Balance entre optimización de espacio y claridad
+- ✅ Aviso visual claro de excepciones
+
+**Desventajas Opción C**:
+- ⚠️ Mayor complejidad que Opción B
+- ⚠️ Mezcla observaciones del usuario con datos técnicos
+
+**Implementación técnica requerida**:
+- Modificar lógica de renderizado en controlador PDF
+- Añadir análisis de fechas por grupo antes del renderizado
+- Agregar fechas Mtje/Dsmtje en subtotales por fecha (cabecera de grupo)
+- Ajustar ancho de columnas si se eliminan las de montaje/desmontaje
+- Auto-generar texto en observaciones para excepciones (solo Opción A o C)
+
+**Campos involucrados**:
+- `fecha_montaje_linea_ppto`
+- `fecha_desmontaje_linea_ppto`
+- `fecha_inicio_linea_ppto` (agrupador)
+- `observaciones_linea_ppto` (para excepciones en Opción A/C)
+
+**Recomendación técnica**:
+Se recomienda **Opción B (Criterio Estricto)** porque:
+1. Mantiene claridad y consistencia
+2. Evita lógica compleja de mayorías
+3. No contamina el campo de observaciones con datos técnicos
+4. Es más fácil de testear y mantener
+5. El usuario verá rápidamente si hay inconsistencias en sus datos
+6. Comportamiento binario predecible (todo o nada)
+
+**Decisión pendiente del cliente**.
+
+---
+
 ## 📊 Orden Final del PDF
 
 ```
