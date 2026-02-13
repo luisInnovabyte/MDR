@@ -411,7 +411,8 @@ class ImpresionPresupuesto
                         vlpc.total_linea,
                         vlpc.tipo_linea_ppto,
                         vlpc.nivel_jerarquia,
-                        vlpc.descripcion_linea_ppto
+                        vlpc.descripcion_linea_ppto,
+                        vlpc.observaciones_linea_ppto
                     FROM v_linea_presupuesto_calculada vlpc
                     WHERE vlpc.id_presupuesto = ?
                     AND vlpc.numero_version_presupuesto = (

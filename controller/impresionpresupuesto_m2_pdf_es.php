@@ -885,6 +885,24 @@ switch ($_GET["op"]) {
                         
                         // No es necesario restaurar fuente ya que se resetea al inicio de cada línea
                         
+                        // OBSERVACIONES DE LÍNEA
+                        // Mostrar observaciones si existen y no están vacías
+                        if (!empty($linea['observaciones_linea_ppto']) && trim($linea['observaciones_linea_ppto']) != '') {
+                            // Obtener posición Y actual
+                            $y_antes_obs = $pdf->GetY();
+                            
+                            // Configurar formato para observaciones
+                            $pdf->SetFont('helvetica', '', 6.5);
+                            $pdf->SetTextColor(80, 80, 80);
+                            
+                            // Renderizar observaciones con indentación
+                            $texto_observaciones = '    ' . trim($linea['observaciones_linea_ppto']);
+                            $pdf->MultiCell(170, 4, $texto_observaciones, 0, 'L', false, 1, $x_inicial, $y_antes_obs, true, 0, false, true, 0, 'T');
+                            
+                            // Resetear colores para siguientes elementos
+                            $pdf->SetTextColor(0, 0, 0);
+                        }
+                        
                         // Componentes del KIT
                         // Mostrar solo si es KIT Y el detalle NO está oculto
                         if ($es_kit && !empty($linea['id_articulo']) && 

@@ -6,13 +6,21 @@
 
 ## 📋 Índice de Cambios
 
-### 1. Observaciones de Líneas de Presupuesto
+### 1. Observaciones de Líneas de Presupuesto ✅ **COMPLETADA**
 **Situación actual**: Las observaciones de las líneas se pierden o no se muestran correctamente.
 
 **Cambios requeridos**:
 - ✅ Las observaciones de cada línea de presupuesto deben aparecer en la parte inferior del PDF
 - ✅ Si no hay observaciones, el sistema **NO debe reservar espacio** para esta sección
 - ✅ Optimización de espacio dinámico
+
+**Implementación realizada** (13 feb 2026):
+- ✅ Campo `observaciones_linea_ppto` agregado al SELECT del modelo (`ImpresionPresupuesto.php`)
+- ✅ Renderizado en PDF después de cada línea y **antes** de los componentes del KIT
+- ✅ Formato: Helvetica 6.5pt, color gris (80,80,80), indentación 4 espacios
+- ✅ Solo se muestra si hay observaciones (condicional)
+- ✅ Soporte MultiCell para texto multilínea
+- ✅ Orden de renderizado: Línea → Observaciones → Componentes KIT
 
 ---
 
