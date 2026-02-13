@@ -647,11 +647,36 @@ switch ($_GET["op"]) {
                 $observaciones = $observaciones_array;
             }
             
-            // 8. Calcular desglose de IVA
+            // 8. Calcular desglose de IVA y descuentos
             $desglose_iva = [];
             $subtotal_sin_iva = 0;
+            $subtotal_sin_descuento = 0;
+            $total_descuentos = 0;
             
             foreach ($lineas as $linea) {
+                // Calcular subtotal sin descuento y descuento por línea
+                $cantidad = floatval($linea['cantidad_linea_ppto'] ?? 0);
+                $precio_unitario = floatval($linea['precio_unitario_linea_ppto'] ?? 0);
+                $dias = floatval($linea['dias_linea'] ?? 1);
+                $coeficiente = floatval($linea['valor_coeficiente_linea_ppto'] ?? null);
+                $aplica_coeficiente = ($coeficiente !== null && $coeficiente > 0);
+                $descuento_pct = floatval($linea['descuento_linea_ppto'] ?? 0);
+                
+                // Calcular subtotal sin descuento según lógica de la vista:
+                // Si aplica coeficiente: (cantidad × precio_unitario × coeficiente)
+                // Si NO aplica coeficiente: (días × cantidad × precio_unitario)
+                if ($aplica_coeficiente) {
+                    $subtotal_linea_sin_desc = $cantidad * $precio_unitario * $coeficiente;
+                } else {
+                    $subtotal_linea_sin_desc = $dias * $cantidad * $precio_unitario;
+                }
+                
+                $importe_descuento_linea = $subtotal_linea_sin_desc * ($descuento_pct / 100);
+                
+                $subtotal_sin_descuento += $subtotal_linea_sin_desc;
+                $total_descuentos += $importe_descuento_linea;
+                
+                // Calcular IVA y base imponible
                 $base_imponible = floatval($linea['base_imponible'] ?? 0);
                 $porcentaje_iva = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
                 
@@ -751,9 +776,10 @@ switch ($_GET["op"]) {
                     
                     $pdf->Ln(1);
                     
-                    // Cabecera de tabla
+                    // Cabecera de tabla con bordes grises
                     $pdf->SetFont('helvetica', 'B', 8);
                     $pdf->SetFillColor(240, 240, 240);
+                    $pdf->SetDrawColor(200, 200, 200); // Bordes grises claros
                     $pdf->Cell(17, 6, 'Inicio', 1, 0, 'C', 1);
                     $pdf->Cell(17, 6, 'Fin', 1, 0, 'C', 1);
                     $pdf->Cell(15, 6, 'Mtje', 1, 0, 'C', 1);
@@ -765,6 +791,7 @@ switch ($_GET["op"]) {
                     $pdf->Cell(15, 6, 'P.Unit.', 1, 0, 'C', 1);
                     $pdf->Cell(12, 6, '%Dto', 1, 0, 'C', 1);
                     $pdf->Cell(24, 6, 'Importe(€)', 1, 1, 'C', 1);
+                    $pdf->SetDrawColor(0, 0, 0); // Restaurar color negro
                     
                     // Datos de líneas de esta ubicación
                     // Asegurar que cada grupo inicia con fuente normal
@@ -817,6 +844,9 @@ switch ($_GET["op"]) {
                         $x_inicial = $pdf->GetX();
                         $y_inicial = $pdf->GetY();
                         
+                        // Aplicar bordes grises claros a las líneas del presupuesto
+                        $pdf->SetDrawColor(200, 200, 200); // Gris claro para bordes
+                        
                         $pdf->Cell(17, $altura_fila, $fecha_inicio_linea, 1, 0, 'C');
                         $pdf->Cell(17, $altura_fila, $fecha_fin, 1, 0, 'C');
                         $pdf->Cell(15, $altura_fila, $fecha_montaje, 1, 0, 'C');
@@ -827,8 +857,8 @@ switch ($_GET["op"]) {
                         // Descripción: usar Cell si cabe en 1 línea, MultiCell si necesita 2 o más
                         $x_desc = $pdf->GetX();
                         if ($necesita_dos_lineas) {
-                            // Dibujar borde exterior primero
-                            $pdf->Rect($x_desc, $y_inicial, 49, $altura_fila);
+                            // Dibujar rectángulo con borde gris
+                            $pdf->Rect($x_desc, $y_inicial, 49, $altura_fila, 'D');
                             // MultiCell sin borde interno, con altura que llena exactamente el rectángulo
                             $margen_interno = 1;
                             $altura_linea_mc = ($altura_fila - $margen_interno) / max(1, floor($altura_texto_desc / 5));
@@ -846,6 +876,9 @@ switch ($_GET["op"]) {
                         $pdf->Cell(15, $altura_fila, number_format($precio_unitario, 2, ',', '.'), 1, 0, 'R');
                         $pdf->Cell(12, $altura_fila, number_format($descuento, 0), 1, 0, 'C');
                         $pdf->Cell(24, $altura_fila, number_format($base_imponible, 2, ',', '.'), 1, 0, 'R');
+                        
+                        // Restaurar color de borde por defecto
+                        $pdf->SetDrawColor(0, 0, 0);
                         
                         // Mover cursor manualmente a la siguiente fila
                         $pdf->SetXY($x_inicial, $y_inicial + $altura_fila);
@@ -893,8 +926,10 @@ switch ($_GET["op"]) {
                     // Subtotal por ubicación
                     $pdf->SetFont('helvetica', 'B', 7);
                     $pdf->SetFillColor(245, 245, 245);
+                    $pdf->SetDrawColor(200, 200, 200); // Bordes grises claros
                     $pdf->Cell(170, 5, 'Subtotal ' . $grupo_ubicacion['nombre_ubicacion'], 1, 0, 'R', 1);
                     $pdf->Cell(24, 5, number_format($grupo_ubicacion['subtotal_ubicacion'], 2, ',', '.'), 1, 1, 'R', 1);
+                    $pdf->SetDrawColor(0, 0, 0); // Restaurar color negro
                     $pdf->Ln(2);
                     
                 } // Fin foreach ubicaciones
@@ -903,8 +938,10 @@ switch ($_GET["op"]) {
                 if ($mostrar_subtotales_fecha) {
                     $pdf->SetFont('helvetica', 'B', 8);
                     $pdf->SetFillColor(220, 220, 220);
+                    $pdf->SetDrawColor(200, 200, 200); // Bordes grises claros
                     $pdf->Cell(170, 6, 'Subtotal Fecha ' . $fecha_formateada, 1, 0, 'R', 1);
                     $pdf->Cell(24, 6, number_format($grupo_fecha['subtotal_fecha'], 2, ',', '.'), 1, 1, 'R', 1);
+                    $pdf->SetDrawColor(0, 0, 0); // Restaurar color negro
                     $pdf->Ln(3);
                 } else {
                     // Sin subtotal, solo un pequeño espacio visual
@@ -923,6 +960,28 @@ switch ($_GET["op"]) {
             $pdf->SetDrawColor(200, 200, 200);
             $pdf->Line(145, $pdf->GetY(), 200, $pdf->GetY());
             $pdf->Ln(3);
+            
+            // Subtotal (antes de descuentos) - Con fondo y borde sutil
+            $pdf->SetFont('helvetica', '', 9);
+            $pdf->SetFillColor(248, 249, 250); // Fondo gris muy claro
+            $pdf->SetDrawColor(220, 220, 220); // Borde gris suave
+            $pdf->Cell(150, 6, '', 0, 0);
+            $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
+            $pdf->SetFont('helvetica', 'B', 9);
+            $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+            
+            // Descuento - En rojo con signo negativo (solo si hay descuento)
+            if ($total_descuentos > 0) {
+                $pdf->SetFont('helvetica', '', 9);
+                $pdf->SetFillColor(248, 249, 250);
+                $pdf->SetDrawColor(220, 220, 220);
+                $pdf->Cell(150, 6, '', 0, 0);
+                $pdf->Cell(30, 6, 'Descuento:', 1, 0, 'R', 1);
+                $pdf->SetFont('helvetica', 'B', 9);
+                $pdf->SetTextColor(231, 76, 60); // Color rojo para el descuento
+                $pdf->Cell(20, 6, '-' . number_format($total_descuentos, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+                $pdf->SetTextColor(0, 0, 0); // Restaurar color negro
+            }
             
             // Base Imponible (Subtotal sin IVA) - Con fondo y borde sutil
             $pdf->SetFont('helvetica', '', 9);

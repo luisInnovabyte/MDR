@@ -88,7 +88,7 @@
 
 ---
 
-### 9. Totales Finales - Descuento
+### 9. Totales Finales - Descuento ✅ **COMPLETADA**
 
 **Situación actual**: No se muestra el importe total del descuento aplicado.
 
@@ -103,6 +103,15 @@
   ─────────────────────────────
   TOTAL:              XXX,XX €
   ```
+
+**Implementación**:
+- ✅ Añadido cálculo de subtotal sin descuento y descuento total (líneas 650-677)
+- ✅ Cálculo correcto: si hay coeficiente (cantidad × precio × coeficiente), si no (días × cantidad × precio)
+- ✅ Línea "Subtotal" añadida antes de "Base Imponible" en sección de totales
+- ✅ Línea "Descuento" en color rojo con signo negativo (-) añadida
+- ✅ Condicional: solo se muestra si total_descuentos > 0
+- ✅ Formato español aplicado (1.234,56 €)
+- ✅ Verificación matemática: Subtotal - Descuento = Base Imponible
 
 ---
 
@@ -197,6 +206,23 @@
   Departamento Comercial            [Nombre del Empleado]
                                     [Firma personalizada]
   ```
+
+---
+
+### 15. Líneas del Presupuesto - Bordes Grises ✅ **COMPLETADA**
+
+**Cambio requerido**:
+- ✅ Aplicar bordes grises claros a las líneas del cuerpo del presupuesto
+- ✅ Mejorar legibilidad y aspecto visual de la tabla de artículos
+- ✅ Color de bordes: gris claro (200, 200, 200)
+
+**Implementación**:
+- ✅ SetDrawColor(200, 200, 200) aplicado en cabeceras de tabla
+- ✅ Bordes grises claros en todas las líneas de datos del cuerpo
+- ✅ Bordes grises claros en subtotales por ubicación
+- ✅ Bordes grises claros en subtotales por fecha
+- ✅ Restauración del color negro después de cada sección
+- ✅ Aspecto uniforme y profesional en toda la tabla del presupuesto
 
 ---
 
