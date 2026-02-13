@@ -253,10 +253,15 @@ class Empresas
         $modelo_impresion_empresa,
         $configuracion_pdf_presupuesto_empresa,
         $observaciones_cabecera_presupuesto_empresa,
-        $observaciones_cabecera_ingles_presupuesto_empresa
+        $observaciones_cabecera_ingles_presupuesto_empresa,
+        $mostrar_subtotales_fecha_presupuesto_empresa,
+        $cabecera_firma_presupuesto_empresa = 'Departamento comercial'
     ) {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
+
+            // Asegurar que el valor booleano nunca sea NULL
+            $mostrar_subtotales_fecha_presupuesto_empresa = intval($mostrar_subtotales_fecha_presupuesto_empresa) ? 1 : 0;
 
             $sql = "INSERT INTO empresa (
                 codigo_empresa, nombre_empresa, nombre_comercial_empresa, ficticia_empresa, empresa_ficticia_principal,
@@ -273,6 +278,8 @@ class Empresas
                 texto_legal_factura_empresa, texto_pie_presupuesto_empresa, texto_pie_factura_empresa,
                 observaciones_empresa, modelo_impresion_empresa, configuracion_pdf_presupuesto_empresa,
                 observaciones_cabecera_presupuesto_empresa, observaciones_cabecera_ingles_presupuesto_empresa,
+                mostrar_subtotales_fecha_presupuesto_empresa,
+                cabecera_firma_presupuesto_empresa,
                 activo_empresa, created_at_empresa, updated_at_empresa
             ) VALUES (
                 ?, ?, ?, ?, ?,
@@ -289,6 +296,9 @@ class Empresas
                 ?, ?, ?,
                 ?, ?, ?,
                 ?, ?,
+                ?,
+                ?,
+                ?,
                 1, NOW(), NOW()
             )";
             
@@ -337,6 +347,8 @@ class Empresas
             $stmt->bindValue(42, $configuracion_pdf_presupuesto_empresa, PDO::PARAM_STR);
             $stmt->bindValue(43, $observaciones_cabecera_presupuesto_empresa, $observaciones_cabecera_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
             $stmt->bindValue(44, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(45, $mostrar_subtotales_fecha_presupuesto_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(46, $cabecera_firma_presupuesto_empresa, PDO::PARAM_STR);
 
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId();
@@ -408,10 +420,15 @@ class Empresas
         $modelo_impresion_empresa,
         $configuracion_pdf_presupuesto_empresa,
         $observaciones_cabecera_presupuesto_empresa,
-        $observaciones_cabecera_ingles_presupuesto_empresa
+        $observaciones_cabecera_ingles_presupuesto_empresa,
+        $mostrar_subtotales_fecha_presupuesto_empresa,
+        $cabecera_firma_presupuesto_empresa = 'Departamento comercial'
     ) {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
+
+            // Asegurar que el valor booleano nunca sea NULL
+            $mostrar_subtotales_fecha_presupuesto_empresa = intval($mostrar_subtotales_fecha_presupuesto_empresa) ? 1 : 0;
 
             $sql = "UPDATE empresa SET 
                 codigo_empresa = ?, nombre_empresa = ?, nombre_comercial_empresa = ?, ficticia_empresa = ?, empresa_ficticia_principal = ?,
@@ -427,7 +444,9 @@ class Empresas
                 logotipo_empresa = ?, logotipo_pie_empresa = ?,
                 texto_legal_factura_empresa = ?, texto_pie_presupuesto_empresa = ?, texto_pie_factura_empresa = ?,
                 observaciones_empresa = ?, modelo_impresion_empresa = ?, configuracion_pdf_presupuesto_empresa = ?,
-                observaciones_cabecera_presupuesto_empresa = ?, observaciones_cabecera_ingles_presupuesto_empresa = ?, updated_at_empresa = NOW()
+                observaciones_cabecera_presupuesto_empresa = ?, observaciones_cabecera_ingles_presupuesto_empresa = ?,
+                mostrar_subtotales_fecha_presupuesto_empresa = ?,
+                cabecera_firma_presupuesto_empresa = ?, updated_at_empresa = NOW()
                 WHERE id_empresa = ?";
             
             $stmt = $this->conexion->prepare($sql);
@@ -475,7 +494,9 @@ class Empresas
             $stmt->bindValue(42, $configuracion_pdf_presupuesto_empresa, PDO::PARAM_STR);
             $stmt->bindValue(43, $observaciones_cabecera_presupuesto_empresa, $observaciones_cabecera_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
             $stmt->bindValue(44, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-            $stmt->bindValue(45, $id_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(45, $mostrar_subtotales_fecha_presupuesto_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(46, $cabecera_firma_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(47, $id_empresa, PDO::PARAM_INT);
 
             $stmt->execute();
 

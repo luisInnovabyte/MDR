@@ -119,6 +119,28 @@ $(document).ready(function () {
                         );
                     }
 
+                    // Configuración PDF - Subtotales por fecha
+                    // Si es NULL o undefined, se marca como TRUE (por defecto)
+                    var subtotalesFecha = data.mostrar_subtotales_fecha_presupuesto_empresa;
+                    console.log('Valor de subtotales fecha desde BD:', subtotalesFecha, 'Tipo:', typeof subtotalesFecha);
+                    
+                    // Marcar checkbox: true si es 1, "1", true, o null/undefined (por defecto)
+                    var marcarCheckbox = subtotalesFecha === null || 
+                                       subtotalesFecha === undefined || 
+                                       subtotalesFecha == 1 || 
+                                       subtotalesFecha === '1' || 
+                                       subtotalesFecha === true;
+                    
+                    $('#mostrar_subtotales_fecha_presupuesto_empresa').prop('checked', marcarCheckbox);
+                    console.log('Checkbox marcado:', marcarCheckbox);
+
+                    // Configuración PDF - Cabecera de firma
+                    if (data.cabecera_firma_presupuesto_empresa !== undefined && data.cabecera_firma_presupuesto_empresa !== null) {
+                        $('#cabecera_firma_presupuesto_empresa').val(data.cabecera_firma_presupuesto_empresa);
+                    } else {
+                        $('#cabecera_firma_presupuesto_empresa').val('Departamento comercial');
+                    }
+
                     // Estado activo
                     $('#activo_empresa_hidden').val(data.activo_empresa);
                     $('#activo_empresa_display').prop('checked', data.activo_empresa == 1);
@@ -249,6 +271,15 @@ $(document).ready(function () {
         var observaciones_cabecera_presupuesto_empresa = $('#observaciones_cabecera_presupuesto_empresa').val().trim();
         var observaciones_cabecera_ingles_presupuesto_empresa = $('#observaciones_cabecera_ingles_presupuesto_empresa').val().trim();
 
+        // Configuración PDF
+        var mostrar_subtotales_fecha_presupuesto_empresa = $('#mostrar_subtotales_fecha_presupuesto_empresa').is(':checked') ? '1' : '0';
+        console.log('Valor checkbox al enviar:', mostrar_subtotales_fecha_presupuesto_empresa);
+        
+        var cabecera_firma_presupuesto_empresa = $('#cabecera_firma_presupuesto_empresa').val().trim();
+        if (cabecera_firma_presupuesto_empresa === '') {
+            cabecera_firma_presupuesto_empresa = 'Departamento comercial';
+        }
+
         // Estado
         var activo_empresa;
         if (id_empresa) {
@@ -274,6 +305,8 @@ $(document).ready(function () {
             logotipo_empresa, logotipo_pie_empresa, texto_legal_factura_empresa,
             texto_pie_presupuesto_empresa, texto_pie_factura_empresa,
             observaciones_cabecera_presupuesto_empresa, observaciones_cabecera_ingles_presupuesto_empresa,
+            mostrar_subtotales_fecha_presupuesto_empresa,
+            cabecera_firma_presupuesto_empresa,
             activo_empresa
         );
     });
@@ -413,7 +446,9 @@ $(document).ready(function () {
             texto_pie_factura_empresa: params[40],
             observaciones_cabecera_presupuesto_empresa: params[41],
             observaciones_cabecera_ingles_presupuesto_empresa: params[42],
-            activo_empresa: params[43]
+            mostrar_subtotales_fecha_presupuesto_empresa: params[43],
+            cabecera_firma_presupuesto_empresa: params[44],
+            activo_empresa: params[45]
         };
         
         console.log('💾 Datos a guardar:', datosEnvio);

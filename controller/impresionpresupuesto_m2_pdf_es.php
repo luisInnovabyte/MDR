@@ -509,6 +509,12 @@ switch ($_GET["op"]) {
             if (!$datos_empresa) {
                 throw new Exception("No se encontraron datos de la empresa");
             }
+
+            // Configuración de subtotales por fecha
+            // Si no existe el campo en BD, por defecto TRUE (backward compatibility)
+            $mostrar_subtotales_fecha = !isset($datos_empresa['mostrar_subtotales_fecha_presupuesto_empresa'])
+                ? true  // Default si no existe el campo
+                : ($datos_empresa['mostrar_subtotales_fecha_presupuesto_empresa'] == 1);
             
             // 4. Validar logo de empresa
             $mostrar_logo = false;
@@ -862,12 +868,17 @@ switch ($_GET["op"]) {
                     
                 } // Fin foreach ubicaciones
                 
-                // Subtotal por fecha
-                $pdf->SetFont('helvetica', 'B', 8);
-                $pdf->SetFillColor(220, 220, 220);
-                $pdf->Cell(170, 6, 'Subtotal Fecha ' . $fecha_formateada, 1, 0, 'R', 1);
-                $pdf->Cell(24, 6, number_format($grupo_fecha['subtotal_fecha'], 2, ',', '.'), 1, 1, 'R', 1);
-                $pdf->Ln(3);
+                // Subtotal por fecha - SOLO SI ESTÁ HABILITADO en configuración de empresa
+                if ($mostrar_subtotales_fecha) {
+                    $pdf->SetFont('helvetica', 'B', 8);
+                    $pdf->SetFillColor(220, 220, 220);
+                    $pdf->Cell(170, 6, 'Subtotal Fecha ' . $fecha_formateada, 1, 0, 'R', 1);
+                    $pdf->Cell(24, 6, number_format($grupo_fecha['subtotal_fecha'], 2, ',', '.'), 1, 1, 'R', 1);
+                    $pdf->Ln(3);
+                } else {
+                    // Sin subtotal, solo un pequeño espacio visual
+                    $pdf->Ln(2);
+                }
                 
             } // Fin foreach fechas
             
@@ -1146,9 +1157,13 @@ switch ($_GET["op"]) {
             
             $pdf->SetXY($x_inicio_izq, $y_inicio_firmas);
             
-            // Título
+            // Título - Usar cabecera personalizada de empresa o valor por defecto
+            $cabecera_firma = !empty($datos_empresa['cabecera_firma_presupuesto_empresa']) 
+                ? strtoupper($datos_empresa['cabecera_firma_presupuesto_empresa']) 
+                : 'DEPARTAMENTO COMERCIAL';
+            
             $pdf->SetFont('helvetica', 'B', 9);
-            $pdf->Cell($ancho_casilla, 5, 'FIRMA DE ' . strtoupper($datos_empresa['nombre_empresa'] ?? 'MDR'), 0, 1, 'C');
+            $pdf->Cell($ancho_casilla, 5, $cabecera_firma, 0, 1, 'C');
             
             $pdf->SetX($x_inicio_izq);
             $pdf->Ln(10);

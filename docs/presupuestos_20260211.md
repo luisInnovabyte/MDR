@@ -80,7 +80,7 @@
 
 ---
 
-### 8. Subtotales por Fecha
+### 8. Subtotales por Fecha ✅ **COMPLETADA**
 
 **Cambio requerido**:
 - ❌ **Eliminar completamente** los subtotales por fecha del PDF
@@ -156,7 +156,7 @@
 
 ---
 
-### 13. Firma - Texto del Departamento
+### 13. Firma - Texto del Departamento ✅ **COMPLETADA**
 
 **Situación actual**: Aparece "MDR" en la firma.
 

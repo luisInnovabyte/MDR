@@ -527,6 +527,49 @@
                         </div>
                     </div>
 
+                    <!-- SECCIÓN: Configuración de PDF -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-pdf me-2"></i>Configuración de PDF de Presupuestos
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check mb-3">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       id="mostrar_subtotales_fecha_presupuesto_empresa"
+                                       name="mostrar_subtotales_fecha_presupuesto_empresa"
+                                       value="1"
+                                       checked>
+                                <label class="form-check-label" for="mostrar_subtotales_fecha_presupuesto_empresa">
+                                    <strong>Mostrar subtotales por fecha en PDF</strong>
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mb-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Al desmarcar esta opción, se ocultarán las líneas de "Subtotal Fecha XX/XX/XXXX" en los PDF de presupuestos.
+                            </small>
+
+                            <div class="mb-3">
+                                <label for="cabecera_firma_presupuesto_empresa" class="form-label">
+                                    <strong>Cabecera de Firma en PDF</strong>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="cabecera_firma_presupuesto_empresa"
+                                       name="cabecera_firma_presupuesto_empresa"
+                                       value="Departamento comercial"
+                                       placeholder="Ej: Departamento comercial, Gerencia, etc."
+                                       maxlength="255">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Texto que aparecerá en la cabecera de la casilla de firma de la empresa en el PDF.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SECCIÓN: Estado de la Empresa -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-info text-white">

@@ -151,7 +151,9 @@ switch ($_GET["op"]) {
                     isset($_POST["modelo_impresion_empresa"]) ? $_POST["modelo_impresion_empresa"] : 'impresionpresupuesto_m1_es.php',
                     isset($_POST["configuracion_pdf_presupuesto_empresa"]) ? $_POST["configuracion_pdf_presupuesto_empresa"] : null,
                     (isset($_POST["observaciones_cabecera_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_presupuesto_empresa"]) : null,
-                    (isset($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) : null
+                    (isset($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) : null,
+                    intval($_POST["mostrar_subtotales_fecha_presupuesto_empresa"] ?? 0),
+                    (isset($_POST["cabecera_firma_presupuesto_empresa"]) && trim($_POST["cabecera_firma_presupuesto_empresa"]) !== '') ? trim($_POST["cabecera_firma_presupuesto_empresa"]) : 'Departamento comercial'
                 );
                 
                 if ($resultado !== false && $resultado > 0) {
@@ -223,7 +225,9 @@ switch ($_GET["op"]) {
                     isset($_POST["modelo_impresion_empresa"]) ? $_POST["modelo_impresion_empresa"] : 'impresionpresupuesto_m1_es.php',
                     isset($_POST["configuracion_pdf_presupuesto_empresa"]) ? $_POST["configuracion_pdf_presupuesto_empresa"] : null,
                     (isset($_POST["observaciones_cabecera_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_presupuesto_empresa"]) : null,
-                    (isset($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) : null
+                    (isset($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) && trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) !== '') ? trim($_POST["observaciones_cabecera_ingles_presupuesto_empresa"]) : null,
+                    intval($_POST["mostrar_subtotales_fecha_presupuesto_empresa"] ?? 0),
+                    (isset($_POST["cabecera_firma_presupuesto_empresa"]) && trim($_POST["cabecera_firma_presupuesto_empresa"]) !== '') ? trim($_POST["cabecera_firma_presupuesto_empresa"]) : 'Departamento comercial'
                 );
 
                 if ($resultado !== false) {

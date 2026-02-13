@@ -213,7 +213,9 @@ class ImpresionPresupuesto
                         serie_presupuesto_empresa,
                         numero_actual_presupuesto_empresa,
                         dias_validez_presupuesto_empresa,
-                        texto_pie_presupuesto_empresa
+                        texto_pie_presupuesto_empresa,
+                        mostrar_subtotales_fecha_presupuesto_empresa,
+                        cabecera_firma_presupuesto_empresa
                     FROM empresa 
                     WHERE empresa_ficticia_principal = 1 
                     AND activo_empresa = 1
