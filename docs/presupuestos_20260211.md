@@ -57,7 +57,7 @@
 
 ---
 
-### 6. CIF de la Empresa
+### 6. CIF de la Empresa ✅ **COMPLETADA**
 
 **Situación actual**: Se muestra el CIF incluso cuando termina en 0000 (empresas ficticias).
 
@@ -69,7 +69,7 @@
 
 ---
 
-### 7. Observación Cabecera - Montaje y Alquiler
+### 7. Observación Cabecera - Montaje y Alquiler ✅ **COMPLETADA**
 
 **Situación actual**: Se incluyen fechas en la observación.
 
