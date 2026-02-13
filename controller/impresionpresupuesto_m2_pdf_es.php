@@ -741,6 +741,110 @@ switch ($_GET["op"]) {
             $pdf->AddPage();
             
             // =====================================================
+            // ANÁLISIS DE FECHAS DE MONTAJE Y DESMONTAJE
+            // =====================================================
+            // Determinar por cada grupo de fecha_inicio si >= 80% de líneas
+            // tienen las mismas fechas de montaje y desmontaje
+            
+            $analisis_fechas = [];
+            
+            foreach ($lineas_agrupadas as $fecha_inicio => $grupo_fecha) {
+                // Contar todas las líneas del grupo (todas las ubicaciones)
+                $todas_lineas = [];
+                foreach ($grupo_fecha['ubicaciones'] as $grupo_ubicacion) {
+                    $todas_lineas = array_merge($todas_lineas, $grupo_ubicacion['lineas']);
+                }
+                
+                $total_lineas = count($todas_lineas);
+                
+                if ($total_lineas == 0) {
+                    $analisis_fechas[$fecha_inicio] = [
+                        'ocultar_columnas' => false,
+                        'fecha_montaje' => null,
+                        'fecha_desmontaje' => null,
+                        'excepciones' => []
+                    ];
+                    continue;
+                }
+                
+                // Contar ocurrencias de cada combinación de fechas
+                $combinaciones = [];
+                foreach ($todas_lineas as $idx => $linea) {
+                    // Normalizar fechas a solo componente de fecha (sin hora) para comparación
+                    // Asegurar que siempre tengamos un string válido para comparar
+                    $fecha_mtje_raw = $linea['fecha_montaje_linea_ppto'] ?? null;
+                    $fecha_dsmtje_raw = $linea['fecha_desmontaje_linea_ppto'] ?? null;
+                    
+                    // Normalizar solo si la fecha no está vacía
+                    if (!empty($fecha_mtje_raw) && $fecha_mtje_raw != '0000-00-00' && $fecha_mtje_raw != '0000-00-00 00:00:00') {
+                        $mtje = date('Y-m-d', strtotime($fecha_mtje_raw));
+                    } else {
+                        $mtje = '';
+                    }
+                    
+                    if (!empty($fecha_dsmtje_raw) && $fecha_dsmtje_raw != '0000-00-00' && $fecha_dsmtje_raw != '0000-00-00 00:00:00') {
+                        $dsmtje = date('Y-m-d', strtotime($fecha_dsmtje_raw));
+                    } else {
+                        $dsmtje = '';
+                    }
+                    
+                    $clave = $mtje . '|' . $dsmtje;
+                    
+                    if (!isset($combinaciones[$clave])) {
+                        $combinaciones[$clave] = [
+                            'count' => 0,
+                            'montaje' => $mtje,
+                            'desmontaje' => $dsmtje,
+                            'indices' => []
+                        ];
+                    }
+                    
+                    $combinaciones[$clave]['count']++;
+                    $combinaciones[$clave]['indices'][] = $linea['id_linea_ppto'];
+                }
+                
+                // Encontrar la combinación más frecuente
+                $max_count = 0;
+                $combinacion_predominante = null;
+                
+                foreach ($combinaciones as $clave => $datos) {
+                    if ($datos['count'] > $max_count) {
+                        $max_count = $datos['count'];
+                        $combinacion_predominante = $datos;
+                    }
+                }
+                
+                // Calcular porcentaje
+                $porcentaje = ($max_count / $total_lineas) * 100;
+                
+                // Si >= 30%, ocultar columnas y marcar excepciones
+                if ($porcentaje >= 30) {
+                    // Identificar líneas excepcionales (las que NO tienen las fechas predominantes)
+                    $excepciones = [];
+                    foreach ($todas_lineas as $linea) {
+                        if (!in_array($linea['id_linea_ppto'], $combinacion_predominante['indices'])) {
+                            $excepciones[] = $linea['id_linea_ppto'];
+                        }
+                    }
+                    
+                    $analisis_fechas[$fecha_inicio] = [
+                        'ocultar_columnas' => true,
+                        'fecha_montaje' => $combinacion_predominante['montaje'],
+                        'fecha_desmontaje' => $combinacion_predominante['desmontaje'],
+                        'excepciones' => $excepciones
+                    ];
+                } else {
+                    // No se cumple el 30%, mantener columnas
+                    $analisis_fechas[$fecha_inicio] = [
+                        'ocultar_columnas' => false,
+                        'fecha_montaje' => null,
+                        'fecha_desmontaje' => null,
+                        'excepciones' => []
+                    ];
+                }
+            }
+            
+            // =====================================================
             // TABLA DE LÍNEAS AGRUPADAS POR FECHA Y UBICACIÓN
             // =====================================================
             
@@ -754,11 +858,22 @@ switch ($_GET["op"]) {
                 
                 $fecha_formateada = date('d/m/Y', strtotime($fecha_inicio));
                 
+                // Construir texto de cabecera con fechas de montaje/desmontaje si aplica
+                $texto_cabecera = 'Fecha de inicio: ' . $fecha_formateada;
+                
+                $info_fechas = $analisis_fechas[$fecha_inicio] ?? ['ocultar_columnas' => false];
+                
+                if ($info_fechas['ocultar_columnas']) {
+                    $mtje_formateada = !empty($info_fechas['fecha_montaje']) ? date('d/m/Y', strtotime($info_fechas['fecha_montaje'])) : '-';
+                    $dsmtje_formateada = !empty($info_fechas['fecha_desmontaje']) ? date('d/m/Y', strtotime($info_fechas['fecha_desmontaje'])) : '-';
+                    $texto_cabecera .= ' | Mtje: ' . $mtje_formateada . ' | Dsmtje: ' . $dsmtje_formateada;
+                }
+                
                 // Fecha de inicio con fondo azul
                 $pdf->SetFillColor(52, 152, 219); // Azul
                 $pdf->SetTextColor(255, 255, 255); // Texto blanco
                 $pdf->SetFont('helvetica', 'B', 9);
-                $pdf->Cell(194, 6, 'Fecha de inicio: ' . $fecha_formateada, 0, 1, 'L', true);
+                $pdf->Cell(194, 6, $texto_cabecera, 0, 1, 'L', true);
                 
                 // Restaurar colores
                 $pdf->SetFillColor(255, 255, 255);
@@ -776,17 +891,28 @@ switch ($_GET["op"]) {
                     
                     $pdf->Ln(1);
                     
-                    // Cabecera de tabla con bordes grises
+                    // Cabecera de tabla con bordes grises (ajustada según si se ocultan columnas Mtje/Dsmtje)
                     $pdf->SetFont('helvetica', 'B', 8);
                     $pdf->SetFillColor(240, 240, 240);
                     $pdf->SetDrawColor(200, 200, 200); // Bordes grises claros
+                    
+                    $ocultar_cols = $info_fechas['ocultar_columnas'];
+                    
                     $pdf->Cell(17, 6, 'Inicio', 1, 0, 'C', 1);
                     $pdf->Cell(17, 6, 'Fin', 1, 0, 'C', 1);
-                    $pdf->Cell(15, 6, 'Mtje', 1, 0, 'C', 1);
-                    $pdf->Cell(15, 6, 'Dsmtje', 1, 0, 'C', 1);
+                    
+                    if (!$ocultar_cols) {
+                        $pdf->Cell(15, 6, 'Mtje', 1, 0, 'C', 1);
+                        $pdf->Cell(15, 6, 'Dsmtje', 1, 0, 'C', 1);
+                    }
+                    
                     $pdf->Cell(8, 6, 'Días', 1, 0, 'C', 1);
                     $pdf->Cell(10, 6, 'Coef.', 1, 0, 'C', 1);
-                    $pdf->Cell(49, 6, 'Descripción', 1, 0, 'C', 1);
+                    
+                    // Ajustar ancho de Descripción si se ocultan columnas (+30mm = 15+15)
+                    $ancho_descripcion = $ocultar_cols ? 79 : 49;
+                    $pdf->Cell($ancho_descripcion, 6, 'Descripción', 1, 0, 'C', 1);
+                    
                     $pdf->Cell(12, 6, 'Cant.', 1, 0, 'C', 1);
                     $pdf->Cell(15, 6, 'P.Unit.', 1, 0, 'C', 1);
                     $pdf->Cell(12, 6, '%Dto', 1, 0, 'C', 1);
@@ -806,6 +932,9 @@ switch ($_GET["op"]) {
                         $fecha_montaje = !empty($linea['fecha_montaje_linea_ppto']) ? date('d/m/Y', strtotime($linea['fecha_montaje_linea_ppto'])) : '-';
                         $fecha_desmontaje = !empty($linea['fecha_desmontaje_linea_ppto']) ? date('d/m/Y', strtotime($linea['fecha_desmontaje_linea_ppto'])) : '-';
                         
+                        // Verificar si esta línea es excepción (fechas diferentes a las predominantes)
+                        $es_excepcion = in_array($linea['id_linea_ppto'], $info_fechas['excepciones'] ?? []);
+                        
                         // Línea normal o KIT
                         $es_kit = (isset($linea['es_kit_articulo']) && $linea['es_kit_articulo'] == 1);
                         
@@ -818,8 +947,8 @@ switch ($_GET["op"]) {
                         $base_imponible = floatval($linea['base_imponible']);
                         
                         // Calcular altura dinámica basada en el contenido real
-                        $ancho_desc = 49; // Ancho de la celda de descripción
-                        $altura_texto_desc = $pdf->getStringHeight($ancho_desc - 1, $descripcion);
+                        // Usar el ancho correcto según si las columnas están ocultas o no
+                        $altura_texto_desc = $pdf->getStringHeight($ancho_descripcion - 1, $descripcion);
                         
                         // Si la descripción necesita más de una línea, usar altura calculada + margen
                         if ($altura_texto_desc > 5) {
@@ -849,28 +978,33 @@ switch ($_GET["op"]) {
                         
                         $pdf->Cell(17, $altura_fila, $fecha_inicio_linea, 1, 0, 'C');
                         $pdf->Cell(17, $altura_fila, $fecha_fin, 1, 0, 'C');
-                        $pdf->Cell(15, $altura_fila, $fecha_montaje, 1, 0, 'C');
-                        $pdf->Cell(15, $altura_fila, $fecha_desmontaje, 1, 0, 'C');
+                        
+                        // Mostrar columnas Mtje/Dsmtje solo si NO se ocultan
+                        if (!$ocultar_cols) {
+                            $pdf->Cell(15, $altura_fila, $fecha_montaje, 1, 0, 'C');
+                            $pdf->Cell(15, $altura_fila, $fecha_desmontaje, 1, 0, 'C');
+                        }
+                        
                         $pdf->Cell(8, $altura_fila, $linea['dias_linea'] ?? '0', 1, 0, 'C');
                         $pdf->Cell(10, $altura_fila, number_format(floatval($linea['valor_coeficiente_linea_ppto'] ?? 1.00), 2), 1, 0, 'C');
                         
-                        // Descripción: usar Cell si cabe en 1 línea, MultiCell si necesita 2 o más
+                        // Descripción: ancho ajustado según si se ocultan columnas
                         $x_desc = $pdf->GetX();
                         if ($necesita_dos_lineas) {
                             // Dibujar rectángulo con borde gris
-                            $pdf->Rect($x_desc, $y_inicial, 49, $altura_fila, 'D');
+                            $pdf->Rect($x_desc, $y_inicial, $ancho_descripcion, $altura_fila, 'D');
                             // MultiCell sin borde interno, con altura que llena exactamente el rectángulo
                             $margen_interno = 1;
                             $altura_linea_mc = ($altura_fila - $margen_interno) / max(1, floor($altura_texto_desc / 5));
                             $pdf->SetXY($x_desc + 0.5, $y_inicial + 0.5);
-                            $pdf->MultiCell(48, $altura_linea_mc, $descripcion, 0, 'L');
+                            $pdf->MultiCell($ancho_descripcion - 1, $altura_linea_mc, $descripcion, 0, 'L');
                         } else {
                             // Una sola línea
-                            $pdf->Cell(49, $altura_fila, $descripcion_corta, 1, 0, 'L');
+                            $pdf->Cell($ancho_descripcion, $altura_fila, $descripcion_corta, 1, 0, 'L');
                         }
                         
                         // Volver a la misma línea para las siguientes celdas
-                        $pdf->SetXY($x_desc + 49, $y_inicial);
+                        $pdf->SetXY($x_desc + $ancho_descripcion, $y_inicial);
                         
                         $pdf->Cell(12, $altura_fila, number_format($cantidad, 0), 1, 0, 'C');
                         $pdf->Cell(15, $altura_fila, number_format($precio_unitario, 2, ',', '.'), 1, 0, 'R');
@@ -887,8 +1021,29 @@ switch ($_GET["op"]) {
                         
                         // OBSERVACIONES DE LÍNEA
                         // Mostrar observaciones si existen y no están vacías
+                        // O auto-generar si es línea excepcional (fechas diferentes a predominantes)
+                        $observaciones_a_mostrar = '';
+                        
+                        // Verificar si hay observaciones manuales del usuario
                         if (!empty($linea['observaciones_linea_ppto']) && trim($linea['observaciones_linea_ppto']) != '') {
-                            // Obtener posición Y actual
+                            $observaciones_a_mostrar = trim($linea['observaciones_linea_ppto']);
+                        }
+                        
+                        // Si es excepción, agregar fechas particulares a las observaciones
+                        if ($es_excepcion && $ocultar_cols) {
+                            $obs_fechas = 'Mtje: ' . $fecha_montaje . ' - Dsmtje: ' . $fecha_desmontaje;
+                            if (!empty($observaciones_a_mostrar)) {
+                                // Si ya hay observaciones, agregar al final con separador
+                                $observaciones_a_mostrar .= ' | ' . $obs_fechas;
+                            } else {
+                                // Si no hay observaciones, crear nuevas solo con las fechas
+                                $observaciones_a_mostrar = $obs_fechas;
+                            }
+                        }
+                        
+                        // Renderizar observaciones si existen
+                        if (!empty($observaciones_a_mostrar)) {
+                            // Guardar posición Y actual (después de la línea principal)
                             $y_antes_obs = $pdf->GetY();
                             
                             // Configurar formato para observaciones
@@ -896,11 +1051,17 @@ switch ($_GET["op"]) {
                             $pdf->SetTextColor(80, 80, 80);
                             
                             // Renderizar observaciones con indentación
-                            $texto_observaciones = '    ' . trim($linea['observaciones_linea_ppto']);
-                            $pdf->MultiCell(170, 4, $texto_observaciones, 0, 'L', false, 1, $x_inicial, $y_antes_obs, true, 0, false, true, 0, 'T');
+                            $texto_observaciones = '    ' . $observaciones_a_mostrar;
                             
-                            // Resetear colores para siguientes elementos
+                            // Calcular altura necesaria para las observaciones
+                            $altura_obs = $pdf->getStringHeight(170, $texto_observaciones);
+                            
+                            // Renderizar MultiCell en la posición actual
+                            $pdf->MultiCell(170, 4, $texto_observaciones, 0, 'L', false, 1, '', $y_antes_obs);
+                            
+                            // Resetear colores y fuente para siguientes elementos
                             $pdf->SetTextColor(0, 0, 0);
+                            $pdf->SetFont('helvetica', '', 7);
                         }
                         
                         // Componentes del KIT
@@ -922,15 +1083,21 @@ switch ($_GET["op"]) {
                                     $pdf->SetTextColor(100, 100, 100);
                                     $pdf->Cell(17, 4, '', 0, 0, 'C');
                                     $pdf->Cell(17, 4, '', 0, 0, 'C');
-                                    $pdf->Cell(15, 4, '', 0, 0, 'C');
-                                    $pdf->Cell(15, 4, '', 0, 0, 'C');
+                                    
+                                    // Omitir celdas de Mtje/Dsmtje si están ocultas
+                                    if (!$ocultar_cols) {
+                                        $pdf->Cell(15, 4, '', 0, 0, 'C');
+                                        $pdf->Cell(15, 4, '', 0, 0, 'C');
+                                    }
+                                    
                                     $pdf->Cell(8, 4, '', 0, 0, 'C');
                                     $pdf->Cell(10, 4, '', 0, 0, 'C');
                                     
                                     $cantidad_comp = $comp['cantidad_kit'] ?? $comp['total_componente_kit'] ?? 1;
                                     $nombre_comp = $comp['nombre_articulo_componente'] ?? $comp['nombre_articulo'] ?? 'Sin nombre';
                                     
-                                    $pdf->Cell(49, 4, '    • ' . $cantidad_comp . 'x ' . substr($nombre_comp, 0, 30), 0, 0, 'L');
+                                    // Ajustar ancho según si se ocultan columnas
+                                    $pdf->Cell($ancho_descripcion, 4, '    • ' . $cantidad_comp . 'x ' . substr($nombre_comp, 0, 30), 0, 0, 'L');
                                     $pdf->Cell(12, 4, '', 0, 0, 'C');
                                     $pdf->Cell(51, 4, '', 0, 1, 'R');
                                     

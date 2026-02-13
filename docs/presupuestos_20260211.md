@@ -234,7 +234,7 @@
 
 ---
 
-### 16. Fechas de Montaje y Desmontaje - Optimización de Espacio
+### 16. Fechas de Montaje y Desmontaje - Optimización de Espacio ✅ **COMPLETADA**
 
 **Situación actual**: Las fechas de montaje y desmontaje se muestran como columnas en cada línea del cuerpo del presupuesto.
 
@@ -323,7 +323,30 @@ Se recomienda **Opción B (Criterio Estricto)** porque:
 5. El usuario verá rápidamente si hay inconsistencias en sus datos
 6. Comportamiento binario predecible (todo o nada)
 
-**Decisión pendiente del cliente**.
+**Decisión del cliente**: Se implementó **Opción A con criterio del 30%**
+
+**Implementación realizada** (13 feb 2026):
+- ✅ Análisis automático de fechas predominantes por grupo de fecha_inicio
+- ✅ Criterio: Si >= 30% de líneas tienen las mismas fechas → ocultar columnas
+- ✅ Cabecera de fecha modificada: "Fecha inicio: DD/MM/YYYY | Mtje: DD/MM/YYYY | Dsmtje: DD/MM/YYYY"
+- ✅ Columnas Mtje/Dsmtje eliminadas dinámicamente del cuerpo cuando aplica criterio
+- ✅ Ancho de columna Descripción ajustado automáticamente (+30mm cuando se ocultan columnas)
+- ✅ Auto-generación de observaciones para líneas excepcionales: "Mtje: DD/MM/YYYY - Dsmtje: DD/MM/YYYY"
+- ✅ Integración con observaciones manuales del usuario (separadas con " | ")
+- ✅ Componentes de KIT ajustados para respetar columnas ocultas
+- ✅ Lógica aplicada a todos los grupos de fecha de forma independiente
+- ✅ Corrección del cálculo de altura de filas considerando ancho dinámico de descripción
+- ✅ Eliminación de espacios en blanco extras entre líneas
+
+**Formato de observaciones auto-generadas**:
+- Solo para líneas con fechas diferentes a las predominantes
+- Formato: `Mtje: DD/MM/YYYY - Dsmtje: DD/MM/YYYY`
+- Si ya hay observaciones del usuario: `[Obs usuario] | Mtje: DD/MM/YYYY - Dsmtje: DD/MM/YYYY`
+
+**Correcciones aplicadas**:
+- Fix: Cálculo de altura de fila ahora usa el ancho real de la columna descripción (49mm o 79mm según contexto)
+- Fix: Posicionamiento correcto de observaciones sin añadir líneas extra
+- Resultado: PDF sin espacios en blanco innecesarios entre líneas
 
 ---
 
