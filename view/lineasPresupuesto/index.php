@@ -152,6 +152,33 @@
         .dtr-group + tr td {
             border-top: 2px solid #e9ecef !important;
         }
+        
+        /* ========================================
+           OCULTAR SPINNERS DE INPUTS NUMBER
+           ======================================== */
+        
+        /* Chrome, Safari, Edge, Opera */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* Firefox */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+        /* Badge cliente exento IVA */
+        #badge-cliente-exento {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
     
     <!-- ########## START: MAIN PANEL ########## -->
@@ -200,6 +227,10 @@
                                 <span class="text-white-50" style="font-size: 0.9rem;">
                                     <i class="bi bi-hash me-1"></i>Cliente:
                                     <span id="nombre-cliente" class="text-white fw-semibold ms-1">--</span>
+                                </span>
+                                <!-- Badge Cliente Exento de IVA -->
+                                <span id="badge-cliente-exento" class="badge bg-warning text-dark" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>Cliente EXENTO de IVA (0%)
                                 </span>
                                 <span class="text-white-50" style="font-size: 0.9rem;">
                                     <i class="bi bi-calendar-event me-1"></i>Evento:

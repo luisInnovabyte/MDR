@@ -110,6 +110,14 @@ function cargarInfoVersion() {
                     `<i class="bi bi-file-earmark-text me-2"></i>${data.numero_presupuesto || 'Sin número'}`
                 );
                 $('#nombre-cliente').text(data.nombre_cliente || '--');
+                
+                // *** PUNTO 17: Mostrar/ocultar badge de cliente exento ***
+                if (window.clienteExentoIVA) {
+                    $('#badge-cliente-exento').fadeIn(300);
+                } else {
+                    $('#badge-cliente-exento').fadeOut(300);
+                }
+                
                 $('#nombre-evento').text(data.nombre_evento_presupuesto || 'Sin evento');
                 $('#numero-version').text(`v${data.numero_version_presupuesto || '0'}`);
                 
