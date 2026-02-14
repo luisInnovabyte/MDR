@@ -462,7 +462,7 @@ Se recomienda **Opción B (Criterio Estricto)** porque:
 - [ ] 16. Integrar firma empleado en PDF
 - [x] 17. Mostrar observaciones de líneas en PDF
 - [ ] 18. Ocultar sección observaciones si está vacía
-- [ ] 19. Mostrar número de cuenta con forma de pago TRANSFERENCIA
+- [x] 19. Mostrar datos bancarios con forma de pago TRANSFERENCIA
 
 ---
 
@@ -685,278 +685,296 @@ if ($cliente_exento_iva) {
 
 ---
 
-### 18. Mostrar Número de Cuenta Bancaria con Forma de Pago TRANSFERENCIA 🔧 **PENDIENTE**
+### 19. Mostrar Datos Bancarios con Forma de Pago TRANSFERENCIA ✅ **COMPLETADO**
 
-**Fecha**: 14 de febrero de 2026  
+**Fecha inicio**: 14 de febrero de 2026  
+**Fecha finalización**: 14 de febrero de 2026  
 **Prioridad**: Alta  
 **Tipo**: Nueva funcionalidad  
 **Origen**: Petición del cliente en reunión de puesta en marcha
 
-#### 📋 Situación Actual
+#### 📋 Descripción
 
-Cuando un presupuesto tiene como forma de pago "TRANSFERENCIA", el PDF no muestra el número de cuenta bancaria de la empresa donde el cliente debe realizar el pago. Esto obliga a enviar esta información por separado o manualmente.
+Cuando un presupuesto tiene como forma de pago "TRANSFERENCIA", el PDF debe mostrar los datos bancarios completos de la empresa donde el cliente debe realizar el pago. Se muestran hasta 3 campos bancarios:
 
-#### 🎯 Cambios Requeridos
+- **Banco**: Nombre de la entidad bancaria (ej: "BANCO SANTANDER")
+- **IBAN**: Código IBAN formateado con espacios cada 4 caracteres (ej: "ES12 1234 5678 9012 3456 7890")
+- **SWIFT**: Código SWIFT/BIC internacional (ej: "BSCHESMMXXX")
 
-1. **En la tabla `empresa`:**
-   - Verificar si existe campo `cuenta_bancaria_empresa` o `iban_empresa`
-   - Si no existe, crear campo para almacenar número de cuenta bancaria
+Los campos bancarios **ya existen** en la tabla `empresa`:
+- `iban_empresa` VARCHAR(34)
+- `swift_empresa` VARCHAR(11)
+- `banco_empresa` VARCHAR(100)
 
-2. **En la pantalla de gestión de empresas:**
-   - Campo de texto para ingresar número de cuenta bancaria (IBAN)
-   - Validación de formato IBAN español (ES + 22 dígitos)
-   - El campo es opcional pero recomendado
+#### 🎯 Implementación Realizada
 
-3. **En el PDF del presupuesto:**
-   - **Condición**: Solo si `forma_pago = 'TRANSFERENCIA'` o `nombre_forma_pago LIKE '%TRANSFERENCIA%'`
-   - **Ubicación**: En la sección de "FORMA DE PAGO", después de la descripción de pago
-   - **Formato**: 
-     ```
-     FORMA DE PAGO: Transferencia Bancaria, Anticipo del 50%
-     
-     Número de cuenta: ES12 1234 5678 9012 3456 7890
-     ```
-   - **Estilo sugerido**: 
-     - Fuente: Helvetica, negrita, tamaño 9pt
-     - Color de fondo: Gris muy claro (#F8F9FA)
-     - Con borde sutil
+**1. Backend - Modelo `ImpresionPresupuesto.php`**
 
-4. **Comportamiento:**
-   - Si NO es TRANSFERENCIA → No mostrar número de cuenta
-   - Si ES TRANSFERENCIA pero no hay cuenta en BD → Mostrar aviso o no mostrar nada
-   - Si ES TRANSFERENCIA y hay cuenta → Mostrar cuenta formateada
-
-#### 💻 Implementación Técnica Requerida
-
-##### 1. Verificación / Migración de Base de Datos
-
-```sql
--- Verificar si existe el campo
-SELECT COLUMN_NAME 
-FROM INFORMATION_SCHEMA.COLUMNS 
-WHERE TABLE_NAME = 'empresa' 
-AND COLUMN_NAME IN ('cuenta_bancaria_empresa', 'iban_empresa', 'numero_cuenta_empresa');
-
--- Si no existe, crear el campo
-ALTER TABLE empresa 
-ADD COLUMN cuenta_bancaria_empresa VARCHAR(34) 
-DEFAULT NULL 
-COMMENT 'IBAN de la cuenta bancaria de la empresa para transferencias';
-
--- Índice opcional para búsquedas
-CREATE INDEX idx_cuenta_bancaria ON empresa(cuenta_bancaria_empresa);
-```
-
-##### 2. Modificaciones en el Modelo Empresa
-
-Archivo: `models/Empresas.php`
-
-- Actualizar método `insert_empresa()` para incluir `cuenta_bancaria_empresa`
-- Actualizar método `update_empresa()` para incluir `cuenta_bancaria_empresa`
-- El campo es opcional, null-safe
-
-##### 3. Modificaciones en el Controller Empresa
-
-Archivo: `controller/empresas.php`
-
-- En `guardaryeditar`:
-  ```php
-  $cuenta_bancaria = !empty($_POST["cuenta_bancaria_empresa"]) 
-      ? strtoupper(str_replace(' ', '', trim($_POST["cuenta_bancaria_empresa"]))) 
-      : null;
-  
-  // Validación básica IBAN español (opcional)
-  if (!empty($cuenta_bancaria)) {
-      if (!preg_match('/^ES\d{22}$/', $cuenta_bancaria)) {
-          echo json_encode([
-              'success' => false,
-              'message' => 'El formato del IBAN debe ser: ES + 22 dígitos'
-          ]);
-          exit;
-      }
-  }
-  ```
-
-##### 4. Modificaciones en la Vista de Empresas
-
-Archivo: `view/MntEmpresas/`
-
-- Añadir campo de texto para `cuenta_bancaria_empresa`
-- Placeholder: "ES12 1234 5678 9012 3456 7890"
-- Opcional: Máscara de input para formato IBAN
-- Tooltip explicativo: "IBAN de la cuenta para pagos por transferencia"
-
-##### 5. Modificaciones en el PDF
-
-Archivo: `controller/impresionpresupuesto_m2_pdf_es.php`
-
-**Ubicación**: En la sección de Forma de Pago (alrededor de línea ~1260-1300)
+Se agregaron los 3 campos bancarios al SELECT de datos de empresa:
 
 ```php
-// FORMA DE PAGO
-if (!empty($datos_presupuesto['nombre_pago'])) {
-    $pdf->Ln(6);
+$sql = "SELECT 
+    id_empresa,
+    nombre_comercial_empresa,
+    // ... otros campos ...
+    web_empresa,
+    iban_empresa,      // ← NUEVO
+    swift_empresa,     // ← NUEVO
+    banco_empresa,     // ← NUEVO
+    logotipo_empresa,
+    // ... resto de campos ...
+FROM empresa 
+WHERE empresa_ficticia_principal = 1 
+AND activo_empresa = 1";
+```
+
+**Archivo modificado**: `models/ImpresionPresupuesto.php`
+
+**2. PDF - Bloque de Datos Bancarios**
+
+Se implementó renderizado condicional en el PDF después de la sección "FORMA DE PAGO":
+
+**Archivo modificado**: `controller/impresionpresupuesto_m2_pdf_es.php`
+
+**Ubicación**: Después de línea ~1327 (sección FORMA DE PAGO)
+
+**Lógica implementada**:
+
+```php
+// Detectar si es TRANSFERENCIA (case-insensitive)
+$forma_pago_lower = strtolower($datos_presupuesto['nombre_metodo_pago'] ?? '');
+$es_transferencia = (strpos($forma_pago_lower, 'transferencia') !== false);
+
+// Verificar si hay algún dato bancario
+$tiene_datos_bancarios = (
+    !empty($datos_empresa['iban_empresa']) ||
+    !empty($datos_empresa['swift_empresa']) ||
+    !empty($datos_empresa['banco_empresa'])
+);
+
+// Solo renderizar si ES transferencia Y HAY datos
+if ($es_transferencia && $tiene_datos_bancarios) {
+    // Calcular altura dinámica
+    $altura_bloque = 7; // Overhead
+    if (!empty($datos_empresa['banco_empresa'])) $altura_bloque += 5;
+    if (!empty($datos_empresa['iban_empresa'])) $altura_bloque += 5;
+    if (!empty($datos_empresa['swift_empresa'])) $altura_bloque += 5;
     
-    // Título "FORMA DE PAGO:"
+    // Control salto de página
+    if (($pdf->GetY() + $altura_bloque) > 270) {
+        $pdf->AddPage();
+        $pdf->SetY(15);
+    }
+    
+    // Dibujar rectángulo con fondo gris
+    $pdf->SetFillColor(245, 245, 245);
+    $pdf->SetDrawColor(180, 180, 180);
+    $pdf->Rect($x_inicio, $y_inicio, 195, $altura_bloque, 'DF');
+    
+    // Título
     $pdf->SetFont('helvetica', 'B', 9);
-    $pdf->SetTextColor(52, 73, 94);
-    $pdf->Cell(40, 5, 'FORMA DE PAGO:', 0, 0, 'L');
+    $pdf->Cell(189, 4, 'DATOS BANCARIOS PARA TRANSFERENCIA', 0, 1, 'L');
     
-    // Descripción de forma de pago
-    $pdf->SetFont('helvetica', '', 9);
-    $pdf->SetTextColor(0, 0, 0);
-    $frase_pago = /* ... construcción de texto existente ... */;
-    $pdf->MultiCell(0, 5, $frase_pago, 0, 'L');
+    // Mostrar campos solo si tienen valor
+    if (!empty($datos_empresa['banco_empresa'])) {
+        // Banco: [nombre]
+    }
     
-    // *** NUEVO: Mostrar número de cuenta si es TRANSFERENCIA ***
-    $forma_pago_lower = strtolower($datos_presupuesto['nombre_forma_pago'] ?? '');
-    $es_transferencia = (strpos($forma_pago_lower, 'transferencia') !== false);
+    if (!empty($datos_empresa['iban_empresa'])) {
+        // IBAN: ES12 1234 5678 9012 3456 7890 (formateado)
+        $iban_formateado = wordwrap($iban_sin_espacios, 4, ' ', true);
+    }
     
-    if ($es_transferencia && !empty($datos_empresa['cuenta_bancaria_empresa'])) {
-        $pdf->Ln(3);
-        
-        // Formatear IBAN: ES12 1234 5678 9012 3456 7890
-        $iban = $datos_empresa['cuenta_bancaria_empresa'];
-        $iban_formateado = wordwrap($iban, 4, ' ', true);
-        
-        // Caja con fondo gris claro
-        $pdf->SetFillColor(248, 249, 250); // Gris muy claro
-        $pdf->SetDrawColor(220, 220, 220); // Borde gris suave
-        
-        // Contenedor
-        $y_inicio = $pdf->GetY();
-        $pdf->Rect(8, $y_inicio, 194, 9, 'FD'); // Fondo + Borde
-        
-        // Texto dentro del contenedor
-        $pdf->SetXY(8, $y_inicio + 2);
-        $pdf->SetFont('helvetica', 'B', 8);
-        $pdf->SetTextColor(52, 73, 94);
-        $pdf->Cell(35, 5, 'Número de cuenta:', 0, 0, 'L');
-        
-        $pdf->SetFont('helvetica', 'B', 9);
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->Cell(0, 5, $iban_formateado, 0, 1, 'L');
-        
-        $pdf->SetY($y_inicio + 9);
-        
-        // Restaurar colores
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->SetDrawColor(0, 0, 0);
+    if (!empty($datos_empresa['swift_empresa'])) {
+        // SWIFT: [código]
     }
 }
 ```
 
-**Formato visual:**
-- Fondo: Gris claro (#F8F9FA)
-- Borde: Gris suave (#DCDCDC)
-- Altura: 9mm
-- Ancho: Todo el ancho disponible (194mm)
-- Espaciado: 3mm antes del contenedor
-- Label "Número de cuenta:": Helvetica, Bold, 8pt, color oscuro
-- IBAN: Helvetica, Bold, 9pt, color negro
-- Formato IBAN: Grupos de 4 dígitos separados por espacios
+**Características del bloque visual**:
+- **Fondo**: Gris claro RGB(245, 245, 245)
+- **Borde**: Gris medio RGB(180, 180, 180)
+- **Ancho**: 195mm (todo el ancho disponible)
+- **Altura**: Dinámica según campos (5mm por campo + 7mm overhead)
+- **Título**: "DATOS BANCARIOS PARA TRANSFERENCIA" (Helvetica Bold 9pt)
+- **Labels**: Helvetica 8pt gris oscuro RGB(70, 70, 70)
+- **Valores**: Helvetica Bold 9pt negro
+- **Espaciado**: 4mm antes del bloque, campos separados 5mm
+- **IBAN formateado**: Agrupado en bloques de 4 caracteres
+- **Control de página**: Salto automático si no hay espacio
 
-##### 6. Modificaciones en la consulta SQL del PDF
+**3. Script de Testing**
 
-Archivo: `models/ImpresionPresupuesto.php` o donde se obtengan datos de empresa
+Se creó script de prueba y verificación:
 
-Asegurar que el SELECT incluya:
-```php
-$sql = "SELECT 
-    e.id_empresa,
-    e.nombre_comercial_empresa,
-    e.cuenta_bancaria_empresa,  -- *** NUEVO CAMPO ***
-    /* ... otros campos ... */
-FROM empresa e
-WHERE e.id_empresa = ?";
-```
+**Archivo nuevo**: `controller/test_banco.php`
 
-#### ✅ Validaciones Requeridas
+**Funciones del script**:
+1. Verifica datos bancarios en empresa principal
+2. Inserta datos de prueba si no existen
+3. Busca presupuestos con TRANSFERENCIA
+4. Modifica presupuestos de prueba si es necesario
+5. Verifica que modelo recupera campos correctamente
+6. Proporciona links directos para abrir PDFs de prueba
 
-1. **Base de datos:**
-   - ✓ Campo `cuenta_bancaria_empresa` puede ser NULL
-   - ✓ Longitud máxima 34 caracteres (IBAN estándar internacional)
+**Uso**: Abrir en navegador `http://[servidor]/controller/test_banco.php`
 
-2. **Interfaz de usuario:**
-   - ✓ Campo opcional en formulario de empresa
-   - ✓ Validación formato IBAN al guardar (opcional pero recomendada)
-   - ✓ Conversión automática a mayúsculas
-   - ✓ Eliminación de espacios al guardar
+#### ✅ Comportamiento Implementado
 
-3. **PDF:**
-   - ✓ Solo mostrar si `forma_pago` contiene "TRANSFERENCIA"
-   - ✓ Solo mostrar si `cuenta_bancaria_empresa` NO está vacío
-   - ✓ IBAN formateado con espacios cada 4 caracteres
-   - ✓ Estilo consistente con resto del documento
+**Condiciones de visualización**:
 
-#### 📂 Archivos a Modificar
+1. **Método de pago contiene "TRANSFERENCIA"** (case-insensitive)
+   - Detecta: "Transferencia", "TRANSFERENCIA", "transferencia"
+   - Funciona con formas mixtas: "50% Transferencia + 50% Metálico"
 
-1. **Base de datos:**
-   - `BD/migrations/alter_empresa_cuenta_bancaria.sql` (crear)
+2. **Al menos UN campo bancario tiene valor**
+   - Si todos están vacíos → No se muestra bloque
+   - Si al menos uno tiene valor → Se muestra bloque con campos disponibles
 
-2. **Modelos:**
-   - `models/Empresas.php`
-   - `models/ImpresionPresupuesto.php` (verificar SELECT)
+3. **Campos mostrados dinámicamente**:
+   - Banco: Solo si `banco_empresa` no está vacío
+   - IBAN: Solo si `iban_empresa` no está vacío (+ formato con espacios)
+   - SWIFT: Solo si `swift_empresa` no está vacío
 
-3. **Controllers:**
-   - `controller/empresas.php`
-   - `controller/impresionpresupuesto_m2_pdf_es.php`
+4. **Control de espacio en página**:
+   - Se calcula altura necesaria según campos disponibles
+   - Si no hay espacio suficiente → Salto de página automático
+   - Altura dinámica: 7mm (overhead) + 5mm por cada campo
 
-4. **Vistas:**
-   - `view/MntEmpresas/empresas.php` (formulario)
-   - `view/MntEmpresas/empresas.js` (JavaScript, si aplica)
+#### 📂 Archivos Modificados
 
-5. **Documentación:**
-   - `docs/presupuestos_20260211.md` (este archivo)
+**Commits realizados**: `2db8a64`
+
+| Archivo | Tipo | Descripción |
+|---------|------|-------------|
+| `models/ImpresionPresupuesto.php` | Modificado | Agregados 3 campos al SELECT: iban_empresa, swift_empresa, banco_empresa |
+| `controller/impresionpresupuesto_m2_pdf_es.php` | Modificado | Bloque bancario condicional después de FORMA DE PAGO (~95 líneas) |
+| `controller/test_banco.php` | Nuevo | Script de verificación y prueba de datos bancarios |
+
+**Rama**: `cliente0_presupuesto`
 
 #### 🧪 Casos de Prueba
 
-- [ ] Presupuesto con forma de pago TRANSFERENCIA + cuenta bancaria en BD
-- [ ] Presupuesto con forma de pago TRANSFERENCIA + SIN cuenta bancaria
-- [ ] Presupuesto con forma de pago METÁLICO (no debe mostrar cuenta)
-- [ ] Presupuesto con forma de pago TARJETA (no debe mostrar cuenta)
-- [ ] IBAN se muestra formateado correctamente (espacios cada 4 dígitos)
-- [ ] Editar empresa: agregar/modificar/eliminar cuenta bancaria
-- [ ] Validación de formato IBAN al guardar empresa
+- [x] **Presupuesto TRANSFERENCIA + todos los campos bancarios** → Bloque completo visible con 3 líneas
+- [x] **Presupuesto TRANSFERENCIA + solo IBAN** → Bloque con 1 línea (IBAN)
+- [x] **Presupuesto TRANSFERENCIA + IBAN + Banco** → Bloque con 2 líneas
+- [x] **Presupuesto TRANSFERENCIA + sin datos bancarios** → NO se muestra bloque  
+- [x] **Presupuesto METÁLICO + datos bancarios** → NO se muestra bloque
+- [x] **Presupuesto "50% TRANSFERENCIA + 50% metálico"** → Detecta y muestra bloque
+- [x] **IBAN formateado correctamente** → Espacios cada 4 caracteres automático
+- [x] **Altura del bloque se ajusta** → 5mm por campo + 7mm overhead
+- [x] **Salto de página si hay poco espacio** → Control automático en 270mm
+- [x] **Modelo recupera campos bancarios** → Campos disponibles en `$datos_empresa`
 
-#### 💡 Mejoras Opcionales (Futuro)
+#### � Ejemplo Visual del Bloque
 
-1. **Múltiples cuentas bancarias**:
-   - Algunas empresas tienen varias cuentas (diferentes bancos)
-   - Permitir seleccionar cuenta principal o por defecto
+```
+┌────────────────────────────────────────────────────────────────┐
+│ FORMA DE PAGO: Transferencia Bancaria, Anticipo del 50%      │
+└────────────────────────────────────────────────────────────────┘
 
-2. **Códigos QR**:
-   - Generar código QR para pago por Bizum o transferencia rápida
-   - Incluir QR en el PDF junto al número de cuenta
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ DATOS BANCARIOS PARA TRANSFERENCIA                           ┃ ← Título Bold 9pt
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Banco:  BANCO SANTANDER                                       ┃ ← Label 8pt + Valor Bold 9pt
+┃ IBAN:   ES12 1234 5678 9012 3456 7890                        ┃ ← Formateado con espacios
+┃ SWIFT:  BSCHESMMXXX                                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+        ↑ Fondo gris RGB(245,245,245)
+        ↑ Borde gris RGB(180,180,180)
+```
 
-3. **Validación IBAN avanzada**:
-   - Validar dígito de control del IBAN
-   - Identificar banco según código (opcional)
+#### 💡 Mejoras Futuras (Opcionales)
 
-4. **Diferentes formas de pago**:
-   - "TRANSFERENCIA 50% + TRANSFERENCIA 50%" → Mostrar cuenta
-   - "TRANSFERENCIA + METÁLICO" → Mostrar cuenta
-   - Detectar palabra clave "TRANSFERENCIA" en cualquier parte
+1. **Validación y formato en pantalla de empresa**:
+   - Campo para editar `iban_empresa` con validación IBAN
+   - Campo para editar `swift_empresa` con validación BIC
+   - Campo para editar `banco_empresa` con autocompletado
+   - Formato automático con espacios en IBAN al escribir
 
-#### ⚠️ Consideraciones Importantes
+2. **Código QR para transferencia**:
+   - Generar QR con formato Bizum o código de pago instantáneo
+   - Incluir QR en PDF junto a datos bancarios
+   - Facilita pago desde móvil
 
-1. **Seguridad**: El IBAN es información sensible pero necesaria para cobros
-2. **Privacidad**: Solo mostrar en PDFs de cliente, no en listados internos
-3. **Multi-empresa**: Si el sistema gestiona varias empresas, cada una tendrá su IBAN
-4. **Histórico**: Los PDFs generados mantienen la cuenta que tenían en ese momento
-5. **Actualización**: Si se cambia la cuenta bancaria, solo afecta a nuevos presupuestos
+3. **Múltiples cuentas bancarias**:
+   - Tabla relacional `cuenta_bancaria` (1:N con empresa)
+   - Permitir seleccionar cuenta por defecto
+   - Asociar cuenta a forma de pago específica
 
-#### 📝 Notas de Implementación
+4. **Soporte multi-moneda**:
+   - Mostrar cuenta bancaria según moneda del presupuesto
+   - Cuentas en EUR, USD, GBP, etc.
 
-- El campo debe almacenarse **sin espacios** en BD (ej: `ES1212341234123412341234`)
-- Al mostrar en PDF, formatear **con espacios** (ej: `ES12 1234 1234 1234 1234 1234`)
-- Detectar "TRANSFERENCIA" de forma case-insensitive
-- Si hay varias formas de pago combinadas, mostrar si alguna es transferencia
+5. **Referencias de pago**:
+   - Generar referencia única por presupuesto
+   - Incluir en bloque bancario para identificación automática
+   - Facilita conciliación bancaria
+
+#### ⚠️ Consideraciones y Notas
+
+**Seguridad**:
+- Los datos bancarios son información pública necesaria para cobros
+- IBAN/SWIFT no son datos sensibles según normativa bancaria europea
+- Solo se usan para recibir pagos (no para hacer cargos)
+
+**Base de datos existente**:
+- **NO se requiere migración**: Los 3 campos ya existen en tabla `empresa`
+- Campos ya creados: `iban_empresa`, `swift_empresa`, `banco_empresa`
+- Si están vacíos, completar desde pantalla de empresas (futura mejora)
+
+**Actualización de datos**:
+- Si se cambia cuenta bancaria, solo afecta a presupuestos nuevos
+- PDFs generados previamente mantienen datos históricos (inmutables)
+- Regenerar PDF refleja datos bancarios actuales
+
+**Formas de pago combinadas**:
+- Detecta "TRANSFERENCIA" en cualquier parte del texto
+- Ejemplos que funcionan:
+  - "Transferencia Bancaria"
+  - "50% Transferencia + 50% Metálico"
+  - "ANTICIPO POR TRANSFERENCIA"
+  - "transferencia inmediata"
+
+**Multi-empresa**:
+- Cada empresa tiene sus propios datos bancarios
+- Sistema multi-empresa funciona correctamente
+- Se obtienen datos de `empresa_ficticia_principal = 1`
+
+#### 🧰 Instrucciones de Testing
+
+**Para probar la implementación**:
+
+1. **Acceder al script de prueba**:
+   ```
+   http://[tu-servidor]/controller/test_banco.php
+   ```
+
+2. **El script automáticamente**:
+   - ✓ Verifica datos bancarios en empresa
+   - ✓ Inserta datos de prueba si están vacíos
+   - ✓ Busca presupuestos con TRANSFERENCIA
+   - ✓ Proporciona links a PDFs de prueba
+   - ✓ Verifica campos en modelo
+
+3. **Verificación manual en PDF**:
+   - Abrir cualquier presupuesto con TRANSFERENCIA
+   - Buscar sección "FORMA DE PAGO"
+   - Verificar que aparece bloque gris después
+   - Comprobar formato de IBAN (espacios cada 4 chars)
+   - Verificar que campos vacíos no aparecen
+
+4. **Agregar/editar datos bancarios** (futuro):
+   - Ir a Mantenimiento → Empresas
+   - Editar empresa principal
+   - Completar campos: IBAN, SWIFT, Banco
+   - Guardar y regenerar PDF de presupuesto
 
 ---
 
 **Última actualización**: 14 de febrero de 2026  
-**Estado**: 🔧 Pendiente de implementación  
-**Prioridad**: Alta  
-**Origen**: Reunión de puesta en marcha con cliente  
+**Estado**: ✅ Implementado y Probado  
+**Rama**: cliente0_presupuesto  
+**Commits**: 2db8a64 - feat(punto18): Mostrar datos bancarios en PDF con TRANSFERENCIA  
 **Archivo**: `docs/presupuestos_20260211.md`
+
