@@ -2,13 +2,13 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header pd-y-20 pd-x-25">
-                <h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">Comercial</h6>
+                <h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">Empleado</h6>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body pd-25">
-                <h4 class="lh-3 mg-b-20" id="mdltitulo"><a href="" class="tx-inverse hover-primary">Mantenimiento de comerciales</a></h4>
+                <h4 class="lh-3 mg-b-20" id="mdltitulo"><a href="" class="tx-inverse hover-primary">Mantenimiento de empleados</a></h4>
                 
                 <form id="formComercial">
                     <!-- ID COMERCIAL -->
@@ -86,7 +86,7 @@
                             <h5 class="mb-0 tx-bold">📝 Firma Digital</h5>
                         </div>
                         <div class="card-body">
-                            <p class="tx-12 tx-gray-600 mg-b-15">La firma se utilizará en los presupuestos impresos. El comercial también puede editarla desde su perfil.</p>
+                            <p class="tx-12 tx-gray-600 mg-b-15">La firma se utilizará en los presupuestos impresos. El empleado también puede editarla desde su perfil.</p>
                             
                             <!-- Canvas de firma -->
                             <div class="row">

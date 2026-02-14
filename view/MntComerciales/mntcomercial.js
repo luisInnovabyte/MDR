@@ -569,7 +569,7 @@ function cargarUsuariosEnSelect(selectId, idUsuarioSeleccionado) {
 
                     swal.fire(
                         'Desactivado',
-                        'El comercial ha sido desactivado',
+                        'El empleado ha sido desactivado',
                         'success'
                     )
                 });
@@ -594,7 +594,7 @@ function cargarUsuariosEnSelect(selectId, idUsuarioSeleccionado) {
     function activarComercial(id) {
         swal.fire({
             title: 'Activar',
-            text: `¿Desea activar el comercial con ID ${id}?`,
+            text: `¿Desea activar el empleado con ID ${id}?`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -608,7 +608,7 @@ function cargarUsuariosEnSelect(selectId, idUsuarioSeleccionado) {
 
                     swal.fire(
                         'Activado',
-                        'El comercial ha sido activado',
+                        'El empleado ha sido activado',
                         'success'
                     )
                 });
@@ -638,7 +638,7 @@ function cargarUsuariosEnSelect(selectId, idUsuarioSeleccionado) {
     // CAPTURAR EL CLICK EN EL BOTÓN DE NUEVO
     $(document).on('click', '#btnnuevo', function (event) {
         event.preventDefault();
-        $('#mdltitulo').text('Nuevo registro de comercial');
+        $('#mdltitulo').text('Nuevo registro de empleado');
 
         $('#modalMantenimiento').modal('show');
 
@@ -778,12 +778,12 @@ $(document).on('click', '#btnsalvar', async function (event) {
             //);
             // Alternativa 2 de información con toastr
             //https://codeseven.github.io/toastr/demo.html
-            toastr["success"]("El comercial ha sido guardado", "Guardado");
+            toastr["success"]("El empleado ha sido guardado", "Guardado");
         },
         error: function (xhr, status, error) {
             swal.fire(
                 'Error',
-                'No se pudo guardar el comercial',
+                'No se pudo guardar el empleado',
                 'error'
             );
         }
@@ -824,7 +824,7 @@ $(document).on('click', '#btnsalvar', async function (event) {
 
                 //console.log('Datos parseados:', data);
 
-                $('#mdltitulo').text('Edición registro comercial');
+                $('#mdltitulo').text('Edición registro empleado');
                 $('#modalMantenimiento').modal('show');
 
                 $('#modalMantenimiento .modal-body #id_comercial').val(data.id_comercial);

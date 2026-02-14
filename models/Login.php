@@ -46,13 +46,18 @@ class Login
      public function get_usuario_comercial_disponible()
     {
         try {
+            // Mostrar TODOS los usuarios activos que NO tienen empleado/comercial asignado
+            // Sin restricción de rol - cualquier usuario puede ser empleado
             $sql = "SELECT u.*, r.nombre_rol
                     FROM usuarios u
                     JOIN roles r ON u.id_rol = r.id_rol
-                    WHERE u.id_rol = 4
+                    WHERE u.est = 1
                     AND NOT EXISTS (
-                        SELECT * FROM comerciales c WHERE c.id_usuario = u.id_usuario
-                    );";
+                        SELECT 1 FROM comerciales c 
+                        WHERE c.id_usuario = u.id_usuario 
+                        AND c.activo = 1
+                    )
+                    ORDER BY u.nombre ASC;";
             
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->execute();
