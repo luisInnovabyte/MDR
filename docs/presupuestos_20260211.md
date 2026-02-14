@@ -460,11 +460,224 @@ Se recomienda **Opción B (Criterio Estricto)** porque:
 - [ ] 14. Crear campo firma en BD (empleado)
 - [ ] 15. Añadir firma en pantalla empleados
 - [ ] 16. Integrar firma empleado en PDF
-- [ ] 17. Mostrar observaciones de líneas en PDF
+- [x] 17. Mostrar observaciones de líneas en PDF
 - [ ] 18. Ocultar sección observaciones si está vacía
 
 ---
 
-**Última actualización**: 11 de febrero de 2026  
-**Estado**: Pendiente de implementación  
+### 17. Clientes Exentos de IVA - Operaciones Intracomunitarias ✅ **COMPLETADO**
+
+**Fecha inicio**: 11 de febrero de 2026  
+**Fecha finalización**: 14 de febrero de 2026  
+**Prioridad**: Alta  
+**Tipo**: Nueva funcionalidad
+
+#### 📋 Situación Actual
+
+Actualmente, el sistema calcula el IVA según el porcentaje configurado en cada artículo/línea del presupuesto (21%, 10%, 4%, etc.). No existe la posibilidad de marcar clientes como exentos de IVA para operaciones intracomunitarias o empresas con normativa especial.
+
+#### 🎯 Cambios Requeridos
+
+1. **En la tabla `cliente`:**
+   - Añadir campo `exento_iva` (BOOLEAN, DEFAULT FALSE)
+   - Añadir campo `justificacion_exencion_iva` (TEXT, DEFAULT 'Operación exenta de IVA según artículo 25 Ley 37/1992')
+
+2. **En la pantalla de gestión de clientes:**
+   - Checkbox para marcar cliente como exento de IVA
+   - Campo de texto/textarea para editar la justificación
+   - Al activar el checkbox, mostrar el campo de justificación
+   - Valor por defecto: "Operación exenta de IVA según artículo 25 Ley 37/1992"
+
+3. **En el cálculo de presupuestos:**
+   - Si `cliente.exento_iva = TRUE`, forzar el cálculo de IVA al 0% para TODAS las líneas
+   - Ignorar el porcentaje de IVA configurado en cada artículo
+   - Mostrar IVA 0,00 € en el desglose de totales
+
+4. **En el PDF del presupuesto:**
+   - Mostrar el texto de justificación en el área de totales o después de los totales
+   - Formato sugerido: Texto en cursiva o con fondo gris claro
+   - Ubicación: Entre los totales y las observaciones de líneas
+
+#### 💻 Implementación Técnica Requerida
+
+##### 1. Migración de Base de Datos
+
+```sql
+-- Añadir campos a la tabla cliente
+ALTER TABLE cliente 
+ADD COLUMN exento_iva BOOLEAN DEFAULT FALSE COMMENT 'Cliente exento de IVA',
+ADD COLUMN justificacion_exencion_iva TEXT 
+    DEFAULT 'Operación exenta de IVA según artículo 25 Ley 37/1992' 
+    COMMENT 'Texto legal de justificación de exención';
+
+-- Índice para búsquedas
+CREATE INDEX idx_exento_iva ON cliente(exento_iva);
+```
+
+##### 2. Modificaciones en el Modelo Cliente
+
+Archivo: `models/Clientes.php`
+
+- Actualizar método `insert_cliente()` para incluir los nuevos campos
+- Actualizar método `update_cliente()` para incluir los nuevos campos
+- Los campos son opcionales, null-safe
+
+##### 3. Modificaciones en el Controller Cliente
+
+Archivo: `controller/cliente.php`
+
+- En `guardaryeditar`:
+  ```php
+  $exento_iva = isset($_POST["exento_iva"]) ? 1 : 0;
+  $justificacion_exencion_iva = htmlspecialchars(
+      trim($_POST["justificacion_exencion_iva"] ?? 'Operación exenta de IVA según artículo 25 Ley 37/1992'),
+      ENT_QUOTES, 
+      'UTF-8'
+  );
+  ```
+
+##### 4. Modificaciones en la Vista de Clientes
+
+Archivo: `view/MntClientes/`
+
+- Añadir checkbox para `exento_iva`
+- Añadir textarea para `justificacion_exencion_iva`
+- JavaScript para mostrar/ocultar justificación según checkbox
+
+##### 5. Modificaciones en Cálculo de Presupuestos
+
+Archivos afectados:
+- `controller/impresionpresupuesto_m2_pdf_es.php`
+- `models/Presupuesto.php`
+
+**Lógica de cálculo:**
+
+```php
+// Al obtener datos del cliente
+$cliente_exento_iva = (bool)$rspta_datoscliente["exento_iva"];
+$justificacion_iva = $rspta_datoscliente["justificacion_exencion_iva"] ?? 
+                     'Operación exenta de IVA según artículo 25 Ley 37/1992';
+
+// En el bucle de líneas de presupuesto
+foreach ($datoslineas as $reg) {
+    // Si el cliente está exento, forzar IVA a 0
+    if ($cliente_exento_iva) {
+        $impuesto_articulo = 0;
+    } else {
+        $impuesto_articulo = floatval($reg["impuesto_articulo"]);
+    }
+    
+    // Calcular importes con el IVA correcto
+    $importe_iva = $subtotal_linea * ($impuesto_articulo / 100);
+    $total_linea = $subtotal_linea + $importe_iva;
+}
+```
+
+##### 6. Modificaciones en el PDF
+
+Archivo: `controller/impresionpresupuesto_m2_pdf_es.php`
+
+**Ubicación del texto de justificación:**
+
+```php
+// Después de la sección de totales, antes de las observaciones
+if ($cliente_exento_iva) {
+    $pdf->Ln(5);
+    $pdf->SetFont('', 'I', 9); // Cursiva, tamaño 9
+    $pdf->SetFillColor(240, 240, 240); // Fondo gris claro
+    $pdf->MultiCell(
+        190, 
+        5, 
+        $justificacion_iva, 
+        0, 
+        'L', 
+        true, // Con fondo
+        1
+    );
+    $pdf->Ln(2);
+}
+
+// Continuar con observaciones de líneas...
+```
+
+**Formato visual sugerido:**
+- Fuente: Helvetica, cursiva, 9pt
+- Color de fondo: Gris claro (#F0F0F0)
+- Ancho: 190mm (ancho completo)
+- Alineación: Izquierda
+- Espaciado: 5mm antes, 2mm después
+
+#### ✅ Validaciones Requeridas
+
+1. **Base de datos:**
+   - ✓ Campo `exento_iva` no puede ser NULL (DEFAULT FALSE)
+   - ✓ Campo `justificacion_exencion_iva` tiene valor por defecto
+
+2. **Interfaz de usuario:**
+   - ✓ Checkbox visible en el formulario de cliente
+   - ✓ Textarea visible solo cuando checkbox activado
+   - ✓ Texto por defecto se carga automáticamente
+
+3. **Cálculos:**
+   - ✓ Si `exento_iva = TRUE`, IVA siempre 0%, sin excepciones
+   - ✓ Si `exento_iva = FALSE`, IVA según configuración de artículo
+   - ✓ Subtotales se calculan correctamente en ambos casos
+
+4. **PDF:**
+   - ✓ Justificación solo aparece si `exento_iva = TRUE`
+   - ✓ Totales muestran IVA 0,00 € correctamente
+   - ✓ Texto de justificación legible y bien posicionado
+
+#### 📂 Archivos a Modificar
+
+1. **Base de datos:**
+   - `BD/migrations/alter_cliente_exento_iva.sql` (crear)
+
+2. **Modelos:**
+   - `models/Clientes.php`
+
+3. **Controllers:**
+   - `controller/cliente.php`
+   - `controller/impresionpresupuesto_m2_pdf_es.php`
+
+4. **Vistas:**
+   - `view/MntClientes/clientes.php` (formulario)
+   - `view/MntClientes/clientes.js` (JavaScript)
+
+5. **Documentación:**
+   - `docs/presupuestos_20260211.md` (este archivo)
+
+#### 🧪 Casos de Prueba
+
+- [x] Cliente normal (exento_iva = FALSE): IVA se calcula según artículo
+- [x] Cliente exento (exento_iva = TRUE): IVA siempre 0%
+- [x] PDF con cliente exento muestra justificación
+- [x] PDF con cliente normal NO muestra justificación
+- [x] Texto de justificación personalizado se muestra correctamente
+- [x] Texto vacío o NULL usa el valor por defecto
+- [x] Editar cliente: cambiar de exento a normal y viceversa
+- [x] Totales se recalculan correctamente al cambiar estado
+
+#### 📝 Notas Legales
+
+- **Artículo 25 Ley 37/1992**: Operaciones intracomunitarias
+- El texto por defecto es orientativo, puede personalizarse según:
+  - Operaciones intracomunitarias (Art. 25)
+  - Exportaciones (Art. 21)
+  - Entregas exentas (Art. 20)
+  - Organismos internacionales (Art. 22)
+
+#### ⚠️ Consideraciones Importantes
+
+1. **Responsabilidad fiscal**: El cliente es responsable de indicar correctamente su situación fiscal
+2. **Auditoría**: Registrar en logs cuando se marca/desmarca exención de IVA
+3. **Histórico**: Los presupuestos/facturas ya generados mantienen el IVA que tenían en su momento
+4. **Validación**: Considerar validar el CIF del cliente para operaciones intracomunitarias (debe empezar por letra de país UE)
+
+---
+
+**Última actualización**: 14 de febrero de 2026  
+**Estado**: ✅ Implementado y Probado  
+**Rama**: cliente0_presupuesto  
+**Commits**: fix(punto17), style(punto17), style(pdf)  
 **Archivo**: `docs/presupuestos_20260211.md`

@@ -1149,7 +1149,7 @@ switch ($_GET["op"]) {
             $pdf->SetFont('helvetica', '', 9);
             $pdf->SetFillColor(248, 249, 250); // Fondo gris muy claro
             $pdf->SetDrawColor(220, 220, 220); // Borde gris suave
-            $pdf->Cell(150, 6, '', 0, 0);
+            $pdf->Cell(144, 6, '', 0, 0); // 144 = margen derecho alineado con cuerpo
             $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
             $pdf->SetFont('helvetica', 'B', 9);
             $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
