@@ -10,6 +10,162 @@ $(document).ready(function () {
     //          FIN DE TIPS           //
     ///////////////////////////////////
 
+    /////////////////////////////////////////////////////////
+    //   SIGNATURE PAD - FIRMA DIGITAL COMERCIALES        //
+    /////////////////////////////////////////////////////////
+    
+    // Variable global para el Signature Pad del administrador
+    let signaturePadAdmin = null;
+    let idComercialActual = null; // Para saber qué comercial estamos editando
+    
+    // Función para inicializar el Signature Pad en el modal de admin
+    function inicializarSignaturePadAdmin() {
+        const canvas = document.getElementById('firma-canvas-admin');
+        
+        if (!canvas) {
+            console.warn('Canvas firma-canvas-admin no encontrado');
+            return;
+        }
+        
+        // Si ya existe una instancia, limpiarla primero
+        if (signaturePadAdmin) {
+            signaturePadAdmin.clear();
+        }
+        
+        // Crear nueva instancia de Signature Pad
+        signaturePadAdmin = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)',
+            minWidth: 1,
+            maxWidth: 3
+        });
+        
+        // Ajustar el canvas al tamaño del contenedor
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePadAdmin.clear(); // Limpiar después de redimensionar
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        console.log('Signature Pad Admin inicializado');
+    }
+    
+    // Función para cargar firma existente del comercial
+    function cargarFirmaComercial(idComercial) {
+        if (!idComercial) {
+            console.log('No hay ID de comercial para cargar firma');
+            return;
+        }
+        
+        $.ajax({
+            url: '../../controller/ajax_obtener_firma.php',
+            type: 'GET',
+            data: { id_comercial: idComercial },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success && response.firma_base64) {
+                    // Mostrar preview de la firma existente
+                    $('#firma-preview-img-admin').attr('src', response.firma_base64);
+                    $('#firma-preview-admin').show();
+                    $('#firma-status-admin')
+                        .html('<span class="text-success"><i class="fa fa-check-circle"></i> Firma cargada</span>')
+                        .removeClass('text-danger')
+                        .addClass('text-success');
+                    
+                    console.log('Firma cargada correctamente');
+                } else {
+                    // No hay firma guardada
+                    $('#firma-preview-admin').hide();
+                    $('#firma-status-admin')
+                        .html('<span class="text-muted"><i class="fa fa-info-circle"></i> Sin firma guardada</span>')
+                        .removeClass('text-success text-danger');
+                    
+                    console.log('El comercial no tiene firma guardada');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al cargar firma:', error);
+                $('#firma-status-admin')
+                    .html('<span class="text-danger"><i class="fa fa-exclamation-triangle"></i> Error al cargar firma</span>')
+                    .removeClass('text-success')
+                    .addClass('text-danger');
+            }
+        });
+    }
+    
+    // Botón para limpiar firma en el canvas
+    $(document).on('click', '#btn-limpiar-firma-admin', function(e) {
+        e.preventDefault();
+        if (signaturePadAdmin) {
+            signaturePadAdmin.clear();
+            $('#firma-status-admin')
+                .html('<span class="text-muted"><i class="fa fa-eraser"></i> Canvas limpio</span>')
+                .removeClass('text-success text-danger');
+            console.log('Canvas limpiado');
+        }
+    });
+    
+    // Botón para eliminar firma guardada completamente
+    $(document).on('click', '#btn-eliminar-firma-admin', function(e) {
+        e.preventDefault();
+        
+        if (!idComercialActual) {
+            toastr.warning('No hay un comercial seleccionado', 'Atención');
+            return;
+        }
+        
+        // Confirmar eliminación
+        swal.fire({
+            title: '¿Eliminar firma?',
+            text: "Se eliminará la firma guardada del comercial. Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Enviar null para eliminar la firma
+                $.ajax({
+                    url: '../../controller/ajax_guardar_firma.php',
+                    type: 'POST',
+                    data: { 
+                        id_comercial: idComercialActual,
+                        firma_base64: null 
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success('Firma eliminada correctamente', 'Éxito');
+                            $('#firma-preview-admin').hide();
+                            if (signaturePadAdmin) {
+                                signaturePadAdmin.clear();
+                            }
+                            $('#firma-status-admin')
+                                .html('<span class="text-muted"><i class="fa fa-info-circle"></i> Sin firma guardada</span>')
+                                .removeClass('text-success text-danger');
+                        } else {
+                            toastr.error(response.message || 'Error al eliminar la firma', 'Error');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Error de comunicación con el servidor', 'Error');
+                    }
+                });
+            }
+        });
+    });
+    
+    /////////////////////////////////////////////////////////
+    //   FIN SIGNATURE PAD - FIRMA DIGITAL                //
+    /////////////////////////////////////////////////////////
+
 
     /////////////////////////////////////
     //     FORMATEO DE CAMPOS          //
@@ -497,6 +653,13 @@ function cargarUsuariosEnSelect(selectId, idUsuarioSeleccionado) {
 
         // RESETEAR ID SEGURO
         $('#formComercial').find('input[name="id_comercial"]').val("");
+        
+        // Resetear firma para nuevo comercial
+        idComercialActual = null;
+        $('#firma-preview-admin').hide();
+        $('#firma-status-admin')
+            .html('<span class="text-muted"><i class="fa fa-info-circle"></i> Canvas listo para nueva firma</span>')
+            .removeClass('text-success text-danger');
 
         // Limpiar las validaciones
         formValidator.clearValidation(); // Llama al método clearValidation
@@ -504,6 +667,9 @@ function cargarUsuariosEnSelect(selectId, idUsuarioSeleccionado) {
         // Mostrar el mantenimiento(modal) con el foco en el primer campo
         $('#modalMantenimiento').on('shown.bs.modal', function () {
             $('#modalMantenimiento .modal-body #nombre').focus();
+            
+            // Inicializar Signature Pad cuando el modal esté completamente visible
+            inicializarSignaturePadAdmin();
         });
 
         //console.log('Modal mostrado');
@@ -549,6 +715,16 @@ $(document).on('click', '#btnsalvar', async function (event) {
         toastr.error(`Por favor, corrija los errores en el formulario.`, 'Error de Validación');
         return; // Salir de la función si la validación falla
     }
+    
+    // Capturar la firma digital si existe
+    let firmaBase64 = null;
+    if (signaturePadAdmin && !signaturePadAdmin.isEmpty()) {
+        firmaBase64 = signaturePadAdmin.toDataURL('image/png');
+        console.log('Firma capturada del canvas');
+    } else {
+        console.log('No hay firma en el canvas');
+    }
+    
     // Serializar los datos del formulario lo utilizaremos cuando no tengamos que
     // cambiar nada de los datos que se envían al servidor
     // var formData = $('#formProducto').serialize();
@@ -561,7 +737,8 @@ $(document).on('click', '#btnsalvar', async function (event) {
         apellidos: apellidosC,
         movil: movilC,
         telefono: telefonoC,
-        id_usuario: idUsuario  // <-- añadido el id_usuario
+        id_usuario: idUsuario,  // <-- añadido el id_usuario
+        firma_base64: firmaBase64  // <-- añadida la firma
     };
 
     //console.log(datosFormulario);
@@ -587,6 +764,12 @@ $(document).on('click', '#btnsalvar', async function (event) {
             $('#modalMantenimiento').modal('hide');
             $table.DataTable().ajax.reload();
             $("#formComercial")[0].reset();
+            
+            // Limpiar el canvas de firma
+            if (signaturePadAdmin) {
+                signaturePadAdmin.clear();
+            }
+            
             // Alternativa 1 de información
             //swal.fire(
             //    'Guardado',
@@ -657,6 +840,15 @@ $(document).on('click', '#btnsalvar', async function (event) {
 
                 // Aquí deshabilitamos el select para edición
                 $('#id_usuario').prop('disabled', true);
+                
+                // Guardar el ID del comercial actual para manejar la firma
+                idComercialActual = data.id_comercial;
+                
+                // Inicializar Signature Pad y cargar firma cuando el modal esté visible
+                $('#modalMantenimiento').on('shown.bs.modal', function () {
+                    inicializarSignaturePadAdmin();
+                    cargarFirmaComercial(data.id_comercial);
+                });
                 
             } else {
                 console.error('Error: Datos no encontrados');

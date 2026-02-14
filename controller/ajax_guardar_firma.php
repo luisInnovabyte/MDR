@@ -39,41 +39,95 @@ $registro = new RegistroActividad();
 $comercialesModel = new Comerciales();
 
 try {
-    // Obtener id_usuario de sesión
-    $id_usuario = $_SESSION['id_usuario'] ?? null;
+    // Verificar si viene un id_comercial específico (desde admin)
+    // o usar el id_usuario de la sesión (desde perfil)
+    $id_comercial_param = $_POST['id_comercial'] ?? null;
     
-    if (empty($id_usuario)) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'No se pudo identificar al usuario'
-        ], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    // Verificar que el usuario tiene un comercial asociado
-    $comercial = $comercialesModel->get_comercial_by_usuario($id_usuario);
-    
-    if (!$comercial) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'El usuario no tiene un perfil de comercial asociado'
-        ], JSON_UNESCAPED_UNICODE);
+    if (!empty($id_comercial_param)) {
+        // Modo admin: buscar comercial por id_comercial
+        $comercial = $comercialesModel->get_comercialxid($id_comercial_param);
         
-        $registro->registrarActividad(
-            $_SESSION['email'] ?? 'unknown',
-            'ajax_guardar_firma',
-            'guardar_firma',
-            "Usuario {$id_usuario} intentó guardar firma sin ser comercial",
-            'warning'
-        );
+        if (!$comercial) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Comercial no encontrado'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
         
-        exit;
+        $id_usuario = $comercial['id_usuario'];
+        $usuario_email = $_SESSION['email'] ?? 'admin';
+        
+    } else {
+        // Modo usuario: usar sesión actual
+        $id_usuario = $_SESSION['id_usuario'] ?? null;
+        
+        if (empty($id_usuario)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No se pudo identificar al usuario'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        
+        // Verificar que el usuario tiene un comercial asociado
+        $comercial = $comercialesModel->get_comercial_by_usuario($id_usuario);
+        
+        if (!$comercial) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'El usuario no tiene un perfil de comercial asociado'
+            ], JSON_UNESCAPED_UNICODE);
+            
+            $registro->registrarActividad(
+                $_SESSION['email'] ?? 'unknown',
+                'ajax_guardar_firma',
+                'guardar_firma',
+                "Usuario {$id_usuario} intentó guardar firma sin ser comercial",
+                'warning'
+            );
+            
+            exit;
+        }
+        
+        $usuario_email = $_SESSION['email'] ?? 'unknown';
     }
 
     // Obtener la firma en base64 del POST
     $firma_base64 = $_POST['firma_base64'] ?? '';
     
-    // Validar que venga la firma
+    // Si la firma viene como 'null' (string), tratarla como vacía (para eliminar)
+    if ($firma_base64 === 'null' || $firma_base64 === null) {
+        $firma_base64 = null;
+    }
+    
+    // Validar que venga la firma (excepto si es null para eliminar)
+    if ($firma_base64 === null) {
+        // Eliminar firma
+        $resultado = $comercialesModel->update_firma_by_usuario($id_usuario, null);
+        
+        if ($resultado) {
+            $registro->registrarActividad(
+                $usuario_email,
+                'ajax_guardar_firma',
+                'eliminar_firma',
+                "Firma eliminada para comercial: {$comercial['nombre']} {$comercial['apellidos']} (ID: {$comercial['id_comercial']})",
+                'info'
+            );
+            
+            echo json_encode([
+                'success' => true,
+                'message' => 'Firma eliminada correctamente'
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No se pudo eliminar la firma'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+        exit;
+    }
+    
     if (empty($firma_base64)) {
         echo json_encode([
             'success' => false,
@@ -106,7 +160,7 @@ try {
     if ($resultado) {
         // Log de éxito
         $registro->registrarActividad(
-            $_SESSION['email'] ?? 'unknown',
+            $usuario_email,
             'ajax_guardar_firma',
             'guardar_firma',
             "Firma guardada exitosamente para comercial: {$comercial['nombre']} {$comercial['apellidos']} (ID: {$comercial['id_comercial']})",
@@ -124,7 +178,7 @@ try {
     } else {
         // Log de advertencia
         $registro->registrarActividad(
-            $_SESSION['email'] ?? 'unknown',
+            $usuario_email,
             'ajax_guardar_firma',
             'guardar_firma',
             "No se pudo actualizar la firma para usuario {$id_usuario}",

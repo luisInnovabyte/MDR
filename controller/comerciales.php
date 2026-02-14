@@ -38,13 +38,23 @@ switch ($_GET["op"]) {
     case "guardaryeditar":
         if (empty($_POST["id_comercial"])) {
             // --- NUEVO COMERCIAL ---
-            $comercial->insert_comercial(
+            $resultado = $comercial->insert_comercial(
                 $_POST["nombre"],
                 $_POST["apellidos"],
                 $_POST["movil"],
                 $_POST["telefono"],
                 $_POST["id_usuario"] // Nuevo parámetro
             );
+            
+            // Si se proporcionó una firma y se insertó correctamente el comercial
+            if ($resultado && !empty($_POST["firma_base64"]) && $_POST["firma_base64"] !== 'null') {
+                // Actualizar la firma del comercial por su id_usuario
+                $comercial->update_firma_by_usuario(
+                    $_POST["id_usuario"],
+                    $_POST["firma_base64"]
+                );
+            }
+            
         } else {
             // --- ACTUALIZACIÓN DE COMERCIAL EXISTENTE ---
             $comercial->update_comercial(
@@ -55,6 +65,14 @@ switch ($_GET["op"]) {
                 $_POST["telefono"],
                 $_POST["id_usuario"] // Nuevo parámetro
             );
+            
+            // Si se proporcionó una firma, actualizarla
+            if (!empty($_POST["firma_base64"]) && $_POST["firma_base64"] !== 'null') {
+                $comercial->update_firma_by_usuario(
+                    $_POST["id_usuario"],
+                    $_POST["firma_base64"]
+                );
+            }
         }
         break;
 

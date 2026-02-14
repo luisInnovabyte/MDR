@@ -226,6 +226,10 @@
 
     <script src="../../public/js/tooltip-colored.js"></script>
     <script src="../../public/js/popover-colored.js"></script>
+    
+    <!-- Signature Pad Library para firma digital de comerciales -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+    
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
