@@ -14,6 +14,7 @@ require_once __DIR__ . "/../config/conexion.php";
 require_once __DIR__ . "/../config/funciones.php";
 require_once __DIR__ . "/../models/ImpresionPresupuesto.php";
 require_once __DIR__ . "/../models/Kit.php";
+require_once __DIR__ . "/../models/Comerciales.php";
 require_once __DIR__ . "/../vendor/tcpdf/tcpdf.php";
 
 // =====================================================
@@ -1344,10 +1345,10 @@ switch ($_GET["op"]) {
                 if ($es_transferencia && $tiene_datos_bancarios) {
                     
                     // Calcular altura dinámica según campos disponibles
-                    $altura_bloque = 7; // 7mm overhead (título + márgenes)
-                    if (!empty($datos_empresa['banco_empresa'])) $altura_bloque += 5;
-                    if (!empty($datos_empresa['iban_empresa'])) $altura_bloque += 5;
-                    if (!empty($datos_empresa['swift_empresa'])) $altura_bloque += 5;
+                    $altura_bloque = 5; // 5mm overhead (título + márgenes) - REDUCIDO
+                    if (!empty($datos_empresa['banco_empresa'])) $altura_bloque += 3.5;
+                    if (!empty($datos_empresa['iban_empresa'])) $altura_bloque += 3.5;
+                    if (!empty($datos_empresa['swift_empresa'])) $altura_bloque += 3.5;
                     
                     // Verificar si hay espacio suficiente
                     if (($pdf->GetY() + $altura_bloque) > 270) {
@@ -1355,7 +1356,7 @@ switch ($_GET["op"]) {
                         $pdf->SetY(15);
                     }
                     
-                    $pdf->Ln(4); // Espacio antes del bloque
+                    $pdf->Ln(2); // Espacio antes del bloque - REDUCIDO
                     
                     // Guardar posición inicial
                     $x_inicio = $pdf->GetX();
@@ -1367,55 +1368,55 @@ switch ($_GET["op"]) {
                     $pdf->Rect($x_inicio, $y_inicio, 195, $altura_bloque, 'DF');
                     
                     // Posicionar para escribir el título
-                    $pdf->SetXY($x_inicio + 3, $y_inicio + 2);
+                    $pdf->SetXY($x_inicio + 2, $y_inicio + 1.5); // Padding reducido
                     
-                    // Título del bloque
-                    $pdf->SetFont('helvetica', 'B', 9);
+                    // Título del bloque - FUENTE MÁS PEQUEÑA
+                    $pdf->SetFont('helvetica', 'B', 7);
                     $pdf->SetTextColor(52, 73, 94);
-                    $pdf->Cell(189, 4, 'DATOS BANCARIOS PARA TRANSFERENCIA', 0, 1, 'L', false);
+                    $pdf->Cell(189, 3, 'DATOS BANCARIOS PARA TRANSFERENCIA', 0, 1, 'L', false);
                     
-                    $y_actual = $pdf->GetY() + 1;
+                    $y_actual = $pdf->GetY() + 0.5; // Espacio reducido
                     
                     // Mostrar Banco si existe
                     if (!empty($datos_empresa['banco_empresa'])) {
-                        $pdf->SetXY($x_inicio + 3, $y_actual);
-                        $pdf->SetFont('helvetica', '', 8);
+                        $pdf->SetXY($x_inicio + 2, $y_actual); // Padding reducido
+                        $pdf->SetFont('helvetica', '', 6); // Fuente label más pequeña
                         $pdf->SetTextColor(70, 70, 70);
-                        $pdf->Cell(25, 4, 'Banco:', 0, 0, 'L');
-                        $pdf->SetFont('helvetica', 'B', 9);
-                        $pdf->Cell(160, 4, $datos_empresa['banco_empresa'], 0, 1, 'L');
-                        $y_actual += 5;
+                        $pdf->Cell(20, 3, 'Banco:', 0, 0, 'L'); // Altura reducida
+                        $pdf->SetFont('helvetica', 'B', 7); // Fuente valor más pequeña
+                        $pdf->Cell(160, 3, $datos_empresa['banco_empresa'], 0, 1, 'L');
+                        $y_actual += 3.5; // Separación reducida
                     }
                     
                     // Mostrar IBAN si existe (formateado con espacios cada 4 caracteres)
                     if (!empty($datos_empresa['iban_empresa'])) {
-                        $pdf->SetXY($x_inicio + 3, $y_actual);
-                        $pdf->SetFont('helvetica', '', 8);
+                        $pdf->SetXY($x_inicio + 2, $y_actual);
+                        $pdf->SetFont('helvetica', '', 6);
                         $pdf->SetTextColor(70, 70, 70);
-                        $pdf->Cell(25, 4, 'IBAN:', 0, 0, 'L');
-                        $pdf->SetFont('helvetica', 'B', 9);
+                        $pdf->Cell(20, 3, 'IBAN:', 0, 0, 'L');
+                        $pdf->SetFont('helvetica', 'B', 7);
                         
                         // Formatear IBAN con espacios cada 4 caracteres
                         $iban_sin_espacios = str_replace(' ', '', $datos_empresa['iban_empresa']);
                         $iban_formateado = wordwrap($iban_sin_espacios, 4, ' ', true);
                         
-                        $pdf->Cell(160, 4, $iban_formateado, 0, 1, 'L');
-                        $y_actual += 5;
+                        $pdf->Cell(160, 3, $iban_formateado, 0, 1, 'L');
+                        $y_actual += 3.5;
                     }
                     
                     // Mostrar SWIFT si existe
                     if (!empty($datos_empresa['swift_empresa'])) {
-                        $pdf->SetXY($x_inicio + 3, $y_actual);
-                        $pdf->SetFont('helvetica', '', 8);
+                        $pdf->SetXY($x_inicio + 2, $y_actual);
+                        $pdf->SetFont('helvetica', '', 6);
                         $pdf->SetTextColor(70, 70, 70);
-                        $pdf->Cell(25, 4, 'SWIFT:', 0, 0, 'L');
-                        $pdf->SetFont('helvetica', 'B', 9);
-                        $pdf->Cell(160, 4, $datos_empresa['swift_empresa'], 0, 1, 'L');
-                        $y_actual += 5;
+                        $pdf->Cell(20, 3, 'SWIFT:', 0, 0, 'L');
+                        $pdf->SetFont('helvetica', 'B', 7);
+                        $pdf->Cell(160, 3, $datos_empresa['swift_empresa'], 0, 1, 'L');
+                        $y_actual += 3.5;
                     }
                     
                     // Posicionar después del bloque
-                    $pdf->SetY($y_inicio + $altura_bloque + 2);
+                    $pdf->SetY($y_inicio + $altura_bloque + 1.5); // Espacio después reducido
                 }
             }
             
@@ -1540,7 +1541,72 @@ switch ($_GET["op"]) {
             $pdf->Cell($ancho_casilla, 5, $cabecera_firma, 0, 1, 'C');
             
             $pdf->SetX($x_inicio_izq);
-            $pdf->Ln(18);
+            
+            // ========================================
+            // FIRMA DIGITAL DEL COMERCIAL
+            // Punto 14: Nueva Funcionalidad - Firma de Empleado
+            // ========================================
+            
+            // Obtener firma digital si el usuario está en sesión
+            $firma_comercial = null;
+            if (isset($_SESSION['id_usuario']) && !empty($_SESSION['id_usuario'])) {
+                try {
+                    $comercialesModel = new Comerciales();
+                    $firma_comercial = $comercialesModel->get_firma_by_usuario($_SESSION['id_usuario']);
+                } catch (Exception $e) {
+                    // Log del error pero continuar sin firma
+                    error_log("Error al obtener firma del comercial: " . $e->getMessage());
+                }
+            }
+            
+            // Si existe firma digital, renderizarla
+            if (!empty($firma_comercial)) {
+                // Verificar que sea un base64 válido
+                if (preg_match('/^data:image\/(png|jpg|jpeg);base64,/', $firma_comercial)) {
+                    $pdf->Ln(2);
+                    
+                    // Renderizar imagen de firma centrada
+                    // Tamaño: ancho máximo 60mm, alto máximo 14mm
+                    $x_firma = $x_inicio_izq + 15; // Centrado en la casilla
+                    $y_firma = $pdf->GetY();
+                    
+                    try {
+                        // Usar Image con data URI
+                        $pdf->Image(
+                            $firma_comercial,        // Data URI con base64
+                            $x_firma,                 // X position
+                            $y_firma,                 // Y position
+                            60,                       // Ancho máximo 60mm
+                            14,                       // Alto máximo 14mm
+                            '',                       // Tipo (detecta automáticamente)
+                            '',                       // Link
+                            '',                       // Align
+                            false,                    // No resize
+                            300,                      // DPI
+                            '',                       // Palign
+                            false,                    // Ismask
+                            false,                    // Imgmask
+                            0,                        // Border
+                            false,                    // Fitbox
+                            false,                    // Hidden
+                            true                      // Fitonpage
+                        );
+                        
+                        // Ajustar posición Y después de la imagen
+                        $pdf->SetY($y_firma + 15);
+                    } catch (Exception $e) {
+                        // Si hay error al renderizar la imagen, dejar espacio vacío
+                        error_log("Error al renderizar firma en PDF: " . $e->getMessage());
+                        $pdf->Ln(18);
+                    }
+                } else {
+                    // Formato de firma inválido, dejar espacio vacío
+                    $pdf->Ln(18);
+                }
+            } else {
+                // No hay firma digital, dejar espacio vacío para firma manuscrita
+                $pdf->Ln(18);
+            }
             
             // Línea para firmar
             $y_linea_izq = $pdf->GetY();

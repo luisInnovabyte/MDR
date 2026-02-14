@@ -144,4 +144,69 @@ class Comerciales
         }
     }
 
+    /**
+     * Actualizar la firma digital de un comercial por su id_usuario
+     * @param int $id_usuario - ID del usuario (relacionado con comerciales)
+     * @param string $firma_base64 - Firma en formato base64 PNG
+     * @return bool - true si se actualizó correctamente
+     */
+    public function update_firma_by_usuario($id_usuario, $firma_base64)
+    {
+        try {
+            $sql = "UPDATE comerciales SET firma_comercial = ? WHERE id_usuario = ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $firma_base64, PDO::PARAM_STR);
+            $stmt->bindValue(2, $id_usuario, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->rowCount() > 0; // true si se actualizó al menos un registro
+        } catch (PDOException $e) {
+            error_log("Error al actualizar firma del comercial: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Obtener la firma digital de un comercial por su id_usuario
+     * @param int $id_usuario - ID del usuario (relacionado con comerciales)
+     * @return string|null - Firma en base64 o null si no existe
+     */
+    public function get_firma_by_usuario($id_usuario)
+    {
+        try {
+            $sql = "SELECT firma_comercial FROM comerciales WHERE id_usuario = ? AND activo = 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $resultado ? $resultado['firma_comercial'] : null;
+        } catch (PDOException $e) {
+            error_log("Error al obtener firma del comercial: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Verificar si un usuario tiene un comercial asociado
+     * @param int $id_usuario - ID del usuario
+     * @return array|null - Datos del comercial o null si no existe
+     */
+    public function get_comercial_by_usuario($id_usuario)
+    {
+        try {
+            $sql = "SELECT id_comercial, nombre, apellidos, firma_comercial 
+                    FROM comerciales 
+                    WHERE id_usuario = ? AND activo = 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error al obtener comercial por usuario: " . $e->getMessage());
+            return null;
+        }
+    }
+
 }
