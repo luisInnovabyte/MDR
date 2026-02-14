@@ -196,14 +196,22 @@ switch (strtolower($rolUsuario)) {
                     <p><?php echo htmlspecialchars($correoUsuario); ?></p>
                 </div>
                 <hr>
-                <?php if (isset($_SESSION['sesion_iniciada']) && $_SESSION['sesion_iniciada'] === true): ?>
-                    <li class="br-menu-item">
-                        <a href="#" class="br-menu-link logout">
-                            <i class="menu-item-icon icon ion-power tx-24"></i>
-                            <span class="menu-item-label">Cerrar Sesión</span>
-                        </a>
-                    </li>
-                <?php endif; ?>
+                
+                <ul class="list-unstyled user-profile-nav">
+                    <?php if (isset($_SESSION['sesion_iniciada']) && $_SESSION['sesion_iniciada'] === true): ?>
+                        <li>
+                            <a href="../Home/perfil.php">
+                                <i class="icon ion-ios-contact"></i> Mi Perfil
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="logout">
+                                <i class="icon ion-power"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+
                 <!-- <div class="tx-center">
                     <span class="profile-earning-label">Earnings After Taxes</span>
                     <h3 class="profile-earning-amount">$13,230 <i class="icon ion-ios-arrow-thin-up tx-success"></i></h3>

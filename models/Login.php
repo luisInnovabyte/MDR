@@ -89,9 +89,10 @@ class Login
             $sql = "SELECT u.*, r.nombre_rol
                     FROM usuarios u
                     JOIN roles r ON u.id_rol = r.id_rol
-                    WHERE u.id_usuario = $id_usuario"; 
+                    WHERE u.id_usuario = ?"; 
 
             $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -348,7 +349,7 @@ public function existeCorreoUsuario($email)
         return $result['total'] > 0;
     } catch (PDOException $e) {
         $this->registro->registrarActividad(
-            $usuario,
+            $email,
             'Login.php',
             'existeCorreoUsuario',
             "Error al comprobar existencia del correo del usuario: " . $e->getMessage(),
@@ -385,8 +386,9 @@ public function existeCorreoUsuarioEditando($email, $id_usuario)
     public function get_usuario_x_usu($correoUsu)
 {
     try {
-        $sql = "SELECT * FROM usuarios WHERE TRIM(email) = TRIM('$correoUsu')";
+        $sql = "SELECT * FROM usuarios WHERE TRIM(email) = TRIM(?)";
         $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(1, $correoUsu, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
     } catch (PDOException $e) {
@@ -406,8 +408,9 @@ public function existeCorreoUsuarioEditando($email, $id_usuario)
     public function get_token_x_correo($correoUsu)
 {
     try {
-        $sql = "SELECT tokenUsu FROM usuarios WHERE email = '$correoUsu'";
+        $sql = "SELECT tokenUsu FROM usuarios WHERE email = ?";
         $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(1, $correoUsu, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
     } catch (PDOException $e) {
@@ -426,8 +429,10 @@ public function existeCorreoUsuarioEditando($email, $id_usuario)
     public function update_password($id, $password)
 {
     try {
-        $sql = "UPDATE usuarios SET contrasena = MD5('$password') WHERE tokenUsu = '$id'";
+        $sql = "UPDATE usuarios SET contrasena = MD5(?) WHERE tokenUsu = ?";
         $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(1, $password, PDO::PARAM_STR);
+        $stmt->bindValue(2, $id, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->rowCount(); // Devuelve cuántas filas se actualizaron
     } catch (PDOException $e) {

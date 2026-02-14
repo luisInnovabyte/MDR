@@ -193,6 +193,18 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <!-- *** PUNTO 17: Alerta Cliente Exento de IVA *** -->
+                                    <div id="alerta_cliente_exento_iva" style="display: none;" class="mt-2">
+                                        <div class="alert alert-warning border-start border-warning border-4 mb-0 py-2" role="alert">
+                                            <h6 class="alert-heading tx-11 tx-semibold mb-1">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>Cliente Exento de IVA
+                                            </h6>
+                                            <div class="tx-10">
+                                                Operaciones intracomunitarias - El IVA se aplicará al 0%
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="id_contacto_cliente" class="form-label">

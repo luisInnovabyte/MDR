@@ -132,6 +132,28 @@ switch ($_GET["op"]) {
                     $porcentaje_descuento = floatval($_POST["porcentaje_descuento_cliente"]);
                 }
                 
+                // *** PUNTO 17: Procesar campos de exención de IVA ***
+                // Checkbox exento_iva_cliente (viene como '1' si está marcado, no viene si no está marcado)
+                $exento_iva = isset($_POST["exento_iva_cliente"]) ? 1 : 0;
+                
+                // Textarea justificacion_exencion_iva_cliente (sanitizar con htmlspecialchars)
+                $justificacion_iva = null;
+                if (isset($_POST["justificacion_exencion_iva_cliente"]) && trim($_POST["justificacion_exencion_iva_cliente"]) !== '') {
+                    $justificacion_iva = htmlspecialchars(trim($_POST["justificacion_exencion_iva_cliente"]), ENT_QUOTES, 'UTF-8');
+                }
+                
+                // DEBUG PUNTO 17: Log de valores recibidos
+                writeToLog([
+                    'DEBUG PUNTO 17 - INSERT' => [
+                        'exento_iva_POST_isset' => isset($_POST["exento_iva_cliente"]),
+                        'exento_iva_POST_value' => $_POST["exento_iva_cliente"] ?? 'NO_EXISTE',
+                        'exento_iva_procesado' => $exento_iva,
+                        'justificacion_POST_isset' => isset($_POST["justificacion_exencion_iva_cliente"]),
+                        'justificacion_POST_value' => $_POST["justificacion_exencion_iva_cliente"] ?? 'NO_EXISTE',
+                        'justificacion_procesado' => $justificacion_iva
+                    ]
+                ]);
+                
                 $resultado = $cliente->insert_cliente(
                     $_POST["codigo_cliente"], 
                     $_POST["nombre_cliente"], 
@@ -151,7 +173,9 @@ switch ($_GET["op"]) {
                     $_POST["provincia_facturacion_cliente"],
                     $id_forma_pago,
                     $porcentaje_descuento,
-                    $_POST["observaciones_cliente"]
+                    $_POST["observaciones_cliente"],
+                    $exento_iva,
+                    $justificacion_iva
                 );
                 
                 if ($resultado !== false && $resultado > 0) {
@@ -190,6 +214,16 @@ switch ($_GET["op"]) {
                     $porcentaje_descuento = floatval($_POST["porcentaje_descuento_cliente"]);
                 }
                 
+                // *** PUNTO 17: Procesar campos de exención de IVA ***
+                // Checkbox exento_iva_cliente (viene como '1' si está marcado, no viene si no está marcado)
+                $exento_iva = isset($_POST["exento_iva_cliente"]) ? 1 : 0;
+                
+                // Textarea justificacion_exencion_iva_cliente (sanitizar con htmlspecialchars)
+                $justificacion_iva = null;
+                if (isset($_POST["justificacion_exencion_iva_cliente"]) && trim($_POST["justificacion_exencion_iva_cliente"]) !== '') {
+                    $justificacion_iva = htmlspecialchars(trim($_POST["justificacion_exencion_iva_cliente"]), ENT_QUOTES, 'UTF-8');
+                }
+                
                 $resultado = $cliente->update_cliente(
                     $_POST["id_cliente"],
                     $_POST["codigo_cliente"], 
@@ -210,7 +244,9 @@ switch ($_GET["op"]) {
                     $_POST["provincia_facturacion_cliente"],
                     $id_forma_pago,
                     $porcentaje_descuento,
-                    $_POST["observaciones_cliente"]
+                    $_POST["observaciones_cliente"],
+                    $exento_iva,
+                    $justificacion_iva
                 );
                 
                 if ($resultado !== false) {
@@ -225,7 +261,8 @@ switch ($_GET["op"]) {
                     header('Content-Type: application/json');
                     echo json_encode([
                         'status' => 'success',
-                        'message' => 'Cliente actualizado exitosamente'
+                        'message' => 'Cliente actualizado exitosamente',
+                        'id_cliente' => intval($_POST["id_cliente"])
                     ], JSON_UNESCAPED_UNICODE);
                 } else {
                     header('Content-Type: application/json');

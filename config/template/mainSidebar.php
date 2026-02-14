@@ -41,6 +41,15 @@ function puedeVerMenu($idRol, $modulo) {
     </li>
     <?php endif; ?>
 
+    <!-- Opción de Perfil - Visible para todos los usuarios autenticados -->
+    <!-- <?php if (isset($_SESSION['sesion_iniciada']) && $_SESSION['sesion_iniciada'] === true): ?>
+    <li class="br-menu-item">
+        <a href="../Home/perfil.php" class="br-menu-link">
+            <i class="menu-item-icon icon ion-ios-contact tx-24"></i>
+            <span class="menu-item-label">Mi Perfil</span>
+        </a>
+    </li>
+    <?php endif; ?> -->
 
 
      <?php if (puedeVerMenu($idRolUsuario, 'mantenimientos')): ?>

@@ -643,6 +643,32 @@ switch ($_GET["op"]) {
                 $datos['observaciones_linea_ppto'] = $_POST["observaciones_linea_ppto"];
             }
 
+            // *** PUNTO 17: Verificar si el cliente está exento de IVA ***
+            try {
+                $conexion = (new Conexion())->getConexion();
+                
+                // Obtener exento_iva_cliente a través de version_presupuesto -> presupuesto -> cliente
+                $sql_verificar = "SELECT c.exento_iva_cliente 
+                                 FROM version_presupuesto vp
+                                 INNER JOIN presupuesto p ON vp.id_presupuesto = p.id_presupuesto
+                                 INNER JOIN cliente c ON p.id_cliente = c.id_cliente
+                                 WHERE vp.id_version_presupuesto = ?";
+                
+                $stmt = $conexion->prepare($sql_verificar);
+                $stmt->bindValue(1, $datos['id_version_presupuesto'], PDO::PARAM_INT);
+                $stmt->execute();
+                $cliente_data = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($cliente_data && ($cliente_data['exento_iva_cliente'] == 1 || $cliente_data['exento_iva_cliente'] === true)) {
+                    // Cliente exento de IVA: forzar IVA a 0%
+                    $datos['porcentaje_iva_linea_ppto'] = 0.00;
+                    error_log("⚠️ PUNTO 17: Cliente exento de IVA detectado - IVA forzado a 0%");
+                }
+            } catch (PDOException $e) {
+                // Si hay error en la consulta, registrar pero continuar con el IVA recibido
+                error_log("❌ Error al verificar cliente exento IVA: " . $e->getMessage());
+            }
+
             // Determinar si es INSERT o UPDATE
             if (empty($_POST["id_linea_ppto"])) {
                 // INSERT

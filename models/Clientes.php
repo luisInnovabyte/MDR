@@ -225,7 +225,7 @@ class Clientes
     }
 
 
-    public function insert_cliente($codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $porcentaje_descuento_cliente = 0.00, $observaciones_cliente)
+    public function insert_cliente($codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $porcentaje_descuento_cliente = 0.00, $observaciones_cliente, $exento_iva_cliente = 0, $justificacion_exencion_iva_cliente = null)
     {
         try {
             // Establecer zona horaria Madrid antes de la consulta
@@ -234,8 +234,8 @@ class Clientes
             $sql = "INSERT INTO cliente (codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, 
             telefono_cliente, fax_cliente, web_cliente, email_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, 
             cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente,
-            observaciones_cliente, activo_cliente, created_at_cliente, updated_at_cliente) 
-                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+            observaciones_cliente, exento_iva_cliente, justificacion_exencion_iva_cliente, activo_cliente, created_at_cliente, updated_at_cliente) 
+                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -271,6 +271,17 @@ class Clientes
             $stmt->bindValue(18, $porcentaje_descuento_cliente, PDO::PARAM_STR);
             
             $stmt->bindValue(19, $observaciones_cliente, PDO::PARAM_STR); 
+            
+            // *** PUNTO 17: Campos de exención de IVA ***
+            // Exento de IVA (BOOLEAN - 0 o 1)
+            $stmt->bindValue(20, $exento_iva_cliente, PDO::PARAM_INT);
+            
+            // Justificación de exención (TEXT - puede ser NULL)
+            if (!empty($justificacion_exencion_iva_cliente)) {
+                $stmt->bindValue(21, $justificacion_exencion_iva_cliente, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(21, null, PDO::PARAM_NULL);
+            }
                               
             $resultado = $stmt->execute();
             
@@ -302,12 +313,12 @@ class Clientes
     }
 
 
-    public function update_cliente($id_cliente, $codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $porcentaje_descuento_cliente = 0.00, $observaciones_cliente){
+    public function update_cliente($id_cliente, $codigo_cliente, $nombre_cliente, $direccion_cliente, $cp_cliente, $poblacion_cliente, $provincia_cliente, $nif_cliente, $telefono_cliente, $fax_cliente, $web_cliente, $email_cliente, $nombre_facturacion_cliente, $direccion_facturacion_cliente, $cp_facturacion_cliente, $poblacion_facturacion_cliente, $provincia_facturacion_cliente, $id_forma_pago_habitual, $porcentaje_descuento_cliente = 0.00, $observaciones_cliente, $exento_iva_cliente = 0, $justificacion_exencion_iva_cliente = null){
         try {
             // Establecer zona horaria Madrid antes de la consulta
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
             
-            $sql = "UPDATE cliente SET codigo_cliente = ?, nombre_cliente = ?, nif_cliente = ?, direccion_cliente = ?, cp_cliente = ?, poblacion_cliente = ?, provincia_cliente = ?, telefono_cliente = ?, fax_cliente = ?, web_cliente = ?, email_cliente = ?, nombre_facturacion_cliente = ?, direccion_facturacion_cliente = ?, cp_facturacion_cliente = ?, poblacion_facturacion_cliente = ?, provincia_facturacion_cliente = ?, id_forma_pago_habitual = ?, porcentaje_descuento_cliente = ?, observaciones_cliente = ?, updated_at_cliente = NOW() WHERE id_cliente = ?";
+            $sql = "UPDATE cliente SET codigo_cliente = ?, nombre_cliente = ?, nif_cliente = ?, direccion_cliente = ?, cp_cliente = ?, poblacion_cliente = ?, provincia_cliente = ?, telefono_cliente = ?, fax_cliente = ?, web_cliente = ?, email_cliente = ?, nombre_facturacion_cliente = ?, direccion_facturacion_cliente = ?, cp_facturacion_cliente = ?, poblacion_facturacion_cliente = ?, provincia_facturacion_cliente = ?, id_forma_pago_habitual = ?, porcentaje_descuento_cliente = ?, observaciones_cliente = ?, exento_iva_cliente = ?, justificacion_exencion_iva_cliente = ?, updated_at_cliente = NOW() WHERE id_cliente = ?";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -343,7 +354,19 @@ class Clientes
             $stmt->bindValue(18, $porcentaje_descuento_cliente, PDO::PARAM_STR);
             
             $stmt->bindValue(19, $observaciones_cliente, PDO::PARAM_STR);
-            $stmt->bindValue(20, $id_cliente, PDO::PARAM_INT); 
+            
+            // *** PUNTO 17: Campos de exención de IVA ***
+            // Exento de IVA (BOOLEAN - 0 o 1)
+            $stmt->bindValue(20, $exento_iva_cliente, PDO::PARAM_INT);
+            
+            // Justificación de exención (TEXT - puede ser NULL)
+            if (!empty($justificacion_exencion_iva_cliente)) {
+                $stmt->bindValue(21, $justificacion_exencion_iva_cliente, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(21, null, PDO::PARAM_NULL);
+            }
+            
+            $stmt->bindValue(22, $id_cliente, PDO::PARAM_INT); 
 
             $resultado = $stmt->execute();
             

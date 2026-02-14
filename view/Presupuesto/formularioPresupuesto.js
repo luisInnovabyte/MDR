@@ -127,6 +127,9 @@ $(document).ready(function () {
 
     // Variable global para almacenar los días de validez
     var diasValidezPresupuesto = 30; // Valor por defecto
+    
+    // *** PUNTO 17: Variable global para cliente exento de IVA ***
+    var clienteExentoIVA = false;
 
     // Cargar opciones de selects
     cargarClientes();
@@ -407,6 +410,9 @@ $(document).ready(function () {
         if (!idCliente) {
             // Ocultar información si no hay cliente seleccionado
             $('#info-direccion-cliente').hide();
+            // *** PUNTO 17: Ocultar alerta de cliente exento de IVA ***
+            $('#alerta_cliente_exento_iva').hide();
+            clienteExentoIVA = false;
             return;
         }
         
@@ -426,13 +432,27 @@ $(document).ready(function () {
                     
                     // Mostrar el panel de información
                     $('#info-direccion-cliente').slideDown();
+                    
+                    // *** PUNTO 17: Verificar si el cliente está exento de IVA ***
+                    if (data.exento_iva_cliente == 1 || data.exento_iva_cliente === true) {
+                        clienteExentoIVA = true;
+                        $('#alerta_cliente_exento_iva').slideDown(300);
+                        console.log('⚠ Cliente exento de IVA - Se aplicará IVA 0%');
+                    } else {
+                        clienteExentoIVA = false;
+                        $('#alerta_cliente_exento_iva').slideUp(300);
+                    }
                 } else {
                     $('#info-direccion-cliente').hide();
+                    $('#alerta_cliente_exento_iva').hide();
+                    clienteExentoIVA = false;
                 }
             },
             error: function(xhr, status, error) {
                 console.error('Error al cargar información del cliente:', error);
                 $('#info-direccion-cliente').hide();
+                $('#alerta_cliente_exento_iva').hide();
+                clienteExentoIVA = false;
             }
         });
     }
