@@ -46,10 +46,18 @@ $(document).ready(function () {
     // Ajustar el tamaño del canvas para que sea responsive
     function resizeCanvas() {
       const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
+      const container = canvas.parentElement;
+      const width = container.offsetWidth - 4; // Restar el borde
+      const height = 150; // Altura fija
+      
+      // Establecer tamaño del canvas
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
       canvas.getContext('2d').scale(ratio, ratio);
-      signaturePad.clear(); // Limpiar después de redimensionar
+      
+      // Mantener los atributos de estilo para mantener las dimensiones visuales
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -59,6 +67,20 @@ $(document).ready(function () {
   // Botón limpiar firma
   $('#btn-limpiar-firma').on('click', function() {
     if (signaturePad) {
+      // Redimensionar y limpiar
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const container = canvas.parentElement;
+      const width = container.offsetWidth - 4; // Restar el borde
+      const height = 150; // Altura fija
+      
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      canvas.getContext('2d').scale(ratio, ratio);
+      
+      // Mantener dimensiones visuales
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      
       signaturePad.clear();
       $('#firma-status').html('');
       toastr.info('Canvas limpiado');

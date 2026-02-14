@@ -30,6 +30,11 @@ if (!isset($_SESSION['sesion_iniciada']) || !$_SESSION['sesion_iniciada']) {
       background-color: white;
       touch-action: none;
       width: 100%;
+      max-width: 100%;
+      min-width: 250px;
+      height: 150px;
+      min-height: 150px;
+      display: block;
       cursor: crosshair;
     }
     
@@ -52,6 +57,12 @@ if (!isset($_SESSION['sesion_iniciada']) || !$_SESSION['sesion_iniciada']) {
       max-width: 100%;
       height: auto;
       border: 1px solid #dee2e6;
+    }
+    
+    /* Asegurar que el contenedor permita scroll si es necesario */
+    .login-wrapper {
+      max-height: 90vh;
+      overflow-y: auto;
     }
   </style>
 </head>
@@ -82,7 +93,7 @@ if (!isset($_SESSION['sesion_iniciada']) || !$_SESSION['sesion_iniciada']) {
           <label><strong>Firma Digital:</strong></label>
           <p class="tx-12 tx-gray-600 mg-b-10">Dibuje su firma en el recuadro. Se utilizará en los presupuestos impresos.</p>
           
-          <canvas id="firma-canvas" class="firma-canvas" width="260" height="150"></canvas>
+          <canvas id="firma-canvas" class="firma-canvas"></canvas>
           
           <div class="firma-buttons">
             <button type="button" id="btn-limpiar-firma" class="btn btn-secondary btn-sm">
