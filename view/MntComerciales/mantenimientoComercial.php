@@ -1,5 +1,5 @@
 <div class="modal fade" id="modalMantenimiento" tabindex="-1" aria-labelledby="modalMostrarComercialLabel">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header pd-y-20 pd-x-25">
                 <h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">Empleado</h6>
@@ -126,13 +126,14 @@
                         </div>
                     </div>
 
-                    <!-- Modal Footer -->
-                    <div class="modal-footer">
-                        <button type="button" name="action" id="btnsalvar" class="btn btn-primary tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium">Salvar</button>
-                        <button type="button" class="btn btn-secondary tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium" data-bs-dismiss="modal">Cerrar</button>
-                    </div>
                 </form>
             </div><!-- modal-body -->
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" name="action" id="btnsalvar" class="btn btn-primary tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium">Salvar</button>
+                <button type="button" class="btn btn-secondary tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium" data-bs-dismiss="modal">Cerrar</button>
+            </div>
         </div><!-- modal-content -->
     </div><!-- modal-dialog -->
 </div><!-- modal -->
