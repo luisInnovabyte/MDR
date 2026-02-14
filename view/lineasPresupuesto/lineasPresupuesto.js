@@ -96,9 +96,13 @@ function cargarInfoVersion() {
                 estado_version_actual = data.estado_version_presupuesto;
                 
                 // *** PUNTO 17: Guardar estado de cliente exento de IVA ***
-                clienteExentoIVA = (data.exento_iva_cliente == 1 || data.exento_iva_cliente === true);
-                if (clienteExentoIVA) {
-                    console.log('⚠ Cliente exento de IVA detectado - IVA será forzado a 0%');
+                window.clienteExentoIVA = (data.exento_iva_cliente == 1 || data.exento_iva_cliente === true);
+                console.log('DEBUG - exento_iva_cliente recibido:', data.exento_iva_cliente);
+                console.log('DEBUG - clienteExentoIVA asignado:', window.clienteExentoIVA);
+                if (window.clienteExentoIVA) {
+                    console.log('⚠ Cliente EXENTO de IVA detectado - IVA será forzado a 0%');
+                } else {
+                    console.log('ℹ Cliente normal (NO exento) - IVA según artículo');
                 }
                 
                 // Actualizar info en card
@@ -806,12 +810,17 @@ function abrirModalNuevaLinea() {
     // Cambiar título
     $('#modalFormularioLineaLabel').text('Nueva Línea de Presupuesto');
     
-    // *** PUNTO 17: Si cliente exento IVA, forzar IVA a 0% y deshabilitar ***
-    if (clienteExentoIVA) {
-        $('#porcentaje_iva_linea_ppto').val(0).prop('disabled', true).prop('readonly', true);
-        console.log('✓ IVA forzado a 0% (Cliente exento)');
+    // *** PUNTO 17: Si cliente exento IVA, forzar IVA a 0% ***
+    // Campos precio e IVA SIEMPRE readonly
+    $('#precio_unitario_linea_ppto').prop('readonly', true);
+    $('#porcentaje_iva_linea_ppto').prop('readonly', true);
+    
+    if (window.clienteExentoIVA === true) {
+        $('#porcentaje_iva_linea_ppto').val(0);
+        console.log('✓ Modal nueva línea: IVA forzado a 0% (Cliente exento)');
     } else {
-        $('#porcentaje_iva_linea_ppto').val(21).prop('disabled', false).prop('readonly', false);
+        $('#porcentaje_iva_linea_ppto').val(21);
+        console.log('✓ Modal nueva línea: IVA por defecto 21% (Cliente normal)');
     }
     
     // Mostrar modal
@@ -925,11 +934,17 @@ function editarLinea(id_linea_ppto) {
                 $('#precio_unitario_linea_ppto').val(data.precio_unitario_linea_ppto || 0);
                 $('#descuento_linea_ppto').val(data.descuento_linea_ppto || 0);
                 
-                // *** PUNTO 17: Si cliente exento IVA, forzar IVA a 0% y deshabilitar ***
-                if (clienteExentoIVA) {
-                    $('#porcentaje_iva_linea_ppto').val(0).prop('disabled', true).prop('readonly', true);
+                // *** PUNTO 17: Cargar IVA según si cliente está exento ***
+                // Campos precio e IVA SIEMPRE readonly
+                $('#precio_unitario_linea_ppto').prop('readonly', true);
+                $('#porcentaje_iva_linea_ppto').prop('readonly', true);
+                
+                if (window.clienteExentoIVA === true) {
+                    $('#porcentaje_iva_linea_ppto').val(0);
+                    console.log('✓ Modal edición: IVA forzado a 0% (Cliente exento)');
                 } else {
-                    $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva_linea_ppto || 21).prop('disabled', false).prop('readonly', false);
+                    $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva_linea_ppto || 21);
+                    console.log('✓ Modal edición: IVA de la línea cargado:', data.porcentaje_iva_linea_ppto || 21);
                 }
                 
                 // Rellenar coeficiente - usar directamente el campo aplicar_coeficiente_linea_ppto de la BD

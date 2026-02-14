@@ -243,7 +243,8 @@ class Presupuesto
                         c.id_cliente,
                         c.nombre_cliente,
                         c.email_cliente,
-                        c.telefono_cliente
+                        c.telefono_cliente,
+                        c.exento_iva_cliente
                         
                     FROM presupuesto_version pv
                     INNER JOIN presupuesto p ON pv.id_presupuesto = p.id_presupuesto

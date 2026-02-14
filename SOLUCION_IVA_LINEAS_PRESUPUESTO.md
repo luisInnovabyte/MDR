@@ -1,85 +1,170 @@
 # Solución: IVA 0% en Líneas para Clientes Exentos
 
-## 🐛 Problema Reportado
+**ACTUALIZACIÓN 14-Feb-2026:** Corrección completa de problemas identificados
 
+## 🐛 Problemas Reportados
+
+### Problema 1: IVA no se fuerza a 0%
 Al añadir líneas de presupuesto a un cliente **marcado como exento de IVA**, el campo de IVA mostraba el **21% del artículo** en lugar de **forzarse a 0%**.
 
-## 🔍 Diagnóstico
-
-El problema estaba en el archivo `view/lineasPresupuesto/formularioLinea.php` (líneas 444-447):
-
-```javascript
-// ❌ CÓDIGO PROBLEMÁTICO (ORIGINAL)
-const tasaIva = data.tasa_impuesto || 21;
-$('#porcentaje_iva_linea_ppto').val(tasaIva);
-```
-
-Cuando se seleccionaba un artículo, **siempre** se establecía el IVA del artículo sin verificar si el cliente estaba exento, sobrescribiendo el 0% que se había establecido al abrir el modal.
+### Problema 2: Campos precio e IVA editables
+Los campos **precio unitario** e **IVA** estaban habilitados para edición, cuando deben ser **readonly** (solo lectura) y **tomar valores del artículo**.
 
 ---
 
-## ✅ Solución Implementada
+## 🔍 Diagnóstico (Actualizado)
 
-### 1. **Archivo:** `view/lineasPresupuesto/index.php`
+Se identificaron **3 problemas críticos**:
 
-**Ubicación:** Después de cargar `mainJs.php` (línea ~437)
+### 1. Modelo NO devolvía campo `exento_iva_cliente`
+**Archivo:** `models/Presupuesto.php` (método `get_info_version`)
 
-**Cambio:** Declaración de variable global
+El SELECT NO incluía el campo `exento_iva_cliente` de la tabla cliente:
 
-```html
-<!-- *** PUNTO 17: Variables globales para exención de IVA *** -->
-<script>
-    // Variable global para indicar si el cliente está exento de IVA
-    // Se inicializa aquí y se actualiza cuando se carga la info de la versión
-    let clienteExentoIVA = false;
-</script>
+```php
+// ❌ PROBLEMA: Faltaba campo en SELECT
+SELECT 
+    c.id_cliente,
+    c.nombre_cliente,
+    c.email_cliente,
+    c.telefono_cliente
+    -- FALTABA: c.exento_iva_cliente
+FROM ...
 ```
 
-**Motivo:** La variable debe estar disponible **antes** de cargar cualquier script que la use.
+**Resultado:** La variable `clienteExentoIVA` en JavaScript siempre era `undefined` o `false`.
+
+### 2. Campos precio e IVA eran editables
+**Archivo:** `view/lineasPresupuesto/formularioLinea.php`
+
+Los campos se habilitaban con `.prop('disabled', false).prop('readonly', false)`:
+
+```javascript
+// ❌ PROBLEMA: Campos editables
+$('#porcentaje_iva_linea_ppto').val(tasaIva).prop('disabled', false).prop('readonly', false);
+$('#precio_unitario_linea_ppto').val(precio); // Sin readonly
+```
+
+**Resultado:** Usuario podía modificar precio e IVA manualmente.
+
+### 3. Validación de variable poco robusta
+**Archivo:** `view/lineasPresupuesto/lineasPresupuesto.js`
+
+La validación `if (typeof clienteExentoIVA !== 'undefined' && clienteExentoIVA === true)` era muy estricta y la variable no estaba en `window` global.
+
+---
+
+## ✅ Solución Implementada (Completa)
+
+### 1. **Archivo:** `models/Presupuesto.php`
+
+**Ubicación:** Método `get_info_version()` línea ~243
+
+**Cambio:** Agregar campo `exento_iva_cliente` al SELECT
+
+```php
+// ✅ SOLUCIÓN
+SELECT 
+    -- Datos del cliente
+    c.id_cliente,
+    c.nombre_cliente,
+    c.email_cliente,
+    c.telefono_cliente,
+    c.exento_iva_cliente  -- ✅ AGREGADO
+FROM presupuesto_version pv
+INNER JOIN presupuesto p ON pv.id_presupuesto = p.id_presupuesto
+INNER JOIN cliente c ON p.id_cliente = c.id_cliente
+WHERE pv.id_version_presupuesto = ?
+```
+
+**Resultado:** Ahora el backend SÍ devuelve el campo `exento_iva_cliente`.
 
 ---
 
 ### 2. **Archivo:** `view/lineasPresupuesto/lineasPresupuesto.js`
 
-**Ubicación:** Línea 15
-
-**Cambio:** Eliminar declaración local de la variable
+#### 2.1. Actualizar variable global (línea ~98)
 
 ```javascript
-// ❌ ANTES (declaración local duplicada)
-let clienteExentoIVA = false;
-
-// ✅ AHORA (usa la variable global)
-// clienteExentoIVA ya está declarada globalmente en index.php
+// ✅ SOLUCIÓN: Variable en window global con logs de debug
+window.clienteExentoIVA = (data.exento_iva_cliente == 1 || data.exento_iva_cliente === true);
+console.log('DEBUG - exento_iva_cliente recibido:', data.exento_iva_cliente);
+console.log('DEBUG - clienteExentoIVA asignado:', window.clienteExentoIVA);
+if (window.clienteExentoIVA) {
+    console.log('⚠ Cliente EXENTO de IVA detectado - IVA será forzado a 0%');
+} else {
+    console.log('ℹ Cliente normal (NO exento) - IVA según artículo');
+}
 ```
 
-**Motivo:** Evitar conflicto con la variable global. El script ahora **actualiza** la variable global en lugar de crear una local.
+#### 2.2. Modal nueva línea (línea ~808)
+
+```javascript
+// ✅ SOLUCIÓN: Campos SIEMPRE readonly
+$('#precio_unitario_linea_ppto').prop('readonly', true);
+$('#porcentaje_iva_linea_ppto').prop('readonly', true);
+
+if (window.clienteExentoIVA === true) {
+    $('#porcentaje_iva_linea_ppto').val(0);
+    console.log('✓ Modal nueva línea: IVA forzado a 0% (Cliente exento)');
+} else {
+    $('#porcentaje_iva_linea_ppto').val(21);
+    console.log('✓ Modal nueva línea: IVA por defecto 21% (Cliente normal)');
+}
+```
+
+#### 2.3. Modal edición (línea ~927)
+
+```javascript
+// ✅ SOLUCIÓN: Campos SIEMPRE readonly
+$('#precio_unitario_linea_ppto').prop('readonly', true);
+$('#porcentaje_iva_linea_ppto').prop('readonly', true);
+
+if (window.clienteExentoIVA === true) {
+    $('#porcentaje_iva_linea_ppto').val(0);
+    console.log('✓ Modal edición: IVA forzado a 0% (Cliente exento)');
+} else {
+    $('#porcentaje_iva_linea_ppto').val(data.porcentaje_iva_linea_ppto || 21);
+    console.log('✓ Modal edición: IVA de la línea cargado:', data.porcentaje_iva_linea_ppto || 21);
+}
+```
 
 ---
 
 ### 3. **Archivo:** `view/lineasPresupuesto/formularioLinea.php`
 
-**Ubicación:** Líneas 444-455 (función `cargarDatosArticulo`)
+**Ubicación:** Función `cargarDatosArticulo()` línea ~442
 
-**Cambio:** Verificar exención de IVA antes de cargar IVA del artículo
+**Cambio:** Campos precio e IVA SIEMPRE readonly + validación simplificada
 
 ```javascript
-// ✅ CÓDIGO CORREGIDO
+// ✅ SOLUCIÓN COMPLETA
+// Cargar precio de alquiler - SOLO en creación
+if (!esEdicion) {
+    const precioArticulo = parseFloat(data.precio_alquiler_articulo || 0).toFixed(2);
+    $('#precio_unitario_linea_ppto').val(precioArticulo);
+}
+// Hacer campo precio readonly SIEMPRE
+$('#precio_unitario_linea_ppto').prop('readonly', true);
+
 // *** PUNTO 17: Cargar IVA según si cliente está exento ***
-// Si cliente exento IVA: forzar 0% y deshabilitar campo
-// Si NO exento: usar IVA del artículo
-if (typeof clienteExentoIVA !== 'undefined' && clienteExentoIVA === true) {
-    $('#porcentaje_iva_linea_ppto').val(0).prop('disabled', true).prop('readonly', true);
-    console.log('✓ IVA forzado a 0% para artículo (Cliente exento de IVA)');
+if (window.clienteExentoIVA === true) {
+    $('#porcentaje_iva_linea_ppto').val(0);
+    console.log('✓ IVA forzado a 0% (Cliente exento de IVA)');
 } else {
     const tasaIva = data.tasa_impuesto || 21;
-    $('#porcentaje_iva_linea_ppto').val(tasaIva).prop('disabled', false).prop('readonly', false);
+    $('#porcentaje_iva_linea_ppto').val(tasaIva);
+    console.log('✓ IVA del artículo aplicado:', tasaIva + '%');
 }
+// Hacer campo IVA readonly SIEMPRE
+$('#porcentaje_iva_linea_ppto').prop('readonly', true);
 ```
 
-**Motivo:** 
-- **Si cliente exento:** IVA = 0%, campo deshabilitado y de solo lectura
-- **Si NO exento:** IVA = valor del artículo (21% por defecto), campo editable
+**Mejoras:**
+- ✅ Validación simplificada: `window.clienteExentoIVA === true`
+- ✅ Campos **precio e IVA siempre readonly**
+- ✅ Logs específicos para debugging
+- ✅ Sin uso de `disabled` (que previene envío del valor)
 
 ---
 
