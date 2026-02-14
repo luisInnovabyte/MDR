@@ -450,7 +450,7 @@ class MYPDF extends TCPDF {
 
         // Calcular Y máxima entre columna izquierda y derecha
         // Usar la posición real que fue actualizada según el contenido
-        $y_observaciones_cabecera = max($y_final_izquierda, $y_despues_fechas_evento) + 1; // +1mm de margen
+        $y_observaciones_cabecera = max($y_final_izquierda, $y_despues_fechas_evento) + 6; // +6mm de margen para evitar solapado
 
         // Mostrar observaciones de cabecera si existen
         if (!empty($this->observaciones_cabecera)) {
@@ -958,7 +958,6 @@ switch ($_GET["op"]) {
                         }
                         
                         $necesita_dos_lineas = ($altura_fila > 5);
-                        $descripcion_corta = substr($descripcion, 0, 30);
                         
                         // VERIFICAR SI HAY ESPACIO SUFICIENTE ANTES DE EMPEZAR LA FILA
                         $espacio_necesario = $altura_fila + 5; // Altura de fila + margen de seguridad
@@ -999,8 +998,8 @@ switch ($_GET["op"]) {
                             $pdf->SetXY($x_desc + 0.5, $y_inicial + 0.5);
                             $pdf->MultiCell($ancho_descripcion - 1, $altura_linea_mc, $descripcion, 0, 'L');
                         } else {
-                            // Una sola línea
-                            $pdf->Cell($ancho_descripcion, $altura_fila, $descripcion_corta, 1, 0, 'L');
+                            // Una sola línea - usar descripción completa
+                            $pdf->Cell($ancho_descripcion, $altura_fila, $descripcion, 1, 0, 'L');
                         }
                         
                         // Volver a la misma línea para las siguientes celdas
@@ -1096,8 +1095,8 @@ switch ($_GET["op"]) {
                                     $cantidad_comp = $comp['cantidad_kit'] ?? $comp['total_componente_kit'] ?? 1;
                                     $nombre_comp = $comp['nombre_articulo_componente'] ?? $comp['nombre_articulo'] ?? 'Sin nombre';
                                     
-                                    // Ajustar ancho según si se ocultan columnas
-                                    $pdf->Cell($ancho_descripcion, 4, '    • ' . $cantidad_comp . 'x ' . substr($nombre_comp, 0, 30), 0, 0, 'L');
+                                    // Ajustar ancho según si se ocultan columnas - usar nombre completo
+                                    $pdf->Cell($ancho_descripcion, 4, '    • ' . $cantidad_comp . 'x ' . $nombre_comp, 0, 0, 'L');
                                     $pdf->Cell(12, 4, '', 0, 0, 'C');
                                     $pdf->Cell(51, 4, '', 0, 1, 'R');
                                     
@@ -1160,7 +1159,7 @@ switch ($_GET["op"]) {
                 $pdf->SetFont('helvetica', '', 9);
                 $pdf->SetFillColor(248, 249, 250);
                 $pdf->SetDrawColor(220, 220, 220);
-                $pdf->Cell(150, 6, '', 0, 0);
+                $pdf->Cell(144, 6, '', 0, 0); // 144 = margen derecho alineado con cuerpo
                 $pdf->Cell(30, 6, 'Descuento:', 1, 0, 'R', 1);
                 $pdf->SetFont('helvetica', 'B', 9);
                 $pdf->SetTextColor(231, 76, 60); // Color rojo para el descuento
@@ -1172,7 +1171,7 @@ switch ($_GET["op"]) {
             $pdf->SetFont('helvetica', '', 9);
             $pdf->SetFillColor(248, 249, 250); // Fondo gris muy claro
             $pdf->SetDrawColor(220, 220, 220); // Borde gris suave
-            $pdf->Cell(150, 6, '', 0, 0);
+            $pdf->Cell(144, 6, '', 0, 0); // 144 = margen derecho alineado con cuerpo
             $pdf->Cell(30, 6, 'Base Imponible:', 1, 0, 'R', 1);
             $pdf->SetFont('helvetica', 'B', 9);
             $pdf->Cell(20, 6, number_format($subtotal_sin_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
@@ -1180,15 +1179,15 @@ switch ($_GET["op"]) {
             // Desglose de IVA (solo si hay más de un tipo)
             if (count($desglose_iva) > 1) {
                 $pdf->SetFont('helvetica', '', 8);
-                $pdf->Cell(150, 5, '', 0, 0);
+                $pdf->Cell(144, 5, '', 0, 0); // 144 = margen derecho alineado con cuerpo
                 $pdf->Cell(30, 5, 'Desglose de IVA:', 0, 1, 'R');
                 
                 foreach ($desglose_iva as $porcentaje => $valores) {
-                    $pdf->Cell(150, 4, '', 0, 0);
+                    $pdf->Cell(144, 4, '', 0, 0); // 144 = margen derecho alineado con cuerpo
                     $pdf->Cell(30, 4, "Base IVA {$porcentaje}%:", 0, 0, 'R');
                     $pdf->Cell(20, 4, number_format($valores['base'], 2, ',', '.') . ' €', 0, 1, 'R');
                     
-                    $pdf->Cell(150, 4, '', 0, 0);
+                    $pdf->Cell(144, 4, '', 0, 0); // 144 = margen derecho alineado con cuerpo
                     $pdf->Cell(30, 4, "IVA {$porcentaje}%:", 0, 0, 'R');
                     $pdf->Cell(20, 4, number_format($valores['cuota'], 2, ',', '.') . ' €', 0, 1, 'R');
                 }
@@ -1198,7 +1197,7 @@ switch ($_GET["op"]) {
             $pdf->SetFont('helvetica', '', 9);
             $pdf->SetFillColor(248, 249, 250);
             $pdf->SetDrawColor(220, 220, 220);
-            $pdf->Cell(150, 6, '', 0, 0);
+            $pdf->Cell(144, 6, '', 0, 0); // 144 = margen derecho alineado con cuerpo
             
             // Si solo hay un tipo de IVA, mostrar el porcentaje en la etiqueta
             if (count($desglose_iva) == 1) {
@@ -1218,7 +1217,7 @@ switch ($_GET["op"]) {
             $pdf->SetTextColor(255, 255, 255); // Texto blanco
             $pdf->SetDrawColor(80, 100, 200); // Borde azul más oscuro
             $pdf->SetLineWidth(0.5);
-            $pdf->Cell(150, 8, '', 0, 0);
+            $pdf->Cell(144, 8, '', 0, 0); // 144 = margen derecho alineado con cuerpo
             $pdf->Cell(20, 8, 'TOTAL:', 1, 0, 'R', 1);
             $pdf->Cell(30, 8, number_format($total_presupuesto, 2, ',', '.') . ' €', 1, 1, 'R', 1);
             
@@ -1226,6 +1225,34 @@ switch ($_GET["op"]) {
             $pdf->SetTextColor(0, 0, 0);
             $pdf->SetDrawColor(0, 0, 0);
             $pdf->SetLineWidth(0.2);
+            
+            // =====================================================
+            // *** PUNTO 17: JUSTIFICACIÓN EXENCIÓN IVA ***
+            // =====================================================
+            
+            if (isset($datos_presupuesto['exento_iva_cliente']) && 
+                $datos_presupuesto['exento_iva_cliente'] == 1 && 
+                !empty($datos_presupuesto['justificacion_exencion_iva_cliente'])) {
+                
+                $pdf->Ln(6);
+                
+                // Título
+                $pdf->SetFont('helvetica', 'B', 9);
+                $pdf->SetFillColor(255, 243, 205); // Fondo amarillo claro
+                $pdf->SetDrawColor(255, 193, 7); // Borde amarillo
+                $pdf->SetTextColor(133, 100, 4); // Texto marrón/dorado oscuro
+                $pdf->Cell(0, 6, 'INFORMACIÓN FISCAL - CLIENTE EXENTO DE IVA', 1, 1, 'C', 1);
+                
+                // Justificación
+                $pdf->SetFont('helvetica', 'I', 8);
+                $pdf->SetFillColor(255, 252, 240); // Fondo amarillo muy claro
+                $pdf->SetTextColor(80, 80, 80); // Texto gris oscuro
+                $pdf->MultiCell(0, 5, $datos_presupuesto['justificacion_exencion_iva_cliente'], 1, 'L', 1);
+                
+                // Restaurar colores
+                $pdf->SetTextColor(0, 0, 0);
+                $pdf->SetDrawColor(0, 0, 0);
+            }
             
             // =====================================================
             // FORMA DE PAGO
@@ -1457,17 +1484,8 @@ switch ($_GET["op"]) {
             $pdf->SetXY($x_inicio_der, $y_linea_der + 2);
             $pdf->SetFont('helvetica', '', 8);
             
-            // Mostrar nombre del cliente si está disponible
-            $nombre_completo_cliente = trim(
-                ($datos_presupuesto['nombre_cliente'] ?? '') . ' ' . 
-                ($datos_presupuesto['apellido_cliente'] ?? '')
-            );
-            
-            if (!empty($nombre_completo_cliente)) {
-                $pdf->Cell($ancho_casilla, 4, $nombre_completo_cliente, 0, 1, 'C');
-            } else {
-                $pdf->Cell($ancho_casilla, 4, 'Firma del Cliente', 0, 1, 'C');
-            }
+            // Siempre mostrar texto genérico "Firma del Cliente"
+            $pdf->Cell($ancho_casilla, 4, 'Firma del Cliente', 0, 1, 'C');
             
             $pdf->SetX($x_inicio_der);
             $pdf->Ln(2);
