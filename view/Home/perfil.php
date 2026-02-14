@@ -107,7 +107,7 @@ if (!isset($_SESSION['sesion_iniciada']) || !$_SESSION['sesion_iniciada']) {
         <a href="logout.php" class="btn btn-danger btn-block">Cerrar Sesión</a>
       </div>
 
-      <div class="mg-t-40 tx-center"><a href="../MntLlamadas/index.php" class="tx-info">Regresar a mantenimiento llamadas</a></div>
+      <div class="mg-t-40 tx-center"><a href="../Dashboard/index.php" class="tx-info">Regresar al dashboard</a></div>
 
     </div><!-- login-wrapper -->
   </div><!-- d-flex -->

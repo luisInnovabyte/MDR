@@ -16,7 +16,7 @@ $(document).ready(function () {
 
           // Esperar unos segundos antes de redirigir
           setTimeout(() => {
-            window.location.href = './view/Home'; // Redirección correcta en JS
+            window.location.href = './index.php'; // Redirigir al login
           }, 2000);
         } else {
           toastr.warning('No se pudo cerrar sesión.');
