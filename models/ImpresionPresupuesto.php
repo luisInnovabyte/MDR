@@ -94,6 +94,8 @@ class ImpresionPresupuesto
                         c.cp_cliente,
                         c.poblacion_cliente,
                         c.provincia_cliente,
+                        c.exento_iva_cliente,
+                        c.justificacion_exencion_iva_cliente,
                         
                         -- Datos del contacto del cliente
                         cc.id_contacto_cliente,
@@ -208,6 +210,9 @@ class ImpresionPresupuesto
                         movil_empresa,
                         email_empresa,
                         web_empresa,
+                        iban_empresa,
+                        swift_empresa,
+                        banco_empresa,
                         logotipo_empresa,
                         logotipo_pie_empresa,
                         serie_presupuesto_empresa,

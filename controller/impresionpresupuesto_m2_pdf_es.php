@@ -1324,6 +1324,99 @@ switch ($_GET["op"]) {
                 $pdf->SetFont('helvetica', '', 8);
                 $pdf->SetTextColor(70, 70, 70); // Gris oscuro
                 $pdf->MultiCell(160, 4, $texto_forma_pago, 0, 'L');
+                
+                // =====================================================
+                // DATOS BANCARIOS PARA TRANSFERENCIA
+                // =====================================================
+                
+                // Detectar si la forma de pago incluye TRANSFERENCIA
+                $forma_pago_lower = strtolower($datos_presupuesto['nombre_metodo_pago'] ?? '');
+                $es_transferencia = (strpos($forma_pago_lower, 'transferencia') !== false);
+                
+                // Verificar si hay datos bancarios disponibles
+                $tiene_datos_bancarios = (
+                    !empty($datos_empresa['iban_empresa']) ||
+                    !empty($datos_empresa['swift_empresa']) ||
+                    !empty($datos_empresa['banco_empresa'])
+                );
+                
+                // Solo mostrar si es transferencia Y hay datos bancarios
+                if ($es_transferencia && $tiene_datos_bancarios) {
+                    
+                    // Calcular altura dinámica según campos disponibles
+                    $altura_bloque = 7; // 7mm overhead (título + márgenes)
+                    if (!empty($datos_empresa['banco_empresa'])) $altura_bloque += 5;
+                    if (!empty($datos_empresa['iban_empresa'])) $altura_bloque += 5;
+                    if (!empty($datos_empresa['swift_empresa'])) $altura_bloque += 5;
+                    
+                    // Verificar si hay espacio suficiente
+                    if (($pdf->GetY() + $altura_bloque) > 270) {
+                        $pdf->AddPage();
+                        $pdf->SetY(15);
+                    }
+                    
+                    $pdf->Ln(4); // Espacio antes del bloque
+                    
+                    // Guardar posición inicial
+                    $x_inicio = $pdf->GetX();
+                    $y_inicio = $pdf->GetY();
+                    
+                    // Dibujar rectángulo de fondo gris claro
+                    $pdf->SetFillColor(245, 245, 245);
+                    $pdf->SetDrawColor(180, 180, 180);
+                    $pdf->Rect($x_inicio, $y_inicio, 195, $altura_bloque, 'DF');
+                    
+                    // Posicionar para escribir el título
+                    $pdf->SetXY($x_inicio + 3, $y_inicio + 2);
+                    
+                    // Título del bloque
+                    $pdf->SetFont('helvetica', 'B', 9);
+                    $pdf->SetTextColor(52, 73, 94);
+                    $pdf->Cell(189, 4, 'DATOS BANCARIOS PARA TRANSFERENCIA', 0, 1, 'L', false);
+                    
+                    $y_actual = $pdf->GetY() + 1;
+                    
+                    // Mostrar Banco si existe
+                    if (!empty($datos_empresa['banco_empresa'])) {
+                        $pdf->SetXY($x_inicio + 3, $y_actual);
+                        $pdf->SetFont('helvetica', '', 8);
+                        $pdf->SetTextColor(70, 70, 70);
+                        $pdf->Cell(25, 4, 'Banco:', 0, 0, 'L');
+                        $pdf->SetFont('helvetica', 'B', 9);
+                        $pdf->Cell(160, 4, $datos_empresa['banco_empresa'], 0, 1, 'L');
+                        $y_actual += 5;
+                    }
+                    
+                    // Mostrar IBAN si existe (formateado con espacios cada 4 caracteres)
+                    if (!empty($datos_empresa['iban_empresa'])) {
+                        $pdf->SetXY($x_inicio + 3, $y_actual);
+                        $pdf->SetFont('helvetica', '', 8);
+                        $pdf->SetTextColor(70, 70, 70);
+                        $pdf->Cell(25, 4, 'IBAN:', 0, 0, 'L');
+                        $pdf->SetFont('helvetica', 'B', 9);
+                        
+                        // Formatear IBAN con espacios cada 4 caracteres
+                        $iban_sin_espacios = str_replace(' ', '', $datos_empresa['iban_empresa']);
+                        $iban_formateado = wordwrap($iban_sin_espacios, 4, ' ', true);
+                        
+                        $pdf->Cell(160, 4, $iban_formateado, 0, 1, 'L');
+                        $y_actual += 5;
+                    }
+                    
+                    // Mostrar SWIFT si existe
+                    if (!empty($datos_empresa['swift_empresa'])) {
+                        $pdf->SetXY($x_inicio + 3, $y_actual);
+                        $pdf->SetFont('helvetica', '', 8);
+                        $pdf->SetTextColor(70, 70, 70);
+                        $pdf->Cell(25, 4, 'SWIFT:', 0, 0, 'L');
+                        $pdf->SetFont('helvetica', 'B', 9);
+                        $pdf->Cell(160, 4, $datos_empresa['swift_empresa'], 0, 1, 'L');
+                        $y_actual += 5;
+                    }
+                    
+                    // Posicionar después del bloque
+                    $pdf->SetY($y_inicio + $altura_bloque + 2);
+                }
             }
             
             // =====================================================
