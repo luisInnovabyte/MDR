@@ -430,6 +430,49 @@ try {
                         </div>
                     </div>
 
+                    <!-- *** PUNTO 17: SECCIÓN Configuración Fiscal *** -->
+                    <div class="card mb-4 border-warning">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0 tx-bold">
+                                <i class="fas fa-percent me-2"></i>Configuración Fiscal
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="exento_iva_cliente" id="exento_iva_cliente" value="1">
+                                        <label class="form-check-label" for="exento_iva_cliente">
+                                            <strong>Cliente exento de IVA (Operaciones Intracomunitarias)</strong>
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Marcar si el cliente está exento de IVA por operaciones intracomunitarias
+                                    </small>
+                                </div>
+                                
+                                <!-- Campo condicional: solo visible si está marcado exento_iva_cliente -->
+                                <div class="col-12" id="contenedor_justificacion_iva" style="display: none;">
+                                    <label for="justificacion_exencion_iva_cliente" class="form-label">
+                                        <i class="fas fa-gavel me-2"></i>Justificación legal de la exención: <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" 
+                                              name="justificacion_exencion_iva_cliente" 
+                                              id="justificacion_exencion_iva_cliente" 
+                                              rows="3" 
+                                              placeholder="Ej: Art. 25 Ley 37/1992 - Operaciones intracomunitarias con NIF-IVA válido..."></textarea>
+                                    <small class="form-text text-muted">
+                                        Justificación legal que aparecerá en los presupuestos y facturas (Art. 25 Ley 37/1992, etc.)
+                                        <span class="float-end">
+                                            <span id="justif-char-count">0</span>/65535 caracteres
+                                        </span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SECCIÓN: Estado del Cliente -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-info text-white">
@@ -580,7 +623,8 @@ try {
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
-    <script type="text/javascript" src="formularioCliente.js"></script>
+    
+<script type="text/javascript" src="formularioCliente.js"></script>
 
     <!-- Script para botones flotantes de navegación -->
     <script>

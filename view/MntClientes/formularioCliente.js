@@ -1,4 +1,11 @@
+// *** LOG INMEDIATO - Este debe aparecer SIEMPRE al cargar la página ***
+console.log('>>> formularioCliente.js CARGADO EN MEMORIA');
+console.log('>>> jQuery disponible?', typeof $ !== 'undefined');
+console.log('>>> Version jQuery:', typeof $ !== 'undefined' ? $.fn.jquery : 'NO DISPONIBLE');
+
 $(document).ready(function () {
+    console.log('>>> formularioCliente.js CARGADO - document.ready ejecutado');
+    console.log('>>> Verificando boton existe:', $('#btnSalvarCliente').length > 0);
 
     /////////////////////////////////////
     //     FORMATEO DE CAMPOS          //
@@ -106,6 +113,26 @@ $(document).ready(function () {
                         $('#obs-char-count').text(data.observaciones_cliente.length);
                     }
                     
+                    // *** PUNTO 17: Cargar campos de exención de IVA ***
+                    $('#exento_iva_cliente').prop('checked', data.exento_iva_cliente == 1);
+                    $('#justificacion_exencion_iva_cliente').val(data.justificacion_exencion_iva_cliente || '');
+                    
+                    // Mostrar/ocultar justificación según checkbox (con animación)
+                    if (data.exento_iva_cliente == 1) {
+                        $('#contenedor_justificacion_iva').slideDown(300);
+                        $('#justificacion_exencion_iva_cliente').prop('required', true);
+                    } else {
+                        $('#contenedor_justificacion_iva').hide(); // Sin animación en carga inicial
+                        $('#justificacion_exencion_iva_cliente').prop('required', false);
+                    }
+                    
+                    // Actualizar contador de caracteres de justificación
+                    if (data.justificacion_exencion_iva_cliente) {
+                        $('#justif-char-count').text(data.justificacion_exencion_iva_cliente.length);
+                    } else {
+                        $('#justif-char-count').text('0');
+                    }
+                    
                     // Capturar valores originales después de cargar datos
                     setTimeout(function() {
                         captureOriginalValues();
@@ -157,11 +184,27 @@ $(document).ready(function () {
     //   CAPTURAR EL CLICK EN EL BOTÓN DE SALVAR CLIENTE
     //*****************************************************/
 
+    console.log('>>> Registrando event listener para #btnSalvarCliente...');
+    console.log('>>> Boton existe antes de registrar listener?', $('#btnSalvarCliente').length > 0);
+    
+    // TEST: Event listener generico para verificar que jQuery funciona
+    $(document).on('click', 'body', function() {
+        console.log('>>> CLIC DETECTADO EN LA PAGINA (jQuery funciona)');
+    });
+    
+    // TEST: Event listener directo en el boton (sin delegacion)
+    $('#btnSalvarCliente').on('click', function() {
+        console.log('>>> CLIC DIRECTO EN BOTON (sin delegacion de eventos)');
+    });
+    
     $(document).on('click', '#btnSalvarCliente', function (event) {
+        console.log('>>> CLICK EN BOTON GUARDAR - Iniciando proceso...');
         event.preventDefault();
+        console.log('>>> preventDefault ejecutado');
 
         // Obtener valores del formulario
         var id_clienteR = $('#id_cliente').val().trim();
+        console.log('>>> ID Cliente:', id_clienteR, '(vacio = INSERT, con valor = UPDATE)');
         var codigo_clienteR = $('#codigo_cliente').val().trim().toUpperCase();
         var nombre_clienteR = $('#nombre_cliente').val().trim();
         var nif_clienteR = $('#nif_cliente').val().trim().toUpperCase();
@@ -183,6 +226,18 @@ $(document).ready(function () {
         
         var observaciones_clienteR = $('#observaciones_cliente').val().trim();
         
+        // *** PUNTO 17: Campos de exención de IVA ***
+        var exento_iva_clienteR = $('#exento_iva_cliente').is(':checked') ? 1 : 0;
+        var justificacion_exencion_iva_clienteR = $('#justificacion_exencion_iva_cliente').val().trim();
+        
+        // DEBUG PUNTO 17
+        console.log('>>> DEBUG PUNTO 17 - Valores capturados:', {
+            exento_iva_checkbox_checked: $('#exento_iva_cliente').is(':checked'),
+            exento_iva_valor: exento_iva_clienteR,
+            justificacion_valor: justificacion_exencion_iva_clienteR,
+            justificacion_length: justificacion_exencion_iva_clienteR.length
+        });
+        
         // Forma de pago habitual
         var id_forma_pago_habitualR = $('#id_forma_pago_habitual').val();
         
@@ -200,45 +255,49 @@ $(document).ready(function () {
         }
 
         // Validar el formulario
+        console.log('>>> PASO 1: Iniciando validacion del formulario...');
         if (!formValidator.validateForm(event)) {
-            toastr.error('Por favor, corrija los errores en el formulario.', 'Error de Validación');
+            console.log('>>> VALIDACION FALLO - Mostrando error y deteniendo');
+            toastr.error('Por favor, corrija los errores en el formulario.', 'Error de Validacion');
             return;
         }
+        console.log('>>> PASO 1 COMPLETADO: Validacion OK');
         
         // Verificar cliente primero
-        verificarClienteExistente(id_clienteR, codigo_clienteR, nombre_clienteR, nif_clienteR, direccion_clienteR, cp_clienteR, poblacion_clienteR, provincia_clienteR, telefono_clienteR, email_clienteR, web_clienteR, fax_clienteR, nombre_facturacion_clienteR, direccion_facturacion_clienteR, cp_facturacion_clienteR, poblacion_facturacion_clienteR, provincia_facturacion_clienteR, id_forma_pago_habitualR, porcentaje_descuento_clienteR, observaciones_clienteR, activo_clienteR);
+        console.log('>>> PASO 2: Verificando si cliente existe...');
+        verificarClienteExistente(id_clienteR, codigo_clienteR, nombre_clienteR, nif_clienteR, direccion_clienteR, cp_clienteR, poblacion_clienteR, provincia_clienteR, telefono_clienteR, email_clienteR, web_clienteR, fax_clienteR, nombre_facturacion_clienteR, direccion_facturacion_clienteR, cp_facturacion_clienteR, poblacion_facturacion_clienteR, provincia_facturacion_clienteR, id_forma_pago_habitualR, porcentaje_descuento_clienteR, observaciones_clienteR, exento_iva_clienteR, justificacion_exencion_iva_clienteR, activo_clienteR);
     });
 
-    function verificarClienteExistente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, activo_cliente) {
-        console.log('🔍 Verificando cliente:', { codigo: codigo_cliente, nombre: nombre_cliente, nif: nif_cliente, id: id_cliente });
+    function verificarClienteExistente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, exento_iva_cliente, justificacion_exencion_iva_cliente, activo_cliente) {
+        console.log('>>> Verificando cliente:', { codigo: codigo_cliente, nombre: nombre_cliente, nif: nif_cliente, id: id_cliente });
+        console.log('>>> Enviando peticion AJAX a verificar...');
         
         $.ajax({
             url: "../../controller/cliente.php?op=verificar",
             type: "POST",
             data: { 
                 codigo_cliente: codigo_cliente,
-                nombre_cliente: nombre_cliente,  // Añadido nombre_cliente
-                nif_cliente: nif_cliente,        // Añadido nif_cliente
-                id_cliente: id_cliente || ''     // Asegurar que no sea null
+                nombre_cliente: nombre_cliente,
+                nif_cliente: nif_cliente,
+                id_cliente: id_cliente || ''
             },
             dataType: "json",
             success: function(response) {
-                console.log('📋 Respuesta verificación:', response);
+                console.log('>>> Respuesta verificacion:', response);
                 
-                // La respuesta del modelo es { existe: true/false }
                 if (response.existe === false) {
-                    // No existe, podemos guardar
-                    console.log('✅ Cliente no existe, procediendo a guardar');
-                    guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, activo_cliente);
+                    console.log('>>> Cliente no existe, procediendo a guardar');
+                    console.log('>>> PASO 3: Llamando a guardarCliente()...');
+                    guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, exento_iva_cliente, justificacion_exencion_iva_cliente, activo_cliente);
                 } else {
-                    // Ya existe
-                    console.log('❌ Cliente ya existe');
-                    mostrarErrorClienteExistente("Ya existe un cliente con el código '" + codigo_cliente + "', nombre '" + nombre_cliente + "' o NIF/CIF '" + nif_cliente + "'");
+                    console.log('>>> Cliente ya existe - DETENIENDO proceso');
+                    mostrarErrorClienteExistente("Ya existe un cliente con el codigo '" + codigo_cliente + "', nombre '" + nombre_cliente + "' o NIF/CIF '" + nif_cliente + "'");
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Error en verificación:', error);
-                console.error('Respuesta del servidor:', xhr.responseText);
+                console.error('>>> ERROR en verificacion:', error);
+                console.error('>>> Status:', status);
+                console.error('>>> Respuesta del servidor:', xhr.responseText);
                 toastr.error('Error al verificar el cliente. Intente nuevamente.', 'Error');
             }
         });
@@ -254,7 +313,10 @@ $(document).ready(function () {
         });
     }
 
-    function guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, activo_cliente) {
+    function guardarCliente(id_cliente, codigo_cliente, nombre_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, telefono_cliente, email_cliente, web_cliente, fax_cliente, nombre_facturacion_cliente, direccion_facturacion_cliente, cp_facturacion_cliente, poblacion_facturacion_cliente, provincia_facturacion_cliente, id_forma_pago_habitual, porcentaje_descuento_cliente, observaciones_cliente, exento_iva_cliente, justificacion_exencion_iva_cliente, activo_cliente) {
+        console.log('>>> INGRESANDO A guardarCliente() - PASO 4');
+        console.log('>>> Datos recibidos:', { id_cliente: id_cliente, codigo_cliente: codigo_cliente, nombre_cliente: nombre_cliente, exento_iva_cliente: exento_iva_cliente, justificacion: justificacion_exencion_iva_cliente });
+        
         // Mostrar indicador de carga
         $('#btnSalvarCliente').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
         
@@ -280,10 +342,15 @@ $(document).ready(function () {
         formData.append('id_forma_pago_habitual', id_forma_pago_habitual || '');
         formData.append('porcentaje_descuento_cliente', porcentaje_descuento_cliente || '0.00');
         formData.append('observaciones_cliente', observaciones_cliente);
+        
+        // *** PUNTO 17: Campos de exención de IVA ***
+        formData.append('exento_iva_cliente', exento_iva_cliente);
+        formData.append('justificacion_exencion_iva_cliente', justificacion_exencion_iva_cliente);
+        
         formData.append('activo_cliente', activo_cliente);
         
-        console.log('💾 Enviando con FormData');
-        console.log('🔍 id_forma_pago_habitual:', id_forma_pago_habitual, 'Tipo:', typeof id_forma_pago_habitual);
+        console.log('>>> Enviando con FormData');
+        console.log('>>> id_forma_pago_habitual:', id_forma_pago_habitual, 'Tipo:', typeof id_forma_pago_habitual);
         
         $.ajax({
             url: "../../controller/cliente.php?op=guardaryeditar",
@@ -293,7 +360,12 @@ $(document).ready(function () {
             contentType: false,
             dataType: "json",
             success: function(res) {
-                console.log('📋 Respuesta del guardado:', res);
+                console.log('>>> Respuesta del guardado:', res);
+                console.log('>>> Tipo de respuesta:', typeof res);
+                console.log('>>> Status:', res.status);
+                console.log('>>> Message:', res.message);
+                console.log('>>> ID Cliente en respuesta:', res.id_cliente);
+                console.log('>>> ID Cliente en formulario:', $('#id_cliente').val());
                 
                 if (res.status === 'success') {
                     // Marcar como guardado para evitar la alerta de salida
@@ -301,10 +373,37 @@ $(document).ready(function () {
                     
                     toastr.success(res.message || "Cliente guardado correctamente");
                     
-                    // Redirigir al listado después de un breve delay
-                    setTimeout(() => {
-                        window.location.href = 'index.php';
-                    }, 1500);
+                    // Restaurar boton
+                    $('#btnSalvarCliente').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Guardar Cliente');
+                    
+                    // *** PUNTO 17: Recargar datos en lugar de redirigir ***
+                    const idCliente = res.id_cliente || $('#id_cliente').val();
+                    console.log('>>> ID Cliente final a recargar:', idCliente);
+                    
+                    if (idCliente) {
+                        console.log('>>> Recargando datos del cliente ID:', idCliente);
+                        
+                        // Actualizar campo hidden con el ID (importante para proximos updates)
+                        $('#id_cliente').val(idCliente);
+                        
+                        // Recargar los datos del cliente
+                        setTimeout(() => {
+                            console.log('>>> Ejecutando cargarDatosCliente...');
+                            cargarDatosCliente(idCliente);
+                            
+                            // Marcar de nuevo como guardado despues de recargar
+                            setTimeout(() => {
+                                formSaved = true;
+                                console.log('>>> formSaved = true (despues de recarga)');
+                            }, 200);
+                        }, 500);
+                    } else {
+                        console.warn('>>> No hay ID de cliente, redirigiendo...');
+                        // Si no hay ID, redirigir al listado como respaldo
+                        setTimeout(() => {
+                            window.location.href = 'index.php';
+                        }, 1500);
+                    }
                 } else {
                     toastr.error(res.message || "Error al guardar el cliente");
                     // Restaurar botón
@@ -365,7 +464,9 @@ $(document).ready(function () {
             provincia_facturacion_cliente: $('#provincia_facturacion_cliente').val(),
             id_forma_pago_habitual: $('#id_forma_pago_habitual').val(),
             observaciones_cliente: $('#observaciones_cliente').val(),
-            activo_cliente: $('#activo_cliente_hidden').val()
+            activo_cliente: $('#activo_cliente_hidden').val(),
+            exento_iva_cliente: $('#exento_iva_cliente').is(':checked'),
+            justificacion_exencion_iva_cliente: $('#justificacion_exencion_iva_cliente').val()
         };
     }
     
@@ -390,7 +491,9 @@ $(document).ready(function () {
             $('#provincia_facturacion_cliente').val() !== formOriginalValues.provincia_facturacion_cliente ||
             $('#id_forma_pago_habitual').val() !== formOriginalValues.id_forma_pago_habitual ||
             $('#observaciones_cliente').val() !== formOriginalValues.observaciones_cliente ||
-            $('#activo_cliente_hidden').val() !== formOriginalValues.activo_cliente
+            $('#activo_cliente_hidden').val() !== formOriginalValues.activo_cliente ||
+            $('#exento_iva_cliente').is(':checked') !== formOriginalValues.exento_iva_cliente ||
+            $('#justificacion_exencion_iva_cliente').val() !== formOriginalValues.justificacion_exencion_iva_cliente
         );
     }
     
@@ -432,6 +535,45 @@ $(document).ready(function () {
             $('#obs-char-count').parent().removeClass('text-muted').addClass('text-warning');
         } else {
             $('#obs-char-count').parent().removeClass('text-warning').addClass('text-muted');
+        }
+    });
+
+    // *** PUNTO 17: Event handler para checkbox exento_iva_cliente ***
+    // Usar delegacion de eventos para mayor robustez
+    $(document).on('change', '#exento_iva_cliente', function() {
+        console.log('>>> Checkbox exento_iva_cliente cambio. Estado:', $(this).is(':checked'));
+        
+        if ($(this).is(':checked')) {
+            console.log('>>> Mostrando contenedor justificacion');
+            $('#contenedor_justificacion_iva').slideDown(300);
+            // Hacer obligatorio el campo de justificacion
+            $('#justificacion_exencion_iva_cliente').prop('required', true);
+        } else {
+            console.log('>>> Ocultando contenedor justificacion');
+            $('#contenedor_justificacion_iva').slideUp(300);
+            // Quitar obligatoriedad y limpiar
+            $('#justificacion_exencion_iva_cliente').prop('required', false);
+            $('#justificacion_exencion_iva_cliente').val('');
+            $('#justif-char-count').text('0');
+        }
+    });
+    
+    // *** PUNTO 17: Verificacion debug - Comprobar si el checkbox existe ***
+    console.log('>>> DEBUG: Checkbox exento_iva_cliente existe?', $('#exento_iva_cliente').length > 0);
+    console.log('>>> DEBUG: Contenedor justificacion existe?', $('#contenedor_justificacion_iva').length > 0);
+
+    // *** PUNTO 17: Contador de caracteres para justificación IVA ***
+    // Usar delegación de eventos para mayor robustez
+    $(document).on('input', '#justificacion_exencion_iva_cliente', function() {
+        const maxLength = 65535; // TEXT field max length
+        const currentLength = $(this).val().length;
+        
+        $('#justif-char-count').text(currentLength);
+        
+        if (currentLength > maxLength - 100) {
+            $('#justif-char-count').parent().removeClass('text-muted').addClass('text-warning');
+        } else {
+            $('#justif-char-count').parent().removeClass('text-warning').addClass('text-muted');
         }
     });
 
@@ -542,9 +684,3 @@ $(document).ready(function () {
     }
 
 }); // de document.ready
-
-// Función global para cargar datos (llamada desde el HTML)
-function cargarDatosCliente(idCliente) {
-    console.log('Función global - Cargando datos de cliente ID:', idCliente);
-    // Esta función ya está implementada dentro del document.ready
-}

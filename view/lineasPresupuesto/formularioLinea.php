@@ -441,10 +441,16 @@ function cargarDatosArticulo(idArticulo, esEdicion = false) {
                     $('#precio_unitario_linea_ppto').val(parseFloat(data.precio_alquiler_articulo || 0).toFixed(2));
                 }
                 
-                // Cargar IVA del artículo desde tasa_impuesto (SIEMPRE, en creación y edición)
-                // Este campo es de solo lectura y proviene de la configuración del artículo
-                const tasaIva = data.tasa_impuesto || 21;
-                $('#porcentaje_iva_linea_ppto').val(tasaIva);
+                // *** PUNTO 17: Cargar IVA según si cliente está exento ***
+                // Si cliente exento IVA: forzar 0% y deshabilitar campo
+                // Si NO exento: usar IVA del artículo
+                if (typeof clienteExentoIVA !== 'undefined' && clienteExentoIVA === true) {
+                    $('#porcentaje_iva_linea_ppto').val(0).prop('disabled', true).prop('readonly', true);
+                    console.log('✓ IVA forzado a 0% para artículo (Cliente exento de IVA)');
+                } else {
+                    const tasaIva = data.tasa_impuesto || 21;
+                    $('#porcentaje_iva_linea_ppto').val(tasaIva).prop('disabled', false).prop('readonly', false);
+                }
                 
                 // Establecer descuento por defecto y mostrar avisos - SOLO en creación
                 if (!esEdicion) {

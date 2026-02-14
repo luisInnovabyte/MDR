@@ -436,6 +436,14 @@
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
+    
+    <!-- *** PUNTO 17: Variables globales para exención de IVA *** -->
+    <script>
+        // Variable global para indicar si el cliente está exento de IVA
+        // Se inicializa aquí y se actualiza cuando se carga la info de la versión
+        let clienteExentoIVA = false;
+    </script>
+    
     <script type="text/javascript" src="lineasPresupuesto.js"></script>
   
   <script>
