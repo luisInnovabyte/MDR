@@ -194,6 +194,41 @@
                                     <small class="form-text text-muted">Altura o nivel de ubicación</small>
                                 </div>
                             </div>
+
+                            <!-- Peso del Elemento -->
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-4">
+                                    <label for="peso_elemento" class="form-label">
+                                        <i class="fas fa-weight-hanging me-1"></i>Peso (kg):
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" 
+                                               class="form-control" 
+                                               name="peso_elemento" 
+                                               id="peso_elemento" 
+                                               min="0" 
+                                               max="99999.999" 
+                                               step="0.001" 
+                                               placeholder="0.000">
+                                        <span class="input-group-text">kg</span>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>Peso del elemento para cálculo de peso total en presupuestos
+                                    </small>
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <div class="alert alert-info d-flex align-items-start my-0" role="alert" style="font-size: 0.85rem; padding: 0.5rem 0.75rem;">
+                                        <i class="bi bi-lightbulb me-2 mt-1"></i>
+                                        <div>
+                                            <strong>¿Cómo se calcula el peso del artículo?</strong><br>
+                                            <ul class="mb-0 mt-1 ps-3" style="font-size: 0.8rem;">
+                                                <li><strong>Artículos normales:</strong> Promedio (media aritmética) del peso de todos sus elementos</li>
+                                                <li><strong>KITs:</strong> Suma del peso de los artículos componentes multiplicado por sus cantidades</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

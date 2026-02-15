@@ -198,6 +198,7 @@ switch ($op) {
             $nave_elemento = $_POST["nave_elemento"] ?? '';
             $pasillo_columna_elemento = $_POST["pasillo_columna_elemento"] ?? '';
             $altura_elemento = $_POST["altura_elemento"] ?? '';
+            $peso_elemento = !empty($_POST["peso_elemento"]) ? $_POST["peso_elemento"] : null;
             $fecha_compra_elemento = $_POST["fecha_compra_elemento"] ?? '';
             $precio_compra_elemento = $_POST["precio_compra_elemento"] ?? 0.00;
             $fecha_alta_elemento = $_POST["fecha_alta_elemento"] ?? '';
@@ -231,6 +232,7 @@ switch ($op) {
                     $nave_elemento,
                     $pasillo_columna_elemento,
                     $altura_elemento,
+                    $peso_elemento,
                     $fecha_compra_elemento,
                     $precio_compra_elemento,
                     $fecha_alta_elemento,
@@ -279,6 +281,7 @@ switch ($op) {
                     $nave_elemento,
                     $pasillo_columna_elemento,
                     $altura_elemento,
+                    $peso_elemento,
                     $fecha_compra_elemento,
                     $precio_compra_elemento,
                     $fecha_alta_elemento,

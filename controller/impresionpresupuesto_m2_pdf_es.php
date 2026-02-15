@@ -1233,6 +1233,66 @@ switch ($_GET["op"]) {
             $pdf->SetLineWidth(0.2);
             
             // =====================================================
+            // *** SECCIÓN 20: PESO TOTAL ESTIMADO ***
+            // =====================================================
+            
+            // Obtener peso total del presupuesto
+            $datos_peso = null;
+            if (!empty($datos_presupuesto['id_version_presupuesto'])) {
+                $datos_peso = $impresion->get_peso_total_presupuesto($datos_presupuesto['id_version_presupuesto']);
+            }
+            
+            // Mostrar peso solo si hay datos disponibles y peso > 0
+            if ($datos_peso && 
+                isset($datos_peso['peso_total_kg']) && 
+                floatval($datos_peso['peso_total_kg']) > 0) {
+                
+                $pdf->Ln(6);
+                
+                // Título de la sección
+                $pdf->SetFont('helvetica', 'B', 9);
+                $pdf->SetFillColor(233, 236, 239); // Fondo gris claro
+                $pdf->SetDrawColor(173, 181, 189); // Borde gris
+                $pdf->SetTextColor(52, 58, 64); // Texto gris oscuro
+                $pdf->Cell(0, 6, 'PESO TOTAL ESTIMADO', 1, 1, 'C', 1);
+                
+                // Contenido: Peso y completitud
+                $pdf->SetFont('helvetica', 'B', 10);
+                $pdf->SetFillColor(248, 249, 250); // Fondo gris muy claro
+                $pdf->SetTextColor(28, 126, 214); // Azul (mismo tono que elementos del diseño)
+                
+                // Formatear peso con separador de miles y 2 decimales
+                $peso_formateado = number_format($datos_peso['peso_total_kg'], 2, ',', '.');
+                $texto_peso = $peso_formateado . ' KG';
+                
+                // Añadir nota de completitud si no está al 100%
+                $porcentaje_completitud = floatval($datos_peso['porcentaje_completitud'] ?? 0);
+                if ($porcentaje_completitud < 100 && $porcentaje_completitud > 0) {
+                    // Hay líneas sin peso definido
+                    $lineas_sin_peso = intval($datos_peso['lineas_sin_peso'] ?? 0);
+                    $texto_peso .= ' *';
+                    $mostrar_nota_completitud = true;
+                } else {
+                    $mostrar_nota_completitud = false;
+                }
+                
+                $pdf->Cell(0, 7, $texto_peso, 1, 1, 'C', 1);
+                
+                // Nota aclaratoria si no está completo
+                if ($mostrar_nota_completitud) {
+                    $pdf->SetFont('helvetica', 'I', 7);
+                    $pdf->SetTextColor(108, 117, 125); // Gris medio
+                    $nota = "* Peso estimado basado en " . $datos_peso['lineas_con_peso'] . " de " . $datos_peso['total_lineas'] . " líneas ";
+                    $nota .= "(" . number_format($porcentaje_completitud, 0) . "% de datos disponibles)";
+                    $pdf->Cell(0, 4, $nota, 0, 1, 'C');
+                }
+                
+                // Restaurar colores
+                $pdf->SetTextColor(0, 0, 0);
+                $pdf->SetDrawColor(0, 0, 0);
+            }
+            
+            // =====================================================
             // *** PUNTO 17: JUSTIFICACIÓN EXENCIÓN IVA ***
             // =====================================================
             

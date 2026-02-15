@@ -437,6 +437,9 @@ function cargarDatosElemento(id) {
                 $('#pasillo_columna_elemento').val(data.pasillo_columna_elemento || '');
                 $('#altura_elemento').val(data.altura_elemento || '');
                 
+                // Peso del elemento
+                $('#peso_elemento').val(data.peso_elemento || '');
+                
                 // Tipo de propiedad
                 const esPropio = data.es_propio_elemento == 1 || data.es_propio_elemento === '1' || data.es_propio_elemento === true;
                 $(`input[name="es_propio_elemento"][value="${esPropio ? '1' : '0'}"]`).prop('checked', true);

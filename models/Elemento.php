@@ -210,7 +210,8 @@ class Elemento
         $id_estado_elemento, 
         $nave_elemento, 
         $pasillo_columna_elemento, 
-        $altura_elemento, 
+        $altura_elemento,
+        $peso_elemento = null,
         $fecha_compra_elemento, 
         $precio_compra_elemento, 
         $fecha_alta_elemento, 
@@ -239,7 +240,8 @@ class Elemento
                         id_estado_elemento, 
                         nave_elemento, 
                         pasillo_columna_elemento, 
-                        altura_elemento, 
+                        altura_elemento,
+                        peso_elemento,
                         fecha_compra_elemento, 
                         precio_compra_elemento, 
                         fecha_alta_elemento, 
@@ -256,7 +258,7 @@ class Elemento
                         created_at_elemento, 
                         updated_at_elemento
                     ) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             
             $stmt = $this->conexion->prepare($sql);
             
@@ -273,19 +275,20 @@ class Elemento
             $stmt->bindValue(7, $id_estado_elemento ?: 1, PDO::PARAM_INT); 
             $stmt->bindValue(8, $nave_elemento, PDO::PARAM_STR); 
             $stmt->bindValue(9, $pasillo_columna_elemento, PDO::PARAM_STR); 
-            $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR); 
-            $stmt->bindValue(11, $fecha_compra_elemento ?: null, PDO::PARAM_STR); 
-            $stmt->bindValue(12, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR); 
-            $stmt->bindValue(13, $fecha_alta_elemento ?: null, PDO::PARAM_STR); 
-            $stmt->bindValue(14, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR); 
-            $stmt->bindValue(15, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR); 
-            $stmt->bindValue(16, $observaciones_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(17, (int)$es_propio_elemento, PDO::PARAM_INT);
-            $stmt->bindValue(18, $id_proveedor_compra_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(19, $id_proveedor_alquiler_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(20, $precio_dia_alquiler_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(21, $id_forma_pago_alquiler_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(22, $observaciones_alquiler_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(11, $peso_elemento ?: null, PDO::PARAM_STR); // DECIMAL como string
+            $stmt->bindValue(12, $fecha_compra_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(13, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR); 
+            $stmt->bindValue(14, $fecha_alta_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(15, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(16, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(17, $observaciones_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(18, (int)$es_propio_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(19, $id_proveedor_compra_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(20, $id_proveedor_alquiler_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(21, $precio_dia_alquiler_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(22, $id_forma_pago_alquiler_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(23, $observaciones_alquiler_elemento, PDO::PARAM_STR); 
                               
             $resultado = $stmt->execute();
             
@@ -324,7 +327,8 @@ class Elemento
         $id_estado_elemento, 
         $nave_elemento, 
         $pasillo_columna_elemento, 
-        $altura_elemento, 
+        $altura_elemento,
+        $peso_elemento = null,
         $fecha_compra_elemento, 
         $precio_compra_elemento, 
         $fecha_alta_elemento, 
@@ -352,7 +356,8 @@ class Elemento
                         id_estado_elemento = ?, 
                         nave_elemento = ?, 
                         pasillo_columna_elemento = ?, 
-                        altura_elemento = ?, 
+                        altura_elemento = ?,
+                        peso_elemento = ?,
                         fecha_compra_elemento = ?, 
                         precio_compra_elemento = ?, 
                         fecha_alta_elemento = ?, 
@@ -384,19 +389,20 @@ class Elemento
             $stmt->bindValue(8, $nave_elemento, PDO::PARAM_STR);
             $stmt->bindValue(9, $pasillo_columna_elemento, PDO::PARAM_STR);
             $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(11, $fecha_compra_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(12, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR);
-            $stmt->bindValue(13, $fecha_alta_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(14, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(15, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(16, $observaciones_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(17, (int)$es_propio_elemento, PDO::PARAM_INT);
-            $stmt->bindValue(18, $id_proveedor_compra_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(19, $id_proveedor_alquiler_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(20, $precio_dia_alquiler_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(21, $id_forma_pago_alquiler_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(22, $observaciones_alquiler_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(23, $id_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(11, $peso_elemento ?: null, PDO::PARAM_STR); // DECIMAL como string
+            $stmt->bindValue(12, $fecha_compra_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(13, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR);
+            $stmt->bindValue(14, $fecha_alta_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(15, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(16, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(17, $observaciones_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(18, (int)$es_propio_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(19, $id_proveedor_compra_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(20, $id_proveedor_alquiler_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(21, $precio_dia_alquiler_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(22, $id_forma_pago_alquiler_elemento ?: null, PDO::PARAM_INT);
+            $stmt->bindValue(23, $observaciones_alquiler_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(24, $id_elemento, PDO::PARAM_INT);
 
             $resultado = $stmt->execute();
             
@@ -672,4 +678,160 @@ class Elemento
             return [];
         }
     }
-}
+
+    /**
+     * Actualizar el peso de un elemento
+     * 
+     * Actualiza el campo peso_elemento de un elemento específico.
+     * Este campo es la base para calcular el peso promedio de los artículos
+     * normales (media aritmética) o el peso total de los KITs (suma de componentes).
+     * 
+     * @param int $id_elemento ID del elemento a actualizar
+     * @param float|null $peso_kg Peso en kilogramos (null para limpiar el peso)
+     * @return bool true si se actualizó correctamente, false si hay error
+     */
+    public function update_peso_elemento($id_elemento, $peso_kg)
+    {
+        try {
+            $sql = "UPDATE elemento 
+                    SET peso_elemento = ?,
+                        updated_at_elemento = NOW()
+                    WHERE id_elemento = ?";
+            
+            $stmt = $this->conexion->prepare($sql);
+            
+            // Si el peso es null o vacío, insertar NULL
+            if ($peso_kg === null || $peso_kg === '') {
+                $stmt->bindValue(1, null, PDO::PARAM_NULL);
+            } else {
+                // Validar que sea un número positivo
+                $peso_kg = floatval($peso_kg);
+                if ($peso_kg < 0) {
+                    $this->registro->registrarActividad(
+                        'admin',
+                        'Elemento',
+                        'update_peso_elemento',
+                        "Intento de actualizar peso negativo para elemento ID $id_elemento: $peso_kg kg",
+                        'warning'
+                    );
+                    return false;
+                }
+                $stmt->bindValue(1, $peso_kg, PDO::PARAM_STR); // PDO::PARAM_STR para DECIMAL
+            }
+            
+            $stmt->bindValue(2, $id_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $filas_afectadas = $stmt->rowCount();
+            
+            if ($filas_afectadas > 0) {
+                $peso_texto = ($peso_kg === null || $peso_kg === '') ? 'NULL' : "$peso_kg kg";
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Elemento',
+                    'update_peso_elemento',
+                    "Peso actualizado para elemento ID $id_elemento: $peso_texto",
+                    'info'
+                );
+                return true;
+            } else {
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Elemento',
+                    'update_peso_elemento',
+                    "No se encontró el elemento ID $id_elemento para actualizar peso",
+                    'warning'
+                );
+                return false;
+            }
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'update_peso_elemento',
+                "Error al actualizar peso del elemento ID $id_elemento: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Obtener peso calculado de un artículo
+     * 
+     * Consulta la vista vista_articulo_peso que calcula el peso de forma diferente
+     * según el tipo de artículo:
+     * - Artículos normales (es_kit=0): Media aritmética de pesos de elementos
+     * - Artículos KIT (es_kit=1): Suma de pesos de componentes × cantidades
+     * 
+     * Retorna información sobre:
+     * - Peso calculado del artículo en kg
+     * - Método de cálculo utilizado ('MEDIA' o 'SUMA')
+     * - Si tiene datos de peso disponibles
+     * 
+     * @param int $id_articulo ID del artículo
+     * @return array|false Array con datos del peso o false si hay error
+     *                     Keys: peso_articulo_kg, metodo_calculo_peso, tiene_datos_peso
+     */
+    public function get_peso_articulo($id_articulo)
+    {
+        try {
+            $sql = "SELECT 
+                        id_articulo,
+                        peso_articulo_kg,
+                        metodo_calculo_peso,
+                        tiene_datos_peso,
+                        es_kit_articulo
+                    FROM vista_articulo_peso
+                    WHERE id_articulo = ?
+                    LIMIT 1";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_articulo, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($resultado) {
+                $peso = $resultado['peso_articulo_kg'] ?? 'N/A';
+                $metodo = $resultado['metodo_calculo_peso'] ?? 'N/A';
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Elemento',
+                    'get_peso_articulo',
+                    "Peso obtenido para artículo ID $id_articulo: $peso kg (método: $metodo)",
+                    'info'
+                );
+            } else {
+                // Si no hay resultado, retornar estructura con valores null
+                $resultado = [
+                    'id_articulo' => $id_articulo,
+                    'peso_articulo_kg' => null,
+                    'metodo_calculo_peso' => null,
+                    'tiene_datos_peso' => false,
+                    'es_kit_articulo' => null
+                ];
+                
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Elemento',
+                    'get_peso_articulo',
+                    "No se encontraron datos de peso para artículo ID $id_articulo",
+                    'info'
+                );
+            }
+            
+            return $resultado;
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'get_peso_articulo',
+                "Error al obtener peso del artículo ID $id_articulo: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }

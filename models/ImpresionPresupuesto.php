@@ -751,5 +751,157 @@ class ImpresionPresupuesto
             return $modelo_defecto;
         }
     }
+
+    /**
+     * Obtener peso total de un presupuesto
+     * 
+     * Consulta la vista vista_presupuesto_peso para obtener el peso total calculado
+     * de todas las líneas del presupuesto que tengan artículos con peso definido.
+     * 
+     * Retorna información sobre:
+     * - Peso total en kilogramos
+     * - Número de líneas con peso calculado
+     * - Número total de líneas
+     * - Porcentaje de completitud (líneas con peso / total líneas)
+     * 
+     * @param int $id_version_presupuesto ID de la versión del presupuesto
+     * @return array|false Array con datos del peso o false si hay error
+     *                     Keys: peso_total_kg, lineas_con_peso, lineas_sin_peso, 
+     *                           total_lineas, porcentaje_completitud
+     */
+    public function get_peso_total_presupuesto($id_version_presupuesto)
+    {
+        try {
+            $sql = "SELECT 
+                        id_version_presupuesto,
+                        peso_total_kg,
+                        lineas_con_peso,
+                        lineas_sin_peso,
+                        total_lineas,
+                        porcentaje_completitud
+                    FROM vista_presupuesto_peso
+                    WHERE id_version_presupuesto = ?
+                    LIMIT 1";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_version_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($resultado) {
+                $this->registro->registrarActividad(
+                    'admin',
+                    'ImpresionPresupuesto',
+                    'get_peso_total_presupuesto',
+                    "Peso total obtenido para versión ID $id_version_presupuesto: {$resultado['peso_total_kg']} kg ({$resultado['porcentaje_completitud']}% completitud)",
+                    'info'
+                );
+            } else {
+                // Si no hay resultado, retornar estructura con valores null
+                $resultado = [
+                    'id_version_presupuesto' => $id_version_presupuesto,
+                    'peso_total_kg' => null,
+                    'lineas_con_peso' => 0,
+                    'lineas_sin_peso' => 0,
+                    'total_lineas' => 0,
+                    'porcentaje_completitud' => 0
+                ];
+                
+                $this->registro->registrarActividad(
+                    'admin',
+                    'ImpresionPresupuesto',
+                    'get_peso_total_presupuesto',
+                    "No se encontraron datos de peso para versión ID $id_version_presupuesto",
+                    'info'
+                );
+            }
+            
+            return $resultado;
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_peso_total_presupuesto',
+                "Error al obtener peso total: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Obtener líneas del presupuesto con información de peso
+     * 
+     * Consulta la vista vista_linea_peso para obtener todas las líneas del presupuesto
+     * con información del peso calculado de cada línea.
+     * 
+     * Útil para:
+     * - Mostrar desglose de peso por línea
+     * - Identificar líneas sin peso definido
+     * - Debugging de cálculos de peso
+     * 
+     * @param int $id_version_presupuesto ID de la versión del presupuesto
+     * @return array Array de líneas con información de peso (puede estar vacío)
+     *               Cada elemento contiene: id_linea, cantidad, nombre_articulo,
+     *                                        peso_unitario_kg, peso_total_linea_kg, 
+     *                                        linea_tiene_peso
+     */
+    public function get_lineas_con_peso($id_version_presupuesto)
+    {
+        try {
+            $sql = "SELECT 
+                        vlp.id_linea_presupuesto,
+                        vlp.cantidad_linea_presupuesto,
+                        a.nombre_articulo,
+                        vlp.peso_articulo_kg AS peso_unitario_kg,
+                        vlp.peso_total_linea_kg,
+                        vlp.linea_tiene_peso,
+                        a.es_kit_articulo,
+                        vlp.metodo_calculo_peso
+                    FROM vista_linea_peso vlp
+                    INNER JOIN linea_presupuesto lp 
+                        ON vlp.id_linea_presupuesto = lp.id_linea_presupuesto
+                    INNER JOIN articulo a 
+                        ON lp.id_articulo = a.id_articulo
+                    WHERE vlp.id_version_presupuesto = ?
+                    ORDER BY lp.orden_linea_presupuesto ASC";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_version_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $total_lineas = count($lineas);
+            $lineas_con_peso = 0;
+            foreach ($lineas as $linea) {
+                if ($linea['linea_tiene_peso'] == 1) {
+                    $lineas_con_peso++;
+                }
+            }
+            
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_con_peso',
+                "Líneas con peso obtenidas para versión ID $id_version_presupuesto: $total_lineas líneas ($lineas_con_peso con peso definido)",
+                'info'
+            );
+            
+            return $lineas;
+            
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_con_peso',
+                "Error al obtener líneas con peso: " . $e->getMessage(),
+                'error'
+            );
+            return [];
+        }
+    }
 }
 ?>

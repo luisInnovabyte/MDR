@@ -1199,3 +1199,358 @@ Se creó script de prueba y verificación:
 **Commits**: 2db8a64 - feat(punto18): Mostrar datos bancarios en PDF con TRANSFERENCIA  
 **Archivo**: `docs/presupuestos_20260211.md`
 
+---
+
+### 20. Sistema de Peso en Presupuestos ✅ **COMPLETADA**
+
+**Fecha inicio**: 15 de febrero de 2026  
+**Fecha finalización**: (En desarrollo)  
+**Prioridad**: Media  
+**Tipo**: Nueva funcionalidad
+
+#### 📋 Descripción
+
+Implementación de un sistema de cálculo automático de peso total en presupuestos. El sistema calcula el peso basándose en los elementos físicos de inventario, diferenciando entre artículos normales (peso promedio) y KITs (suma de componentes).
+
+Este sistema permite al cliente conocer el **peso total estimado** de todos los equipos incluidos en un presupuesto, facilitando la logística de transporte y planificación de carga de vehículos.
+
+#### 🎯 Requerimientos
+
+**Necesidad del cliente:**
+- Conocer el peso total de equipos en cada presupuesto
+- Facilitar planificación logística y carga de furgonetas
+- Estimación anticipada para transporte
+
+**Restricción técnica:**
+- Los presupuestos están compuestos de **artículos**, no de elementos
+- Los artículos se componen de **elementos** (inventario físico)
+- Los artículos pueden ser:
+  - **Normales**: compuestos por múltiples elementos (ej: varios micrófonos)
+  - **KITs**: compuestos por otros artículos (ej: iluminación = focos + cables)
+
+#### 🧮 Lógica de Cálculo
+
+##### Caso 1: Artículo Normal (es_kit_articulo = 0)
+
+```
+Artículo: "Micrófono inalámbrico"
+  ├─ Elemento MIC-001: 0.50 kg
+  ├─ Elemento MIC-002: 0.52 kg
+  ├─ Elemento MIC-003: 0.48 kg
+  └─ Elemento MIC-004: 0.51 kg
+
+📊 Peso artículo = MEDIA ARITMÉTICA de elementos
+   (0.50 + 0.52 + 0.48 + 0.51) / 4 = 0.5025 kg
+
+💼 Presupuesto: 10 unidades
+   10 × 0.5025 kg = 5.025 kg
+```
+
+**Razón:** No sabemos qué elementos específicos se asignarán, usamos peso promedio.
+
+##### Caso 2: Artículo KIT (es_kit_articulo = 1)
+
+```
+KIT: "Iluminación Evento"
+  ├─ 12× Foco LED 100W (peso medio: 2.3 kg)
+  └─ 12× Cable XLR 5m (peso medio: 0.4 kg)
+
+📊 Peso KIT = SUMA de (cantidad × peso_medio_componente)
+   (12 × 2.3) + (12 × 0.4) = 27.6 + 4.8 = 32.4 kg
+
+💼 Presupuesto: 2 unidades de KIT
+   2 × 32.4 kg = 64.8 kg
+```
+
+**Razón:** Los KITs tienen composición fija, siempre llevan los mismos componentes.
+
+#### 🗄️ Arquitectura de la Solución
+
+##### Decisión de Diseño: 100% Vistas SQL
+
+```
+┌──────────────────┐
+│ elemento         │ ← ÚNICA tabla modificada
+│ peso_elemento    │    (nuevo campo DECIMAL(10,3))
+└────────┬─────────┘
+         │
+         ▼
+┌────────────────────────────────────┐
+│ vista_articulo_peso_medio          │ ← Calcula AVG para artículos
+└────────┬───────────────────────────┘
+         │
+         ├─────────────────────────────┐
+         │                             │
+         ▼                             ▼
+┌────────────────────────┐   ┌────────────────────────┐
+│ vista_kit_peso_total   │   │ vista_articulo_peso    │
+│ (suma componentes)     │   │ (unifica ambos tipos)  │
+└────────┬───────────────┘   └────────┬───────────────┘
+         │                             │
+         └─────────────┬───────────────┘
+                       ▼
+         ┌─────────────────────────────┐
+         │ vista_linea_peso            │ ← Multiplica cantidad × peso
+         └─────────────┬───────────────┘
+                       │
+                       ▼
+         ┌─────────────────────────────┐
+         │ vista_presupuesto_peso      │ ← Suma todas las líneas
+         └─────────────────────────────┘
+```
+
+**Ventajas de usar solo vistas:**
+- ✅ Siempre datos actualizados (tiempo real)
+- ✅ No hay desincronización (no hay triggers)
+- ✅ Fácil de mantener y extender
+- ✅ Sin overhead de recálculo
+- ✅ Auditable y transparente
+
+#### 📂 Cambios Implementados
+
+##### 20.1 Base de Datos ✅
+
+**Archivo**: `BD/migrations/20260215_add_peso_sistema.sql`
+
+**Cambio en tabla `elemento`:**
+```sql
+ALTER TABLE elemento 
+ADD COLUMN peso_elemento DECIMAL(10,3) DEFAULT NULL 
+    COMMENT 'Peso en kilogramos (NULL si no aplica)',
+ADD INDEX idx_peso_elemento (peso_elemento),
+ADD INDEX idx_articulo_peso (id_articulo_elemento, activo_elemento, peso_elemento);
+```
+
+**Vistas SQL creadas:**
+
+1. **`vista_articulo_peso_medio`**: Calcula peso medio de artículos normales
+   - Método: `AVG(peso_elemento)` de elementos activos
+   - Incluye: contador elementos, min/max peso
+   
+2. **`vista_kit_peso_total`**: Calcula peso total de KITs
+   - Método: `SUM(cantidad_kit × peso_medio_componente)`
+   - Incluye: contador componentes con peso
+
+3. **`vista_articulo_peso`**: Vista unificada para cualquier artículo
+   - Retorna peso según tipo (normal/KIT)
+   - Campos: `peso_articulo_kg`, `metodo_calculo`, `tiene_datos_peso`
+
+4. **`vista_linea_peso`**: Peso por línea de presupuesto
+   - Cálculo: `cantidad_linea × peso_articulo`
+   - Incluye todos los datos de la línea
+
+5. **`vista_presupuesto_peso`**: Peso total del presupuesto
+   - Cálculo: `SUM(peso_total_linea)`
+   - Métricas: peso total, desglose por tipo, % completitud
+
+**Índices de optimización:**
+```sql
+-- Optimizar agregaciones
+idx_articulo_peso (id_articulo_elemento, activo_elemento, peso_elemento)
+
+-- Optimizar joins de presupuesto
+idx_version_articulo (id_version_presupuesto, id_articulo, activo_linea_ppto)
+
+-- Optimizar joins de kit
+idx_maestro_activo (id_articulo_maestro, activo_kit)
+```
+
+##### 20.2 Modelo `Elemento.php` 🔄
+
+**Métodos añadidos:**
+
+```php
+// Actualizar peso de elemento
+public function update_peso_elemento($id_elemento, $peso_kg);
+
+// Obtener peso promedio de artículo
+public function get_peso_articulo($id_articulo);
+```
+
+##### 20.3 Modelo `ImpresionPresupuesto.php` 🔄
+
+**Métodos añadidos:**
+
+```php
+// Obtener peso total del presupuesto
+public function get_peso_total_presupuesto($id_version_presupuesto);
+
+// Obtener líneas con información de peso
+public function get_lineas_con_peso($id_version_presupuesto);
+```
+
+##### 20.4 Interfaz - Pantalla de Elementos 🔄
+
+**Archivo**: `view/MntElementos/elementos.php`
+
+- ✅ Campo de entrada numérico para peso (DECIMAL 10,3)
+- ✅ Placeholder: "Ej: 12.500"
+- ✅ Unidad: "kg" (sufijo visual)
+- ✅ Tooltip explicativo
+- ✅ Opcional (puede ser NULL)
+
+**DataTable:**
+- ✅ Nueva columna "Peso (kg)"
+- ✅ Formato: Badge azul si tiene valor, guión si NULL
+- ✅ Formato numérico: 3 decimales
+
+##### 20.5 PDF del Presupuesto 🔄
+
+**Archivo**: `controller/impresionpresupuesto_m2_pdf_es.php`
+
+**Ubicación:** Después de la sección de TOTALES, antes de observaciones
+
+```
+┌──────────────────────────────────────────┐
+│ Subtotal:            1.234,56 €          │
+│ Base Imponible:      1.234,56 €          │
+│ IVA (21%):             259,26 €          │
+├──────────────────────────────────────────┤
+│ TOTAL:               1.493,82 €          │
+└──────────────────────────────────────────┘
+
+┌──────────────────────────────────────────┐
+│ PESO TOTAL ESTIMADO:        385,50 KG    │ ← NUEVO ⭐
+└──────────────────────────────────────────┘
+
+[... Observaciones ...]
+```
+
+**Formato visual:**
+- Fondo gris claro (#F5F5F5)
+- Borde gris (#B4B4B4)
+- Texto negrita 11pt
+- Formato español: `385,50 KG`
+
+**Nota de completitud (opcional):**
+Si hay líneas sin peso definido, muestra:
+```
+* Calculado sobre 8 de 10 líneas (80.0% completitud)
+```
+
+#### 🧪 Casos de Prueba
+
+- [ ] **Elemento sin peso**: NULL mostrado correctamente
+- [ ] **Elemento con peso**: Guardar/editar 12.500 kg
+- [ ] **Artículo normal**: Calcular peso medio de 4 elementos
+- [ ] **KIT con componentes**: Sumar peso de componentes × cantidad
+- [ ] **Línea con cantidad > 1**: Multiplicar correctamente
+- [ ] **Presupuesto completo**: Suma total correcta
+- [ ] **Presupuesto parcial**: Mostrar % completitud
+- [ ] **PDF rendering**: Bloque de peso visible y bien formateado
+- [ ] **Performance**: Consultas rápidas con índices
+
+#### 📊 Consultas Útiles de Análisis
+
+```sql
+-- Ver estado de pesos en artículos
+SELECT 
+    a.codigo_articulo,
+    a.nombre_articulo,
+    CASE WHEN a.es_kit_articulo = 1 THEN 'KIT' ELSE 'ARTÍCULO' END AS tipo,
+    vap.peso_articulo_kg,
+    vap.metodo_calculo,
+    vap.tiene_datos_peso,
+    CONCAT(vap.items_con_peso, '/', vap.total_items) AS elementos_completos
+FROM vista_articulo_peso vap
+JOIN articulo a ON vap.id_articulo = a.id_articulo
+ORDER BY vap.tiene_datos_peso DESC, a.es_kit_articulo, a.nombre_articulo;
+
+-- Análisis de presupuesto específico
+SELECT 
+    p.numero_presupuesto,
+    vpp.peso_total_kg,
+    vpp.lineas_con_peso,
+    vpp.lineas_sin_peso,
+    vpp.porcentaje_completitud
+FROM vista_presupuesto_peso vpp
+JOIN presupuesto_version pv ON vpp.id_version_presupuesto = pv.id_version_presupuesto
+JOIN presupuesto p ON vpp.id_presupuesto = p.id_presupuesto
+WHERE p.numero_presupuesto = '2026-001';
+```
+
+#### 💡 Mejoras Futuras (Opcionales)
+
+1. **Volumen y dimensiones**:
+   - Campos: `volumen_m3`, `largo_cm`, `ancho_cm`, `alto_cm`
+   - Útil para planificación de espacio en furgonetas
+
+2. **Alertas de capacidad**:
+   - Comparar peso total vs capacidad de furgoneta
+   - Warning visual si excede límite
+
+3. **Peso por ubicación**:
+   - Agrupar peso por ubicación de montaje
+   - Facilitar múltiples viajes
+
+4. **Peso editable en línea**:
+   - Campo `peso_manual_linea` en `linea_presupuesto`
+   - Override manual si cliente necesita ajuste específico
+
+5. **Histórico de cambios**:
+   - Auditar cambios en `peso_elemento`
+   - Tabla `peso_elemento_historial`
+
+6. **Exportación a logística**:
+   - Integración con sistema de rutas
+   - API para planificador de cargas
+
+#### ⚠️ Consideraciones Importantes
+
+**Datos opcionales:**
+- El campo `peso_elemento` es NULL por defecto
+- Artículos sin peso: mostrarán 0.00 kg
+- PDF solo muestra bloque si `peso_total_kg > 0`
+
+**Tipo de cálculo:**
+- Vista `vista_articulo_peso` incluye campo `metodo_calculo`:
+  - `'MEDIA_ELEMENTOS'` para artículos normales
+  - `'SUMA_COMPONENTES'` para KITs
+
+**Performance:**
+- Índices compuestos para optimizar agregaciones
+- Vistas materializadas NO necesarias con índices correctos
+- Si performance es problema: considerar cacheo a nivel aplicación
+
+**Mantenimiento:**
+- NO hay triggers: sin mantenimiento adicional
+- Cambios en peso de elemento: reflejados inmediatamente
+- Nueva vista SQL: fácil de añadir/modificar
+
+#### 📝 Notas de Implementación
+
+**Validaciones en interfaz:**
+- Peso >= 0 (no negativos)
+- Máximo 99,999.999 kg
+- 3 decimales de precisión
+- Campo opcional (puede quedarse vacío)
+
+**Formato de salida:**
+- España: punto millar, coma decimal (1.234,567 kg)
+- Base datos: punto decimal estándar (1234.567)
+
+**NULL vs 0:**
+- `NULL`: peso desconocido o no aplica
+- `0.000`: peso conocido pero es cero (ej: artículo virtual)
+
+#### 📂 Archivos Afectados
+
+| Archivo | Tipo | Descripción |
+|---------|------|-------------|
+| `BD/migrations/20260215_add_peso_sistema.sql` | Nuevo | Migración completa con vistas |
+| `models/Elemento.php` | Modificado | Métodos de peso |
+| `models/ImpresionPresupuesto.php` | Modificado | Métodos de consulta peso |
+| `controller/elemento.php` | Modificado | Operaciones CRUD con peso |
+| `view/MntElementos/formularioElemento.php` | Modificado | Campo peso en formulario |
+| `view/MntElementos/formularioElemento.js` | Modificado | Carga de peso al editar |
+| `controller/impresionpresupuesto_m2_pdf_es.php` | Modificado | Renderizado bloque peso |
+| `ejecutar_migracion_peso.php` | Nuevo | Script PHP para ejecutar migración |
+
+---
+
+**Última actualización**: 15 de febrero de 2026  
+**Estado**: ✅ COMPLETADA E IMPLEMENTADA  
+**Rama**: km  
+**Pendiente**: Ejecutar migración SQL en servidor  
+**Archivo**: `docs/presupuestos_20260211.md`
+
