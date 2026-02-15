@@ -1614,32 +1614,39 @@ switch ($_GET["op"]) {
                     $y_firma = $pdf->GetY();
                     
                     try {
-                        // Usar Image con data URI
+                        // TCPDF requiere decodificar el base64 y usar prefijo @
+                        // Extraer solo el base64 sin el prefijo data:image/png;base64,
+                        $imagen_base64 = preg_replace('/^data:image\/(png|jpg|jpeg);base64,/', '', $firma_comercial);
+                        $imagen_decodificada = base64_decode($imagen_base64);
+                        
+                        @debug_firma_log("Base64 decodificado: " . strlen($imagen_decodificada) . " bytes");
+                        
+                        // Usar Image con prefijo @ para imágenes en memoria
                         $pdf->Image(
-                            $firma_comercial,        // Data URI con base64
-                            $x_firma,                 // X position
-                            $y_firma,                 // Y position
-                            60,                       // Ancho máximo 60mm
-                            14,                       // Alto máximo 14mm
-                            '',                       // Tipo (detecta automáticamente)
-                            '',                       // Link
-                            '',                       // Align
-                            false,                    // No resize
-                            300,                      // DPI
-                            '',                       // Palign
-                            false,                    // Ismask
-                            false,                    // Imgmask
-                            0,                        // Border
-                            false,                    // Fitbox
-                            false,                    // Hidden
-                            true                      // Fitonpage
+                            '@' . $imagen_decodificada, // @ indica imagen en memoria
+                            $x_firma,                    // X position
+                            $y_firma,                    // Y position
+                            60,                          // Ancho máximo 60mm
+                            14,                          // Alto máximo 14mm (ajustado proporcionalmente)
+                            'PNG',                       // Tipo específico
+                            '',                          // Link
+                            '',                          // Align
+                            false,                       // No resize
+                            300,                         // DPI
+                            '',                          // Palign
+                            false,                       // Ismask
+                            false,                       // Imgmask
+                            0,                           // Border
+                            false,                       // Fitbox
+                            false,                       // Hidden
+                            true                         // Fitonpage
                         );
                         
                         // Ajustar posición Y después de la imagen
                         $pdf->SetY($y_firma + 15);
                         
                         @debug_firma_log("✓ Firma renderizada exitosamente en PDF", 'SUCCESS');
-                        error_log("Firma renderizada exitosamente en PDF");
+                        error_log("Firma renderizada exitosamente en PDF - Imagen decodificada correctamente");
                         
                     } catch (Exception $e) {
                         // Si hay error al renderizar la imagen, dejar espacio vacío
