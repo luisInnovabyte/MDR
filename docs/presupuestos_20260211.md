@@ -1551,6 +1551,7 @@ WHERE p.numero_presupuesto = '2026-001';
 **Última actualización**: 15 de febrero de 2026  
 **Estado**: ✅ COMPLETADA E IMPLEMENTADA  
 **Rama**: km  
-**Pendiente**: Ejecutar migración SQL en servidor  
+**Commits**: ba01d1e - feat(seccion20): Implementar sistema de peso en presupuestos  
+**Pendiente**: Ejecutar migración SQL en servidor (`php ejecutar_migracion_peso.php`)  
 **Archivo**: `docs/presupuestos_20260211.md`
 
