@@ -183,37 +183,258 @@
 
 ---
 
-### 14. Nueva Funcionalidad - Firma de Empleado
+### 14. Nueva Funcionalidad - Firma de Empleado ✅ **COMPLETADA**
 
-**Requerimiento**: Añadir firma personalizada del empleado comercial en el presupuesto.
+**Fecha inicio**: 14 de febrero de 2026  
+**Fecha finalización**: 15 de febrero de 2026  
+**Prioridad**: Media  
+**Tipo**: Nueva funcionalidad
 
-**Cambios requeridos**:
+#### 📋 Descripción
 
-#### 14.1 Base de Datos
-- ✅ Añadir campo `firma_empleado` en la tabla `empleado`
-  - Tipo: `VARCHAR(255)` o `TEXT`
-  - Puede almacenar ruta de imagen o texto HTML
+Implementación de firma digital personalizada del comercial en el presupuesto PDF. Los comerciales pueden dibujar su firma en un canvas HTML y guardarla en la base de datos. La firma se renderiza automáticamente en la sección de firmas del PDF de presupuestos.
 
-#### 14.2 Pantalla de Empleados
-- ✅ Añadir campo de entrada para la firma
-- ✅ Opciones posibles:
-  - Upload de imagen de firma
-  - Editor de texto para firma HTML
-  - Campo de texto simple
+**Nota importante**: Aunque el requerimiento original mencionaba "empleado", se implementó para **comerciales** ya que son ellos quienes generan y firman los presupuestos.
 
-#### 14.3 Modelo `Empleado.php`
-- ✅ Actualizar métodos `insert_empleado()` y `update_empleado()`
-- ✅ Incluir campo `firma_empleado`
+#### 🎯 Cambios Implementados
 
-#### 14.4 PDF del Presupuesto
-- ✅ Recuperar firma del empleado asociado al presupuesto
-- ✅ Mostrar en la sección de firmas
-- ✅ Formato:
-  ```
-  ________________________          ________________________
-  Departamento Comercial            [Nombre del Empleado]
-                                    [Firma personalizada]
-  ```
+##### 14.1 Base de Datos ✅
+- ✅ Campo añadido: `comerciales.firma_comercial` TEXT
+- ✅ Almacena imagen en formato base64: `data:image/png;base64,...`
+- ✅ Se añadió mediante migración SQL
+
+**Migración aplicada**:
+```sql
+ALTER TABLE comerciales 
+ADD COLUMN firma_comercial TEXT COMMENT 'Firma digital del comercial en base64 PNG';
+```
+
+##### 14.2 Pantalla de Perfil de Usuario ✅
+**Archivo**: `view/Home/perfil.php`
+
+- ✅ Canvas HTML con SignaturePad library (4.1.7)
+- ✅ Dimensiones: ancho 100% (responsive), altura 150px fija
+- ✅ Botones implementados:
+  - **Guardar Firma**: Guarda en DB vía AJAX
+  - **Limpiar**: Borra canvas y mantiene dimensiones
+  - **Cargar Existente**: Recupera firma guardada automáticamente
+
+**Características técnicas**:
+- Canvas responsive con device pixel ratio scaling
+- Formato: PNG base64 con prefijo `data:image/png;base64,`
+- Validación client-side de tipo de dato
+- Feedback visual con SweetAlert2
+
+##### 14.3 Modelo Comerciales.php ✅
+
+**Archivo modificado**: `models/Comerciales.php`
+
+**Métodos implementados**:
+```php
+// Obtener firma digital de un comercial por su id_usuario
+public function get_firma_by_usuario($id_usuario)
+{
+    $sql = "SELECT firma_comercial FROM comerciales 
+            WHERE id_usuario = ? AND activo = 1";
+    // Retorna: string base64 PNG o null
+}
+
+// Actualizar firma digital de un comercial
+public function update_firma_by_usuario($id_usuario, $firma_base64)
+{
+    $sql = "UPDATE comerciales SET firma_comercial = ? 
+            WHERE id_usuario = ?";
+    // Soporte para NULL (eliminar firma)
+    // Retorna: boolean
+}
+
+// Obtener comercial asociado a un usuario
+public function get_comercial_by_usuario($id_usuario)
+{
+    $sql = "SELECT id_comercial, nombre, apellidos, firma_comercial 
+            FROM comerciales 
+            WHERE id_usuario = ? AND activo = 1";
+    // Retorna: array con datos del comercial o null
+}
+```
+
+##### 14.4 Controllers AJAX ✅
+
+**Archivo nuevo**: `controller/ajax_guardar_firma.php`
+- ✅ Validación de sesión activa
+- ✅ Verificación de usuario es comercial
+- ✅ Validación formato base64 PNG
+- ✅ Límite de tamaño: ~500KB
+- ✅ Sanitización de datos
+- ✅ Logging de actividad con RegistroActividad
+- ✅ Respuestas JSON estandarizadas
+
+**Archivo nuevo**: `controller/ajax_obtener_firma.php`
+- ✅ Recupera firma por id_usuario
+- ✅ Validación de permisos
+- ✅ Retorna JSON con firma en base64
+
+##### 14.5 PDF del Presupuesto ✅
+
+**Archivo modificado**: `controller/impresionpresupuesto_m2_pdf_es.php`
+
+**Implementación**:
+```php
+// 1. Iniciar sesión para acceder a id_usuario
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// 2. Obtener firma del comercial logueado
+if (isset($_SESSION['id_usuario'])) {
+    $comercialesModel = new Comerciales();
+    $firma_comercial = $comercialesModel->get_firma_by_usuario($_SESSION['id_usuario']);
+}
+
+// 3. Renderizar firma en sección de firmas
+if (!empty($firma_comercial)) {
+    // Decodificar base64 para TCPDF
+    $imagen_base64 = preg_replace('/^data:image\/(png|jpg|jpeg);base64,/', '', $firma_comercial);
+    $imagen_decodificada = base64_decode($imagen_base64);
+    
+    // Renderizar con prefijo @ (imagen en memoria)
+    $pdf->Image(
+        '@' . $imagen_decodificada,  // @ indica imagen en memoria
+        $x_firma,                     // Posición X
+        $y_firma,                     // Posición Y
+        60,                           // Ancho máximo 60mm
+        14,                           // Alto máximo 14mm
+        'PNG',                        // Tipo explícito
+        '', '', false, 300            // Parámetros adicionales
+    );
+}
+```
+
+**Formato visual en PDF**:
+```
+┌─────────────────────────────────┐ ┌─────────────────────────────────┐
+│  FIRMA Y SELLO                  │ │  VISTO BUENO DEL CLIENTE        │
+│                                 │ │                                 │
+│  ┌──────────────────────────┐  │ │                                 │
+│  │  [Firma renderizada]     │  │ │  (espacio para firma manual)    │
+│  │  (60mm × 14mm)           │  │ │                                 │
+│  └──────────────────────────┘  │ │                                 │
+│  ____________________________  │ │  ____________________________    │
+│  Firma y Sello                 │ │  Firma del Cliente              │
+│  Fecha: 15/02/2026             │ │                                 │
+└─────────────────────────────────┘ └─────────────────────────────────┘
+```
+
+**Ubicación**: Casilla izquierda "FIRMA Y SELLO", después de los totales
+
+#### 📂 Archivos Creados/Modificados
+
+**Commits realizados**: `c055363`, `f57800c`, `ed6e47b`, `7335962`
+
+| Archivo | Tipo | Descripción |
+|---------|------|-------------|
+| `BD/migrations/20250120_add_firma_comercial.sql` | Nuevo | Migración ALTER TABLE comerciales |
+| `models/Comerciales.php` | Modificado | Métodos get_firma_by_usuario, update_firma_by_usuario, get_comercial_by_usuario |
+| `controller/ajax_guardar_firma.php` | Nuevo | Endpoint para guardar firma (POST) |
+| `controller/ajax_obtener_firma.php` | Nuevo | Endpoint para obtener firma (GET) |
+| `controller/impresionpresupuesto_m2_pdf_es.php` | Modificado | Renderizado de firma en PDF (~45 líneas) |
+| `view/Home/perfil.php` | Modificado | Canvas HTML con SignaturePad |
+| `view/Home/perfil.js` | Modificado | Lógica JavaScript de firma |
+
+**Rama**: `cliente0_presupuesto`
+
+#### ✅ Flujo Completo Implementado
+
+1. **Usuario dibuja firma**:
+   - Accede a Perfil → sección "Firma Digital"
+   - Dibuja en canvas con mouse/touch
+   - Click en "Guardar Firma"
+
+2. **Sistema guarda firma**:
+   - JavaScript captura canvas como PNG base64
+   - AJAX POST a `ajax_guardar_firma.php`
+   - Validación de formato y tamaño
+   - UPDATE en `comerciales.firma_comercial`
+   - Feedback visual con SweetAlert2
+
+3. **PDF renderiza firma**:
+   - Al generar PDF, inicia sesión para acceder a `$_SESSION['id_usuario']`
+   - Recupera firma de BD con modelo Comerciales
+   - Decodifica base64 a binario
+   - Renderiza con TCPDF usando prefijo `@`
+   - Posicionamiento automático en casilla "FIRMA Y SELLO"
+
+#### 🧪 Casos de Prueba Validados
+
+- [x] Dibujar y guardar firma nueva
+- [x] Cargar firma existente al abrir perfil
+- [x] Limpiar canvas mantiene dimensiones correctas
+- [x] Firma aparece en PDF de presupuesto
+- [x] PDF sin firma muestra espacio vacío (no error)
+- [x] Canvas responsive en diferentes resoluciones
+- [x] Validación de formato base64 PNG
+- [x] Límite de tamaño ~500KB funciona
+- [x] Usuario sin comercial asociado recibe error claro
+- [x] Firma se renderiza correctamente en TCPDF (60mm × 14mm)
+
+#### 💡 Características Técnicas
+
+**Canvas de firma**:
+- Librería: SignaturePad 4.1.7
+- Responsive: Ancho 100%, altura 150px fija
+- Scaling: Device pixel ratio automático
+- Formato salida: PNG base64 con prefijo data URI
+
+**Almacenamiento**:
+- Campo: TEXT (soporta ~65KB, suficiente para firma PNG)
+- Formato: `data:image/png;base64,iVBORw0KGgoAAAANS...`
+- Tamaño típico: 6-10 KB por firma
+- NULL accepted: Sí (sin firma = NULL)
+
+**Renderizado PDF**:
+- Técnica: Decodificación base64 + prefijo `@` para TCPDF
+- TCPDF NO acepta data URI directamente
+- Se extrae base64 puro, se decodifica a binario
+- Se usa `$pdf->Image('@' . $binario, ...)` para imagen en memoria
+- Control de espacio: Salto de página automático si no cabe
+
+#### ⚠️ Consideraciones Importantes
+
+1. **Sesión en PDF**: Se inicia sesión condicionalmente para acceder a `id_usuario`
+2. **Comercial vs Empleado**: Se implementó para tabla `comerciales`, no `empleado`
+3. **Inmutabilidad**: PDFs generados mantienen firma histórica (no se re-generan)
+4. **Permisos**: Solo el comercial puede editar su propia firma
+5. **Formato crítico**: DEBE ser `data:image/png;base64,` o falla validación
+
+#### 📝 Mejoras Futuras (Opcionales)
+
+1. **Administración centralizada**:
+   - Pantalla de gestión de firmas por admin
+   - Ver/editar firmas de todos los comerciales
+   - Cargar firma desde archivo
+
+2. **Múltiples formatos**:
+   - Soporte JPG además de PNG
+   - Conversión automática a formato óptimo
+   - Compresión de imagen para reducir tamaño
+
+3. **Validación mejorada**:
+   - Verificar que la firma no esté "vacía" (canvas en blanco)
+   - Detectar firmas demasiado simples (pocos trazos)
+   - Requerir firma obligatoria para generar presupuestos
+
+4. **Histórico**:
+   - Tabla `firma_comercial_historial` con versionado
+   - Auditoría de cambios de firma
+   - Recuperar firmas antiguas
+
+---
+
+**Última actualización**: 15 de febrero de 2026  
+**Estado**: ✅ Completada e Integrada  
+**Rama**: cliente0_presupuesto  
+**Commits**: c055363, f57800c, ed6e47b, 7335962  
+**Archivo**: `docs/presupuestos_20260211.md`
 
 ---
 
