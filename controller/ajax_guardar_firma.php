@@ -38,27 +38,10 @@ require_once '../models/Comerciales.php';
 $registro = new RegistroActividad();
 $comercialesModel = new Comerciales();
 
-// Sistema de debug - Log en archivo accesible
-function debug_log($mensaje, $tipo = 'INFO') {
-    $log_dir = __DIR__ . '/../public/logs/';
-    if (!file_exists($log_dir)) {
-        mkdir($log_dir, 0777, true);
-    }
-    $log_file = $log_dir . 'firma_debug_' . date('Y-m-d') . '.log';
-    $timestamp = date('Y-m-d H:i:s');
-    $log_msg = "[$timestamp] [$tipo] $mensaje" . PHP_EOL;
-    file_put_contents($log_file, $log_msg, FILE_APPEND);
-}
-
-debug_log("=== INICIO ajax_guardar_firma.php ===");
-debug_log("Usuario en sesión: " . ($_SESSION['email'] ?? 'NO DISPONIBLE'));
-debug_log("ID Usuario: " . ($_SESSION['id_usuario'] ?? 'NO DISPONIBLE'));
-
 try {
     // Verificar si viene un id_comercial específico (desde admin)
     // o usar el id_usuario de la sesión (desde perfil)
     $id_comercial_param = $_POST['id_comercial'] ?? null;
-    debug_log("ID Comercial recibido: " . ($id_comercial_param ?? 'NULL'));
     
     if (!empty($id_comercial_param)) {
         // Modo admin: buscar comercial por id_comercial
@@ -88,12 +71,9 @@ try {
         }
         
         // Verificar que el usuario tiene un comercial asociado
-        debug_log("Buscando comercial para usuario ID: $id_usuario");
         $comercial = $comercialesModel->get_comercial_by_usuario($id_usuario);
-        debug_log("Comercial encontrado: " . ($comercial ? 'SÍ' : 'NO'));
         
         if (!$comercial) {
-            debug_log("ERROR: Usuario no tiene comercial asociado", 'ERROR');
             echo json_encode([
                 'success' => false,
                 'message' => 'El usuario no tiene un perfil de comercial asociado'
@@ -175,10 +155,7 @@ try {
     }
 
     // Actualizar la firma en la base de datos
-    debug_log("Actualizando firma para usuario: $id_usuario");
-    debug_log("Tamaño firma base64: " . strlen($firma_base64) . " bytes");
     $resultado = $comercialesModel->update_firma_by_usuario($id_usuario, $firma_base64);
-    debug_log("Resultado actualización: " . ($resultado ? 'EXITOSO' : 'FALLIDO'), $resultado ? 'INFO' : 'ERROR');
     
     if ($resultado) {
         // Log de éxito

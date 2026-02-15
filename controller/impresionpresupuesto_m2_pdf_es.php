@@ -22,23 +22,6 @@ require_once __DIR__ . "/../models/Kit.php";
 require_once __DIR__ . "/../models/Comerciales.php";
 require_once __DIR__ . "/../vendor/tcpdf/tcpdf.php";
 
-// Sistema de debug para firma
-function debug_firma_log($mensaje, $tipo = 'INFO') {
-    try {
-        $log_dir = __DIR__ . '/../public/logs/';
-        if (!file_exists($log_dir)) {
-            @mkdir($log_dir, 0777, true);
-        }
-        $log_file = $log_dir . 'firma_debug_' . date('Y-m-d') . '.log';
-        $timestamp = date('Y-m-d H:i:s');
-        $log_msg = "[$timestamp] [PDF] [$tipo] $mensaje" . PHP_EOL;
-        @file_put_contents($log_file, $log_msg, FILE_APPEND);
-    } catch (Exception $e) {
-        // Si falla el logging, no detener la ejecución
-        error_log("Error en debug_firma_log: " . $e->getMessage());
-    }
-}
-
 // =====================================================
 // CLASE PERSONALIZADA TCPDF CON CABECERA/PIE
 // =====================================================
@@ -1571,41 +1554,21 @@ switch ($_GET["op"]) {
             
             // Obtener firma digital si el usuario está en sesión
             $firma_comercial = null;
-            @debug_firma_log("=== SECCIÓN DE FIRMA EN PDF ===");
-            @debug_firma_log("Sesión activa: " . (isset($_SESSION['id_usuario']) ? 'SÍ' : 'NO'));
             
             if (isset($_SESSION['id_usuario']) && !empty($_SESSION['id_usuario'])) {
-                @debug_firma_log("ID Usuario en sesión: " . $_SESSION['id_usuario']);
-                @debug_firma_log("Email en sesión: " . ($_SESSION['email'] ?? 'NO DISPONIBLE'));
-                
                 try {
                     $comercialesModel = new Comerciales();
                     $firma_comercial = $comercialesModel->get_firma_by_usuario($_SESSION['id_usuario']);
-                    
-                    @debug_firma_log("Firma obtenida: " . (!empty($firma_comercial) ? "SÍ (" . strlen($firma_comercial) . " bytes)" : "NO"));
-                    
-                    // Log de debug adicional
-                    error_log("Obteniendo firma para usuario ID: " . $_SESSION['id_usuario']);
-                    error_log("Firma obtenida: " . (!empty($firma_comercial) ? "SÍ (" . strlen($firma_comercial) . " bytes)" : "NO"));
-                    
                 } catch (Exception $e) {
                     // Log del error pero continuar sin firma
-                    @debug_firma_log("ERROR al obtener firma: " . $e->getMessage(), 'ERROR');
                     error_log("Error al obtener firma del comercial: " . $e->getMessage());
                 }
-            } else {
-                @debug_firma_log("No hay sesión activa o id_usuario no disponible", 'WARNING');
-                error_log("No hay sesión activa o id_usuario no disponible para firma");
             }
             
             // Si existe firma digital, renderizarla
             if (!empty($firma_comercial)) {
-                @debug_firma_log("Procesando firma para renderizado");
-                @debug_firma_log("Primeros 50 caracteres: " . substr($firma_comercial, 0, 50));
-                
                 // Verificar que sea un base64 válido
                 if (preg_match('/^data:image\/(png|jpg|jpeg);base64,/', $firma_comercial)) {
-                    @debug_firma_log("Formato base64 válido detectado");
                     $pdf->Ln(2);
                     
                     // Renderizar imagen de firma centrada
@@ -1618,8 +1581,6 @@ switch ($_GET["op"]) {
                         // Extraer solo el base64 sin el prefijo data:image/png;base64,
                         $imagen_base64 = preg_replace('/^data:image\/(png|jpg|jpeg);base64,/', '', $firma_comercial);
                         $imagen_decodificada = base64_decode($imagen_base64);
-                        
-                        @debug_firma_log("Base64 decodificado: " . strlen($imagen_decodificada) . " bytes");
                         
                         // Usar Image con prefijo @ para imágenes en memoria
                         $pdf->Image(
@@ -1645,25 +1606,17 @@ switch ($_GET["op"]) {
                         // Ajustar posición Y después de la imagen
                         $pdf->SetY($y_firma + 15);
                         
-                        @debug_firma_log("✓ Firma renderizada exitosamente en PDF", 'SUCCESS');
-                        error_log("Firma renderizada exitosamente en PDF - Imagen decodificada correctamente");
-                        
                     } catch (Exception $e) {
                         // Si hay error al renderizar la imagen, dejar espacio vacío
-                        @debug_firma_log("ERROR al renderizar imagen: " . $e->getMessage(), 'ERROR');
                         error_log("Error al renderizar firma en PDF: " . $e->getMessage());
                         $pdf->Ln(18);
                     }
                 } else {
                     // Formato de firma inválido, dejar espacio vacío
-                    @debug_firma_log("ERROR: Formato inválido - no es data:image base64", 'ERROR');
-                    error_log("Formato de firma inválido - no es data:image base64");
                     $pdf->Ln(18);
                 }
             } else {
                 // No hay firma digital, dejar espacio vacío para firma manuscrita
-                @debug_firma_log("No hay firma digital disponible", 'WARNING');
-                error_log("No se encontró firma digital para insertar en PDF");
                 $pdf->Ln(18);
             }
             

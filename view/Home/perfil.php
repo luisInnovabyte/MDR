@@ -118,12 +118,6 @@ if (!isset($_SESSION['sesion_iniciada']) || !$_SESSION['sesion_iniciada']) {
         <a href="logout.php" class="btn btn-danger btn-block">Cerrar Sesión</a>
       </div>
 
-      <div class="mg-t-15 tx-center">
-        <a href="ver_logs_firma.php" class="btn btn-sm btn-outline-info">
-          <i class="fa fa-bug"></i> Ver Logs de Firma (Debug)
-        </a>
-      </div>
-
       <div class="mg-t-20 tx-center"><a href="../Dashboard/index.php" class="tx-info">Regresar al dashboard</a></div>
 
     </div><!-- login-wrapper -->
