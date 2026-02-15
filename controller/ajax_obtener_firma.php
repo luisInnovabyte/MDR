@@ -8,11 +8,26 @@
 
 session_start();
 
+// Sistema de debug
+function debug_log($mensaje, $tipo = 'INFO') {
+    $log_dir = __DIR__ . '/../public/logs/';
+    if (!file_exists($log_dir)) {
+        mkdir($log_dir, 0777, true);
+    }
+    $log_file = $log_dir . 'firma_debug_' . date('Y-m-d') . '.log';
+    $timestamp = date('Y-m-d H:i:s');
+    $log_msg = "[$timestamp] [$tipo] $mensaje" . PHP_EOL;
+    file_put_contents($log_file, $log_msg, FILE_APPEND);
+}
+
+debug_log("=== INICIO ajax_obtener_firma.php ===");
+
 // Headers para JSON
 header('Content-Type: application/json; charset=utf-8');
 
 // Validar sesión activa
 if (!isset($_SESSION['sesion_iniciada']) || !$_SESSION['sesion_iniciada']) {
+    debug_log("ERROR: Sesión no válida", 'ERROR');
     echo json_encode([
         'success' => false,
         'message' => 'Sesión no válida'
@@ -47,6 +62,7 @@ try {
     } else {
         // Modo usuario: usar sesión actual
         $id_usuario = $_SESSION['id_usuario'] ?? null;
+        debug_log("Modo usuario - ID Usuario: " . ($id_usuario ?? 'NULL'));
         
         if (empty($id_usuario)) {
             echo json_encode([
@@ -57,9 +73,12 @@ try {
         }
         
         // Verificar que el usuario tiene un comercial asociado
+        debug_log("Verificando comercial para usuario ID: $id_usuario");
         $comercial = $comercialesModel->get_comercial_by_usuario($id_usuario);
+        debug_log("Comercial encontrado: " . ($comercial ? 'SÍ' : 'NO'));
         
         if (!$comercial) {
+            debug_log("ERROR: Usuario sin comercial asociado", 'ERROR');
             echo json_encode([
                 'success' => false,
                 'message' => 'El usuario no tiene un perfil de comercial asociado'
@@ -69,7 +88,9 @@ try {
     }
 
     // Obtener la firma por id_usuario
+    debug_log("Obteniendo firma para usuario ID: $id_usuario");
     $firma = $comercialesModel->get_firma_by_usuario($id_usuario);
+    debug_log("Firma obtenida: " . (!empty($firma) ? 'SÍ (' . strlen($firma) . ' bytes)' : 'NO'));
     
     echo json_encode([
         'success' => true,

@@ -155,11 +155,25 @@ class Comerciales
         try {
             $sql = "UPDATE comerciales SET firma_comercial = ? WHERE id_usuario = ?";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(1, $firma_base64, PDO::PARAM_STR);
+            
+            // Si la firma es null, usar PDO::PARAM_NULL
+            if ($firma_base64 === null) {
+                $stmt->bindValue(1, null, PDO::PARAM_NULL);
+            } else {
+                $stmt->bindValue(1, $firma_base64, PDO::PARAM_STR);
+            }
+            
             $stmt->bindValue(2, $id_usuario, PDO::PARAM_INT);
             $stmt->execute();
 
-            return $stmt->rowCount() > 0; // true si se actualizó al menos un registro
+            $rows_affected = $stmt->rowCount();
+            
+            // Log de debug
+            error_log("Comerciales::update_firma_by_usuario - Usuario ID: $id_usuario");
+            error_log("Comerciales::update_firma_by_usuario - Firma: " . ($firma_base64 !== null ? "actualizada" : "eliminada"));
+            error_log("Comerciales::update_firma_by_usuario - Filas afectadas: $rows_affected");
+            
+            return $rows_affected > 0; // true si se actualizó al menos un registro
         } catch (PDOException $e) {
             error_log("Error al actualizar firma del comercial: " . $e->getMessage());
             return false;
@@ -180,6 +194,20 @@ class Comerciales
             $stmt->execute();
 
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Log de debug detallado
+            $this->debug_model_log("get_firma_by_usuario - Usuario ID: $id_usuario");
+            $this->debug_model_log("get_firma_by_usuario - Resultado: " . ($resultado ? "encontrado" : "no encontrado"));
+            if ($resultado && isset($resultado['firma_comercial'])) {
+                $this->debug_model_log("get_firma_by_usuario - Firma presente: " . (!empty($resultado['firma_comercial']) ? "SÍ" : "NO"));
+            }
+            
+            error_log("Comerciales::get_firma_by_usuario - Usuario ID: $id_usuario");
+            error_log("Comerciales::get_firma_by_usuario - Resultado: " . ($resultado ? "encontrado" : "no encontrado"));
+            if ($resultado && isset($resultado['firma_comercial'])) {
+                error_log("Comerciales::get_firma_by_usuario - Firma presente: " . (!empty($resultado['firma_comercial']) ? "SÍ" : "NO"));
+            }
+            
             return $resultado ? $resultado['firma_comercial'] : null;
         } catch (PDOException $e) {
             error_log("Error al obtener firma del comercial: " . $e->getMessage());
