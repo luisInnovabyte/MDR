@@ -195,13 +195,7 @@ class Comerciales
 
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            // Log de debug detallado
-            $this->debug_model_log("get_firma_by_usuario - Usuario ID: $id_usuario");
-            $this->debug_model_log("get_firma_by_usuario - Resultado: " . ($resultado ? "encontrado" : "no encontrado"));
-            if ($resultado && isset($resultado['firma_comercial'])) {
-                $this->debug_model_log("get_firma_by_usuario - Firma presente: " . (!empty($resultado['firma_comercial']) ? "SÍ" : "NO"));
-            }
-            
+            // Log con error_log estándar de PHP
             error_log("Comerciales::get_firma_by_usuario - Usuario ID: $id_usuario");
             error_log("Comerciales::get_firma_by_usuario - Resultado: " . ($resultado ? "encontrado" : "no encontrado"));
             if ($resultado && isset($resultado['firma_comercial'])) {
