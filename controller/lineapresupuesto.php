@@ -174,6 +174,12 @@ switch ($_GET["op"]) {
                     "descuento_linea_ppto" => $row["descuento_linea_ppto"],
                     "porcentaje_iva_linea_ppto" => $row["porcentaje_iva_linea_ppto"],
                 
+                    // Peso (desde vista_linea_peso)
+                    "peso_unitario_kg" => $row["peso_unitario_kg"] ?? null,
+                    "peso_total_linea_kg" => $row["peso_total_linea_kg"] ?? null,
+                    "metodo_calculo_peso" => $row["metodo_calculo_peso"] ?? null,
+                    "linea_tiene_peso" => $row["linea_tiene_peso"] ?? 0,
+                
                     // Coeficiente
                     "aplicar_coeficiente_linea_ppto" => $row["aplicar_coeficiente_linea_ppto"] ?? 0,
                     "jornadas_linea_ppto" => $row["jornadas_linea_ppto"] ?? null,

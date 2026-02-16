@@ -50,10 +50,18 @@ class LineaPresupuesto
     public function get_lineas_version($id_version_presupuesto)
     {
         try {
-            // Usar VISTA para obtener datos con cálculos (incluye activos e inactivos)
-            $sql = "SELECT * FROM v_linea_presupuesto_calculada 
-                    WHERE id_version_presupuesto = ? 
-                    ORDER BY orden_linea_ppto ASC";
+            // Usar VISTA para obtener datos con cálculos + LEFT JOIN con vista_linea_peso para obtener pesos
+            $sql = "SELECT 
+                        vlpc.*,
+                        vlp.peso_articulo_kg AS peso_unitario_kg,
+                        vlp.peso_total_linea_kg,
+                        vlp.metodo_calculo AS metodo_calculo_peso,
+                        vlp.tiene_datos_peso AS linea_tiene_peso
+                    FROM v_linea_presupuesto_calculada vlpc
+                    LEFT JOIN vista_linea_peso vlp 
+                        ON vlpc.id_linea_ppto = vlp.id_linea_ppto
+                    WHERE vlpc.id_version_presupuesto = ? 
+                    ORDER BY vlpc.orden_linea_ppto ASC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute([$id_version_presupuesto]);

@@ -205,6 +205,23 @@ $(document).ready(function () {
                     $('#nombre_articulo').val(data.nombre_articulo);
                     $('#name_articulo').val(data.name_articulo);
                     $('#precio_alquiler_articulo').val(data.precio_alquiler_articulo || '');
+                    
+                    // Mostrar peso medio calculado (solo lectura)
+                    console.log('Peso medio recibido:', data.peso_medio_kg, 'Tipo:', typeof data.peso_medio_kg);
+                    console.log('Es kit:', data.es_kit_articulo, 'Método cálculo:', data.metodo_calculo);
+                    var pesoMedio = parseFloat(data.peso_medio_kg);
+                    if (!isNaN(pesoMedio)) {
+                        var pesoTexto = pesoMedio.toFixed(3) + ' kg';
+                        if (pesoMedio === 0) {
+                            pesoTexto += ' (sin datos)';
+                        }
+                        $('#peso_medio_articulo').val(pesoTexto);
+                        console.log('Peso medio mostrado:', pesoTexto);
+                    } else {
+                        $('#peso_medio_articulo').val('--');
+                        console.log('Sin peso medio (valor:', data.peso_medio_kg, ')');
+                    }
+                    
                     $('#notas_presupuesto_articulo').val(data.notas_presupuesto_articulo || '');
                     $('#notes_budget_articulo').val(data.notes_budget_articulo || '');
                     $('#orden_obs_articulo').val(data.orden_obs_articulo || 200);

@@ -128,10 +128,17 @@
                                     </div>
                                     <small class="form-text text-muted">El estado se establece automáticamente</small>
                                 </div>
-                                <div class="col-12 col-md-3">
+                                <div class="col-12 col-md-2">
                                     <label for="precio_alquiler_articulo" class="form-label">Precio de alquiler (€):</label>
                                     <input type="number" class="form-control" name="precio_alquiler_articulo" id="precio_alquiler_articulo" step="0.01" min="0" placeholder="0.00">
                                     <small class="form-text text-muted">Precio base de alquiler</small>
+                                </div>
+                                <div class="col-12 col-md-2">
+                                    <label for="peso_medio_articulo" class="form-label">
+                                        <i class="bi bi-box-seam me-1"></i>Peso medio (kg):
+                                    </label>
+                                    <input type="text" class="form-control bg-light" id="peso_medio_articulo" readonly placeholder="--" style="cursor: not-allowed;">
+                                    <small class="form-text text-muted">Calculado de elementos</small>
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <label for="id_impuesto" class="form-label">Impuesto aplicable:</label>

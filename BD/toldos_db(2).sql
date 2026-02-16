@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: mysql:3306
--- Tiempo de generación: 06-02-2026 a las 17:38:14
+-- Tiempo de generación: 16-02-2026 a las 07:32:46
 -- Versión del servidor: 9.3.0
 -- Versión de PHP: 8.2.29
 
@@ -219,9 +219,9 @@ CREATE TABLE `articulo` (
 --
 
 INSERT INTO `articulo` (`id_articulo`, `id_familia`, `id_unidad`, `codigo_articulo`, `nombre_articulo`, `name_articulo`, `imagen_articulo`, `precio_alquiler_articulo`, `coeficiente_articulo`, `es_kit_articulo`, `control_total_articulo`, `no_facturar_articulo`, `notas_presupuesto_articulo`, `notes_budget_articulo`, `orden_obs_articulo`, `observaciones_articulo`, `activo_articulo`, `permitir_descuentos_articulo`, `id_impuesto`, `created_at_articulo`, `updated_at_articulo`) VALUES
-(21, 19, 5, 'MIC-INAL-001', 'Micrófono inalámbrico', 'Wireless Microphone', 'articulo_69833f1de4f2b.jpg', 25.00, NULL, 1, 0, 0, 'Incluye petaca transmisora, micrófono de mano y receptor. Requiere 2 pilas AA (no incluidas). Alcance hasta 100 metros en línea directa.', 'Includes bodypack transmitter, handheld microphone and receiver. Requires 2 AA batteries (not included). Range up to 100 meters in direct line.', 200, 'Verificar estado de baterías antes de cada alquiler. Comprobar frecuencias disponibles.', 1, 1, 2, '2025-11-20 20:33:47', '2026-02-04 12:44:14'),
+(21, 19, 5, 'MIC-INAL-001', 'Micrófono inalámbrico', 'Wireless Microphone', 'articulo_69833f1de4f2b.jpg', 25.00, NULL, 1, 0, 0, 'Incluye petaca transmisora, micrófono de mano y receptor. Requiere 2 pilas AA (no incluidas). Alcance hasta 100 metros en línea directa.', 'Includes bodypack transmitter, handheld microphone and receiver. Requires 2 AA batteries (not included). Range up to 100 meters in direct line.', 200, 'Verificar estado de baterías antes de cada alquiler. Comprobar frecuencias disponibles.', 1, 1, 1, '2025-11-20 20:33:47', '2026-02-13 16:33:55'),
 (23, 22, NULL, 'MIX-DIG-X32', 'Consola digital Behringer X32', 'Behringer X32 Digital Console', 'articulos/consola_x32.jpg', 180.00, NULL, 0, 1, 0, 'Consola digital de 32 canales con 16 buses auxiliares, 8 efectos integrados y grabación multipista USB. Incluye flight case y cable de alimentación. Requiere corriente trifásica.', '32-channel digital console with 16 aux buses, 8 integrated effects and USB multitrack recording. Includes flight case and power cable. Requires three-phase power.', 200, 'Verificar configuración de escenas. Resetear a valores de fábrica después de cada uso.', 1, 1, NULL, '2025-11-20 20:33:47', '2026-01-20 17:35:38'),
-(24, 21, 5, 'CABLE-XLR-10M', 'Cable XLR 10 metros', '10m XLR Cable', 'articulos/cable_xlr.jpg', 3.80, 0, 0, 0, 0, 'Cable balanceado XLR macho-hembra de 10 metros. Conductor OFC de baja impedancia.', '10m balanced XLR male-female cable. Low impedance OFC conductor.', 300, 'Verificar conectores y continuidad antes de alquilar.', 1, 0, 4, '2025-11-20 20:33:47', '2026-01-30 11:31:28'),
+(24, 21, 5, 'CABLE-XLR-10M', 'Cable XLR 10 metros', '10m XLR Cable', 'articulos/cable_xlr.jpg', 3.80, 0, 0, 0, 1, 'Cable balanceado XLR macho-hembra de 10 metros. Conductor OFC de baja impedancia.', '10m balanced XLR male-female cable. Low impedance OFC conductor.', 300, 'Verificar conectores y continuidad antes de alquilar.', 1, 0, 1, '2025-11-20 20:33:47', '2026-02-13 16:43:03'),
 (25, 22, 5, 'LED-PANEL-P3', 'Pantalla LED modular P3 interior (por m²)', 'P3 Indoor LED Panel (per sqm)', 'articulo_6924b18b230b6.png', 450.00, 0, 0, 1, 0, 'Pantalla LED modular de pixel pitch 3mm para interior. Resolución 111.111 píxeles/m². Brillo 1200 nits. Incluye estructura de soporte, procesador de video y cableado. Requiere técnico especializado para montaje.', 'P3 indoor modular LED screen. Resolution 111,111 pixels/sqm. Brightness 1200 nits. Includes support structure, video processor and cabling. Requires specialized technician for assembly.', 50, 'Revisar píxeles muertos. Calibrar color antes de cada evento. Requiere montaje 24h antes.', 1, 1, NULL, '2025-11-20 20:33:47', '2025-11-24 19:27:07'),
 (38, 61, NULL, 'LED-001', 'FOCO PAR LED RGB/W BATERIA + WIFI', 'BATTERY LED PAR RGBW WIFI', NULL, 30.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
 (39, 61, NULL, 'LED-002', 'FOCO PAR LED RGB PC90', 'LED PAR RGB PC90', NULL, 19.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
@@ -265,7 +265,7 @@ INSERT INTO `articulo` (`id_articulo`, `id_familia`, `id_unidad`, `codigo_articu
 (86, 70, NULL, 'TRU-006', 'BASE PARA UFRAME', 'BASE FOR UFRAME', NULL, 25.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
 (88, 71, NULL, 'RIG-001', 'MOTOR VICINAY 500 KG', 'VICINAY MOTOR 500KG', NULL, 71.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
 (89, 71, NULL, 'RIG-002', 'RACK CONTROL MOTORES', 'MOTOR CONTROL RACK', NULL, 107.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
-(91, 72, 5, 'TEC-001', 'TÉCNICO AUDIOVISUALES (MAX. 8 HORAS)', 'AV TECHNICIAN 8H', '', 220.00, 0, 0, 0, 0, '', '', 200, '', 1, 0, NULL, '2026-02-05 18:00:34', '2026-02-05 18:42:18'),
+(91, 72, 5, 'TEC-001', 'TÉCNICO AUDIOVISUALES (MAX. 8 HORAS)', 'AV TECHNICIAN 8H', '', 220.00, 0, 0, 0, 0, '', '', 200, '', 1, 0, NULL, '2026-02-05 18:00:34', '2026-02-06 18:52:31'),
 (92, 72, NULL, 'TEC-002', 'TÉCNICO AUDIOVISUALES LED (MAX. 8 HORAS)', 'LED TECHNICIAN 8H', NULL, 290.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
 (93, 72, NULL, 'TEC-003', 'TÉCNICO AUDIOVISUALES P20 (MAX. 8 HORAS)', 'P20 TECHNICIAN 8H', NULL, 315.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
 (94, 72, NULL, 'TEC-004', 'TÉCNICO AUDIOVISUALES OPERADOR CÁMARA (MAX. 8 HORAS)', 'CAMERA OPERATOR 8H', NULL, 220.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
@@ -281,7 +281,7 @@ INSERT INTO `articulo` (`id_articulo`, `id_familia`, `id_unidad`, `codigo_articu
 (105, 74, NULL, 'VAR-007', 'INTERCOM 5 PUESTOS ALAMBRICO', 'WIRED INTERCOM 5 STATIONS', NULL, 85.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
 (106, 74, NULL, 'VAR-008', 'INTERCOM INALAMBRICO 5 PUESTOS', 'WIRELESS INTERCOM 5 STATIONS', NULL, 285.00, 1, 0, 0, 0, NULL, NULL, 200, NULL, 1, 1, NULL, '2026-02-05 18:00:34', '2026-02-05 18:00:34'),
 (114, 19, 5, 'MIC-DINA-001', 'Micrófono Dinámico SM58', 'Dynamic Microphone', '', 12.00, NULL, 0, 0, 0, '', '', 200, '', 1, 1, 1, '2026-02-05 18:04:13', '2026-02-05 18:04:13'),
-(115, 74, 5, 'CAJ-INYEC-001', 'Caja de inyección', 'Injection box', '', 12.00, NULL, 0, 0, 0, '', '', 200, '', 1, 1, 2, '2026-02-05 18:19:26', '2026-02-06 08:51:01'),
+(115, 74, 5, 'CAJ-INYEC-001', 'Caja de inyección', 'Injection box', '', 12.00, NULL, 0, 0, 0, '', '', 200, '', 1, 1, 1, '2026-02-05 18:19:26', '2026-02-10 12:42:58'),
 (116, 19, 5, 'EQUIP-MEGA-001', 'Equipo de megafonía 12 cajas (S/TCO)', 'PA SYSTEM 12 SPEAKERS (W/O TECH)', '', 445.00, NULL, 1, 0, 0, '', '', 200, '', 1, 1, 1, '2026-02-05 18:24:58', '2026-02-06 12:17:34'),
 (117, 19, 5, 'MIC-INAL-SEN-001', 'MICRÓFONO INALÁMBRICO SENNHEISER XSW2 MANO', 'MICRÓFONO INALÁMBRICO SENNHEISER XSW2 MANO', '', 57.00, NULL, 0, 0, 0, '', '', 200, '', 1, 1, 1, '2026-02-05 18:29:38', '2026-02-05 18:29:38'),
 (118, 74, 5, 'SPOTIFY', 'REPRODUCTOR SPOTIFY', 'REPRODUCTOR SPOTIFY', '', 36.00, NULL, 0, 0, 0, '', '', 200, '', 1, 1, 1, '2026-02-05 18:30:24', '2026-02-05 18:30:24'),
@@ -348,6 +348,8 @@ CREATE TABLE `cliente` (
   `id_forma_pago_habitual` int UNSIGNED DEFAULT NULL COMMENT 'Forma de pago habitual del cliente. Se usará por defecto en nuevos presupuestos',
   `porcentaje_descuento_cliente` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT 'Porcentaje de descuento habitual acordado con el cliente (0.00 a 100.00). Ejemplo: 10.00 = 10% de descuento',
   `observaciones_cliente` text,
+  `exento_iva_cliente` tinyint(1) DEFAULT '0' COMMENT 'TRUE si el cliente está exento de IVA (operaciones intracomunitarias)',
+  `justificacion_exencion_iva_cliente` text COMMENT 'Justificación legal de la exención de IVA (ARt. 25 Ley 37/1992, etc.)',
   `activo_cliente` tinyint(1) DEFAULT '1',
   `created_at_cliente` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at_cliente` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -357,11 +359,12 @@ CREATE TABLE `cliente` (
 -- Volcado de datos para la tabla `cliente`
 --
 
-INSERT INTO `cliente` (`id_cliente`, `codigo_cliente`, `nombre_cliente`, `direccion_cliente`, `cp_cliente`, `poblacion_cliente`, `provincia_cliente`, `nif_cliente`, `telefono_cliente`, `fax_cliente`, `web_cliente`, `email_cliente`, `nombre_facturacion_cliente`, `direccion_facturacion_cliente`, `cp_facturacion_cliente`, `poblacion_facturacion_cliente`, `provincia_facturacion_cliente`, `id_forma_pago_habitual`, `porcentaje_descuento_cliente`, `observaciones_cliente`, `activo_cliente`, `created_at_cliente`, `updated_at_cliente`) VALUES
-(1, 'MELIA002', 'Melia Don Jaime', 'C/ Mayor, 24', '28001', 'Madrid', 'Madrid', 'B214515744444', '965262384', '', '', '', '', '', '', '', '', 11, 10.20, '', 1, '2025-11-16 09:46:02', '2025-12-19 10:09:38'),
-(2, 'PROV00', 'Fontaneria Klek', '', '232244', 'Madrid', 'Madrid', '1213414B', '629995058', '', '', 'cliente@gmail.com', '', 'Calle Comandante Martí 6', '', '', '', NULL, 0.00, '', 0, '2025-11-18 17:20:22', '2025-12-03 17:10:20'),
-(3, 'MELIA003', 'Prueba de nombre', '', '', '', '', 'B21451574', '', '', '', '', '', '', '', '', '', 3, 0.00, '', 1, '2025-12-03 17:35:09', '2025-12-03 17:35:09'),
-(4, 'CREA001', 'Hotel Asia Gardens', 'Avda. Eduardo Zaplana, S/N', '03502', 'Benidorm', 'Alicante', 'A-83058537', '', '', '', '', '', '', '', '', '', 8, 20.00, '', 1, '2025-12-11 18:57:58', '2026-02-05 09:54:27');
+INSERT INTO `cliente` (`id_cliente`, `codigo_cliente`, `nombre_cliente`, `direccion_cliente`, `cp_cliente`, `poblacion_cliente`, `provincia_cliente`, `nif_cliente`, `telefono_cliente`, `fax_cliente`, `web_cliente`, `email_cliente`, `nombre_facturacion_cliente`, `direccion_facturacion_cliente`, `cp_facturacion_cliente`, `poblacion_facturacion_cliente`, `provincia_facturacion_cliente`, `id_forma_pago_habitual`, `porcentaje_descuento_cliente`, `observaciones_cliente`, `exento_iva_cliente`, `justificacion_exencion_iva_cliente`, `activo_cliente`, `created_at_cliente`, `updated_at_cliente`) VALUES
+(1, 'MELIA002', 'Melia Don Jaime', 'C/ Mayor, 24', '28001', 'Madrid', 'Madrid', 'B214515744444', '965262384', '', '', '', '', '', '', '', '', 11, 10.20, '', 0, NULL, 1, '2025-11-16 09:46:02', '2025-12-19 10:09:38'),
+(2, 'PROV00', 'Fontaneria Klek', '', '232244', 'Madrid', 'Madrid', '1213414B', '629995058', '', '', 'cliente@gmail.com', '', 'Calle Comandante Martí 6', '', '', '', NULL, 0.00, '', 0, NULL, 0, '2025-11-18 17:20:22', '2025-12-03 17:10:20'),
+(3, 'MELIA003', 'Prueba de nombre', '', '', '', '', 'B21451574', '', '', '', '', '', '', '', '', '', 3, 0.00, '', 0, NULL, 1, '2025-12-03 17:35:09', '2025-12-03 17:35:09'),
+(4, 'CREA001', 'Hotel Asia Gardens', 'Avda. Eduardo Zaplana, S/N', '03502', 'Benidorm', 'Alicante', 'A-83058537', '', '', '', '', '', '', '', '', '', 8, 20.00, '', 0, NULL, 1, '2025-12-11 18:57:58', '2026-02-05 09:54:27'),
+(5, 'CLIEXEC', 'Cliente exento de IVA (Intracomunitario)', 'Calle Mayor, 23', '18001', 'Madrid', 'Madrid', 'B12345668', '', '', '', '', '', '', '', '', '', 2, 0.00, 'Art 25 Ley 37/1992 - Operaciones introcomunitarias', 1, 'Art 25 Ley 37/1992 - Operaciones intracomunitarias', 1, '2026-02-13 18:13:57', '2026-02-14 12:28:38');
 
 -- --------------------------------------------------------
 
@@ -449,36 +452,38 @@ CREATE TABLE `comerciales` (
   `movil` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
   `telefono` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
   `activo` tinyint DEFAULT '1',
-  `id_usuario` int NOT NULL
+  `id_usuario` int NOT NULL,
+  `firma_comercial` text COLLATE utf8mb4_general_ci COMMENT 'Firma digital del comercial en formato base64 PNG'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `comerciales`
 --
 
-INSERT INTO `comerciales` (`id_comercial`, `nombre`, `apellidos`, `movil`, `telefono`, `activo`, `id_usuario`) VALUES
-(1, 'Alejandro', 'Rodríguez Martínez', '698689685', '698689685', 1, 5),
-(2, 'Carlos', 'López', '655656841', '655656841', 0, 6),
-(3, 'Marta', 'Rodríguez González', '645567674', '645567674', 0, 19),
-(4, 'Luis', 'Fernández López', '645575741', '645575741', 1, 7),
-(9, 'Lucía', 'Pérez Sánchez', '698898874', '698898874', 1, 8),
-(11, 'Ana', 'Hernández Torres', '635999999', '635999999', 0, 20),
-(12, 'Miguel', 'Díaz Jiménez', '643455441', '643455441', 0, 21),
-(13, 'Raúl', 'Romero Álvarez', '695548744', '695548744', 1, 9),
-(14, 'Eva', 'Moreno Fernández', '698654645', '698654645', 0, 22),
-(16, 'Teresa', 'Vázquez Suárez', '689789454', '689789454', 0, 23),
-(17, 'Margarita', 'García Castro', '616515614', '616515614', 1, 10),
-(18, 'Carmen', 'Martínez González', '623615641', '623615641', 1, 11),
-(19, 'Sergio', 'López Hernández', '634535442', '634535442', 0, 24),
-(21, 'Alberto', 'Hernández García', '644334567', '644334567', 1, 12),
-(22, 'Natalia', 'Sánchez García', '621849484', '621849484', 1, 13),
-(23, 'Laura', 'Ramírez Hernández', '632554779', '632554779', 1, 14),
-(24, 'Francisco', 'Moreno Moya', '660300923', '660300923', 1, 15),
-(27, 'Beatriz', 'Muñoz Vázquez', '477777777777', '777777774', 1, 16),
-(28, 'Pablo', 'Moreno Sánchez', '698544745', '698544745', 1, 17),
-(30, 'María', 'Torres García', '645644211', '645644211', 1, 18),
-(31, 'Marta', 'Rodríguez González', '635224447', '633221448', 1, 19),
-(32, 'Miguel', 'Díaz Jiménez', '646544684', '645487775', 1, 21);
+INSERT INTO `comerciales` (`id_comercial`, `nombre`, `apellidos`, `movil`, `telefono`, `activo`, `id_usuario`, `firma_comercial`) VALUES
+(1, 'Alejandro', 'Rodríguez Martínez', '698689685', '698689685', 1, 5, NULL),
+(2, 'Carlos', 'López', '655656841', '655656841', 0, 6, NULL),
+(3, 'Marta', 'Rodríguez González', '645567674', '645567674', 0, 19, NULL),
+(4, 'Luis', 'Fernández López', '645575741', '645575741', 1, 7, NULL),
+(9, 'Lucía', 'Pérez Sánchez', '698898874', '698898874', 1, 8, NULL),
+(11, 'Ana', 'Hernández Torres', '635999999', '635999999', 0, 20, NULL),
+(12, 'Miguel', 'Díaz Jiménez', '643455441', '643455441', 0, 21, NULL),
+(13, 'Raúl', 'Romero Álvarez', '695548744', '695548744', 1, 9, NULL),
+(14, 'Eva', 'Moreno Fernández', '698654645', '698654645', 0, 22, NULL),
+(16, 'Teresa', 'Vázquez Suárez', '689789454', '689789454', 0, 23, NULL),
+(17, 'Margarita', 'García Castro', '616515614', '616515614', 1, 10, NULL),
+(18, 'Carmen', 'Martínez González', '623615641', '623615641', 1, 11, NULL),
+(19, 'Sergio', 'López Hernández', '634535442', '634535442', 0, 24, NULL),
+(21, 'Alberto', 'Hernández García', '644334567', '644334567', 1, 12, NULL),
+(22, 'Natalia', 'Sánchez García', '621849484', '621849484', 1, 13, NULL),
+(23, 'Laura', 'Ramírez Hernández', '632554779', '632554779', 1, 14, NULL),
+(24, 'Francisco', 'Moreno Moya', '660300923', '660300923', 1, 15, NULL),
+(27, 'Beatriz', 'Muñoz Vázquez', '477777777777', '777777774', 1, 16, NULL),
+(28, 'Pablo', 'Moreno Sánchez', '698544745', '698544745', 1, 17, NULL),
+(30, 'María', 'Torres García', '645644211', '645644211', 1, 18, NULL),
+(31, 'Marta', 'Rodríguez González', '635224447', '633221448', 1, 19, NULL),
+(32, 'Miguel', 'Díaz Jiménez', '646544684', '645487775', 1, 21, NULL),
+(33, 'Luis Carlos', 'Pérez', '660300923', '965262384', 1, 2, 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOoAAACWCAYAAADQdBT0AAAYKklEQVR4Xu2dB7QUxRKGG7OYEwYEFYyomBMmRMWAijkBHhUVE0YwIGZABXMWI6iomBPmhGJOiGLOiooZs6jv8fWz9/UOs3dnendnd9m/zuFcuEyH+Wf+qerqqupm/5kiRiIEhEBNI9BMRK3p56PJCQGLgIiqF0EI1AECImodPCRNUQiIqHoHhEAdICCi1sFD0hSFgIiqd0AI1AECImodPCRNUQiIqHoHhEAdICCi1sFD0hSFgIiqd0AI1AECImodPCRNUQiIqHoHhEAdICCi1sFD0hSFgIiqd0AI1AECImodPCRNUQiIqHoHhEAdICCi1sFD0hSFgIiqd0AI1AECImodPCRNUQiIqHoHhEAdICCi1sFD0hSFgIiqd0AI1AECImodPCRNUQiIqHoHhEAdICCi1sFD0hSFgIiqd0AI1AECImodPCRNUQiIqHoHhEAdICCi1sFD0hSFgIiqd0AI1AECImodPCRNUQiIqHoHhEAdICCi1sFDqvYUOev6ggsusNM45JBDqj2dhhxfRG3Ix57upnfZZRczcuRI2+iAAw4wF154oZluuunSdaKrS0JARC0Jvmm/8eOPP246depk0KpO2rZta+6//36z5JJLTvsA1Mgdiqg18iBqcRqQsVu3bua7776banrt27c3Y8eOrcVpT5NzElGnycda+k3de++9ZttttzV//fWX7WyjjTYyrVu3NsOGDct1/uGHH5rFF1+89MHUQ1EERNSiEDXeBW+++aZZeeWVzZ9//mlvfq+99jKXX3654fcrrrhiDpC77rrLbL311o0HUBXuWEQtI+i//fabee6558wnn3xiPvjgA/Ptt9+acePG2RE++ugj06xZMzP77LObWWaZxcwwwwxm9dVXN//884/55ZdfzMcff2x//vHHH4Z+Jk2aZNq0aWMWXHBB06FDB3PYYYeZGWecsYyzLdzVeuutZ8aMGWMvOOWUU8yxxx5r5/vuu++apZdeOtdw4MCBpl+/fpnMqdEHEVFTvgF///23GT16tCUjntAWLVoYTEC0zcSJE1P2lu5yzMztt9/e9OnTxyy88MLpGie8+sknnzQbbLBBTpNeddVVuZZ8eOaff/7cv9dff32LhaTyCIioCTDGxDvxxBPNq6++muDqyl8y/fTTmyWWWMIOtM0225jDDz/cLLroomUZeJNNNjGPPPKI1d7vvPNO3hqU9aqv1WebbTbz888/l2VcddI0AiJqAXzYjnj44YfNySefnDMDk75M7dq1MwsssIBdz80333yxzb7++mtL/G+++cbMOeechpd+pplmMmuttZbdo3zxxRetKZxUU2+66aZ2LcmeZ+ge50svvWTNcQRzd9CgQXlzh5RzzDFH7ndoV+5DUnkERNQYjL/88kuzxx57mIceeqjgE5h55pnNQgstZFjPsZ+I84X1pCNaOR8dZvajjz5q17+sHd26t9AYOHj2339/g3aE/EkF7Xz33XfbdfRbb71lWrZsmdf09ddfz3MmrbPOOubpp59O2r2uKwEBEdUDD8cO67+bbrrJTJgwIQ9WtAfaavPNNzcbbrhhnmYpAf+gpmjb8ePHmyuuuMKap1999VVsP5jDu+++uyWtM5ULDeiTEAyGDBky1aVs2Wy11Va53++2225mxIgRQfegRukQEFH/xev99983q622mvnxxx/zEGzVqpX1uB500EEGLVprwsflgQcesI6ta6+91uDsigrryu7du5v+/ftbT3KcdO3a1bAWR7744gtrLUTlkksuMQceeGDu14UIXWsYTQvzEVGnPEVMXDQlL70vBx98sBk8eLCZddZZ6+JZo1kxkdGGr7zyylRzZluoV69e9p58k5i1Mh8p7h+z2RE22sHRRx9t2zq5+OKLbeyvpPIINDxRr7/+eqttfGFthudzmWWWqfwTiIxw9dVX231UX3OFTAKTGA14/vnnT/UBYk197rnnmi5dutiuO3funFuPszYtdN877rijufXWW3PTQZPTVlJ5BBqaqO+9955ZbrnlcmFywI1mQSvhic1afI111FFHmTPOOKPkKWDKYxKfddZZNujCF8z5ZZdd1vTu3dv+utiYOI+effbZXBevvfZannOp5Mmqg4IINDRR99xzz7zYVYIJcNDMM888VXllevToYa677jo7Nn8fPnx42eZBYP3QoUPttosvrF8nT55szXsCN/BcFxKCLPCIOyF6yt+uKdtk1dFUCDQsUX/66ScbZePiWXlBCeOrpsOIPE+n3Y4//ngbvldu4X6POeYYc8455+R1vd9++5nLLrus4HCENjZv3jxnRs8111zmhx9+KPf01F8BBBqWqGzB7LrrrjlYiDw66aSTqvqioM333XdfO4dKzwdSsm3jy5FHHmmdRXEBE5jN/hYPwRyYvpJsEGhYoq6xxho2+geJC5fLBv78UbIiKqYua1MSB0gU8JPCwYW1MWltvvgxwPx+iy22MKNGjaoGTA05ZsMSle0JXliEwIBPP/206i8AnljidhG0HV7bSkjfvn3NmWeeabtmnU4EE6Y2a1QnhE9uvPHGuX+zdmbd7ASv9EUXXVSJ6anPGAQakqhkufhOk1rZuIcsAwYMsI9pn332sTmg5RbMVbQma1UcQey94kgi4B4tCUER1uoPPvhgLpMGkxivtBO0Ll5iSTYINCRRiZlde+21cwgTjsc2TbWF4IFLL73UToM9y5tvvrnsUyLonuB75LbbbjPbbbdd3hhEOBEqiRDzS/ADZjAa3nc2sf9MeKIkGwQakqhs2kMEhFA5QuZqQciAcRoNQr3wwgtlndY111xjM2wQtOozzzxjSJmLCt7nQw891Hp4Wb/fcccdhigkYn2dsJ9KAoIkGwQakqi+1kCz8sLWgiy11FKGIAyE6CEqKpRLSJnDgfTZZ59ZctJ3U4H6Z599tk1QwNGEibzIIouYt99+OzcdksjnnXfeck1P/RRBoCGJijYgygapFUcSuZ7sTbp4Y7ZIiCrC/CyH+KYrMcyuoHZTfVPdoWfPnvYSSrG4Qmfk2la6mkU57nla6qMhiUqGCdFHBD0gbFMUSwOr9EMneydaJ5dcT/dBKWV88lkXW2wx2wUfA7y7SaOvWIfecMMNecOrBEspTyOsbUMSFahcyRH+XunggiSPhj1d1o2+PPbYY6Zjx45Jmjd5zU477WRuueUWew17tU5LJuk4moNKG2KEWcdKskOgYYnqB8CvsMIKRasmVPqRRKsnMF45iOpHIFGF4uWXX7ZBDkmFbRwSFAghdJKW7EnH0nWFEWhYorJ/6JKjeXFxsuAwqZbEaVSigSj1Eio4jFZaaSWbNlcK8YmJxnnkhH51nEXoUwlr17BEBS4qwd95550WOdLAjjjiiDAUy9CKM16iYXt4o/393jTDkC1D2c833njDNiMx/r777kvTRe5aSqK6ImY4lX7//ffYbZ2gztUoEQINTVQ/LG7dddc1Tz31VCLQKnFRHFGp0oC5mlbwHG+22Wa5PVnWvuTYhniQIXy0kmJcoETaOer6dAg0NFF//fVXW9aTn2yHoDWqtTdIoAMBD76Emr6kx+EgQ7gvPkCh3mM/OMTNbeedd7YF4CTZIdDQRAVmQuiIvEGIrSXGthrCyWnE2voSshYkmmnNNdfMdVOqSU/uarTSBMH6LoKqGlg14pgNT1R/U58jBl2Fhaxfhmh2CuOT0ZOmAj4BCdQ7Yl8YoazM888/H1yQmz78sEaHCRqbBAJJdgg0PFGJ83XeXn5+/vnn2aHvjeTH4bpff//992buuedOPB/KrJx++um563GUUVQ7VHAaESDhqmC4ftJ+QELHV7v/I9DwRAUKTihzcbUcIUFMbNYSJSqlPd22SpK5EG1EBpDb7ySgo6lK/0n69Ne67vpaSmJIcg/TyjUi6pQnSYHt8847zz7TatWq9ZPGmQcnt/mJ3E29cATOsy51FSsIoifvtJRDhtHM0UJoWBxPPPGE9lCrwH4RdQronLfiTMSmClBX8vlQr4kDqZykSXMj04V6R05wAJ122mnB06VuE9FHvnCIFXWT/GMXgwdQw9QIiKhTIGN7hhcQUxNtRBROVocGuyfmV3fgdwRj3H777UUfKKGHq666aq6sDBFD7L+G7JlyshwF3yg+HpUTTjgh70NSdGK6oKwIiKj/wkmAAKVHEPYOqfGbpUSJmkQr8mFZfvnl80xkYnlXWWWV1FMngol1rV+31++EXFT/tPHUA6hBSQiIqP/CRzV5jlpEqnFKWdRjS74oeaNNSXSPMzQLiOD/Tp06FRyKlDgilCTVQ0BE/Rd7krQpeIbXlGJfbEEUOoS4Eo/Lr5dE/5i9mL9NCeGFY8eOtZd06NDBEIaY1mSPHvxEX5jNeL6dc4pjJulbUj0ERFQP+7333ttwSBNCqc5ogepKPibKhOL5dYLHt5jXliLYrFERipDhCEsqBEXssMMO9tRzX9q2bWuIkuIcVFd6ZdiwYTlrI2n/uq68CIioHp5+YHz79u1z2qq8kMf35ntayVBh/cnPQsKpa65yItFLELup6/1+CNCHpNEjKajmwOlvlAolB9UV5obMpMtJqoeAiBrB3jcn0a4UqM5CqA5I0AOSJKjAJ3bSGGXITy3euOoMfkFtjlMkLQ6B/BCa7RlJ9RAQUSPYk5PqDlDCE4wZmIVQh8il2bHd4mrvxo1NaB9ZPxRE48MSd2hxtB31l0g4IPLKF9ajxDtTrsWJ/9FQfaQsnn7xMUTUCEa80OSmIq1bt7YnvGUhbKm49SLBFy6hPW5s1qNdu3a1/1XMO0zqHt7guOMxcGDhOeY+nUyYMMFuw1BeFFFF/CyefvExRNQIRgTC+zmpocnbxaHPv4JACzQk0pQpyz4nVR/cB2T06NEGrRcViEZhMkxav4wK1xFoj+VAEENUyDV1FfpJCODkcrS3pLoIiKgx+Ldp0yYXRNCvXz8zcODAij4l1oB++U6C6Qk+iEr0fBgOFkYDRoWCZhwC5Yp5+/9PqCFV8Fu1ajVVOz8nljpShBHiCZdUHwERNeYZ+LWUyl2xPu6RRwubFUoYj+61RglN0jjXxK1vOcKDQHu2X+IEDy/eY0d8KkKgrZN6kqv/Kk/bMxBRY55v//7987QomqnQC16O1+PGG2+00VBIoa0ZqlD4BzoRk+sKY5NDi+YfPnz4VNOBcKwz48xj/+JTTz01Zwpz5AUhhSShS2oDARE15jlEy6JUepvGj/ONqzFMKVOcTQTNOzKjdan4j4nrToBzt8KaknUsGrRdu3ZF3zQ8wRz45E4OqNSRj0UnogsKIiCixkCDw4b1nxOOIUTrlUvI6fRP+YaobmsGohKM4ATNRjYLTi4nOJ4IdyTtzJ0Hw/8R+kgWEMdXVLqiIskAYETxNDQwZvPQoUPLBZH6iSAgohZ4JXyHUpJtGs5cJaAA7YepjPZz4X38u1olXuJuD5K5vFK8uu7YScxuSotyGntaIZqJQAlJZRAQUWNwhWCcr4IzxUnfvn1tOVG/6gJOG7elkubxQBLIgqBZx4wZY81YhGADt69JRQW8tIXGIBaZ7RdifkOEcEE8wAhe3lGjRuUikkL6U5vKIdBwRGV/Ee8o2TGcoIb5yB80oKsqHwI3ZqDL1+QYCrQT+5UuNxRzNO7EOLQt56IiRAlh4rojDqkAGM1agbyENfbq1SsvUCHtnMlbpXyL/4EgQklSmwhMk0RFS7FGGz9+vDXrCFogjY1skEKJ0cUeD0HpLu0MwkE84l+jJ7AV6yf6/37WDASn6HahSgt4fSkr2rx587TD5F1PAATOJrfPSnA/x2fwYZHUJgJ1SVQKd/GyYZpyfAM/ISe/950uSSCnNhGajG0M9xMzkOgkP2MELeZS4JL0m/QaP66Ws2f4CMRpNtLOqO1UqoAXcb0cS4HggMLCcKZ4qf2rfWUQqGmiollw0vAikSBNDiVkTCM4RiAhXlI0B6YomgONQknOpoQkbOdVrdTRjHwMoveEF9WZpMwPj+q4ceNS1fgtdF/+h4FrRowYkdvDTYOrrs0WgZoiKuYqJhgmGXuZnJSdVHCosH9IQD3hcewfUvUgzVmg0bHwZLri08S9ptXWTc2d0i9oNXecBtdi2mKeY7I7Yb1KqZRSjl+kL4jPuvbKK6/M9a2A+6RvV/WvqypReSE5CRtt6UyxYpCQ1oVWZPsETUmCd6WCxtHGkydPtlNKU76z0D1AODQYZVaigfLcEyZvtDDZkCFDTJ8+fYrB0uT/4zUm8umee+7JXXfccceZAQMGlNSvGmeHQGZEpTgWhMSMJU2LLQnn3Sx0u3hROT+FqBm0Y6mOmzSwQlA0qgtM4AAnti/SCGVIsQy415EjR9o9Vic9evSwzigXVUQhM2dJuGvKcRQk0UZUVHSHOmFWkzw+aNCgNLeia6uMQMWISpEwcjsxZ/lJmFpTuZ2QAjLycmLmQdK47Yys8IKo/sY/jh5KmBQSvMpoLLzKeG7ZVuF3vnTu3NkW+oY4bOf4VRrYz3TV+mlDKRTMYHcqesh9c6o6hclc7SNIyoehWifWhdyD2vwPgbISldA4tA4vtKtgFwc0G/qYrltuuaU9HgEnTzXOeyn2EpB65uoKse5lPYkZSQQS98dJaRMnTrQRSHFBCZjpfHwIiEcjR7c//GRxLAc/64UgeZIDQoWPI/j6HwvKoVKoTFJ/CJREVMLiMKlwjOCV5KWNEzb0WUvi8OGl5cj6WkufQuMTt8rHBgcU1RYgZly+Z/Qe+cjgVaaECts6WAQdO3Zs8m2A2KytKavCFol/IBTVB8EzpNo9gxLK16VLl5znGE2KtibaSlKfCAQRlfQqSluiUaLCZjyFsSAlhMQJgxlXLWHdxzoNDzKRSHwgWCdjmmOesq/InziPLlFAPlEhI2F7ziKASNxfiPg5qGwTQVgnfPi6d++eulscVOz3+k6jFi1a2IoRpRy/mHoialB2BFITFecID915Q9kGoco6phtmXpbHHrDmhXysxUj7Yn3IT4iJRsKZU0jQ8hCRtTF/b9mypf3J2hGznJ+EG/I7F7ROX2wfsQdbqkTr+Lr+0MR4h9MIDq/Bgwfb6oK+wworho9qklS3NOPp2uwRSExU1jacGuY253nRcIa42rLlnjrbNmgzPKM4Z0jtwjGFmci2TtRR44/PtZihCFodk5a1MIEDmLU4WJIKqVvsPzpBm/I7KhQizIO9ST4QjDtp0iQbmOAHU/DBYB2L19rt65I255w8rm9MVJxp1NelD5IA0JJoe1e5H+sEJxfjsubFMmDLJxoayZqaeF6dvpb0Sdf2dUWJypeafEk2/nmRePC88BAIrcrXnOgd94eNdf6wBsMZ4yra8ULRBz8hDi+vv7GfBiY0hesbrUj1BRfkgKlXTkGbom39/FH6x4QmWilaab6cY4f21a1bN6td05xWHjqW2mWDQFGicjYJLn1MRISvfKUELYhWggQuEodyIJihaBFM62oI69Cm6uxWY05xY/bs2dP07t1bVe1r5YGUcR5FiVrqWIUOF0Ir+mU5Sx2nku0xW0k5w6uN4ykqzrTG2og7pAnLg3UzVgCmLzmtfngkbfgYYGWwHYT2joZPYvK6qCU+lpjYmOF8wAgIwYFXzNNcSYzUd2URqDhRKzv9bHuHQGTqUBqFnxCF9SShjGlSxLAMcEo5SXokRbZ3q9FqCQERtQpPwy9yTV4rW0i1tq9cBVg0ZBMIiKhVeD3w0BLri5nLkRTl2O6pwm1oyAwREFEzBFtDCYFQBETUUOTUTghkiICImiHYGkoIhCIgooYip3ZCIEMERNQMwdZQQiAUARE1FDm1EwIZIiCiZgi2hhICoQiIqKHIqZ0QyBABETVDsDWUEAhFQEQNRU7thECGCIioGYKtoYRAKAIiaihyaicEMkRARM0QbA0lBEIREFFDkVM7IZAhAiJqhmBrKCEQioCIGoqc2gmBDBEQUTMEW0MJgVAERNRQ5NROCGSIgIiaIdgaSgiEIiCihiKndkIgQwRE1AzB1lBCIBQBETUUObUTAhkiIKJmCLaGEgKhCIioocipnRDIEAERNUOwNZQQCEVARA1FTu2EQIYIiKgZgq2hhEAoAiJqKHJqJwQyREBEzRBsDSUEQhEQUUORUzshkCECImqGYGsoIRCKgIgaipzaCYEMERBRMwRbQwmBUARE1FDk1E4IZIiAiJoh2BpKCIQiIKKGIqd2QiBDBETUDMHWUEIgFAERNRQ5tRMCGSIgomYItoYSAqEIiKihyKmdEMgQARE1Q7A1lBAIRUBEDUVO7YRAhgj8F2HaLvOKkghuAAAAAElFTkSuQmCC');
 
 -- --------------------------------------------------------
 
@@ -567,32 +572,32 @@ INSERT INTO `contactos` (`id_contacto`, `id_llamada`, `fecha_hora_contacto`, `ob
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `contactos_con_nombre_comunicante` (
-`id_contacto` int
-,`id_llamada` int
-,`id_metodo` int
-,`fecha_hora_contacto` datetime
-,`observaciones` text
-,`id_visita_cerrada` int
-,`fecha_visita_cerrada` datetime
-,`estado` tinyint
-,`nombre_comunicante` varchar(100)
+`activo_llamada` int
+,`archivos_adjuntos` text
+,`descripcion_estado_llamada` varchar(100)
 ,`domicilio_instalacion` varchar(200)
-,`telefono_fijo` varchar(15)
-,`telefono_movil` varchar(15)
 ,`email_contacto` varchar(50)
+,`estado` tinyint
+,`estado_es_3` int
+,`estado_llamada` bigint
+,`fecha_hora_contacto` datetime
 ,`fecha_hora_preferida` datetime
 ,`fecha_recepcion` datetime
+,`fecha_visita_cerrada` datetime
 ,`id_comercial_asignado` bigint
-,`estado_llamada` bigint
-,`activo_llamada` int
-,`nombre_metodo` varchar(50)
+,`id_contacto` int
+,`id_llamada` int
+,`id_metodo` int
+,`id_visita_cerrada` int
 ,`imagen_metodo` varchar(255)
-,`descripcion_estado_llamada` varchar(100)
 ,`nombre_comercial` varchar(50)
-,`archivos_adjuntos` text
-,`tiene_contactos` int
-,`estado_es_3` int
+,`nombre_comunicante` varchar(100)
+,`nombre_metodo` varchar(50)
+,`observaciones` text
+,`telefono_fijo` varchar(15)
+,`telefono_movil` varchar(15)
 ,`tiene_adjuntos` int
+,`tiene_contactos` int
 );
 
 -- --------------------------------------------------------
@@ -602,52 +607,54 @@ CREATE TABLE `contactos_con_nombre_comunicante` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `contacto_cantidad_cliente` (
-`id_cliente` int unsigned
-,`codigo_cliente` varchar(20)
-,`nombre_cliente` varchar(255)
-,`direccion_cliente` varchar(255)
-,`cp_cliente` varchar(10)
-,`poblacion_cliente` varchar(100)
-,`provincia_cliente` varchar(100)
-,`nif_cliente` varchar(20)
-,`telefono_cliente` varchar(255)
-,`fax_cliente` varchar(50)
-,`web_cliente` varchar(255)
-,`email_cliente` varchar(255)
-,`nombre_facturacion_cliente` varchar(255)
-,`direccion_facturacion_cliente` varchar(255)
-,`cp_facturacion_cliente` varchar(10)
-,`poblacion_facturacion_cliente` varchar(100)
-,`provincia_facturacion_cliente` varchar(100)
-,`observaciones_cliente` text
-,`activo_cliente` tinyint(1)
-,`created_at_cliente` timestamp
-,`updated_at_cliente` timestamp
-,`porcentaje_descuento_cliente` decimal(5,2)
-,`id_forma_pago_habitual` int unsigned
-,`codigo_pago` varchar(20)
-,`nombre_pago` varchar(100)
-,`descuento_pago` decimal(5,2)
-,`porcentaje_anticipo_pago` decimal(5,2)
-,`dias_anticipo_pago` int
-,`porcentaje_final_pago` decimal(5,2)
-,`dias_final_pago` int
-,`observaciones_pago` text
-,`activo_pago` tinyint(1)
-,`id_metodo_pago` int unsigned
-,`codigo_metodo_pago` varchar(20)
-,`nombre_metodo_pago` varchar(100)
-,`observaciones_metodo_pago` text
+`activo_cliente` tinyint(1)
 ,`activo_metodo_pago` tinyint(1)
+,`activo_pago` tinyint(1)
 ,`cantidad_contactos_cliente` bigint
-,`tipo_pago_cliente` varchar(17)
-,`descripcion_forma_pago_cliente` varchar(219)
-,`direccion_completa_cliente` varchar(470)
-,`direccion_facturacion_completa_cliente` varchar(470)
-,`tiene_direccion_facturacion_diferente` int
-,`estado_forma_pago_cliente` varchar(23)
 ,`categoria_descuento_cliente` varchar(15)
+,`codigo_cliente` varchar(20)
+,`codigo_metodo_pago` varchar(20)
+,`codigo_pago` varchar(20)
+,`cp_cliente` varchar(10)
+,`cp_facturacion_cliente` varchar(10)
+,`created_at_cliente` timestamp
+,`descripcion_forma_pago_cliente` varchar(219)
+,`descuento_pago` decimal(5,2)
+,`dias_anticipo_pago` int
+,`dias_final_pago` int
+,`direccion_cliente` varchar(255)
+,`direccion_completa_cliente` varchar(470)
+,`direccion_facturacion_cliente` varchar(255)
+,`direccion_facturacion_completa_cliente` varchar(470)
+,`email_cliente` varchar(255)
+,`estado_forma_pago_cliente` varchar(23)
+,`exento_iva_cliente` tinyint(1)
+,`fax_cliente` varchar(50)
+,`id_cliente` int unsigned
+,`id_forma_pago_habitual` int unsigned
+,`id_metodo_pago` int unsigned
+,`justificacion_exencion_iva_cliente` text
+,`nif_cliente` varchar(20)
+,`nombre_cliente` varchar(255)
+,`nombre_facturacion_cliente` varchar(255)
+,`nombre_metodo_pago` varchar(100)
+,`nombre_pago` varchar(100)
+,`observaciones_cliente` text
+,`observaciones_metodo_pago` text
+,`observaciones_pago` text
+,`poblacion_cliente` varchar(100)
+,`poblacion_facturacion_cliente` varchar(100)
+,`porcentaje_anticipo_pago` decimal(5,2)
+,`porcentaje_descuento_cliente` decimal(5,2)
+,`porcentaje_final_pago` decimal(5,2)
+,`provincia_cliente` varchar(100)
+,`provincia_facturacion_cliente` varchar(100)
+,`telefono_cliente` varchar(255)
 ,`tiene_descuento_cliente` int
+,`tiene_direccion_facturacion_diferente` int
+,`tipo_pago_cliente` varchar(17)
+,`updated_at_cliente` timestamp
+,`web_cliente` varchar(255)
 );
 
 -- --------------------------------------------------------
@@ -657,52 +664,52 @@ CREATE TABLE `contacto_cantidad_cliente` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `contacto_cantidad_proveedor` (
-`id_proveedor` int unsigned
-,`codigo_proveedor` varchar(20)
-,`nombre_proveedor` varchar(255)
-,`direccion_proveedor` varchar(255)
-,`cp_proveedor` varchar(10)
-,`poblacion_proveedor` varchar(100)
-,`provincia_proveedor` varchar(100)
-,`nif_proveedor` varchar(20)
-,`telefono_proveedor` varchar(255)
-,`fax_proveedor` varchar(50)
-,`web_proveedor` varchar(255)
-,`email_proveedor` varchar(255)
-,`persona_contacto_proveedor` varchar(255)
-,`direccion_sat_proveedor` varchar(255)
-,`cp_sat_proveedor` varchar(10)
-,`poblacion_sat_proveedor` varchar(100)
-,`provincia_sat_proveedor` varchar(100)
-,`telefono_sat_proveedor` varchar(255)
-,`fax_sat_proveedor` varchar(50)
-,`email_sat_proveedor` varchar(255)
-,`observaciones_proveedor` text
-,`activo_proveedor` tinyint(1)
-,`created_at_proveedor` timestamp
-,`updated_at_proveedor` timestamp
-,`id_forma_pago_habitual` int unsigned
-,`codigo_pago` varchar(20)
-,`nombre_pago` varchar(100)
-,`descuento_pago` decimal(5,2)
-,`porcentaje_anticipo_pago` decimal(5,2)
-,`dias_anticipo_pago` int
-,`porcentaje_final_pago` decimal(5,2)
-,`dias_final_pago` int
-,`observaciones_pago` text
+`activo_metodo_pago` tinyint(1)
 ,`activo_pago` tinyint(1)
-,`id_metodo_pago` int unsigned
-,`codigo_metodo_pago` varchar(20)
-,`nombre_metodo_pago` varchar(100)
-,`observaciones_metodo_pago` text
-,`activo_metodo_pago` tinyint(1)
+,`activo_proveedor` tinyint(1)
 ,`cantidad_contacto_proveedor` bigint
-,`tipo_pago_proveedor` varchar(17)
+,`codigo_metodo_pago` varchar(20)
+,`codigo_pago` varchar(20)
+,`codigo_proveedor` varchar(20)
+,`cp_proveedor` varchar(10)
+,`cp_sat_proveedor` varchar(10)
+,`created_at_proveedor` timestamp
 ,`descripcion_forma_pago_proveedor` varchar(219)
+,`descuento_pago` decimal(5,2)
+,`dias_anticipo_pago` int
+,`dias_final_pago` int
 ,`direccion_completa_proveedor` varchar(470)
+,`direccion_proveedor` varchar(255)
 ,`direccion_sat_completa_proveedor` varchar(470)
-,`tiene_direccion_sat` int
+,`direccion_sat_proveedor` varchar(255)
+,`email_proveedor` varchar(255)
+,`email_sat_proveedor` varchar(255)
 ,`estado_forma_pago_proveedor` varchar(23)
+,`fax_proveedor` varchar(50)
+,`fax_sat_proveedor` varchar(50)
+,`id_forma_pago_habitual` int unsigned
+,`id_metodo_pago` int unsigned
+,`id_proveedor` int unsigned
+,`nif_proveedor` varchar(20)
+,`nombre_metodo_pago` varchar(100)
+,`nombre_pago` varchar(100)
+,`nombre_proveedor` varchar(255)
+,`observaciones_metodo_pago` text
+,`observaciones_pago` text
+,`observaciones_proveedor` text
+,`persona_contacto_proveedor` varchar(255)
+,`poblacion_proveedor` varchar(100)
+,`poblacion_sat_proveedor` varchar(100)
+,`porcentaje_anticipo_pago` decimal(5,2)
+,`porcentaje_final_pago` decimal(5,2)
+,`provincia_proveedor` varchar(100)
+,`provincia_sat_proveedor` varchar(100)
+,`telefono_proveedor` varchar(255)
+,`telefono_sat_proveedor` varchar(255)
+,`tiene_direccion_sat` int
+,`tipo_pago_proveedor` varchar(17)
+,`updated_at_proveedor` timestamp
+,`web_proveedor` varchar(255)
 );
 
 -- --------------------------------------------------------
@@ -861,19 +868,24 @@ CREATE TABLE `elemento` (
   `id_forma_pago_alquiler_elemento` int UNSIGNED DEFAULT NULL COMMENT 'Forma de pago acordada con el proveedor para el alquiler (solo si es_propio = FALSE)',
   `observaciones_alquiler_elemento` text COMMENT 'Condiciones especiales de alquiler: mínimo de días, restricciones, contacto, etc.',
   `created_at_elemento` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at_elemento` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at_elemento` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `peso_elemento` decimal(10,3) DEFAULT NULL COMMENT 'Peso en kilogramos (NULL=no aplica o desconocido)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `elemento`
 --
 
-INSERT INTO `elemento` (`id_elemento`, `id_articulo_elemento`, `id_marca_elemento`, `modelo_elemento`, `codigo_elemento`, `codigo_barras_elemento`, `descripcion_elemento`, `numero_serie_elemento`, `id_estado_elemento`, `nave_elemento`, `pasillo_columna_elemento`, `altura_elemento`, `fecha_compra_elemento`, `precio_compra_elemento`, `fecha_alta_elemento`, `fecha_fin_garantia_elemento`, `proximo_mantenimiento_elemento`, `observaciones_elemento`, `activo_elemento`, `es_propio_elemento`, `id_proveedor_compra_elemento`, `id_proveedor_alquiler_elemento`, `precio_dia_alquiler_elemento`, `id_forma_pago_alquiler_elemento`, `observaciones_alquiler_elemento`, `created_at_elemento`, `updated_at_elemento`) VALUES
-(1, 21, 1, 'SH-78', 'MIC-INAL-001-001', '123456789', 'Microfono Senheiser SH-78', '123456789', 1, '1', 'a-5', '1', NULL, NULL, NULL, NULL, NULL, 'Prueba de observaciones', 1, 0, NULL, 1, 800.00, 14, '', '2025-11-25 07:18:30', '2025-12-22 10:04:41'),
-(2, 21, 1, 'SH-79', 'MIC-INAL-001-002', '123456778', 'Microfono Senheiser SH-79', '112345678', 1, '1', 'a-5', '1', '2025-11-29', 1020.00, '2025-11-29', '2026-11-29', '2025-12-20', 'Prueba de observaciones', 1, 1, 1, NULL, NULL, NULL, '', '2025-12-02 15:49:39', '2025-12-18 19:13:14'),
-(3, 25, 9, 'LED-PROX-1200', 'LED-PANEL-P3-001', '121333311', 'Módulo LED Philips Lumileds LED-PROX-1200', '332444228', 1, '1', 'a-2', '1', '2025-12-02', 217.00, '2025-12-02', '2026-12-02', '2026-02-01', 'Prueba de observaciones', 1, 1, NULL, NULL, NULL, NULL, NULL, '2025-12-02 16:04:40', '2025-12-02 16:04:40'),
-(4, 25, 9, 'LED-PROX-1200', 'LED-PANEL-P3-002', '224111111', 'Módulo LED Philips Lumileds LED-PROX-1200', '123333333', 1, '1', 'a2', '1', '2024-12-01', 217.00, '2024-12-01', '2025-12-01', '2025-11-01', 'Prueba de observaciones', 1, 1, NULL, NULL, NULL, NULL, NULL, '2025-12-02 16:13:59', '2025-12-02 16:13:59'),
-(5, 21, 4, 'EB-2250U', 'MIC-INAL-001-003', '4012831029342', 'Proyector Epson EB-2250U Alquilado', 'EP-2024-0082547', 1, '', 'C-12, P-5', 'Nivel 3', NULL, NULL, NULL, NULL, NULL, 'Equipo alquilado en perfecto estado, mantiene calibración óptica. Factura disponible bajo demanda. Datos del cliente: TechSoluciones SL.', 1, 0, NULL, 1, 150.00, 5, 'Mínimo 30 días, incluye seguro de daños, contacto: +34 912 345 678', '2025-12-18 20:14:43', '2025-12-19 07:38:58');
+INSERT INTO `elemento` (`id_elemento`, `id_articulo_elemento`, `id_marca_elemento`, `modelo_elemento`, `codigo_elemento`, `codigo_barras_elemento`, `descripcion_elemento`, `numero_serie_elemento`, `id_estado_elemento`, `nave_elemento`, `pasillo_columna_elemento`, `altura_elemento`, `fecha_compra_elemento`, `precio_compra_elemento`, `fecha_alta_elemento`, `fecha_fin_garantia_elemento`, `proximo_mantenimiento_elemento`, `observaciones_elemento`, `activo_elemento`, `es_propio_elemento`, `id_proveedor_compra_elemento`, `id_proveedor_alquiler_elemento`, `precio_dia_alquiler_elemento`, `id_forma_pago_alquiler_elemento`, `observaciones_alquiler_elemento`, `created_at_elemento`, `updated_at_elemento`, `peso_elemento`) VALUES
+(1, 21, 1, 'SH-78', 'MIC-INAL-001-001', '123456789', 'Microfono Senheiser SH-78', '123456789', 1, '1', 'a-5', '1', NULL, 0.00, NULL, NULL, NULL, 'Prueba de observaciones', 1, 1, NULL, NULL, NULL, NULL, NULL, '2025-11-25 07:18:30', '2026-02-15 11:37:50', 2.500),
+(2, 21, 1, 'SH-79', 'MIC-INAL-001-002', '123456778', 'Microfono Senheiser SH-79', '112345678', 1, '1', 'a-5', '1', '2025-11-29', 1020.00, '2025-11-29', '2026-11-29', '2025-12-20', 'Prueba de observaciones', 1, 1, 1, NULL, NULL, NULL, NULL, '2025-12-02 15:49:39', '2026-02-15 12:00:56', 2.500),
+(3, 25, 9, 'LED-PROX-1200', 'LED-PANEL-P3-001', '121333311', 'Módulo LED Philips Lumileds LED-PROX-1200', '332444228', 1, '1', 'a-2', '1', '2025-12-02', 217.00, '2025-12-02', '2026-12-02', '2026-02-01', 'Prueba de observaciones', 1, 1, NULL, NULL, NULL, NULL, NULL, '2025-12-02 16:04:40', '2025-12-02 16:04:40', NULL),
+(4, 25, 9, 'LED-PROX-1200', 'LED-PANEL-P3-002', '224111111', 'Módulo LED Philips Lumileds LED-PROX-1200', '123333333', 1, '1', 'a2', '1', '2024-12-01', 217.00, '2024-12-01', '2025-12-01', '2025-11-01', 'Prueba de observaciones', 1, 1, NULL, NULL, NULL, NULL, NULL, '2025-12-02 16:13:59', '2025-12-02 16:13:59', NULL),
+(5, 21, 4, 'EB-2250U', 'MIC-INAL-001-003', '4012831029342', 'Proyector Epson EB-2250U Alquilado', 'EP-2024-0082547', 1, '', 'C-12, P-5', 'Nivel 3', NULL, NULL, NULL, NULL, NULL, 'Equipo alquilado en perfecto estado, mantiene calibración óptica. Factura disponible bajo demanda. Datos del cliente: TechSoluciones SL.', 1, 0, NULL, 1, 150.00, 5, 'Mínimo 30 días, incluye seguro de daños, contacto: +34 912 345 678', '2025-12-18 20:14:43', '2026-02-15 12:28:04', 10.000),
+(6, 21, 4, NULL, 'MIC-INAL-001-004', NULL, 'Micrófono', 'GGGDFR112', 1, 'nave2', '', '', NULL, 0.00, NULL, NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, '2026-02-11 08:33:51', '2026-02-15 12:28:20', 2.500),
+(8, 114, 1, '345', 'MIC-DINA-001-001', NULL, 'Microfono mod. 345-1', NULL, 1, 'Nave 1', 'A-5', 'Planta baja', NULL, 0.00, NULL, NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, '2026-02-15 12:23:50', '2026-02-15 12:23:50', 1.000),
+(9, 114, 4, '456', 'MIC-DINA-001-002', NULL, 'Microfono Sen - 456', NULL, 1, '', '', '', NULL, 0.00, NULL, NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, '2026-02-15 12:26:02', '2026-02-15 12:26:02', 3.000),
+(10, 24, NULL, NULL, 'CABLE-XLR-10M-001', NULL, 'Cable s varios', NULL, 1, '', '', '', NULL, 0.00, NULL, NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, '2026-02-15 12:41:08', '2026-02-15 12:41:08', 10.000);
 
 --
 -- Disparadores `elemento`
@@ -1065,16 +1077,23 @@ CREATE TABLE `empresa` (
   `observaciones_empresa` text COMMENT 'Observaciones internas sobre la empresa',
   `activo_empresa` tinyint(1) DEFAULT '1' COMMENT 'Si FALSE, la empresa no estará disponible para nuevos documentos',
   `created_at_empresa` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at_empresa` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at_empresa` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id_plantilla_default` int UNSIGNED DEFAULT NULL COMMENT 'Plantilla de impresión por defecto para esta empresa',
+  `modelo_impresion_empresa` varchar(50) DEFAULT 'impresionpresupuesto_m1_es.php' COMMENT 'Nombre del archivo controller usado para imprimir presupuestos',
+  `configuracion_pdf_presupuesto_empresa` text COMMENT 'Configuración JSON para personalizar PDFs de presupuesto',
+  `observaciones_cabecera_presupuesto_empresa` text COMMENT 'Texto por defecto para observaciones de cabecera (español) en nuevos presupuestos',
+  `observaciones_cabecera_ingles_presupuesto_empresa` text COMMENT 'Texto por defecto para observaciones de cabecera (inglés) en nuevos presupuestos',
+  `mostrar_subtotales_fecha_presupuesto_empresa` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Controla si se muestran subtotales por fecha en PDF de presupuestos. TRUE=mostrar, FALSE=ocultar',
+  `cabecera_firma_presupuesto_empresa` varchar(255) DEFAULT 'Departamento comercial' COMMENT 'Texto de cabecera para la firma en PDF de presupuestos'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Gestión de empresas del grupo para facturación y presupuestos';
 
 --
 -- Volcado de datos para la tabla `empresa`
 --
 
-INSERT INTO `empresa` (`id_empresa`, `codigo_empresa`, `nombre_empresa`, `nombre_comercial_empresa`, `ficticia_empresa`, `empresa_ficticia_principal`, `nif_empresa`, `direccion_fiscal_empresa`, `cp_fiscal_empresa`, `poblacion_fiscal_empresa`, `provincia_fiscal_empresa`, `pais_fiscal_empresa`, `telefono_empresa`, `movil_empresa`, `email_empresa`, `email_facturacion_empresa`, `web_empresa`, `iban_empresa`, `swift_empresa`, `banco_empresa`, `serie_presupuesto_empresa`, `numero_actual_presupuesto_empresa`, `dias_validez_presupuesto_empresa`, `serie_factura_empresa`, `numero_actual_factura_empresa`, `serie_abono_empresa`, `numero_actual_abono_empresa`, `verifactu_activo_empresa`, `verifactu_software_empresa`, `verifactu_version_empresa`, `verifactu_nif_desarrollador_empresa`, `verifactu_nombre_desarrollador_empresa`, `verifactu_sistema_empresa`, `verifactu_url_empresa`, `verifactu_certificado_empresa`, `logotipo_empresa`, `logotipo_pie_empresa`, `texto_legal_factura_empresa`, `texto_pie_presupuesto_empresa`, `texto_pie_factura_empresa`, `observaciones_empresa`, `activo_empresa`, `created_at_empresa`, `updated_at_empresa`) VALUES
-(1, 'FICTICIA', 'MDR Audiovisuales Group', 'MDR Group', 1, 1, 'B00000000', 'C/Torno, 18 Nave 2 P.I. El Canastell', '03690', 'San Vicente del Raspeig', 'Alicante', 'España', '965 253 680', '', 'comercial@mdraudiovisuales.com', '', 'https://mdraudiovisuales.com/contacto/', '', '', '', 'P', 3, 30, 'F', 0, 'R', 0, 1, NULL, NULL, NULL, NULL, 'online', NULL, NULL, '/public/img/logo/Logo2.png', '/public/img/logo/Logo2.png', '', 'MDR SE RESERVA EL DERECHO DE RECONFIRMAR LA DISPONIBILIDAD DEL MATERIAL A LA CONFIRMACIÓN DEL MISMO POR PARTE DE UDS.', '', NULL, 1, '2025-12-01 18:35:27', '2026-02-05 11:51:56'),
-(3, 'MDR02', 'MDR EVENTOS Y PRODUCCIONES S.L.', 'MDR Eventos', 0, 0, 'B06654321', 'Polígono Industrial La Paz, Nave 16', '06006', 'Badajoz', 'Badajoz', 'España', '+34 924 654 321', '+34 600 654 321', 'info@mdreventos.com', 'facturacion@mdreventos.com', 'www.mdreventos.com', 'ES91 2100 0418 4502 0005 9999', 'CAIXESBBXXX', 'CaixaBank', 'PE', 0, 30, 'FE', 0, 'RE', 0, 1, 'MDR ERP Manager', '1.0', 'B00000001', 'Software Solutions S.L.', 'online', NULL, NULL, '/public/img/logo/Logo2.png', NULL, 'MDR EVENTOS Y PRODUCCIONES S.L. - B06654321 - Inscrita en el Registro Mercantil de Badajoz, Tomo 456, Folio 789, Hoja BA-1234. Capital Social: 5.000,00 EUR', NULL, 'Factura sujeta a la Ley General Tributaria. Conserve este documento para su contabilidad.', 'Empresa especializada en producción y gestión integral de eventos.', 1, '2025-12-01 18:35:27', '2026-02-05 09:59:53');
+INSERT INTO `empresa` (`id_empresa`, `codigo_empresa`, `nombre_empresa`, `nombre_comercial_empresa`, `ficticia_empresa`, `empresa_ficticia_principal`, `nif_empresa`, `direccion_fiscal_empresa`, `cp_fiscal_empresa`, `poblacion_fiscal_empresa`, `provincia_fiscal_empresa`, `pais_fiscal_empresa`, `telefono_empresa`, `movil_empresa`, `email_empresa`, `email_facturacion_empresa`, `web_empresa`, `iban_empresa`, `swift_empresa`, `banco_empresa`, `serie_presupuesto_empresa`, `numero_actual_presupuesto_empresa`, `dias_validez_presupuesto_empresa`, `serie_factura_empresa`, `numero_actual_factura_empresa`, `serie_abono_empresa`, `numero_actual_abono_empresa`, `verifactu_activo_empresa`, `verifactu_software_empresa`, `verifactu_version_empresa`, `verifactu_nif_desarrollador_empresa`, `verifactu_nombre_desarrollador_empresa`, `verifactu_sistema_empresa`, `verifactu_url_empresa`, `verifactu_certificado_empresa`, `logotipo_empresa`, `logotipo_pie_empresa`, `texto_legal_factura_empresa`, `texto_pie_presupuesto_empresa`, `texto_pie_factura_empresa`, `observaciones_empresa`, `activo_empresa`, `created_at_empresa`, `updated_at_empresa`, `id_plantilla_default`, `modelo_impresion_empresa`, `configuracion_pdf_presupuesto_empresa`, `observaciones_cabecera_presupuesto_empresa`, `observaciones_cabecera_ingles_presupuesto_empresa`, `mostrar_subtotales_fecha_presupuesto_empresa`, `cabecera_firma_presupuesto_empresa`) VALUES
+(1, 'FICTICIA', 'MDR Audiovisuales Group', 'MDR Group', 1, 1, 'B00000000', 'C/Torno, 18 Nave 2 P.I. El Canastell', '03690', 'San Vicente del Raspeig', 'Alicante', 'España', '965 253 680', '', 'comercial@mdraudiovisuales.com', '', 'https://mdraudiovisuales.com/contacto/', 'ES1234567890123456789012', 'BSCHESMMXXX', 'BANCO SANTANDER', 'P', 5, 30, 'F', 0, 'R', 0, 1, NULL, NULL, NULL, NULL, 'online', NULL, NULL, '/public/img/logo/Logo2.png', '/public/img/logo/Logo2.png', '', 'MDR SE RESERVA EL DERECHO DE RECONFIRMAR LA DISPONIBILIDAD DEL MATERIAL A LA CONFIRMACIÓN DEL MISMO POR PARTE DE UDS.', '', NULL, 1, '2025-12-01 18:35:27', '2026-02-14 12:16:52', 1, 'impresionpresupuesto_m1_es.php', NULL, 'Montaje de material audiovisual en régimen de alquiler', 'Installation of audiovisual equipment for rent', 0, 'DEPARTAMENTO COMERCIAL'),
+(3, 'MDR02', 'MDR EVENTOS Y PRODUCCIONES S.L.', 'MDR Eventos', 0, 0, 'B06654321', 'Polígono Industrial La Paz, Nave 16', '06006', 'Badajoz', 'Badajoz', 'España', '+34 924 654 321', '+34 600 654 321', 'info@mdreventos.com', 'facturacion@mdreventos.com', 'www.mdreventos.com', 'ES91 2100 0418 4502 0005 9999', 'CAIXESBBXXX', 'CaixaBank', 'PE', 0, 30, 'FE', 0, 'RE', 0, 1, 'MDR ERP Manager', '1.0', 'B00000001', 'Software Solutions S.L.', 'online', NULL, NULL, '/public/img/logo/Logo2.png', NULL, 'MDR EVENTOS Y PRODUCCIONES S.L. - B06654321 - Inscrita en el Registro Mercantil de Badajoz, Tomo 456, Folio 789, Hoja BA-1234. Capital Social: 5.000,00 EUR', NULL, 'Factura sujeta a la Ley General Tributaria. Conserve este documento para su contabilidad.', 'Empresa especializada en producción y gestión integral de eventos.', 1, '2025-12-01 18:35:27', '2026-02-12 19:12:22', 1, 'impresionpresupuesto_m2_es.php', '{\r\n  \"ocultar_cif_si_termina_en_0000\": true,\r\n  \"texto_observacion_montaje\": \"Montaje ______ alquiler\",\r\n  \"mostrar_subtotales_por_fecha\": false,\r\n  \"formato_observaciones\": \"texto_completo\",\r\n  \"texto_firma_departamento\": \"Departamento Comercial\",\r\n  \"mostrar_descuento_detallado\": true,\r\n  \"primera_linea_articulo_en_negrita\": false\r\n}', 'Montaje de material audiovisual en regimen de alquiler', NULL, 1, 'Departamento comercial');
 
 -- --------------------------------------------------------
 
@@ -1207,7 +1226,7 @@ INSERT INTO `familia` (`id_familia`, `id_grupo`, `codigo_familia`, `nombre_famil
 (69, 5, 'FAM-TAR', 'Tarimas', 'Stages', 'Tarimas modulares', 1, 1, 1, NULL, NULL, NULL, NULL, 100, '2026-02-05 17:56:55', '2026-02-05 17:56:55'),
 (70, 5, 'FAM-TRU', 'Truss', 'Truss', 'Estructuras de truss', 1, 1, 1, NULL, NULL, NULL, NULL, 100, '2026-02-05 17:56:55', '2026-02-05 17:56:55'),
 (71, 5, 'FAM-RIG', 'Rigging', 'Rigging', 'Motores y sistemas de elevación', 1, 1, 1, NULL, NULL, NULL, NULL, 100, '2026-02-05 17:56:55', '2026-02-05 17:56:55'),
-(72, 5, 'FAM-TEC', 'Técnicos', 'Technicians', 'Personal técnico especializado', 1, 0, 0, 5, '', '', '', 100, '2026-02-05 17:56:55', '2026-02-05 18:43:13'),
+(72, 5, 'FAM-TEC', 'Técnicos', 'Technicians', 'Personal técnico especializado', 1, 0, 0, 5, '', 'LA JORNADA DEL PERSONAL TÉCNICO ES LA ESPECIFICADA EN EL PRESUPUESTO, EN EL CASO DE QUE ESTA SE SUPERE SE COBRARAN HORAS EXTRAS , PRECIO HORA EXTRA: 50,00.-€. DE LUNES A VIERNES Y 70,00.-€. SABADO, DOMINGO Y FESTIVO. \r\nLOS TÉCNICOS PODRÁN HACER UN MAXIMO DE 10 HORAS POR JORNADA.\r\nEL PERSONAL TÉCNICO TENDRA QUE DISPONER DE AL MENOS 1:30Hr PARA COMER, EN CASO CONTRARIO EL CLIENTE DEBERÁ HACERSE CARGO DE LA COMIDA DE ESTOS.', '', 100, '2026-02-05 17:56:55', '2026-02-06 18:52:58'),
 (73, 5, 'FAM-MAQ', 'Maquinaria', 'Machinery', 'Maquinaria técnica', 1, 1, 1, NULL, NULL, NULL, NULL, 100, '2026-02-05 17:56:55', '2026-02-05 17:56:55'),
 (74, 5, 'FAM-VAR', 'Varios', 'Miscellaneous', 'Servicios varios y accesorios', 1, 1, 1, NULL, NULL, NULL, NULL, 100, '2026-02-05 17:56:55', '2026-02-05 17:56:55');
 
@@ -1218,27 +1237,27 @@ INSERT INTO `familia` (`id_familia`, `id_grupo`, `codigo_familia`, `nombre_famil
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `familia_unidad_media` (
-`id_familia` int unsigned
-,`id_grupo` int unsigned
+`activo_familia` tinyint(1)
+,`activo_unidad` tinyint(1)
 ,`codigo_familia` varchar(20)
-,`nombre_familia` varchar(100)
-,`name_familia` varchar(100)
-,`descr_familia` varchar(255)
-,`imagen_familia` varchar(150)
-,`activo_familia` tinyint(1)
+,`codigo_grupo` varchar(20)
 ,`coeficiente_familia` tinyint
 ,`created_at_familia` timestamp
-,`updated_at_familia` timestamp
+,`descr_familia` varchar(255)
+,`descr_unidad` varchar(255)
+,`descripcion_grupo` varchar(255)
+,`id_familia` int unsigned
+,`id_grupo` int unsigned
 ,`id_unidad_familia` int
+,`imagen_familia` varchar(150)
+,`name_familia` varchar(100)
+,`nombre_familia` varchar(100)
+,`nombre_grupo` varchar(100)
+,`nombre_unidad` varchar(50)
 ,`observaciones_presupuesto_familia` text
 ,`orden_obs_familia` int
-,`nombre_unidad` varchar(50)
-,`descr_unidad` varchar(255)
 ,`simbolo_unidad` varchar(10)
-,`activo_unidad` tinyint(1)
-,`codigo_grupo` varchar(20)
-,`nombre_grupo` varchar(100)
-,`descripcion_grupo` varchar(255)
+,`updated_at_familia` timestamp
 );
 
 -- --------------------------------------------------------
@@ -1493,9 +1512,10 @@ CREATE TABLE `kit` (
 --
 
 INSERT INTO `kit` (`id_kit`, `cantidad_kit`, `id_articulo_maestro`, `id_articulo_componente`, `activo_kit`, `created_at_kit`, `updated_at_kit`) VALUES
-(4, 10, 21, 24, 1, '2026-01-03 16:30:29', '2026-01-03 16:30:52'),
+(4, 10, 21, 24, 1, '2026-01-03 16:30:29', '2026-02-15 12:38:49'),
 (7, 12, 116, 119, 1, '2026-02-06 12:16:40', '2026-02-06 12:16:40'),
-(8, 12, 116, 120, 1, '2026-02-06 12:16:58', '2026-02-06 12:16:58');
+(8, 12, 116, 120, 1, '2026-02-06 12:16:58', '2026-02-06 12:16:58'),
+(9, 1, 116, 42, 1, '2026-02-11 08:29:20', '2026-02-11 08:29:20');
 
 --
 -- Disparadores `kit`
@@ -1641,10 +1661,10 @@ CREATE TABLE `linea_presupuesto` (
 --
 
 INSERT INTO `linea_presupuesto` (`id_linea_ppto`, `id_version_presupuesto`, `id_articulo`, `id_linea_padre`, `id_ubicacion`, `id_coeficiente`, `id_impuesto`, `numero_linea_ppto`, `tipo_linea_ppto`, `nivel_jerarquia`, `orden_linea_ppto`, `codigo_linea_ppto`, `descripcion_linea_ppto`, `fecha_montaje_linea_ppto`, `fecha_desmontaje_linea_ppto`, `fecha_inicio_linea_ppto`, `fecha_fin_linea_ppto`, `cantidad_linea_ppto`, `precio_unitario_linea_ppto`, `descuento_linea_ppto`, `aplicar_coeficiente_linea_ppto`, `valor_coeficiente_linea_ppto`, `jornadas_linea_ppto`, `porcentaje_iva_linea_ppto`, `observaciones_linea_ppto`, `mostrar_obs_articulo_linea_ppto`, `ocultar_detalle_kit_linea_ppto`, `mostrar_en_presupuesto`, `es_opcional`, `activo_linea_ppto`, `created_at_linea_ppto`, `updated_at_linea_ppto`) VALUES
-(42, 4, 21, NULL, NULL, NULL, 2, 1, 'articulo', 0, 0, 'MIC-INAL-001', 'Micrófono inalámbrico', '2026-02-01', '2026-02-05', '2026-02-01', '2026-02-05', 1.00, 25.00, 0.00, 1, 4.75, 5, 10.00, NULL, 1, 0, 1, 0, 1, '2026-01-30 18:56:01', '2026-01-30 18:57:11'),
+(42, 4, 21, NULL, NULL, NULL, 2, 1, 'articulo', 0, 0, 'MIC-INAL-001', 'Micrófono inalámbrico', '2026-02-01', '2026-02-05', '2026-02-01', '2026-02-05', 1.00, 25.00, 0.00, 1, 4.75, 5, 10.00, NULL, 1, 0, 1, 0, 1, '2026-01-30 18:56:01', '2026-02-13 11:43:24'),
 (43, 4, 21, NULL, NULL, NULL, 2, 1, 'articulo', 0, 0, 'MIC-INAL-001', 'Micrófono inalámbrico', '2026-02-01', '2026-02-05', '2026-02-01', '2026-02-05', 1.00, 25.00, 0.00, 1, 4.75, 5, 10.00, NULL, 1, 0, 1, 0, 1, '2026-02-02 13:40:05', '2026-02-02 13:40:05'),
 (48, 3, 74, NULL, 3, NULL, NULL, 1, 'articulo', 0, 0, 'TAR-001', 'TARIMA MODULAR 3X2X040 MOQUETA NEGRA', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 1150.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:20:45', '2026-02-05 18:20:45'),
-(49, 3, 116, NULL, 3, NULL, 1, 1, 'articulo', 0, 0, 'EQUIP-MEGA-001', 'Equipo de megafonía 12 cajas (S/TCO)', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 445.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:25:52', '2026-02-06 15:54:08'),
+(49, 3, 116, NULL, 3, NULL, 1, 1, 'articulo', 0, 0, 'EQUIP-MEGA-001', 'Equipo de megafonía 12 cajas (S/TCO)', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 445.00, 5.00, 0, NULL, NULL, 21.00, 'esto sale', 1, 0, 1, 0, 1, '2026-02-05 18:25:52', '2026-02-13 16:54:14'),
 (50, 3, 117, NULL, 3, NULL, 1, 1, 'articulo', 0, 0, 'MIC-INAL-SEN-001', 'MICRÓFONO INALÁMBRICO SENNHEISER XSW2 MANO', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 57.00, 100.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:31:50', '2026-02-05 18:31:50'),
 (51, 3, 117, NULL, 3, NULL, 1, 1, 'articulo', 0, 0, 'MIC-INAL-SEN-001', 'MICRÓFONO INALÁMBRICO SENNHEISER XSW2 MANO', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 57.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:33:18', '2026-02-05 18:33:18'),
 (52, 3, 118, NULL, 3, NULL, 1, 1, 'articulo', 0, 0, 'SPOTIFY', 'REPRODUCTOR SPOTIFY', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 36.00, 100.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:33:51', '2026-02-05 18:34:58'),
@@ -1654,15 +1674,22 @@ INSERT INTO `linea_presupuesto` (`id_linea_ppto`, `id_version_presupuesto`, `id_
 (56, 3, 40, NULL, 3, NULL, NULL, 1, 'articulo', 0, 0, 'LED-003', 'FOCO RECORTE DE LED 20/45', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 60.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:39:35', '2026-02-05 18:40:20'),
 (57, 3, 51, NULL, 3, NULL, NULL, 1, 'articulo', 0, 0, 'SOP-001', 'TORRE ELEVABLE 3 mts. MANUAL 30 kg CARGA / NEGRA', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 36.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:40:10', '2026-02-05 18:40:31'),
 (58, 3, 48, NULL, 3, NULL, NULL, 1, 'articulo', 0, 0, 'CTR-001', 'MESA DE LUCES EUROLITE DMX OPERATOR 192', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 36.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:41:18', '2026-02-05 18:41:18'),
-(59, 3, 91, NULL, 3, NULL, NULL, 1, 'articulo', 0, 0, 'TEC-001', 'TÉCNICO AUDIOVISUALES (MAX. 8 HORAS)', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 2.00, 220.00, 0.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:43:56', '2026-02-05 19:22:14'),
+(59, 3, 91, NULL, 3, NULL, NULL, 1, 'articulo', 0, 0, 'TEC-001', 'TÉCNICO AUDIOVISUALES (MAX. 8 HORAS)', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 2.00, 220.00, 0.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:43:56', '2026-02-11 12:03:38'),
 (60, 3, 41, NULL, 3, NULL, NULL, 1, 'articulo', 0, 0, 'LED-004', 'FOCO PAR LED SPOT BATERÍA', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 24.00, 25.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:44:50', '2026-02-05 18:44:50'),
 (61, 3, 52, NULL, 3, NULL, NULL, 1, 'articulo', 0, 0, 'SOP-002', 'PIE CON PEANA REDONDA', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 12.00, 12.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:45:28', '2026-02-05 18:45:28'),
 (62, 3, 114, NULL, 3, NULL, 1, 1, 'articulo', 0, 0, 'MIC-DINA-001', 'Micrófono Dinámico SM58', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-29', 1.00, 12.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-05 18:49:43', '2026-02-05 18:49:43'),
-(63, 3, 115, NULL, 3, NULL, 2, 1, 'articulo', 0, 0, 'CAJ-INYEC-001', 'Caja de inyección', '2026-01-27', '2026-01-31', '2026-01-29', '2026-02-09', 1.00, 12.00, 10.00, 1, 11.95, 12, 10.00, NULL, 1, 0, 1, 0, 1, '2026-02-06 08:52:31', '2026-02-06 12:07:49'),
 (64, 3, 75, NULL, 12, NULL, NULL, 1, 'articulo', 0, 0, 'TAR-002', 'TARIMA MODULAR 16,5X2,5X0,60 + INTEGRADA', '2026-01-27', '2026-01-31', '2026-01-30', '2026-01-30', 1.00, 3760.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-06 09:37:08', '2026-02-06 09:37:08'),
 (65, 3, 76, NULL, 12, NULL, NULL, 1, 'articulo', 0, 0, 'TAR-003', 'TARIMA MODULAR 22X2,50X1,50 PARA LED', '2026-01-27', '2026-01-31', '2026-01-30', '2026-01-30', 1.00, 1050.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-06 09:39:35', '2026-02-06 09:39:35'),
 (66, 3, 77, NULL, 12, NULL, NULL, 1, 'articulo', 0, 0, 'TAR-004', 'TARIMA MODULAR 2X2X150 CON MOQUETA NEGRA', '2026-01-27', '2026-01-31', '2026-01-30', '2026-01-30', 6.00, 250.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-06 09:40:15', '2026-02-06 09:42:45'),
-(67, 3, 99, NULL, 12, NULL, NULL, 1, 'articulo', 0, 0, 'VAR-001', 'MONTAJE Y DESMONTAJE', '2026-01-27', '2026-01-31', '2026-01-30', '2026-01-30', 1.00, 2050.00, 0.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-06 09:41:01', '2026-02-06 09:41:01');
+(67, 3, 99, NULL, 12, NULL, NULL, 1, 'articulo', 0, 0, 'VAR-001', 'MONTAJE Y DESMONTAJE', '2026-01-27', '2026-01-31', '2026-01-30', '2026-01-30', 1.00, 2050.00, 0.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-06 09:41:01', '2026-02-06 09:41:01'),
+(68, 3, 54, NULL, 8, NULL, NULL, 1, 'articulo', 0, 0, 'PAN-001', 'PANTALLA PLASMA 65\"', '2026-01-28', '2026-01-31', '2026-01-30', '2026-01-31', 3.00, 285.00, 0.00, 1, 4.75, 2, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-11 09:35:26', '2026-02-11 09:37:18'),
+(69, 3, 48, NULL, 6, NULL, NULL, 2, 'articulo', 0, 1, 'CTR-001', 'MESA DE LUCES EUROLITE DMX OPERATOR 192', '2026-01-27', '2026-01-31', '2026-01-29', '2026-01-31', 2.00, 36.00, 5.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-11 11:32:29', '2026-02-11 12:01:45'),
+(70, 3, 91, NULL, 8, NULL, NULL, 1, 'articulo', 0, 0, 'TEC-001', 'TÉCNICO AUDIOVISUALES (MAX. 8 HORAS)', '2026-01-27', '2026-01-28', '2026-01-27', '2026-01-28', 3.00, 220.00, 0.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-11 11:45:09', '2026-02-11 11:45:52'),
+(72, 5, 91, NULL, NULL, NULL, NULL, 1, 'articulo', 0, 0, 'TEC-001', 'TÉCNICO AUDIOVISUALES (MAX. 8 HORAS)', '2026-02-12', '2026-02-15', '2026-02-12', '2026-02-15', 1.00, 220.00, 0.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-11 12:12:43', '2026-02-11 12:12:43'),
+(73, 5, 74, NULL, NULL, NULL, NULL, 1, 'articulo', 0, 0, 'TAR-001', 'TARIMA MODULAR 3X2X040 MOQUETA NEGRA', '2026-02-12', '2026-02-15', '2026-02-12', '2026-02-12', 1.00, 1150.00, 0.00, 0, NULL, NULL, 21.00, NULL, 1, 0, 1, 0, 1, '2026-02-11 12:13:09', '2026-02-11 12:14:32'),
+(74, 3, 117, NULL, 9, NULL, 1, 1, 'articulo', 0, 0, 'MIC-INAL-SEN-001', 'MICRÓFONO INALÁMBRICO SENNHEISER XSW2 MANO', '2026-01-27', '2026-01-31', '2026-01-27', '2026-01-31', 1.00, 57.00, 0.00, 0, NULL, NULL, 21.00, 'cfr4cfre', 1, 0, 1, 0, 1, '2026-02-12 10:30:26', '2026-02-12 10:30:26'),
+(76, 3, 116, NULL, 4, NULL, 1, 1, 'articulo', 0, 0, 'EQUIP-MEGA-001', 'Equipo de megafonía 12 cajas (S/TCO)', '2026-01-27', '2026-01-31', '2026-01-27', '2026-01-31', 1.00, 445.00, 0.00, 1, 4.75, 5, 21.00, 'El cliente será responsable de facilitar los anclajes para las cajas acústicas.', 1, 0, 1, 0, 1, '2026-02-13 16:46:46', '2026-02-13 16:46:46'),
+(78, 6, 21, NULL, NULL, NULL, 1, 1, 'articulo', 0, 0, 'MIC-INAL-001', 'Micrófono inalámbrico', '2026-02-20', '2026-02-26', '2026-02-20', '2026-02-26', 1.00, 25.00, 0.00, 1, 7.25, 7, 0.00, NULL, 1, 0, 1, 0, 1, '2026-02-14 10:22:48', '2026-02-14 10:22:48');
 
 --
 -- Disparadores `linea_presupuesto`
@@ -1751,28 +1778,28 @@ INSERT INTO `llamadas` (`id_llamada`, `id_metodo`, `nombre_comunicante`, `domici
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `llamadas_con_comerciales_y_metodos` (
-`id_llamada` int
-,`id_metodo` int
-,`nombre_comunicante` varchar(100)
+`activo_llamada` tinyint
+,`archivos_adjuntos` text
+,`descripcion_estado` varchar(100)
 ,`domicilio_instalacion` varchar(200)
+,`email_contacto` varchar(50)
+,`estado` int
+,`estado_es_3` int
+,`fecha_hora_preferida` datetime
+,`fecha_primer_contacto` datetime
+,`fecha_recepcion` datetime
+,`id_comercial_asignado` int
+,`id_llamada` int
+,`id_metodo` int
+,`imagen_metodo` varchar(255)
+,`nombre_comercial` varchar(50)
+,`nombre_comunicante` varchar(100)
+,`nombre_metodo` varchar(50)
+,`observaciones` text
 ,`telefono_fijo` varchar(15)
 ,`telefono_movil` varchar(15)
-,`email_contacto` varchar(50)
-,`fecha_hora_preferida` datetime
-,`observaciones` text
-,`id_comercial_asignado` int
-,`estado` int
-,`fecha_recepcion` datetime
-,`activo_llamada` tinyint
-,`nombre_comercial` varchar(50)
-,`nombre_metodo` varchar(50)
-,`imagen_metodo` varchar(255)
-,`descripcion_estado` varchar(100)
-,`archivos_adjuntos` text
-,`tiene_contactos` int
-,`estado_es_3` int
 ,`tiene_adjuntos` int
-,`fecha_primer_contacto` datetime
+,`tiene_contactos` int
 );
 
 -- --------------------------------------------------------
@@ -1835,13 +1862,13 @@ INSERT INTO `metodos_contacto` (`id_metodo`, `nombre`, `permite_adjuntos`, `esta
 --
 CREATE TABLE `metodo_forma_pago` (
 `codigo_pago` varchar(20)
-,`nombre_pago` varchar(100)
-,`nombre_metodo_pago` varchar(100)
-,`porcentaje_anticipo_pago` decimal(5,2)
-,`dias_anticipo_pago` int
-,`porcentaje_final_pago` decimal(5,2)
-,`dias_final_pago` int
 ,`descuento_pago` decimal(5,2)
+,`dias_anticipo_pago` int
+,`dias_final_pago` int
+,`nombre_metodo_pago` varchar(100)
+,`nombre_pago` varchar(100)
+,`porcentaje_anticipo_pago` decimal(5,2)
+,`porcentaje_final_pago` decimal(5,2)
 ,`tipo_pago` varchar(16)
 );
 
@@ -1906,6 +1933,45 @@ INSERT INTO `observacion_general` (`id_obs_general`, `codigo_obs_general`, `titu
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `plantilla_impresion`
+--
+
+CREATE TABLE `plantilla_impresion` (
+  `id_plantilla` int UNSIGNED NOT NULL,
+  `codigo_plantilla` varchar(50) COLLATE utf8mb4_spanish_ci NOT NULL COMMENT 'Código único: cli_esp, cli_eng, int_esp, int_eng, etc.',
+  `nombre_plantilla` varchar(100) COLLATE utf8mb4_spanish_ci NOT NULL COMMENT 'Nombre descriptivo de la plantilla',
+  `descripcion_plantilla` text COLLATE utf8mb4_spanish_ci COMMENT 'Descripción detallada del uso de la plantilla',
+  `idioma_plantilla` enum('es','en','fr','de','it','pt') COLLATE utf8mb4_spanish_ci NOT NULL DEFAULT 'es' COMMENT 'Idioma principal del template',
+  `tipo_cliente_plantilla` enum('nacional','internacional') COLLATE utf8mb4_spanish_ci NOT NULL DEFAULT 'nacional' COMMENT 'Tipo de cliente al que está dirigida la plantilla',
+  `archivo_template` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL COMMENT 'Ruta relativa al archivo PHP del template',
+  `archivo_css_plantilla` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL COMMENT 'Archivo CSS específico de la plantilla (opcional)',
+  `config_json` text COLLATE utf8mb4_spanish_ci COMMENT 'Parámetros configurables en formato JSON: {mostrar_logo, mostrar_precios, formato_fecha, etc.}',
+  `mostrar_precios_plantilla` tinyint(1) DEFAULT '1' COMMENT 'Mostrar o ocultar precios en la impresión',
+  `mostrar_totales_plantilla` tinyint(1) DEFAULT '1' COMMENT 'Mostrar o ocultar totales y desglose IVA',
+  `mostrar_logo_plantilla` tinyint(1) DEFAULT '1' COMMENT 'Mostrar o ocultar logo de empresa',
+  `mostrar_observaciones_plantilla` tinyint(1) DEFAULT '1' COMMENT 'Mostrar o ocultar sección de observaciones',
+  `formato_pagina_plantilla` enum('A4','Letter','Legal') COLLATE utf8mb4_spanish_ci DEFAULT 'A4' COMMENT 'Formato de página para impresión',
+  `orientacion_plantilla` enum('portrait','landscape') COLLATE utf8mb4_spanish_ci DEFAULT 'portrait' COMMENT 'Orientación de la página',
+  `orden_plantilla` int UNSIGNED DEFAULT '100' COMMENT 'Orden de aparición en listas de selección',
+  `activo_plantilla` tinyint(1) DEFAULT '1' COMMENT 'Soft delete: TRUE=activa, FALSE=eliminada',
+  `created_at_plantilla` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de creación del registro',
+  `updated_at_plantilla` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Fecha de última actualización'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci COMMENT='Plantillas personalizables para impresión de presupuestos';
+
+--
+-- Volcado de datos para la tabla `plantilla_impresion`
+--
+
+INSERT INTO `plantilla_impresion` (`id_plantilla`, `codigo_plantilla`, `nombre_plantilla`, `descripcion_plantilla`, `idioma_plantilla`, `tipo_cliente_plantilla`, `archivo_template`, `archivo_css_plantilla`, `config_json`, `mostrar_precios_plantilla`, `mostrar_totales_plantilla`, `mostrar_logo_plantilla`, `mostrar_observaciones_plantilla`, `formato_pagina_plantilla`, `orientacion_plantilla`, `orden_plantilla`, `activo_plantilla`, `created_at_plantilla`, `updated_at_plantilla`) VALUES
+(1, 'cli_esp', 'Cliente España - Estándar', 'Plantilla estándar para clientes españoles. Incluye logo, datos fiscales completos, desglose de IVA y observaciones.', 'es', 'nacional', 'templates/cli_esp.php', 'base.css', '{\"moneda\": \"€\", \"formato_fecha\": \"d/m/Y\", \"separador_decimal\": \",\", \"separador_miles\": \".\"}', 1, 1, 1, 1, 'A4', 'portrait', 10, 1, '2026-02-10 09:27:48', '2026-02-10 09:27:48'),
+(2, 'cli_eng', 'Client England - Standard', 'Standard template for English-speaking clients. Includes logo, full tax details, VAT breakdown and observations.', 'en', 'nacional', 'templates/cli_eng.php', 'base.css', '{\"moneda\": \"€\", \"formato_fecha\": \"d/m/Y\", \"separador_decimal\": \".\", \"separador_miles\": \",\"}', 1, 1, 1, 1, 'A4', 'portrait', 20, 0, '2026-02-10 09:27:48', '2026-02-10 09:27:48'),
+(3, 'int_esp', 'Internacional España - Simplificado', 'Plantilla simplificada para clientes internacionales en español. Sin IVA, formato internacional.', 'es', 'internacional', 'templates/int_esp.php', 'base.css', '{\"moneda\": \"€\", \"formato_fecha\": \"Y-m-d\", \"separador_decimal\": \".\", \"separador_miles\": \",\", \"mostrar_iva\": false}', 1, 1, 1, 1, 'A4', 'portrait', 30, 0, '2026-02-10 09:27:48', '2026-02-10 09:27:48'),
+(4, 'int_eng', 'International England - Simplified', 'Simplified template for international clients in English. No VAT, international format.', 'en', 'internacional', 'templates/int_eng.php', 'base.css', '{\"moneda\": \"€\", \"formato_fecha\": \"Y-m-d\", \"separador_decimal\": \".\", \"separador_miles\": \",\", \"mostrar_iva\": false}', 1, 1, 1, 1, 'A4', 'portrait', 40, 0, '2026-02-10 09:27:48', '2026-02-10 09:27:48'),
+(5, 'cli_esp_sin_precios', 'Cliente España - Sin Precios', 'Plantilla para presupuestos estimativos sin mostrar precios. Útil para presupuestos preliminares o de referencia.', 'es', 'nacional', 'templates/cli_esp.php', 'base.css', '{\"moneda\": \"€\", \"formato_fecha\": \"d/m/Y\", \"separador_decimal\": \",\", \"separador_miles\": \".\", \"ocultar_columnas\": [\"precio\", \"descuento\", \"total\"]}', 0, 0, 1, 1, 'A4', 'portrait', 50, 0, '2026-02-10 09:27:48', '2026-02-10 09:27:48');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `presupuesto`
 --
 
@@ -1949,8 +2015,10 @@ CREATE TABLE `presupuesto` (
 --
 
 INSERT INTO `presupuesto` (`id_presupuesto`, `id_empresa`, `numero_presupuesto`, `id_cliente`, `id_contacto_cliente`, `id_estado_ppto`, `version_actual_presupuesto`, `estado_general_presupuesto`, `id_forma_pago`, `id_metodo`, `fecha_presupuesto`, `fecha_validez_presupuesto`, `fecha_inicio_evento_presupuesto`, `fecha_fin_evento_presupuesto`, `numero_pedido_cliente_presupuesto`, `aplicar_coeficientes_presupuesto`, `descuento_presupuesto`, `nombre_evento_presupuesto`, `direccion_evento_presupuesto`, `poblacion_evento_presupuesto`, `cp_evento_presupuesto`, `provincia_evento_presupuesto`, `observaciones_cabecera_presupuesto`, `observaciones_cabecera_ingles_presupuesto`, `observaciones_pie_presupuesto`, `observaciones_pie_ingles_presupuesto`, `mostrar_obs_familias_presupuesto`, `mostrar_obs_articulos_presupuesto`, `observaciones_internas_presupuesto`, `activo_presupuesto`, `created_at_presupuesto`, `updated_at_presupuesto`) VALUES
-(11, NULL, 'P-00002/2026', 4, 6, 1, 1, 'borrador', 8, NULL, '2026-01-21', '2026-02-20', '2026-01-27', '2026-01-31', 'PD-100', 0, 20.00, 'Concierto anual', 'Avda. Eduardo Zaplana, S/N', 'Benidorm', '03502', 'Alicante', 'Montaje de material audiovisual en regimen de alquiler, durante los días del 27 de Enero al 31 de enero', '', 'LA JORNADA DEL PERSONAL TÉCNICO ES LA ESPECIFICADA EN EL PRESUPUESTO, EN EL CASO DE QUE ESTA SE SUPERE SE COBRARAN\nHORAS EXTRAS , PRECIO HORA EXTRA: 50,00.-€. DE LUNES A VIERNES Y 70,00.-€. SABADO, DOMINGO Y FESTIVO. LOS TÉCNICOS\nPODRÁN HACER UN MAXIMO DE 10 HORAS POR JORNADA\nEL PERSONNAL TÉCNICO TENDRA QUE DISPONER DE AL MENOS 1:30Hr PARA COMER, EN CASO CONTRARIO EL CLIENTE DEBERÁ\nHACERSE CARGO DE LA COMIDA DE ESTOS.\n\nC/. TORNO, 18 NAVE 2 - P.I. EL CANASTELL -- 03690 SAN VICENTE DEL RASPEIG (ALICANTE)\nTelfo: 965 25 36 80 - FAX: 965 91 00 73\nE-mail: mdr@mdraudiovisuales.com - WEB: www.mdraudiovisuales.com', '', 1, 0, '', 1, '2026-01-21 09:40:39', '2026-02-06 15:51:47'),
-(12, NULL, 'P-00003/2026', 1, 1, 1, 1, 'borrador', 11, NULL, '2026-01-30', '2026-03-01', '2026-02-01', '2026-02-05', 'PD-110', 1, 10.20, 'Conferencia Tech 2025', '', '', '', '', 'Observaciones de inicio', 'Observations', 'Observaciones del final', 'Footer observations', 1, 1, '', 1, '2026-01-30 18:55:28', '2026-01-30 18:55:28');
+(11, NULL, 'P-00002/2026', 4, 6, 1, 1, 'borrador', 8, NULL, '2026-01-21', '2026-02-20', '2026-01-27', '2026-01-31', '', 1, 20.00, '', '', '', '', '', 'Montaje de material audiovisual en régimen de alquiler', '', 'EN CASO DE PÉRDIDA, DESAPARICIÓN INCLUIDO ROBO, INCENDIO, ETC..., ASÍ COMO CUALQUIER DESPERFECTO CAUSADO AL MATERIAL\nOBJETO DE ESTE PRESUPUESTO, LA REPOSICIÓN DE LOS MISMOS CORRERÁ POR CUENTA DEL CLIENTE.', '', 1, 1, '', 1, '2026-01-21 09:40:39', '2026-02-13 16:35:49'),
+(12, NULL, 'P-00003/2026', 1, 1, 1, 1, 'borrador', 11, NULL, '2026-01-30', '2026-03-01', '2026-02-01', '2026-02-05', 'PD-110', 1, 10.20, 'Conferencia Tech 2025', '', '', '', '', 'Observaciones de inicio', 'Observations', 'Observaciones del final', 'Footer observations', 1, 1, '', 1, '2026-01-30 18:55:28', '2026-01-30 18:55:28'),
+(13, NULL, 'P-00004/2026', 4, 6, 1, 1, 'borrador', 8, NULL, '2026-02-11', '2026-03-13', '2026-02-12', '2026-02-15', '', 1, 20.00, '', '', '', '', '', '', '', '', '', 1, 1, '', 1, '2026-02-11 12:10:15', '2026-02-11 12:10:15'),
+(14, NULL, 'P-00005/2026', 5, NULL, 1, 1, 'borrador', 2, NULL, '2026-02-14', '2026-03-16', '2026-02-20', '2026-02-26', '', 0, 0.00, '', '', '', '', '', 'Montaje de material audiovisual en régimen de alquiler', 'Installation of audiovisual equipment for rent', '', '', 1, 1, '', 1, '2026-02-14 09:50:20', '2026-02-14 12:29:42');
 
 --
 -- Disparadores `presupuesto`
@@ -2143,7 +2211,9 @@ CREATE TABLE `presupuesto_version` (
 
 INSERT INTO `presupuesto_version` (`id_version_presupuesto`, `id_presupuesto`, `numero_version_presupuesto`, `version_padre_presupuesto`, `estado_version_presupuesto`, `motivo_modificacion_version`, `fecha_creacion_version`, `creado_por_version`, `fecha_envio_version`, `enviado_por_version`, `fecha_aprobacion_version`, `fecha_rechazo_version`, `motivo_rechazo_version`, `ruta_pdf_version`, `activo_version`, `created_at_version`, `updated_at_version`) VALUES
 (3, 11, 1, NULL, 'borrador', 'Versión inicial', '2026-01-21 09:40:39', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-21 09:40:39', '2026-01-21 09:40:39'),
-(4, 12, 1, NULL, 'borrador', 'Versión inicial', '2026-01-30 18:55:28', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-30 18:55:28', '2026-01-30 18:55:28');
+(4, 12, 1, NULL, 'borrador', 'Versión inicial', '2026-01-30 18:55:28', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-30 18:55:28', '2026-01-30 18:55:28'),
+(5, 13, 1, NULL, 'borrador', 'Versión inicial', '2026-02-11 12:10:15', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-02-11 12:10:15', '2026-02-11 12:10:15'),
+(6, 14, 1, NULL, 'borrador', 'Versión inicial', '2026-02-14 09:50:20', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-02-14 09:50:20', '2026-02-14 09:50:20');
 
 --
 -- Disparadores `presupuesto_version`
@@ -2483,7 +2553,7 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `contrasena`, `nombre`, `fecha_crea`, `est`, `id_rol`, `tokenUsu`) VALUES
 (1, 'ale@gmail.com', '0fcc23c449980e35b30c0f77fd125dc5', 'Alejandro', '2025-04-25 09:10:45', 1, 4, 'x8v7c3plq9dtfr1b2a6mjohw5esynuz'),
-(2, 'luis@gmail.com', '0fcc23c449980e35b30c0f77fd125dc5', 'Luis', '2025-04-25 10:23:12', 1, 3, '92fmazrxb8pcl5ghvt6wqyonj3sedu'),
+(2, 'luis@gmail.com', '0fcc23c449980e35b30c0f77fd125dc5', 'Luis Carlos Pérez', '2025-04-25 10:23:12', 1, 3, '92fmazrxb8pcl5ghvt6wqyonj3sedu'),
 (3, 'jorge@gmail.com', '0fcc23c449980e35b30c0f77fd125dc5', 'Jorge', '2025-04-25 10:30:21', 1, 1, 'qlynsjo3vg9rc6tepbxahw4zf7dumk'),
 (4, 'hugo@gmail.com', '0fcc23c449980e35b30c0f77fd125dc5', 'Hugo', '2025-04-25 10:37:15', 1, 2, 'hmr4dwaj5s9p7b6qcznxfvotlyegku'),
 (5, 'alejandrorodriguez@gmail.com', '0fcc23c449980e35b30c0f77fd125dc5', 'Alejandro Rodríguez Martínez', '2025-05-15 10:18:39', 1, 4, 'k47bzmou1hsyexrfqvwcdjap9nglt0'),
@@ -2520,13 +2590,13 @@ INSERT INTO `usuarios` (`id_usuario`, `email`, `contrasena`, `nombre`, `fecha_cr
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `usuarios_con_rol` (
-`id_usuario` int
-,`nombre` varchar(60)
+`contrasena` varchar(255)
 ,`email` varchar(60)
-,`contrasena` varchar(255)
-,`fecha_crea` datetime
 ,`est` tinyint
+,`fecha_crea` datetime
 ,`id_rol` int
+,`id_usuario` int
+,`nombre` varchar(60)
 ,`nombre_rol` varchar(50)
 );
 
@@ -2537,12 +2607,12 @@ CREATE TABLE `usuarios_con_rol` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vacaciones_con_nombre` (
-`id_vacacion` int
-,`id_comercial` int
-,`fecha_inicio` date
-,`fecha_fin` date
+`activo_vacacion` tinyint
 ,`descripcion` varchar(50)
-,`activo_vacacion` tinyint
+,`fecha_fin` date
+,`fecha_inicio` date
+,`id_comercial` int
+,`id_vacacion` int
 ,`nombre_comercial` varchar(101)
 );
 
@@ -2579,13 +2649,13 @@ INSERT INTO `visitas_cerradas` (`id_visita_cerrada`, `fecha_visita_cerrada`, `id
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_adjuntos_con_comunicante` (
-`id_adjunto` int
+`estado` tinyint
+,`fecha_subida` datetime
+,`id_adjunto` int
 ,`id_llamada` int
 ,`nombre_archivo` varchar(255)
-,`tipo` varchar(20)
-,`fecha_subida` datetime
-,`estado` tinyint
 ,`nombre_comunicante` varchar(100)
+,`tipo` varchar(20)
 );
 
 -- --------------------------------------------------------
@@ -2595,48 +2665,86 @@ CREATE TABLE `vista_adjuntos_con_comunicante` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_articulo_completa` (
-`id_articulo` int unsigned
-,`id_familia` int unsigned
-,`id_unidad` int unsigned
-,`id_impuesto` int
+`activo_articulo` tinyint(1)
+,`activo_familia_relacionada` tinyint(1)
+,`activo_impuesto_relacionado` tinyint(1)
+,`activo_unidad_relacionada` tinyint(1)
 ,`codigo_articulo` varchar(50)
-,`nombre_articulo` varchar(255)
-,`name_articulo` varchar(255)
-,`imagen_articulo` varchar(255)
-,`precio_alquiler_articulo` decimal(10,2)
+,`codigo_familia` varchar(20)
 ,`coeficiente_articulo` tinyint(1)
-,`es_kit_articulo` tinyint(1)
+,`coeficiente_familia` tinyint
 ,`control_total_articulo` tinyint(1)
+,`created_at_articulo` timestamp
+,`descr_familia` varchar(255)
+,`descr_impuesto` varchar(255)
+,`descr_unidad` varchar(255)
+,`es_kit_articulo` tinyint(1)
+,`id_articulo` int unsigned
+,`id_familia` int unsigned
+,`id_grupo` int unsigned
+,`id_impuesto` int
+,`id_unidad` int unsigned
+,`imagen_articulo` varchar(255)
+,`imagen_familia` varchar(150)
+,`name_articulo` varchar(255)
+,`name_familia` varchar(100)
+,`name_unidad` varchar(50)
 ,`no_facturar_articulo` tinyint(1)
+,`nombre_articulo` varchar(255)
+,`nombre_familia` varchar(100)
+,`nombre_unidad` varchar(50)
 ,`notas_presupuesto_articulo` text
 ,`notes_budget_articulo` text
-,`orden_obs_articulo` int
 ,`observaciones_articulo` text
-,`permitir_descuentos_articulo` tinyint(1)
-,`activo_articulo` tinyint(1)
-,`created_at_articulo` timestamp
-,`updated_at_articulo` timestamp
-,`id_grupo` int unsigned
-,`codigo_familia` varchar(20)
-,`nombre_familia` varchar(100)
-,`name_familia` varchar(100)
-,`descr_familia` varchar(255)
-,`imagen_familia` varchar(150)
-,`coeficiente_familia` tinyint
 ,`observaciones_presupuesto_familia` text
 ,`observations_budget_familia` text
+,`orden_obs_articulo` int
 ,`orden_obs_familia` int
 ,`permite_descuento_familia` tinyint(1)
-,`activo_familia_relacionada` tinyint(1)
-,`tipo_impuesto` varchar(20)
-,`tasa_impuesto` decimal(5,2)
-,`descr_impuesto` varchar(255)
-,`activo_impuesto_relacionado` tinyint(1)
-,`nombre_unidad` varchar(50)
-,`name_unidad` varchar(50)
-,`descr_unidad` varchar(255)
+,`permitir_descuentos_articulo` tinyint(1)
+,`precio_alquiler_articulo` decimal(10,2)
 ,`simbolo_unidad` varchar(10)
-,`activo_unidad_relacionada` tinyint(1)
+,`tasa_impuesto` decimal(5,2)
+,`tipo_impuesto` varchar(20)
+,`updated_at_articulo` timestamp
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vista_articulo_peso`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_articulo_peso` (
+`codigo_articulo` varchar(50)
+,`es_kit_articulo` tinyint(1)
+,`id_articulo` int unsigned
+,`items_con_peso` bigint
+,`metodo_calculo` varchar(16)
+,`nombre_articulo` varchar(255)
+,`peso_articulo_kg` decimal(46,7)
+,`precio_alquiler_articulo` decimal(10,2)
+,`tiene_datos_peso` int
+,`total_items` bigint
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vista_articulo_peso_medio`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_articulo_peso_medio` (
+`codigo_articulo` varchar(50)
+,`elementos_con_peso` bigint
+,`es_kit_articulo` tinyint(1)
+,`id_articulo` int unsigned
+,`nombre_articulo` varchar(255)
+,`peso_max_kg` decimal(10,3)
+,`peso_medio_kg` decimal(14,7)
+,`peso_min_kg` decimal(10,3)
+,`peso_suma_total_kg` decimal(32,3)
+,`total_elementos` bigint
 );
 
 -- --------------------------------------------------------
@@ -2646,48 +2754,48 @@ CREATE TABLE `vista_articulo_completa` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_cliente_completa` (
-`id_cliente` int unsigned
-,`codigo_cliente` varchar(20)
-,`nombre_cliente` varchar(255)
-,`direccion_cliente` varchar(255)
-,`cp_cliente` varchar(10)
-,`poblacion_cliente` varchar(100)
-,`provincia_cliente` varchar(100)
-,`nif_cliente` varchar(20)
-,`telefono_cliente` varchar(255)
-,`fax_cliente` varchar(50)
-,`web_cliente` varchar(255)
-,`email_cliente` varchar(255)
-,`nombre_facturacion_cliente` varchar(255)
-,`direccion_facturacion_cliente` varchar(255)
-,`cp_facturacion_cliente` varchar(10)
-,`poblacion_facturacion_cliente` varchar(100)
-,`provincia_facturacion_cliente` varchar(100)
-,`observaciones_cliente` text
-,`activo_cliente` tinyint(1)
-,`created_at_cliente` timestamp
-,`updated_at_cliente` timestamp
-,`id_forma_pago_habitual` int unsigned
-,`codigo_pago` varchar(20)
-,`nombre_pago` varchar(100)
-,`descuento_pago` decimal(5,2)
-,`porcentaje_anticipo_pago` decimal(5,2)
-,`dias_anticipo_pago` int
-,`porcentaje_final_pago` decimal(5,2)
-,`dias_final_pago` int
-,`observaciones_pago` text
-,`activo_pago` tinyint(1)
-,`id_metodo_pago` int unsigned
-,`codigo_metodo_pago` varchar(20)
-,`nombre_metodo_pago` varchar(100)
-,`observaciones_metodo_pago` text
+`activo_cliente` tinyint(1)
 ,`activo_metodo_pago` tinyint(1)
-,`tipo_pago_cliente` varchar(17)
+,`activo_pago` tinyint(1)
+,`codigo_cliente` varchar(20)
+,`codigo_metodo_pago` varchar(20)
+,`codigo_pago` varchar(20)
+,`cp_cliente` varchar(10)
+,`cp_facturacion_cliente` varchar(10)
+,`created_at_cliente` timestamp
 ,`descripcion_forma_pago_cliente` varchar(219)
+,`descuento_pago` decimal(5,2)
+,`dias_anticipo_pago` int
+,`dias_final_pago` int
+,`direccion_cliente` varchar(255)
 ,`direccion_completa_cliente` varchar(470)
+,`direccion_facturacion_cliente` varchar(255)
 ,`direccion_facturacion_completa_cliente` varchar(470)
-,`tiene_direccion_facturacion_diferente` int
+,`email_cliente` varchar(255)
 ,`estado_forma_pago_cliente` varchar(23)
+,`fax_cliente` varchar(50)
+,`id_cliente` int unsigned
+,`id_forma_pago_habitual` int unsigned
+,`id_metodo_pago` int unsigned
+,`nif_cliente` varchar(20)
+,`nombre_cliente` varchar(255)
+,`nombre_facturacion_cliente` varchar(255)
+,`nombre_metodo_pago` varchar(100)
+,`nombre_pago` varchar(100)
+,`observaciones_cliente` text
+,`observaciones_metodo_pago` text
+,`observaciones_pago` text
+,`poblacion_cliente` varchar(100)
+,`poblacion_facturacion_cliente` varchar(100)
+,`porcentaje_anticipo_pago` decimal(5,2)
+,`porcentaje_final_pago` decimal(5,2)
+,`provincia_cliente` varchar(100)
+,`provincia_facturacion_cliente` varchar(100)
+,`telefono_cliente` varchar(255)
+,`tiene_direccion_facturacion_diferente` int
+,`tipo_pago_cliente` varchar(17)
+,`updated_at_cliente` timestamp
+,`web_cliente` varchar(255)
 );
 
 -- --------------------------------------------------------
@@ -2697,31 +2805,31 @@ CREATE TABLE `vista_cliente_completa` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_cliente_ubicaciones` (
-`id_cliente` int unsigned
-,`codigo_cliente` varchar(20)
-,`nombre_cliente` varchar(255)
-,`nif_cliente` varchar(20)
-,`telefono_cliente` varchar(255)
-,`email_cliente` varchar(255)
-,`activo_cliente` tinyint(1)
-,`id_ubicacion` int unsigned
-,`nombre_ubicacion` varchar(255)
-,`direccion_ubicacion` varchar(255)
-,`codigo_postal_ubicacion` varchar(10)
-,`poblacion_ubicacion` varchar(100)
-,`provincia_ubicacion` varchar(100)
-,`pais_ubicacion` varchar(100)
-,`persona_contacto_ubicacion` varchar(255)
-,`telefono_contacto_ubicacion` varchar(50)
-,`email_contacto_ubicacion` varchar(255)
-,`observaciones_ubicacion` text
-,`es_principal_ubicacion` tinyint(1)
+`activo_cliente` tinyint(1)
 ,`activo_ubicacion` tinyint(1)
+,`codigo_cliente` varchar(20)
+,`codigo_postal_ubicacion` varchar(10)
 ,`direccion_completa_cliente` varchar(470)
 ,`direccion_completa_ubicacion` text
-,`tipo_ubicacion` varchar(10)
+,`direccion_ubicacion` varchar(255)
+,`email_cliente` varchar(255)
+,`email_contacto_ubicacion` varchar(255)
+,`es_principal_ubicacion` tinyint(1)
 ,`estado_completo` varchar(18)
+,`id_cliente` int unsigned
+,`id_ubicacion` int unsigned
+,`nif_cliente` varchar(20)
+,`nombre_cliente` varchar(255)
+,`nombre_ubicacion` varchar(255)
+,`observaciones_ubicacion` text
+,`pais_ubicacion` varchar(100)
+,`persona_contacto_ubicacion` varchar(255)
+,`poblacion_ubicacion` varchar(100)
+,`provincia_ubicacion` varchar(100)
+,`telefono_cliente` varchar(255)
+,`telefono_contacto_ubicacion` varchar(50)
 ,`tiene_contacto_propio` int
+,`tipo_ubicacion` varchar(10)
 ,`total_ubicaciones_cliente` bigint
 );
 
@@ -2732,22 +2840,22 @@ CREATE TABLE `vista_cliente_ubicaciones` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_costos_furgoneta` (
-`id_furgoneta` int unsigned
-,`matricula_furgoneta` varchar(20)
-,`marca_furgoneta` varchar(100)
-,`modelo_furgoneta` varchar(100)
-,`anio_furgoneta` int
-,`costo_total` decimal(32,2)
+`anio_furgoneta` int
 ,`costo_anio_actual` decimal(32,2)
-,`costo_revisiones` decimal(32,2)
-,`costo_reparaciones` decimal(32,2)
 ,`costo_itv` decimal(32,2)
 ,`costo_neumaticos` decimal(32,2)
-,`total_mantenimientos` bigint
-,`costo_promedio` decimal(14,6)
-,`fecha_ultimo_mantenimiento` date
-,`kilometraje_actual` bigint unsigned
 ,`costo_por_km` decimal(36,6)
+,`costo_promedio` decimal(14,6)
+,`costo_reparaciones` decimal(32,2)
+,`costo_revisiones` decimal(32,2)
+,`costo_total` decimal(32,2)
+,`fecha_ultimo_mantenimiento` date
+,`id_furgoneta` int unsigned
+,`kilometraje_actual` bigint unsigned
+,`marca_furgoneta` varchar(100)
+,`matricula_furgoneta` varchar(20)
+,`modelo_furgoneta` varchar(100)
+,`total_mantenimientos` bigint
 );
 
 -- --------------------------------------------------------
@@ -2757,79 +2865,80 @@ CREATE TABLE `vista_costos_furgoneta` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_elementos_completa` (
-`id_elemento` int unsigned
-,`codigo_elemento` varchar(50)
-,`codigo_barras_elemento` varchar(100)
-,`descripcion_elemento` varchar(255)
-,`numero_serie_elemento` varchar(100)
-,`modelo_elemento` varchar(100)
-,`nave_elemento` varchar(50)
-,`pasillo_columna_elemento` varchar(50)
+`activo_elemento` tinyint(1)
 ,`altura_elemento` varchar(50)
-,`ubicacion_completa_elemento` varchar(156)
-,`fecha_compra_elemento` date
-,`precio_compra_elemento` decimal(10,2)
-,`fecha_alta_elemento` date
-,`fecha_fin_garantia_elemento` date
-,`proximo_mantenimiento_elemento` date
-,`observaciones_elemento` text
-,`es_propio_elemento` tinyint(1)
-,`id_proveedor_compra_elemento` int unsigned
-,`id_proveedor_alquiler_elemento` int unsigned
-,`precio_dia_alquiler_elemento` decimal(10,2)
-,`id_forma_pago_alquiler_elemento` int unsigned
-,`observaciones_alquiler_elemento` text
-,`codigo_proveedor_compra` varchar(20)
-,`nombre_proveedor_compra` varchar(255)
-,`telefono_proveedor_compra` varchar(255)
-,`email_proveedor_compra` varchar(255)
-,`nif_proveedor_compra` varchar(20)
-,`codigo_proveedor_alquiler` varchar(20)
-,`nombre_proveedor_alquiler` varchar(255)
-,`telefono_proveedor_alquiler` varchar(255)
-,`email_proveedor_alquiler` varchar(255)
-,`nif_proveedor_alquiler` varchar(20)
-,`persona_contacto_proveedor_alquiler` varchar(255)
-,`codigo_forma_pago_alquiler` varchar(20)
-,`nombre_forma_pago_alquiler` varchar(100)
-,`porcentaje_anticipo_alquiler` decimal(5,2)
-,`dias_anticipo_alquiler` int
-,`porcentaje_final_alquiler` decimal(5,2)
-,`dias_final_alquiler` int
-,`descuento_forma_pago_alquiler` decimal(5,2)
-,`codigo_metodo_pago_alquiler` varchar(20)
-,`nombre_metodo_pago_alquiler` varchar(100)
-,`id_articulo` int unsigned
-,`codigo_articulo` varchar(50)
-,`nombre_articulo` varchar(255)
-,`name_articulo` varchar(255)
-,`precio_alquiler_articulo` decimal(10,2)
-,`id_familia` int unsigned
-,`codigo_familia` varchar(20)
-,`nombre_familia` varchar(100)
-,`name_familia` varchar(100)
-,`id_grupo` int unsigned
-,`codigo_grupo` varchar(20)
-,`nombre_grupo` varchar(100)
-,`id_marca` int unsigned
-,`codigo_marca` varchar(20)
-,`nombre_marca` varchar(100)
-,`id_estado_elemento` int unsigned
-,`codigo_estado_elemento` varchar(20)
-,`descripcion_estado_elemento` varchar(50)
-,`color_estado_elemento` varchar(7)
-,`permite_alquiler_estado_elemento` tinyint(1)
-,`activo_elemento` tinyint(1)
-,`created_at_elemento` timestamp
-,`updated_at_elemento` timestamp
-,`jerarquia_completa_elemento` text
-,`tipo_propiedad_elemento` varchar(21)
-,`proveedor_principal_elemento` varchar(255)
-,`estado_configuracion_alquiler` varchar(43)
-,`descripcion_forma_pago_alquiler` varchar(219)
-,`costo_mensual_estimado_alquiler` decimal(12,2)
-,`dias_en_servicio_elemento` int
 ,`anios_en_servicio_elemento` decimal(13,2)
+,`codigo_articulo` varchar(50)
+,`codigo_barras_elemento` varchar(100)
+,`codigo_elemento` varchar(50)
+,`codigo_estado_elemento` varchar(20)
+,`codigo_familia` varchar(20)
+,`codigo_forma_pago_alquiler` varchar(20)
+,`codigo_grupo` varchar(20)
+,`codigo_marca` varchar(20)
+,`codigo_metodo_pago_alquiler` varchar(20)
+,`codigo_proveedor_alquiler` varchar(20)
+,`codigo_proveedor_compra` varchar(20)
+,`color_estado_elemento` varchar(7)
+,`costo_mensual_estimado_alquiler` decimal(12,2)
+,`created_at_elemento` timestamp
+,`descripcion_elemento` varchar(255)
+,`descripcion_estado_elemento` varchar(50)
+,`descripcion_forma_pago_alquiler` varchar(219)
+,`descuento_forma_pago_alquiler` decimal(5,2)
+,`dias_anticipo_alquiler` int
+,`dias_en_servicio_elemento` int
+,`dias_final_alquiler` int
+,`email_proveedor_alquiler` varchar(255)
+,`email_proveedor_compra` varchar(255)
+,`es_propio_elemento` tinyint(1)
+,`estado_configuracion_alquiler` varchar(43)
+,`fecha_alta_elemento` date
+,`fecha_compra_elemento` date
+,`fecha_fin_garantia_elemento` date
+,`id_articulo` int unsigned
+,`id_elemento` int unsigned
+,`id_estado_elemento` int unsigned
+,`id_familia` int unsigned
+,`id_forma_pago_alquiler_elemento` int unsigned
+,`id_grupo` int unsigned
+,`id_marca` int unsigned
+,`id_proveedor_alquiler_elemento` int unsigned
+,`id_proveedor_compra_elemento` int unsigned
+,`jerarquia_completa_elemento` text
+,`modelo_elemento` varchar(100)
+,`name_articulo` varchar(255)
+,`name_familia` varchar(100)
+,`nave_elemento` varchar(50)
+,`nif_proveedor_alquiler` varchar(20)
+,`nif_proveedor_compra` varchar(20)
+,`nombre_articulo` varchar(255)
+,`nombre_familia` varchar(100)
+,`nombre_forma_pago_alquiler` varchar(100)
+,`nombre_grupo` varchar(100)
+,`nombre_marca` varchar(100)
+,`nombre_metodo_pago_alquiler` varchar(100)
+,`nombre_proveedor_alquiler` varchar(255)
+,`nombre_proveedor_compra` varchar(255)
+,`numero_serie_elemento` varchar(100)
+,`observaciones_alquiler_elemento` text
+,`observaciones_elemento` text
+,`pasillo_columna_elemento` varchar(50)
+,`permite_alquiler_estado_elemento` tinyint(1)
+,`persona_contacto_proveedor_alquiler` varchar(255)
+,`peso_elemento` decimal(10,3)
+,`porcentaje_anticipo_alquiler` decimal(5,2)
+,`porcentaje_final_alquiler` decimal(5,2)
+,`precio_alquiler_articulo` decimal(10,2)
+,`precio_compra_elemento` decimal(10,2)
+,`precio_dia_alquiler_elemento` decimal(10,2)
+,`proveedor_principal_elemento` varchar(255)
+,`proximo_mantenimiento_elemento` date
+,`telefono_proveedor_alquiler` varchar(255)
+,`telefono_proveedor_compra` varchar(255)
+,`tipo_propiedad_elemento` varchar(21)
+,`ubicacion_completa_elemento` varchar(156)
+,`updated_at_elemento` timestamp
 );
 
 -- --------------------------------------------------------
@@ -2839,37 +2948,37 @@ CREATE TABLE `vista_elementos_completa` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_furgoneta_completa` (
-`id_furgoneta` int unsigned
-,`matricula_furgoneta` varchar(20)
-,`marca_furgoneta` varchar(100)
-,`modelo_furgoneta` varchar(100)
+`activo_furgoneta` tinyint(1)
 ,`anio_furgoneta` int
-,`numero_bastidor_furgoneta` varchar(50)
-,`kilometros_entre_revisiones_furgoneta` int unsigned
-,`fecha_proxima_itv_furgoneta` date
-,`fecha_vencimiento_seguro_furgoneta` date
-,`compania_seguro_furgoneta` varchar(255)
-,`numero_poliza_seguro_furgoneta` varchar(100)
 ,`capacidad_carga_kg_furgoneta` decimal(10,2)
 ,`capacidad_carga_m3_furgoneta` decimal(10,2)
-,`tipo_combustible_furgoneta` varchar(50)
+,`compania_seguro_furgoneta` varchar(255)
 ,`consumo_medio_furgoneta` decimal(5,2)
-,`taller_habitual_furgoneta` varchar(255)
-,`telefono_taller_furgoneta` varchar(50)
-,`estado_furgoneta` enum('operativa','taller','baja')
-,`observaciones_furgoneta` text
-,`activo_furgoneta` tinyint(1)
-,`created_at_furgoneta` timestamp
-,`updated_at_furgoneta` timestamp
-,`kilometraje_actual` bigint unsigned
-,`fecha_ultimo_registro_km` date
-,`total_mantenimientos` bigint
 ,`costo_total_mantenimientos` decimal(32,2)
-,`fecha_ultimo_mantenimiento` date
+,`created_at_furgoneta` timestamp
+,`estado_furgoneta` enum('operativa','taller','baja')
 ,`estado_itv` varchar(11)
 ,`estado_seguro` varchar(14)
+,`fecha_proxima_itv_furgoneta` date
+,`fecha_ultimo_mantenimiento` date
+,`fecha_ultimo_registro_km` date
+,`fecha_vencimiento_seguro_furgoneta` date
+,`id_furgoneta` int unsigned
+,`kilometraje_actual` bigint unsigned
+,`kilometros_entre_revisiones_furgoneta` int unsigned
 ,`km_desde_ultima_revision` bigint unsigned
+,`marca_furgoneta` varchar(100)
+,`matricula_furgoneta` varchar(20)
+,`modelo_furgoneta` varchar(100)
 ,`necesita_revision` int
+,`numero_bastidor_furgoneta` varchar(50)
+,`numero_poliza_seguro_furgoneta` varchar(100)
+,`observaciones_furgoneta` text
+,`taller_habitual_furgoneta` varchar(255)
+,`telefono_taller_furgoneta` varchar(50)
+,`tipo_combustible_furgoneta` varchar(50)
+,`total_mantenimientos` bigint
+,`updated_at_furgoneta` timestamp
 );
 
 -- --------------------------------------------------------
@@ -2879,21 +2988,21 @@ CREATE TABLE `vista_furgoneta_completa` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_kilometraje_completo` (
-`id_registro_km` int unsigned
-,`id_furgoneta` int unsigned
-,`fecha_registro_km` date
-,`kilometraje_registrado_km` int unsigned
-,`tipo_registro_km` enum('manual','revision','itv','evento')
-,`observaciones_registro_km` text
-,`created_at_registro_km` timestamp
-,`updated_at_registro_km` timestamp
-,`matricula_furgoneta` varchar(20)
-,`marca_furgoneta` varchar(100)
-,`modelo_furgoneta` varchar(100)
-,`estado_furgoneta` enum('operativa','taller','baja')
-,`km_recorridos` decimal(11,0)
+`created_at_registro_km` timestamp
 ,`dias_transcurridos` int
+,`estado_furgoneta` enum('operativa','taller','baja')
+,`fecha_registro_km` date
+,`id_furgoneta` int unsigned
+,`id_registro_km` int unsigned
+,`kilometraje_registrado_km` int unsigned
 ,`km_promedio_diario` decimal(14,2)
+,`km_recorridos` decimal(11,0)
+,`marca_furgoneta` varchar(100)
+,`matricula_furgoneta` varchar(20)
+,`modelo_furgoneta` varchar(100)
+,`observaciones_registro_km` text
+,`tipo_registro_km` enum('manual','revision','itv','evento')
+,`updated_at_registro_km` timestamp
 );
 
 -- --------------------------------------------------------
@@ -2903,28 +3012,69 @@ CREATE TABLE `vista_kilometraje_completo` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_kit_completa` (
-`id_kit` int unsigned
-,`cantidad_kit` int unsigned
-,`activo_kit` tinyint(1)
-,`created_at_kit` timestamp
-,`updated_at_kit` timestamp
-,`id_articulo_maestro` int unsigned
-,`codigo_articulo_maestro` varchar(50)
-,`nombre_articulo_maestro` varchar(255)
-,`name_articulo_maestro` varchar(255)
-,`precio_articulo_maestro` decimal(10,2)
-,`es_kit_articulo_maestro` tinyint(1)
+`activo_articulo_componente` tinyint(1)
 ,`activo_articulo_maestro` tinyint(1)
-,`id_articulo_componente` int unsigned
+,`activo_kit` tinyint(1)
+,`cantidad_kit` int unsigned
 ,`codigo_articulo_componente` varchar(50)
-,`nombre_articulo_componente` varchar(255)
-,`name_articulo_componente` varchar(255)
-,`precio_articulo_componente` decimal(10,2)
+,`codigo_articulo_maestro` varchar(50)
+,`created_at_kit` timestamp
 ,`es_kit_articulo_componente` tinyint(1)
-,`activo_articulo_componente` tinyint(1)
+,`es_kit_articulo_maestro` tinyint(1)
+,`id_articulo_componente` int unsigned
+,`id_articulo_maestro` int unsigned
+,`id_kit` int unsigned
+,`name_articulo_componente` varchar(255)
+,`name_articulo_maestro` varchar(255)
+,`nombre_articulo_componente` varchar(255)
+,`nombre_articulo_maestro` varchar(255)
+,`precio_articulo_componente` decimal(10,2)
+,`precio_articulo_maestro` decimal(10,2)
+,`precio_total_kit` decimal(42,2)
 ,`subtotal_componente` decimal(20,2)
 ,`total_componentes_kit` bigint
-,`precio_total_kit` decimal(42,2)
+,`updated_at_kit` timestamp
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vista_kit_peso_total`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_kit_peso_total` (
+`codigo_articulo` varchar(50)
+,`componentes_con_peso` bigint
+,`es_kit_articulo` tinyint(1)
+,`id_articulo` int unsigned
+,`nombre_articulo` varchar(255)
+,`peso_total_kit_kg` decimal(46,7)
+,`total_componentes` bigint
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vista_linea_peso`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_linea_peso` (
+`cantidad_linea_ppto` decimal(10,2)
+,`codigo_articulo` varchar(50)
+,`codigo_linea_ppto` varchar(50)
+,`descripcion_linea_ppto` text
+,`es_kit_articulo` tinyint(1)
+,`id_articulo` int unsigned
+,`id_linea_ppto` int unsigned
+,`id_version_presupuesto` int unsigned
+,`linea_tiene_peso` int
+,`metodo_calculo` varchar(16)
+,`nombre_articulo` varchar(255)
+,`numero_linea_ppto` int
+,`peso_articulo_kg` decimal(46,7)
+,`peso_total_linea_kg` decimal(56,9)
+,`tiene_datos_peso` int
+,`tipo_linea_ppto` enum('articulo','kit','componente_kit','seccion','texto','subtotal')
 );
 
 -- --------------------------------------------------------
@@ -2934,32 +3084,32 @@ CREATE TABLE `vista_kit_completa` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_mantenimiento_completo` (
-`id_mantenimiento` int unsigned
-,`id_furgoneta` int unsigned
-,`fecha_mantenimiento` date
-,`tipo_mantenimiento` enum('revision','reparacion','itv','neumaticos','otros')
-,`descripcion_mantenimiento` text
-,`kilometraje_mantenimiento` int unsigned
-,`costo_mantenimiento` decimal(10,2)
-,`numero_factura_mantenimiento` varchar(100)
-,`taller_mantenimiento` varchar(255)
-,`telefono_taller_mantenimiento` varchar(50)
-,`direccion_taller_mantenimiento` varchar(255)
-,`resultado_itv` enum('favorable','desfavorable','negativa')
-,`fecha_proxima_itv` date
-,`garantia_hasta_mantenimiento` date
-,`observaciones_mantenimiento` text
-,`activo_mantenimiento` tinyint(1)
-,`created_at_mantenimiento` timestamp
-,`updated_at_mantenimiento` timestamp
-,`matricula_furgoneta` varchar(20)
-,`marca_furgoneta` varchar(100)
-,`modelo_furgoneta` varchar(100)
+`activo_mantenimiento` tinyint(1)
 ,`anio_furgoneta` int
+,`costo_mantenimiento` decimal(10,2)
+,`created_at_mantenimiento` timestamp
+,`descripcion_mantenimiento` text
+,`dias_desde_mantenimiento` int
+,`direccion_taller_mantenimiento` varchar(255)
 ,`estado_furgoneta` enum('operativa','taller','baja')
 ,`estado_garantia` varchar(16)
-,`dias_desde_mantenimiento` int
+,`fecha_mantenimiento` date
+,`fecha_proxima_itv` date
+,`garantia_hasta_mantenimiento` date
+,`id_furgoneta` int unsigned
+,`id_mantenimiento` int unsigned
+,`kilometraje_mantenimiento` int unsigned
 ,`km_desde_mantenimiento` bigint unsigned
+,`marca_furgoneta` varchar(100)
+,`matricula_furgoneta` varchar(20)
+,`modelo_furgoneta` varchar(100)
+,`numero_factura_mantenimiento` varchar(100)
+,`observaciones_mantenimiento` text
+,`resultado_itv` enum('favorable','desfavorable','negativa')
+,`taller_mantenimiento` varchar(255)
+,`telefono_taller_mantenimiento` varchar(50)
+,`tipo_mantenimiento` enum('revision','reparacion','itv','neumaticos','otros')
+,`updated_at_mantenimiento` timestamp
 );
 
 -- --------------------------------------------------------
@@ -2969,98 +3119,118 @@ CREATE TABLE `vista_mantenimiento_completo` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_presupuesto_completa` (
-`id_presupuesto` int unsigned
-,`numero_presupuesto` varchar(50)
-,`version_actual_presupuesto` int unsigned
+`activo_presupuesto` tinyint(1)
+,`apellidos_contacto_cliente` varchar(150)
+,`aplica_descuento_presupuesto` int
+,`aplicar_coeficientes_presupuesto` tinyint(1)
+,`codigo_cliente` varchar(20)
+,`codigo_estado_ppto` varchar(20)
+,`codigo_metodo_pago` varchar(20)
+,`codigo_pago` varchar(20)
+,`color_estado_ppto` varchar(7)
+,`comparacion_descuento` varchar(17)
+,`cp_cliente` varchar(10)
+,`cp_evento_presupuesto` varchar(10)
+,`cp_facturacion_cliente` varchar(10)
+,`created_at_presupuesto` timestamp
+,`descripcion_completa_forma_pago` varchar(219)
+,`descuento_pago` decimal(5,2)
+,`descuento_presupuesto` decimal(5,2)
+,`dias_anticipo_pago` int
+,`dias_desde_emision` int
+,`dias_final_pago` int
+,`dias_hasta_fin_evento` int
+,`dias_hasta_inicio_evento` int
+,`dias_validez_restantes` int
+,`diferencia_descuento` decimal(6,2)
+,`direccion_cliente` varchar(255)
+,`direccion_completa_cliente` varchar(470)
+,`direccion_completa_evento_presupuesto` varchar(275)
+,`direccion_evento_presupuesto` varchar(100)
+,`direccion_facturacion_cliente` varchar(255)
+,`direccion_facturacion_completa_cliente` varchar(470)
+,`duracion_evento_dias` bigint
+,`email_cliente` varchar(255)
+,`email_contacto_cliente` varchar(255)
+,`estado_descuento_presupuesto` varchar(25)
+,`estado_evento_presupuesto` varchar(19)
+,`estado_general_presupuesto` varchar(100)
+,`estado_validez_presupuesto` varchar(20)
+,`estado_version_actual` enum('borrador','enviado','aprobado','rechazado','cancelado')
+,`exento_iva_cliente` tinyint(1)
+,`fecha_creacion_version_actual` timestamp
+,`fecha_fin_evento_presupuesto` date
+,`fecha_inicio_evento_presupuesto` date
 ,`fecha_presupuesto` date
 ,`fecha_validez_presupuesto` date
-,`fecha_inicio_evento_presupuesto` date
-,`fecha_fin_evento_presupuesto` date
-,`numero_pedido_cliente_presupuesto` varchar(80)
-,`aplicar_coeficientes_presupuesto` tinyint(1)
-,`descuento_presupuesto` decimal(5,2)
-,`nombre_evento_presupuesto` varchar(255)
-,`direccion_evento_presupuesto` varchar(100)
-,`poblacion_evento_presupuesto` varchar(80)
-,`cp_evento_presupuesto` varchar(10)
-,`provincia_evento_presupuesto` varchar(80)
-,`observaciones_cabecera_presupuesto` text
-,`observaciones_pie_presupuesto` text
-,`observaciones_cabecera_ingles_presupuesto` text
-,`observaciones_pie_ingles_presupuesto` text
-,`mostrar_obs_familias_presupuesto` tinyint(1)
-,`mostrar_obs_articulos_presupuesto` tinyint(1)
-,`observaciones_internas_presupuesto` text
-,`activo_presupuesto` tinyint(1)
-,`created_at_presupuesto` timestamp
-,`updated_at_presupuesto` timestamp
-,`id_cliente` int unsigned
-,`codigo_cliente` varchar(20)
-,`nombre_cliente` varchar(255)
-,`nif_cliente` varchar(20)
-,`direccion_cliente` varchar(255)
-,`cp_cliente` varchar(10)
-,`poblacion_cliente` varchar(100)
-,`provincia_cliente` varchar(100)
-,`telefono_cliente` varchar(255)
-,`email_cliente` varchar(255)
-,`porcentaje_descuento_cliente` decimal(5,2)
-,`nombre_facturacion_cliente` varchar(255)
-,`direccion_facturacion_cliente` varchar(255)
-,`cp_facturacion_cliente` varchar(10)
-,`poblacion_facturacion_cliente` varchar(100)
-,`provincia_facturacion_cliente` varchar(100)
-,`id_contacto_cliente` int unsigned
-,`nombre_contacto_cliente` varchar(100)
-,`apellidos_contacto_cliente` varchar(150)
-,`telefono_contacto_cliente` varchar(50)
-,`email_contacto_cliente` varchar(255)
-,`id_estado_ppto` int unsigned
-,`codigo_estado_ppto` varchar(20)
-,`nombre_estado_ppto` varchar(100)
-,`color_estado_ppto` varchar(7)
-,`orden_estado_ppto` int
-,`id_forma_pago` int unsigned
-,`codigo_pago` varchar(20)
-,`nombre_pago` varchar(100)
-,`porcentaje_anticipo_pago` decimal(5,2)
-,`dias_anticipo_pago` int
-,`porcentaje_final_pago` decimal(5,2)
-,`dias_final_pago` int
-,`descuento_pago` decimal(5,2)
-,`id_metodo_pago` int unsigned
-,`codigo_metodo_pago` varchar(20)
-,`nombre_metodo_pago` varchar(100)
-,`id_metodo_contacto` int
-,`nombre_metodo_contacto` varchar(50)
-,`id_forma_pago_habitual` int unsigned
-,`nombre_forma_pago_habitual_cliente` varchar(100)
-,`direccion_completa_evento_presupuesto` varchar(275)
-,`direccion_completa_cliente` varchar(470)
-,`direccion_facturacion_completa_cliente` varchar(470)
-,`nombre_completo_contacto` varchar(251)
-,`dias_validez_restantes` int
-,`estado_validez_presupuesto` varchar(20)
-,`duracion_evento_dias` bigint
-,`dias_hasta_inicio_evento` int
-,`dias_hasta_fin_evento` int
-,`estado_evento_presupuesto` varchar(19)
-,`prioridad_presupuesto` varchar(13)
-,`tipo_pago_presupuesto` varchar(17)
-,`descripcion_completa_forma_pago` varchar(219)
 ,`fecha_vencimiento_anticipo` date
 ,`fecha_vencimiento_final` date
-,`comparacion_descuento` varchar(17)
-,`estado_descuento_presupuesto` varchar(25)
-,`aplica_descuento_presupuesto` int
-,`diferencia_descuento` decimal(6,2)
-,`tiene_direccion_facturacion_diferente` int
-,`dias_desde_emision` int
+,`id_cliente` int unsigned
+,`id_contacto_cliente` int unsigned
+,`id_estado_ppto` int unsigned
+,`id_forma_pago` int unsigned
+,`id_forma_pago_habitual` int unsigned
+,`id_metodo_contacto` int
+,`id_metodo_pago` int unsigned
+,`id_presupuesto` int unsigned
 ,`id_version_actual` int unsigned
+,`justificacion_exencion_iva_cliente` text
+,`mostrar_obs_articulos_presupuesto` tinyint(1)
+,`mostrar_obs_familias_presupuesto` tinyint(1)
+,`nif_cliente` varchar(20)
+,`nombre_cliente` varchar(255)
+,`nombre_completo_contacto` varchar(251)
+,`nombre_contacto_cliente` varchar(100)
+,`nombre_estado_ppto` varchar(100)
+,`nombre_evento_presupuesto` varchar(255)
+,`nombre_facturacion_cliente` varchar(255)
+,`nombre_forma_pago_habitual_cliente` varchar(100)
+,`nombre_metodo_contacto` varchar(50)
+,`nombre_metodo_pago` varchar(100)
+,`nombre_pago` varchar(100)
+,`numero_pedido_cliente_presupuesto` varchar(80)
+,`numero_presupuesto` varchar(50)
 ,`numero_version_actual` int unsigned
-,`estado_version_actual` enum('borrador','enviado','aprobado','rechazado','cancelado')
-,`fecha_creacion_version_actual` timestamp
-,`estado_general_presupuesto` varchar(100)
+,`observaciones_cabecera_ingles_presupuesto` text
+,`observaciones_cabecera_presupuesto` text
+,`observaciones_internas_presupuesto` text
+,`observaciones_pie_ingles_presupuesto` text
+,`observaciones_pie_presupuesto` text
+,`orden_estado_ppto` int
+,`poblacion_cliente` varchar(100)
+,`poblacion_evento_presupuesto` varchar(80)
+,`poblacion_facturacion_cliente` varchar(100)
+,`porcentaje_anticipo_pago` decimal(5,2)
+,`porcentaje_descuento_cliente` decimal(5,2)
+,`porcentaje_final_pago` decimal(5,2)
+,`prioridad_presupuesto` varchar(13)
+,`provincia_cliente` varchar(100)
+,`provincia_evento_presupuesto` varchar(80)
+,`provincia_facturacion_cliente` varchar(100)
+,`telefono_cliente` varchar(255)
+,`telefono_contacto_cliente` varchar(50)
+,`tiene_direccion_facturacion_diferente` int
+,`tipo_pago_presupuesto` varchar(17)
+,`updated_at_presupuesto` timestamp
+,`version_actual_presupuesto` int unsigned
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vista_presupuesto_peso`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_presupuesto_peso` (
+`id_presupuesto` int unsigned
+,`id_version_presupuesto` int unsigned
+,`lineas_con_peso` bigint
+,`lineas_sin_peso` bigint
+,`peso_articulos_normales_kg` decimal(65,9)
+,`peso_kits_kg` decimal(65,9)
+,`peso_total_kg` decimal(65,9)
+,`porcentaje_completitud` decimal(26,2)
+,`total_lineas` bigint
 );
 
 -- --------------------------------------------------------
@@ -3070,20 +3240,20 @@ CREATE TABLE `vista_presupuesto_completa` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_registro_kilometraje` (
-`id_registro_km` int unsigned
-,`id_furgoneta` int unsigned
-,`fecha_registro_km` date
-,`kilometraje_registrado_km` int unsigned
-,`tipo_registro_km` enum('manual','revision','itv','evento')
-,`observaciones_registro_km` text
-,`created_at_registro_km` timestamp
-,`matricula_furgoneta` varchar(20)
-,`marca_furgoneta` varchar(100)
-,`modelo_furgoneta` varchar(100)
-,`estado_furgoneta` enum('operativa','taller','baja')
-,`km_recorridos` bigint unsigned
+`created_at_registro_km` timestamp
 ,`dias_transcurridos` int
+,`estado_furgoneta` enum('operativa','taller','baja')
+,`fecha_registro_km` date
+,`id_furgoneta` int unsigned
+,`id_registro_km` int unsigned
+,`kilometraje_registrado_km` int unsigned
 ,`km_promedio_diario` decimal(15,4)
+,`km_recorridos` bigint unsigned
+,`marca_furgoneta` varchar(100)
+,`matricula_furgoneta` varchar(20)
+,`modelo_furgoneta` varchar(100)
+,`observaciones_registro_km` text
+,`tipo_registro_km` enum('manual','revision','itv','evento')
 );
 
 -- --------------------------------------------------------
@@ -3093,158 +3263,158 @@ CREATE TABLE `vista_registro_kilometraje` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `v_linea_presupuesto_calculada` (
-`id_linea_ppto` int unsigned
-,`id_version_presupuesto` int unsigned
-,`id_articulo` int unsigned
-,`id_linea_padre` int unsigned
-,`id_ubicacion` int unsigned
-,`numero_linea_ppto` int
-,`tipo_linea_ppto` enum('articulo','kit','componente_kit','seccion','texto','subtotal')
-,`nivel_jerarquia` tinyint
-,`codigo_linea_ppto` varchar(50)
-,`descripcion_linea_ppto` text
-,`orden_linea_ppto` int
-,`observaciones_linea_ppto` text
-,`mostrar_obs_articulo_linea_ppto` tinyint(1)
-,`ocultar_detalle_kit_linea_ppto` tinyint(1)
-,`mostrar_en_presupuesto` tinyint(1)
-,`es_opcional` tinyint(1)
-,`activo_linea_ppto` tinyint(1)
-,`fecha_montaje_linea_ppto` date
-,`fecha_desmontaje_linea_ppto` date
-,`fecha_inicio_linea_ppto` date
-,`fecha_fin_linea_ppto` date
-,`cantidad_linea_ppto` decimal(10,2)
-,`precio_unitario_linea_ppto` decimal(10,2)
-,`descuento_linea_ppto` decimal(5,2)
-,`porcentaje_iva_linea_ppto` decimal(5,2)
-,`jornadas_linea_ppto` int
-,`id_coeficiente` int unsigned
-,`aplicar_coeficiente_linea_ppto` tinyint(1)
-,`valor_coeficiente_linea_ppto` decimal(10,2)
-,`jornadas_coeficiente` int
-,`valor_coeficiente` decimal(10,2)
-,`observaciones_coeficiente` text
+`activo_articulo` tinyint(1)
 ,`activo_coeficiente` tinyint(1)
-,`dias_linea` bigint
-,`subtotal_sin_coeficiente` decimal(39,10)
-,`base_imponible` decimal(41,12)
-,`importe_iva` decimal(50,18)
-,`total_linea` decimal(51,18)
-,`precio_unitario_linea_ppto_hotel` decimal(20,8)
-,`base_imponible_hotel` decimal(41,12)
-,`importe_descuento_linea_ppto_hotel` decimal(50,18)
-,`TotalImporte_descuento_linea_ppto_hotel` decimal(51,18)
-,`importe_iva_linea_ppto_hotel` decimal(60,24)
-,`TotalImporte_iva_linea_ppto_hotel` decimal(61,24)
-,`codigo_articulo` varchar(50)
-,`nombre_articulo` varchar(255)
-,`name_articulo` varchar(255)
-,`imagen_articulo` varchar(255)
-,`precio_alquiler_articulo` decimal(10,2)
-,`coeficiente_articulo` tinyint(1)
-,`es_kit_articulo` tinyint(1)
-,`control_total_articulo` tinyint(1)
-,`no_facturar_articulo` tinyint(1)
-,`notas_presupuesto_articulo` text
-,`notes_budget_articulo` text
-,`orden_obs_articulo` int
-,`observaciones_articulo` text
-,`activo_articulo` tinyint(1)
-,`permitir_descuentos_articulo` tinyint(1)
-,`id_familia` int unsigned
-,`created_at_articulo` timestamp
-,`updated_at_articulo` timestamp
-,`id_impuesto_articulo` int
-,`tipo_impuesto_articulo` varchar(20)
-,`tasa_impuesto_articulo` decimal(5,2)
-,`descr_impuesto_articulo` varchar(255)
-,`activo_impuesto_articulo` tinyint(1)
-,`id_unidad` int unsigned
-,`nombre_unidad` varchar(50)
-,`name_unidad` varchar(50)
-,`descr_unidad` varchar(255)
-,`simbolo_unidad` varchar(10)
-,`activo_unidad` tinyint(1)
-,`id_grupo` int unsigned
-,`codigo_familia` varchar(20)
-,`nombre_familia` varchar(100)
-,`name_familia` varchar(100)
-,`descr_familia` varchar(255)
-,`imagen_familia` varchar(150)
-,`coeficiente_familia` tinyint
-,`observaciones_presupuesto_familia` text
-,`observations_budget_familia` text
-,`orden_obs_familia` int
-,`permite_descuento_familia` tinyint(1)
 ,`activo_familia_relacionada` tinyint(1)
-,`id_impuesto` int
-,`tipo_impuesto` varchar(20)
-,`tasa_impuesto` decimal(5,2)
-,`descr_impuesto` varchar(255)
 ,`activo_impuesto` tinyint(1)
-,`id_presupuesto` int unsigned
-,`numero_version_presupuesto` int unsigned
+,`activo_impuesto_articulo` tinyint(1)
+,`activo_linea_ppto` tinyint(1)
+,`activo_presupuesto` tinyint(1)
+,`activo_ubicacion` tinyint(1)
+,`activo_unidad` tinyint(1)
+,`aplica_descuento_presupuesto` int
+,`aplicar_coeficiente_linea_ppto` tinyint(1)
+,`base_imponible` decimal(41,12)
+,`base_imponible_hotel` decimal(41,12)
+,`cantidad_linea_ppto` decimal(10,2)
+,`codigo_articulo` varchar(50)
+,`codigo_familia` varchar(20)
+,`codigo_linea_ppto` varchar(50)
+,`codigo_postal_ubicacion` varchar(10)
+,`coeficiente_articulo` tinyint(1)
+,`coeficiente_familia` tinyint
+,`comparacion_descuento` varchar(17)
+,`control_total_articulo` tinyint(1)
+,`cp_cliente` varchar(10)
+,`created_at_articulo` timestamp
+,`created_at_linea_ppto` timestamp
+,`descr_familia` varchar(255)
+,`descr_impuesto` varchar(255)
+,`descr_impuesto_articulo` varchar(255)
+,`descr_unidad` varchar(255)
+,`descripcion_completa_forma_pago` varchar(219)
+,`descripcion_linea_ppto` text
+,`descuento_linea_ppto` decimal(5,2)
+,`dias_desde_emision` int
+,`dias_hasta_fin_evento` int
+,`dias_hasta_inicio_evento` int
+,`dias_linea` bigint
+,`diferencia_descuento` decimal(6,2)
+,`direccion_cliente` varchar(255)
+,`direccion_ubicacion` varchar(255)
+,`duracion_evento_dias` bigint
+,`email_cliente` varchar(255)
+,`email_contacto_ubicacion` varchar(255)
+,`es_kit_articulo` tinyint(1)
+,`es_opcional` tinyint(1)
+,`es_principal_ubicacion` tinyint(1)
+,`estado_descuento_presupuesto` varchar(25)
+,`estado_evento_presupuesto` varchar(19)
+,`estado_general_presupuesto` varchar(100)
+,`estado_version_actual` enum('borrador','enviado','aprobado','rechazado','cancelado')
 ,`estado_version_presupuesto` enum('borrador','enviado','aprobado','rechazado','cancelado')
-,`fecha_creacion_version` timestamp
-,`fecha_envio_version` datetime
 ,`fecha_aprobacion_version` datetime
-,`numero_presupuesto` varchar(50)
+,`fecha_creacion_version` timestamp
+,`fecha_creacion_version_actual` timestamp
+,`fecha_desmontaje_linea_ppto` date
+,`fecha_envio_version` datetime
+,`fecha_fin_evento_presupuesto` date
+,`fecha_fin_linea_ppto` date
+,`fecha_inicio_evento_presupuesto` date
+,`fecha_inicio_linea_ppto` date
+,`fecha_montaje_linea_ppto` date
 ,`fecha_presupuesto` date
 ,`fecha_validez_presupuesto` date
-,`nombre_evento_presupuesto` varchar(255)
-,`fecha_inicio_evento_presupuesto` date
-,`fecha_fin_evento_presupuesto` date
-,`id_cliente` int unsigned
-,`id_estado_ppto` int unsigned
-,`activo_presupuesto` tinyint(1)
-,`nombre_cliente` varchar(255)
-,`nif_cliente` varchar(20)
-,`email_cliente` varchar(255)
-,`telefono_cliente` varchar(255)
-,`direccion_cliente` varchar(255)
-,`cp_cliente` varchar(10)
-,`poblacion_cliente` varchar(100)
-,`provincia_cliente` varchar(100)
-,`porcentaje_descuento_cliente` decimal(5,2)
-,`duracion_evento_dias` bigint
-,`dias_hasta_inicio_evento` int
-,`dias_hasta_fin_evento` int
-,`estado_evento_presupuesto` varchar(19)
-,`prioridad_presupuesto` varchar(13)
-,`tipo_pago_presupuesto` varchar(17)
-,`descripcion_completa_forma_pago` varchar(219)
 ,`fecha_vencimiento_anticipo` date
 ,`fecha_vencimiento_final` date
-,`comparacion_descuento` varchar(17)
-,`estado_descuento_presupuesto` varchar(25)
-,`aplica_descuento_presupuesto` int
-,`diferencia_descuento` decimal(6,2)
-,`tiene_direccion_facturacion_diferente` int
-,`dias_desde_emision` int
+,`id_articulo` int unsigned
+,`id_cliente` int unsigned
+,`id_coeficiente` int unsigned
+,`id_estado_ppto` int unsigned
+,`id_familia` int unsigned
+,`id_grupo` int unsigned
+,`id_impuesto` int
+,`id_impuesto_articulo` int
+,`id_linea_padre` int unsigned
+,`id_linea_ppto` int unsigned
+,`id_presupuesto` int unsigned
+,`id_ubicacion` int unsigned
+,`id_unidad` int unsigned
 ,`id_version_actual` int unsigned
-,`numero_version_actual` int unsigned
-,`estado_version_actual` enum('borrador','enviado','aprobado','rechazado','cancelado')
-,`fecha_creacion_version_actual` timestamp
-,`estado_general_presupuesto` varchar(100)
-,`mostrar_obs_familias_presupuesto` tinyint(1)
+,`id_version_presupuesto` int unsigned
+,`imagen_articulo` varchar(255)
+,`imagen_familia` varchar(150)
+,`importe_descuento_linea_ppto_hotel` decimal(50,18)
+,`importe_iva` decimal(50,18)
+,`importe_iva_linea_ppto_hotel` decimal(60,24)
+,`jornadas_coeficiente` int
+,`jornadas_linea_ppto` int
+,`mostrar_en_presupuesto` tinyint(1)
+,`mostrar_obs_articulo_linea_ppto` tinyint(1)
 ,`mostrar_obs_articulos_presupuesto` tinyint(1)
+,`mostrar_obs_familias_presupuesto` tinyint(1)
+,`name_articulo` varchar(255)
+,`name_familia` varchar(100)
+,`name_unidad` varchar(50)
+,`nif_cliente` varchar(20)
+,`nivel_jerarquia` tinyint
+,`no_facturar_articulo` tinyint(1)
+,`nombre_articulo` varchar(255)
+,`nombre_cliente` varchar(255)
+,`nombre_evento_presupuesto` varchar(255)
+,`nombre_familia` varchar(100)
 ,`nombre_ubicacion` varchar(255)
-,`direccion_ubicacion` varchar(255)
-,`codigo_postal_ubicacion` varchar(10)
-,`poblacion_ubicacion` varchar(100)
-,`provincia_ubicacion` varchar(100)
-,`pais_ubicacion` varchar(100)
-,`persona_contacto_ubicacion` varchar(255)
-,`telefono_contacto_ubicacion` varchar(50)
-,`email_contacto_ubicacion` varchar(255)
+,`nombre_unidad` varchar(50)
+,`notas_presupuesto_articulo` text
+,`notes_budget_articulo` text
+,`numero_linea_ppto` int
+,`numero_presupuesto` varchar(50)
+,`numero_version_actual` int unsigned
+,`numero_version_presupuesto` int unsigned
+,`observaciones_articulo` text
+,`observaciones_coeficiente` text
+,`observaciones_linea_ppto` text
+,`observaciones_presupuesto_familia` text
 ,`observaciones_ubicacion` text
-,`es_principal_ubicacion` tinyint(1)
-,`activo_ubicacion` tinyint(1)
+,`observations_budget_familia` text
+,`ocultar_detalle_kit_linea_ppto` tinyint(1)
+,`orden_linea_ppto` int
+,`orden_obs_articulo` int
+,`orden_obs_familia` int
+,`pais_ubicacion` varchar(100)
+,`permite_descuento_familia` tinyint(1)
+,`permitir_descuentos_articulo` tinyint(1)
+,`persona_contacto_ubicacion` varchar(255)
+,`poblacion_cliente` varchar(100)
+,`poblacion_ubicacion` varchar(100)
+,`porcentaje_descuento_cliente` decimal(5,2)
+,`porcentaje_iva_linea_ppto` decimal(5,2)
+,`precio_alquiler_articulo` decimal(10,2)
+,`precio_unitario_linea_ppto` decimal(10,2)
+,`precio_unitario_linea_ppto_hotel` decimal(20,8)
+,`prioridad_presupuesto` varchar(13)
+,`provincia_cliente` varchar(100)
+,`provincia_ubicacion` varchar(100)
+,`simbolo_unidad` varchar(10)
+,`subtotal_sin_coeficiente` decimal(39,10)
+,`tasa_impuesto` decimal(5,2)
+,`tasa_impuesto_articulo` decimal(5,2)
+,`telefono_cliente` varchar(255)
+,`telefono_contacto_ubicacion` varchar(50)
+,`tiene_direccion_facturacion_diferente` int
+,`tipo_impuesto` varchar(20)
+,`tipo_impuesto_articulo` varchar(20)
+,`tipo_linea_ppto` enum('articulo','kit','componente_kit','seccion','texto','subtotal')
+,`tipo_pago_presupuesto` varchar(17)
+,`total_linea` decimal(51,18)
+,`TotalImporte_descuento_linea_ppto_hotel` decimal(51,18)
+,`TotalImporte_iva_linea_ppto_hotel` decimal(61,24)
 ,`ubicacion_agrupacion` varchar(255)
 ,`ubicacion_completa_agrupacion` text
-,`created_at_linea_ppto` timestamp
+,`updated_at_articulo` timestamp
 ,`updated_at_linea_ppto` timestamp
+,`valor_coeficiente` decimal(10,2)
+,`valor_coeficiente_linea_ppto` decimal(10,2)
 );
 
 -- --------------------------------------------------------
@@ -3254,23 +3424,23 @@ CREATE TABLE `v_linea_presupuesto_calculada` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `v_observaciones_presupuesto` (
-`id_presupuesto` int unsigned
-,`id_familia` int unsigned
-,`id_articulo` int unsigned
-,`tipo_observacion` varchar(8)
-,`codigo_familia` varchar(50)
-,`nombre_familia` varchar(255)
-,`name_familia` varchar(255)
-,`observacion_es` mediumtext
-,`observacion_en` mediumtext
-,`orden_observacion` int
-,`mostrar_observacion` tinyint
-,`numero_presupuesto` varchar(50)
-,`nombre_evento_presupuesto` varchar(255)
-,`id_cliente` int unsigned
-,`nombre_cliente` varchar(255)
-,`activo_origen` tinyint
+`activo_origen` tinyint
 ,`activo_presupuesto` tinyint
+,`codigo_familia` varchar(50)
+,`id_articulo` int unsigned
+,`id_cliente` int unsigned
+,`id_familia` int unsigned
+,`id_presupuesto` int unsigned
+,`mostrar_observacion` tinyint
+,`name_familia` varchar(255)
+,`nombre_cliente` varchar(255)
+,`nombre_evento_presupuesto` varchar(255)
+,`nombre_familia` varchar(255)
+,`numero_presupuesto` varchar(50)
+,`observacion_en` mediumtext
+,`observacion_es` mediumtext
+,`orden_observacion` int
+,`tipo_observacion` varchar(8)
 );
 
 -- --------------------------------------------------------
@@ -3280,70 +3450,70 @@ CREATE TABLE `v_observaciones_presupuesto` (
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `v_presupuesto_totales` (
-`id_version_presupuesto` int unsigned
-,`numero_version_presupuesto` int unsigned
-,`estado_version_presupuesto` enum('borrador','enviado','aprobado','rechazado','cancelado')
-,`fecha_creacion_version` timestamp
-,`fecha_envio_version` datetime
-,`fecha_aprobacion_version` datetime
-,`id_presupuesto` int unsigned
-,`numero_presupuesto` varchar(50)
-,`fecha_presupuesto` date
-,`fecha_validez_presupuesto` date
-,`nombre_evento_presupuesto` varchar(255)
-,`fecha_inicio_evento_presupuesto` date
-,`fecha_fin_evento_presupuesto` date
-,`id_cliente` int unsigned
-,`nombre_cliente` varchar(255)
-,`nif_cliente` varchar(20)
-,`email_cliente` varchar(255)
-,`telefono_cliente` varchar(255)
-,`duracion_evento_dias` bigint
-,`total_base_imponible` decimal(63,12)
-,`total_iva` decimal(65,18)
-,`total_con_iva` decimal(65,18)
-,`total_base_imponible_hotel` decimal(63,12)
-,`total_importe_descuento_linea_hotel` decimal(65,18)
-,`total_despues_descuento_linea_hotel` decimal(65,18)
-,`total_iva_hotel` decimal(65,24)
-,`total_con_iva_hotel` decimal(65,24)
-,`cantidad_lineas_total` bigint
-,`cantidad_lineas_con_coeficiente` bigint
-,`base_iva_21` decimal(63,12)
-,`importe_iva_21` decimal(65,18)
-,`total_iva_21` decimal(65,18)
-,`base_iva_10` decimal(63,12)
-,`importe_iva_10` decimal(65,18)
-,`total_iva_10` decimal(65,18)
-,`base_iva_4` decimal(63,12)
-,`importe_iva_4` decimal(65,18)
-,`total_iva_4` decimal(65,18)
+`ahorro_total_coeficientes` decimal(64,12)
 ,`base_iva_0` decimal(63,12)
-,`importe_iva_0` decimal(65,18)
-,`total_iva_0` decimal(65,18)
-,`base_iva_otros` decimal(63,12)
-,`importe_iva_otros` decimal(65,18)
-,`total_iva_otros` decimal(65,18)
-,`base_iva_21_hotel` decimal(63,12)
-,`importe_iva_21_hotel` decimal(65,24)
-,`total_iva_21_hotel` decimal(65,24)
-,`base_iva_10_hotel` decimal(63,12)
-,`importe_iva_10_hotel` decimal(65,24)
-,`total_iva_10_hotel` decimal(65,24)
-,`base_iva_4_hotel` decimal(63,12)
-,`importe_iva_4_hotel` decimal(65,24)
-,`total_iva_4_hotel` decimal(65,24)
 ,`base_iva_0_hotel` decimal(63,12)
-,`importe_iva_0_hotel` decimal(65,24)
-,`total_iva_0_hotel` decimal(65,24)
+,`base_iva_10` decimal(63,12)
+,`base_iva_10_hotel` decimal(63,12)
+,`base_iva_21` decimal(63,12)
+,`base_iva_21_hotel` decimal(63,12)
+,`base_iva_4` decimal(63,12)
+,`base_iva_4_hotel` decimal(63,12)
+,`base_iva_otros` decimal(63,12)
 ,`base_iva_otros_hotel` decimal(63,12)
-,`importe_iva_otros_hotel` decimal(65,24)
-,`total_iva_otros_hotel` decimal(65,24)
-,`ahorro_total_coeficientes` decimal(64,12)
+,`cantidad_lineas_con_coeficiente` bigint
+,`cantidad_lineas_total` bigint
 ,`diferencia_base_imponible_cliente` decimal(64,12)
 ,`diferencia_total_con_iva_cliente` decimal(65,24)
+,`duracion_evento_dias` bigint
+,`email_cliente` varchar(255)
+,`estado_version_presupuesto` enum('borrador','enviado','aprobado','rechazado','cancelado')
+,`fecha_aprobacion_version` datetime
+,`fecha_creacion_version` timestamp
+,`fecha_envio_version` datetime
+,`fecha_fin_evento_presupuesto` date
+,`fecha_inicio_evento_presupuesto` date
+,`fecha_presupuesto` date
 ,`fecha_primera_linea_creada` timestamp
 ,`fecha_ultima_modificacion_linea` timestamp
+,`fecha_validez_presupuesto` date
+,`id_cliente` int unsigned
+,`id_presupuesto` int unsigned
+,`id_version_presupuesto` int unsigned
+,`importe_iva_0` decimal(65,18)
+,`importe_iva_0_hotel` decimal(65,24)
+,`importe_iva_10` decimal(65,18)
+,`importe_iva_10_hotel` decimal(65,24)
+,`importe_iva_21` decimal(65,18)
+,`importe_iva_21_hotel` decimal(65,24)
+,`importe_iva_4` decimal(65,18)
+,`importe_iva_4_hotel` decimal(65,24)
+,`importe_iva_otros` decimal(65,18)
+,`importe_iva_otros_hotel` decimal(65,24)
+,`nif_cliente` varchar(20)
+,`nombre_cliente` varchar(255)
+,`nombre_evento_presupuesto` varchar(255)
+,`numero_presupuesto` varchar(50)
+,`numero_version_presupuesto` int unsigned
+,`telefono_cliente` varchar(255)
+,`total_base_imponible` decimal(63,12)
+,`total_base_imponible_hotel` decimal(63,12)
+,`total_con_iva` decimal(65,18)
+,`total_con_iva_hotel` decimal(65,24)
+,`total_despues_descuento_linea_hotel` decimal(65,18)
+,`total_importe_descuento_linea_hotel` decimal(65,18)
+,`total_iva` decimal(65,18)
+,`total_iva_0` decimal(65,18)
+,`total_iva_0_hotel` decimal(65,24)
+,`total_iva_10` decimal(65,18)
+,`total_iva_10_hotel` decimal(65,24)
+,`total_iva_21` decimal(65,18)
+,`total_iva_21_hotel` decimal(65,24)
+,`total_iva_4` decimal(65,18)
+,`total_iva_4_hotel` decimal(65,24)
+,`total_iva_hotel` decimal(65,24)
+,`total_iva_otros` decimal(65,18)
+,`total_iva_otros_hotel` decimal(65,24)
 );
 
 --
@@ -3368,7 +3538,8 @@ ALTER TABLE `articulo`
   ADD KEY `idx_id_familia_articulo` (`id_familia`),
   ADD KEY `idx_nombre_articulo` (`nombre_articulo`),
   ADD KEY `idx_es_kit_articulo` (`es_kit_articulo`),
-  ADD KEY `idx_id_impuesto` (`id_impuesto`);
+  ADD KEY `idx_id_impuesto` (`id_impuesto`),
+  ADD KEY `idx_es_kit_activo_peso` (`es_kit_articulo`,`activo_articulo`);
 
 --
 -- Indices de la tabla `categorias`
@@ -3386,7 +3557,8 @@ ALTER TABLE `cliente`
   ADD KEY `idx_nombre_cliente` (`nombre_cliente`),
   ADD KEY `idx_nif_cliente` (`nif_cliente`),
   ADD KEY `idx_id_forma_pago_habitual` (`id_forma_pago_habitual`),
-  ADD KEY `idx_porcentaje_descuento_cliente` (`porcentaje_descuento_cliente`);
+  ADD KEY `idx_porcentaje_descuento_cliente` (`porcentaje_descuento_cliente`),
+  ADD KEY `idx_exento_iva_cliente` (`exento_iva_cliente`);
 
 --
 -- Indices de la tabla `cliente_ubicacion`
@@ -3483,7 +3655,9 @@ ALTER TABLE `elemento`
   ADD KEY `idx_es_propio_elemento` (`es_propio_elemento`),
   ADD KEY `idx_id_proveedor_compra_elemento` (`id_proveedor_compra_elemento`),
   ADD KEY `idx_id_proveedor_alquiler_elemento` (`id_proveedor_alquiler_elemento`),
-  ADD KEY `idx_id_forma_pago_alquiler_elemento` (`id_forma_pago_alquiler_elemento`);
+  ADD KEY `idx_id_forma_pago_alquiler_elemento` (`id_forma_pago_alquiler_elemento`),
+  ADD KEY `idx_peso_elemento` (`peso_elemento`),
+  ADD KEY `idx_articulo_peso` (`id_articulo_elemento`,`activo_elemento`,`peso_elemento`);
 
 --
 -- Indices de la tabla `empresa`
@@ -3496,7 +3670,9 @@ ALTER TABLE `empresa`
   ADD KEY `idx_nif_empresa` (`nif_empresa`),
   ADD KEY `idx_ficticia_empresa` (`ficticia_empresa`),
   ADD KEY `idx_empresa_ficticia_principal` (`empresa_ficticia_principal`),
-  ADD KEY `idx_activo_empresa` (`activo_empresa`);
+  ADD KEY `idx_activo_empresa` (`activo_empresa`),
+  ADD KEY `idx_plantilla_default` (`id_plantilla_default`),
+  ADD KEY `idx_modelo_impresion` (`modelo_impresion_empresa`);
 
 --
 -- Indices de la tabla `estados_llamada`
@@ -3598,7 +3774,8 @@ ALTER TABLE `kit`
   ADD PRIMARY KEY (`id_kit`),
   ADD UNIQUE KEY `uk_kit_componente` (`id_articulo_maestro`,`id_articulo_componente`),
   ADD KEY `idx_id_articulo_maestro` (`id_articulo_maestro`),
-  ADD KEY `idx_id_articulo_componente` (`id_articulo_componente`);
+  ADD KEY `idx_id_articulo_componente` (`id_articulo_componente`),
+  ADD KEY `idx_maestro_activo_peso` (`id_articulo_maestro`,`activo_kit`);
 
 --
 -- Indices de la tabla `linea_presupuesto`
@@ -3615,7 +3792,8 @@ ALTER TABLE `linea_presupuesto`
   ADD KEY `idx_fecha_inicio` (`fecha_inicio_linea_ppto`),
   ADD KEY `idx_ubicacion` (`id_ubicacion`),
   ADD KEY `idx_impuesto` (`id_impuesto`),
-  ADD KEY `idx_activo` (`activo_linea_ppto`);
+  ADD KEY `idx_activo` (`activo_linea_ppto`),
+  ADD KEY `idx_version_articulo_peso` (`id_version_presupuesto`,`id_articulo`,`activo_linea_ppto`);
 
 --
 -- Indices de la tabla `llamadas`
@@ -3653,6 +3831,18 @@ ALTER TABLE `observacion_general`
   ADD UNIQUE KEY `codigo_obs_general` (`codigo_obs_general`),
   ADD KEY `idx_orden_obs_general` (`orden_obs_general`),
   ADD KEY `idx_obligatoria_obs_general` (`obligatoria_obs_general`);
+
+--
+-- Indices de la tabla `plantilla_impresion`
+--
+ALTER TABLE `plantilla_impresion`
+  ADD PRIMARY KEY (`id_plantilla`),
+  ADD UNIQUE KEY `codigo_plantilla` (`codigo_plantilla`),
+  ADD KEY `idx_codigo_plantilla` (`codigo_plantilla`),
+  ADD KEY `idx_idioma_plantilla` (`idioma_plantilla`),
+  ADD KEY `idx_tipo_cliente_plantilla` (`tipo_cliente_plantilla`),
+  ADD KEY `idx_activo_plantilla` (`activo_plantilla`),
+  ADD KEY `idx_orden_plantilla` (`orden_plantilla`);
 
 --
 -- Indices de la tabla `presupuesto`
@@ -3783,7 +3973,7 @@ ALTER TABLE `coeficiente`
 -- AUTO_INCREMENT de la tabla `comerciales`
 --
 ALTER TABLE `comerciales`
-  MODIFY `id_comercial` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_comercial` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `com_vacaciones`
@@ -3825,7 +4015,7 @@ ALTER TABLE `documento_elemento`
 -- AUTO_INCREMENT de la tabla `elemento`
 --
 ALTER TABLE `elemento`
-  MODIFY `id_elemento` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_elemento` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `empresa`
@@ -3855,7 +4045,7 @@ ALTER TABLE `estado_presupuesto`
 -- AUTO_INCREMENT de la tabla `familia`
 --
 ALTER TABLE `familia`
-  MODIFY `id_familia` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=179;
+  MODIFY `id_familia` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
 
 --
 -- AUTO_INCREMENT de la tabla `forma_pago`
@@ -3903,13 +4093,13 @@ ALTER TABLE `impuesto`
 -- AUTO_INCREMENT de la tabla `kit`
 --
 ALTER TABLE `kit`
-  MODIFY `id_kit` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_kit` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `linea_presupuesto`
 --
 ALTER TABLE `linea_presupuesto`
-  MODIFY `id_linea_ppto` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id_linea_ppto` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT de la tabla `llamadas`
@@ -3942,6 +4132,12 @@ ALTER TABLE `observacion_general`
   MODIFY `id_obs_general` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT de la tabla `plantilla_impresion`
+--
+ALTER TABLE `plantilla_impresion`
+  MODIFY `id_plantilla` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT de la tabla `presupuesto`
 --
 ALTER TABLE `presupuesto`
@@ -3951,7 +4147,7 @@ ALTER TABLE `presupuesto`
 -- AUTO_INCREMENT de la tabla `presupuesto_version`
 --
 ALTER TABLE `presupuesto_version`
-  MODIFY `id_version_presupuesto` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '? ID único de TABLA (AUTO_INCREMENT). NO confundir con numero_version_presupuesto. \r\n            Ejemplo: Si tienes 3 presupuestos con 2 versiones cada uno, tendrás IDs 1-6,\r\n            pero cada presupuesto tendrá sus propias versiones 1 y 2', AUTO_INCREMENT=5;
+  MODIFY `id_version_presupuesto` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '? ID único de TABLA (AUTO_INCREMENT). NO confundir con numero_version_presupuesto. \r\n            Ejemplo: Si tienes 3 presupuestos con 2 versiones cada uno, tendrás IDs 1-6,\r\n            pero cada presupuesto tendrá sus propias versiones 1 y 2', AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
@@ -4005,7 +4201,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`administrator`@`%` SQL SECURITY DEFINER VIEW
 --
 DROP TABLE IF EXISTS `contacto_cantidad_cliente`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `contacto_cantidad_cliente`  AS SELECT `c`.`id_cliente` AS `id_cliente`, `c`.`codigo_cliente` AS `codigo_cliente`, `c`.`nombre_cliente` AS `nombre_cliente`, `c`.`direccion_cliente` AS `direccion_cliente`, `c`.`cp_cliente` AS `cp_cliente`, `c`.`poblacion_cliente` AS `poblacion_cliente`, `c`.`provincia_cliente` AS `provincia_cliente`, `c`.`nif_cliente` AS `nif_cliente`, `c`.`telefono_cliente` AS `telefono_cliente`, `c`.`fax_cliente` AS `fax_cliente`, `c`.`web_cliente` AS `web_cliente`, `c`.`email_cliente` AS `email_cliente`, `c`.`nombre_facturacion_cliente` AS `nombre_facturacion_cliente`, `c`.`direccion_facturacion_cliente` AS `direccion_facturacion_cliente`, `c`.`cp_facturacion_cliente` AS `cp_facturacion_cliente`, `c`.`poblacion_facturacion_cliente` AS `poblacion_facturacion_cliente`, `c`.`provincia_facturacion_cliente` AS `provincia_facturacion_cliente`, `c`.`observaciones_cliente` AS `observaciones_cliente`, `c`.`activo_cliente` AS `activo_cliente`, `c`.`created_at_cliente` AS `created_at_cliente`, `c`.`updated_at_cliente` AS `updated_at_cliente`, `c`.`porcentaje_descuento_cliente` AS `porcentaje_descuento_cliente`, `c`.`id_forma_pago_habitual` AS `id_forma_pago_habitual`, `fp`.`codigo_pago` AS `codigo_pago`, `fp`.`nombre_pago` AS `nombre_pago`, `fp`.`descuento_pago` AS `descuento_pago`, `fp`.`porcentaje_anticipo_pago` AS `porcentaje_anticipo_pago`, `fp`.`dias_anticipo_pago` AS `dias_anticipo_pago`, `fp`.`porcentaje_final_pago` AS `porcentaje_final_pago`, `fp`.`dias_final_pago` AS `dias_final_pago`, `fp`.`observaciones_pago` AS `observaciones_pago`, `fp`.`activo_pago` AS `activo_pago`, `mp`.`id_metodo_pago` AS `id_metodo_pago`, `mp`.`codigo_metodo_pago` AS `codigo_metodo_pago`, `mp`.`nombre_metodo_pago` AS `nombre_metodo_pago`, `mp`.`observaciones_metodo_pago` AS `observaciones_metodo_pago`, `mp`.`activo_metodo_pago` AS `activo_metodo_pago`, (select count(`cc`.`id_contacto_cliente`) from `contacto_cliente` `cc` where (`cc`.`id_cliente` = `c`.`id_cliente`)) AS `cantidad_contactos_cliente`, (case when (`fp`.`porcentaje_anticipo_pago` = 100.00) then 'Pago único' when (`fp`.`porcentaje_anticipo_pago` < 100.00) then 'Pago fraccionado' else 'Sin forma de pago' end) AS `tipo_pago_cliente`, (case when (`fp`.`id_pago` is null) then 'Sin forma de pago asignada' when (`fp`.`porcentaje_anticipo_pago` = 100.00) then concat(`mp`.`nombre_metodo_pago`,' - ',`fp`.`nombre_pago`,(case when (`fp`.`descuento_pago` > 0) then concat(' (Dto: ',`fp`.`descuento_pago`,'%)') else '' end)) else concat(`mp`.`nombre_metodo_pago`,' - ',`fp`.`porcentaje_anticipo_pago`,'% + ',`fp`.`porcentaje_final_pago`,'%') end) AS `descripcion_forma_pago_cliente`, concat_ws(', ',`c`.`direccion_cliente`,concat(`c`.`cp_cliente`,' ',`c`.`poblacion_cliente`),`c`.`provincia_cliente`) AS `direccion_completa_cliente`, (case when (`c`.`direccion_facturacion_cliente` is not null) then concat_ws(', ',`c`.`direccion_facturacion_cliente`,concat(`c`.`cp_facturacion_cliente`,' ',`c`.`poblacion_facturacion_cliente`),`c`.`provincia_facturacion_cliente`) else NULL end) AS `direccion_facturacion_completa_cliente`, (case when (`c`.`direccion_facturacion_cliente` is not null) then true else false end) AS `tiene_direccion_facturacion_diferente`, (case when (`c`.`id_forma_pago_habitual` is null) then 'Sin configurar' when (`fp`.`activo_pago` = false) then 'Forma de pago inactiva' when (`mp`.`activo_metodo_pago` = false) then 'Método de pago inactivo' else 'Configurado' end) AS `estado_forma_pago_cliente`, (case when (`c`.`porcentaje_descuento_cliente` = 0.00) then 'Sin descuento' when ((`c`.`porcentaje_descuento_cliente` > 0.00) and (`c`.`porcentaje_descuento_cliente` <= 5.00)) then 'Descuento bajo' when ((`c`.`porcentaje_descuento_cliente` > 5.00) and (`c`.`porcentaje_descuento_cliente` <= 15.00)) then 'Descuento medio' when (`c`.`porcentaje_descuento_cliente` > 15.00) then 'Descuento alto' else 'Sin descuento' end) AS `categoria_descuento_cliente`, (case when (`c`.`porcentaje_descuento_cliente` > 0.00) then true else false end) AS `tiene_descuento_cliente` FROM ((`cliente` `c` left join `forma_pago` `fp` on((`c`.`id_forma_pago_habitual` = `fp`.`id_pago`))) left join `metodo_pago` `mp` on((`fp`.`id_metodo_pago` = `mp`.`id_metodo_pago`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `contacto_cantidad_cliente`  AS SELECT `c`.`id_cliente` AS `id_cliente`, `c`.`codigo_cliente` AS `codigo_cliente`, `c`.`nombre_cliente` AS `nombre_cliente`, `c`.`direccion_cliente` AS `direccion_cliente`, `c`.`cp_cliente` AS `cp_cliente`, `c`.`poblacion_cliente` AS `poblacion_cliente`, `c`.`provincia_cliente` AS `provincia_cliente`, `c`.`nif_cliente` AS `nif_cliente`, `c`.`telefono_cliente` AS `telefono_cliente`, `c`.`fax_cliente` AS `fax_cliente`, `c`.`web_cliente` AS `web_cliente`, `c`.`email_cliente` AS `email_cliente`, `c`.`nombre_facturacion_cliente` AS `nombre_facturacion_cliente`, `c`.`direccion_facturacion_cliente` AS `direccion_facturacion_cliente`, `c`.`cp_facturacion_cliente` AS `cp_facturacion_cliente`, `c`.`poblacion_facturacion_cliente` AS `poblacion_facturacion_cliente`, `c`.`provincia_facturacion_cliente` AS `provincia_facturacion_cliente`, `c`.`observaciones_cliente` AS `observaciones_cliente`, `c`.`activo_cliente` AS `activo_cliente`, `c`.`created_at_cliente` AS `created_at_cliente`, `c`.`updated_at_cliente` AS `updated_at_cliente`, `c`.`porcentaje_descuento_cliente` AS `porcentaje_descuento_cliente`, `c`.`id_forma_pago_habitual` AS `id_forma_pago_habitual`, `c`.`exento_iva_cliente` AS `exento_iva_cliente`, `c`.`justificacion_exencion_iva_cliente` AS `justificacion_exencion_iva_cliente`, `fp`.`codigo_pago` AS `codigo_pago`, `fp`.`nombre_pago` AS `nombre_pago`, `fp`.`descuento_pago` AS `descuento_pago`, `fp`.`porcentaje_anticipo_pago` AS `porcentaje_anticipo_pago`, `fp`.`dias_anticipo_pago` AS `dias_anticipo_pago`, `fp`.`porcentaje_final_pago` AS `porcentaje_final_pago`, `fp`.`dias_final_pago` AS `dias_final_pago`, `fp`.`observaciones_pago` AS `observaciones_pago`, `fp`.`activo_pago` AS `activo_pago`, `mp`.`id_metodo_pago` AS `id_metodo_pago`, `mp`.`codigo_metodo_pago` AS `codigo_metodo_pago`, `mp`.`nombre_metodo_pago` AS `nombre_metodo_pago`, `mp`.`observaciones_metodo_pago` AS `observaciones_metodo_pago`, `mp`.`activo_metodo_pago` AS `activo_metodo_pago`, (select count(`cc`.`id_contacto_cliente`) from `contacto_cliente` `cc` where (`cc`.`id_cliente` = `c`.`id_cliente`)) AS `cantidad_contactos_cliente`, (case when (`fp`.`porcentaje_anticipo_pago` = 100.00) then 'Pago único' when (`fp`.`porcentaje_anticipo_pago` < 100.00) then 'Pago fraccionado' else 'Sin forma de pago' end) AS `tipo_pago_cliente`, (case when (`fp`.`id_pago` is null) then 'Sin forma de pago asignada' when (`fp`.`porcentaje_anticipo_pago` = 100.00) then concat(`mp`.`nombre_metodo_pago`,' - ',`fp`.`nombre_pago`,(case when (`fp`.`descuento_pago` > 0) then concat(' (Dto: ',`fp`.`descuento_pago`,'%)') else '' end)) else concat(`mp`.`nombre_metodo_pago`,' - ',`fp`.`porcentaje_anticipo_pago`,'% + ',`fp`.`porcentaje_final_pago`,'%') end) AS `descripcion_forma_pago_cliente`, concat_ws(', ',`c`.`direccion_cliente`,concat(`c`.`cp_cliente`,' ',`c`.`poblacion_cliente`),`c`.`provincia_cliente`) AS `direccion_completa_cliente`, (case when (`c`.`direccion_facturacion_cliente` is not null) then concat_ws(', ',`c`.`direccion_facturacion_cliente`,concat(`c`.`cp_facturacion_cliente`,' ',`c`.`poblacion_facturacion_cliente`),`c`.`provincia_facturacion_cliente`) else NULL end) AS `direccion_facturacion_completa_cliente`, (case when (`c`.`direccion_facturacion_cliente` is not null) then true else false end) AS `tiene_direccion_facturacion_diferente`, (case when (`c`.`id_forma_pago_habitual` is null) then 'Sin configurar' when (`fp`.`activo_pago` = false) then 'Forma de pago inactiva' when (`mp`.`activo_metodo_pago` = false) then 'Método de pago inactivo' else 'Configurado' end) AS `estado_forma_pago_cliente`, (case when (`c`.`porcentaje_descuento_cliente` = 0.00) then 'Sin descuento' when ((`c`.`porcentaje_descuento_cliente` > 0.00) and (`c`.`porcentaje_descuento_cliente` <= 5.00)) then 'Descuento bajo' when ((`c`.`porcentaje_descuento_cliente` > 5.00) and (`c`.`porcentaje_descuento_cliente` <= 15.00)) then 'Descuento medio' when (`c`.`porcentaje_descuento_cliente` > 15.00) then 'Descuento alto' else 'Sin descuento' end) AS `categoria_descuento_cliente`, (case when (`c`.`porcentaje_descuento_cliente` > 0.00) then true else false end) AS `tiene_descuento_cliente` FROM ((`cliente` `c` left join `forma_pago` `fp` on((`c`.`id_forma_pago_habitual` = `fp`.`id_pago`))) left join `metodo_pago` `mp` on((`fp`.`id_metodo_pago` = `mp`.`id_metodo_pago`))) ;
 
 -- --------------------------------------------------------
 
@@ -4082,6 +4278,24 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_a
 -- --------------------------------------------------------
 
 --
+-- Estructura para la vista `vista_articulo_peso`
+--
+DROP TABLE IF EXISTS `vista_articulo_peso`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_articulo_peso`  AS SELECT `a`.`id_articulo` AS `id_articulo`, `a`.`codigo_articulo` AS `codigo_articulo`, `a`.`nombre_articulo` AS `nombre_articulo`, `a`.`es_kit_articulo` AS `es_kit_articulo`, `a`.`precio_alquiler_articulo` AS `precio_alquiler_articulo`, (case when (`a`.`es_kit_articulo` = 0) then coalesce(`vpm`.`peso_medio_kg`,0.000) when (`a`.`es_kit_articulo` = 1) then coalesce(`vkp`.`peso_total_kit_kg`,0.000) else 0.000 end) AS `peso_articulo_kg`, (case when (`a`.`es_kit_articulo` = 0) then 'MEDIA_ELEMENTOS' when (`a`.`es_kit_articulo` = 1) then 'SUMA_COMPONENTES' else 'SIN_METODO' end) AS `metodo_calculo`, (case when ((`a`.`es_kit_articulo` = 0) and (`vpm`.`elementos_con_peso` > 0)) then true when ((`a`.`es_kit_articulo` = 1) and (`vkp`.`componentes_con_peso` > 0)) then true else false end) AS `tiene_datos_peso`, (case when (`a`.`es_kit_articulo` = 0) then `vpm`.`elementos_con_peso` when (`a`.`es_kit_articulo` = 1) then `vkp`.`componentes_con_peso` else 0 end) AS `items_con_peso`, (case when (`a`.`es_kit_articulo` = 0) then `vpm`.`total_elementos` when (`a`.`es_kit_articulo` = 1) then `vkp`.`total_componentes` else 0 end) AS `total_items` FROM ((`articulo` `a` left join `vista_articulo_peso_medio` `vpm` on(((`a`.`id_articulo` = `vpm`.`id_articulo`) and (`a`.`es_kit_articulo` = 0)))) left join `vista_kit_peso_total` `vkp` on(((`a`.`id_articulo` = `vkp`.`id_articulo`) and (`a`.`es_kit_articulo` = 1)))) WHERE (`a`.`activo_articulo` = 1) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `vista_articulo_peso_medio`
+--
+DROP TABLE IF EXISTS `vista_articulo_peso_medio`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_articulo_peso_medio`  AS SELECT `a`.`id_articulo` AS `id_articulo`, `a`.`codigo_articulo` AS `codigo_articulo`, `a`.`nombre_articulo` AS `nombre_articulo`, `a`.`es_kit_articulo` AS `es_kit_articulo`, count((case when (`e`.`peso_elemento` is not null) then 1 end)) AS `elementos_con_peso`, count(`e`.`id_elemento`) AS `total_elementos`, avg(`e`.`peso_elemento`) AS `peso_medio_kg`, sum(`e`.`peso_elemento`) AS `peso_suma_total_kg`, min(`e`.`peso_elemento`) AS `peso_min_kg`, max(`e`.`peso_elemento`) AS `peso_max_kg` FROM (`articulo` `a` left join `elemento` `e` on(((`a`.`id_articulo` = `e`.`id_articulo_elemento`) and (`e`.`activo_elemento` = 1) and (`e`.`peso_elemento` is not null)))) WHERE ((`a`.`activo_articulo` = 1) AND (`a`.`es_kit_articulo` = 0)) GROUP BY `a`.`id_articulo`, `a`.`codigo_articulo`, `a`.`nombre_articulo`, `a`.`es_kit_articulo` ;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura para la vista `vista_cliente_completa`
 --
 DROP TABLE IF EXISTS `vista_cliente_completa`;
@@ -4113,7 +4327,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_c
 --
 DROP TABLE IF EXISTS `vista_elementos_completa`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_elementos_completa`  AS SELECT `e`.`id_elemento` AS `id_elemento`, `e`.`codigo_elemento` AS `codigo_elemento`, `e`.`codigo_barras_elemento` AS `codigo_barras_elemento`, `e`.`descripcion_elemento` AS `descripcion_elemento`, `e`.`numero_serie_elemento` AS `numero_serie_elemento`, `e`.`modelo_elemento` AS `modelo_elemento`, `e`.`nave_elemento` AS `nave_elemento`, `e`.`pasillo_columna_elemento` AS `pasillo_columna_elemento`, `e`.`altura_elemento` AS `altura_elemento`, concat_ws(' | ',coalesce(`e`.`nave_elemento`,''),coalesce(`e`.`pasillo_columna_elemento`,''),coalesce(`e`.`altura_elemento`,'')) AS `ubicacion_completa_elemento`, `e`.`fecha_compra_elemento` AS `fecha_compra_elemento`, `e`.`precio_compra_elemento` AS `precio_compra_elemento`, `e`.`fecha_alta_elemento` AS `fecha_alta_elemento`, `e`.`fecha_fin_garantia_elemento` AS `fecha_fin_garantia_elemento`, `e`.`proximo_mantenimiento_elemento` AS `proximo_mantenimiento_elemento`, `e`.`observaciones_elemento` AS `observaciones_elemento`, `e`.`es_propio_elemento` AS `es_propio_elemento`, `e`.`id_proveedor_compra_elemento` AS `id_proveedor_compra_elemento`, `e`.`id_proveedor_alquiler_elemento` AS `id_proveedor_alquiler_elemento`, `e`.`precio_dia_alquiler_elemento` AS `precio_dia_alquiler_elemento`, `e`.`id_forma_pago_alquiler_elemento` AS `id_forma_pago_alquiler_elemento`, `e`.`observaciones_alquiler_elemento` AS `observaciones_alquiler_elemento`, `prov_compra`.`codigo_proveedor` AS `codigo_proveedor_compra`, `prov_compra`.`nombre_proveedor` AS `nombre_proveedor_compra`, `prov_compra`.`telefono_proveedor` AS `telefono_proveedor_compra`, `prov_compra`.`email_proveedor` AS `email_proveedor_compra`, `prov_compra`.`nif_proveedor` AS `nif_proveedor_compra`, `prov_alquiler`.`codigo_proveedor` AS `codigo_proveedor_alquiler`, `prov_alquiler`.`nombre_proveedor` AS `nombre_proveedor_alquiler`, `prov_alquiler`.`telefono_proveedor` AS `telefono_proveedor_alquiler`, `prov_alquiler`.`email_proveedor` AS `email_proveedor_alquiler`, `prov_alquiler`.`nif_proveedor` AS `nif_proveedor_alquiler`, `prov_alquiler`.`persona_contacto_proveedor` AS `persona_contacto_proveedor_alquiler`, `fp_alquiler`.`codigo_pago` AS `codigo_forma_pago_alquiler`, `fp_alquiler`.`nombre_pago` AS `nombre_forma_pago_alquiler`, `fp_alquiler`.`porcentaje_anticipo_pago` AS `porcentaje_anticipo_alquiler`, `fp_alquiler`.`dias_anticipo_pago` AS `dias_anticipo_alquiler`, `fp_alquiler`.`porcentaje_final_pago` AS `porcentaje_final_alquiler`, `fp_alquiler`.`dias_final_pago` AS `dias_final_alquiler`, `fp_alquiler`.`descuento_pago` AS `descuento_forma_pago_alquiler`, `mp_alquiler`.`codigo_metodo_pago` AS `codigo_metodo_pago_alquiler`, `mp_alquiler`.`nombre_metodo_pago` AS `nombre_metodo_pago_alquiler`, `a`.`id_articulo` AS `id_articulo`, `a`.`codigo_articulo` AS `codigo_articulo`, `a`.`nombre_articulo` AS `nombre_articulo`, `a`.`name_articulo` AS `name_articulo`, `a`.`precio_alquiler_articulo` AS `precio_alquiler_articulo`, `f`.`id_familia` AS `id_familia`, `f`.`codigo_familia` AS `codigo_familia`, `f`.`nombre_familia` AS `nombre_familia`, `f`.`name_familia` AS `name_familia`, `g`.`id_grupo` AS `id_grupo`, `g`.`codigo_grupo` AS `codigo_grupo`, `g`.`nombre_grupo` AS `nombre_grupo`, `m`.`id_marca` AS `id_marca`, `m`.`codigo_marca` AS `codigo_marca`, `m`.`nombre_marca` AS `nombre_marca`, `est`.`id_estado_elemento` AS `id_estado_elemento`, `est`.`codigo_estado_elemento` AS `codigo_estado_elemento`, `est`.`descripcion_estado_elemento` AS `descripcion_estado_elemento`, `est`.`color_estado_elemento` AS `color_estado_elemento`, `est`.`permite_alquiler_estado_elemento` AS `permite_alquiler_estado_elemento`, `e`.`activo_elemento` AS `activo_elemento`, `e`.`created_at_elemento` AS `created_at_elemento`, `e`.`updated_at_elemento` AS `updated_at_elemento`, concat_ws(' > ',coalesce(`g`.`nombre_grupo`,'Sin grupo'),`f`.`nombre_familia`,`a`.`nombre_articulo`,`e`.`descripcion_elemento`) AS `jerarquia_completa_elemento`, (case when (`e`.`es_propio_elemento` = true) then 'PROPIO' else 'ALQUILADO A PROVEEDOR' end) AS `tipo_propiedad_elemento`, (case when (`e`.`es_propio_elemento` = true) then `prov_compra`.`nombre_proveedor` else `prov_alquiler`.`nombre_proveedor` end) AS `proveedor_principal_elemento`, (case when (`e`.`es_propio_elemento` = true) then 'N/A - Equipo propio' when (`e`.`id_proveedor_alquiler_elemento` is null) then 'Sin proveedor asignado' when ((`e`.`precio_dia_alquiler_elemento` is null) or (`e`.`precio_dia_alquiler_elemento` = 0)) then 'Proveedor asignado - Falta precio' when (`e`.`id_forma_pago_alquiler_elemento` is null) then 'Proveedor y precio OK - Falta forma de pago' else 'Completamente configurado' end) AS `estado_configuracion_alquiler`, (case when ((`e`.`es_propio_elemento` = false) and (`fp_alquiler`.`id_pago` is not null)) then (case when (`fp_alquiler`.`porcentaje_anticipo_pago` = 100.00) then concat(`mp_alquiler`.`nombre_metodo_pago`,' - ',`fp_alquiler`.`nombre_pago`,(case when (`fp_alquiler`.`descuento_pago` > 0) then concat(' (Dto: ',`fp_alquiler`.`descuento_pago`,'%)') else '' end)) else concat(`mp_alquiler`.`nombre_metodo_pago`,' - ',`fp_alquiler`.`porcentaje_anticipo_pago`,'% + ',`fp_alquiler`.`porcentaje_final_pago`,'%') end) else NULL end) AS `descripcion_forma_pago_alquiler`, (case when ((`e`.`es_propio_elemento` = false) and (`e`.`precio_dia_alquiler_elemento` is not null)) then round((`e`.`precio_dia_alquiler_elemento` * 30),2) else NULL end) AS `costo_mensual_estimado_alquiler`, (to_days(curdate()) - to_days(`e`.`fecha_alta_elemento`)) AS `dias_en_servicio_elemento`, round(((to_days(curdate()) - to_days(`e`.`fecha_alta_elemento`)) / 365.25),2) AS `anios_en_servicio_elemento` FROM (((((((((`elemento` `e` join `articulo` `a` on((`e`.`id_articulo_elemento` = `a`.`id_articulo`))) join `familia` `f` on((`a`.`id_familia` = `f`.`id_familia`))) left join `grupo_articulo` `g` on((`f`.`id_grupo` = `g`.`id_grupo`))) left join `marca` `m` on((`e`.`id_marca_elemento` = `m`.`id_marca`))) join `estado_elemento` `est` on((`e`.`id_estado_elemento` = `est`.`id_estado_elemento`))) left join `proveedor` `prov_compra` on((`e`.`id_proveedor_compra_elemento` = `prov_compra`.`id_proveedor`))) left join `proveedor` `prov_alquiler` on((`e`.`id_proveedor_alquiler_elemento` = `prov_alquiler`.`id_proveedor`))) left join `forma_pago` `fp_alquiler` on((`e`.`id_forma_pago_alquiler_elemento` = `fp_alquiler`.`id_pago`))) left join `metodo_pago` `mp_alquiler` on((`fp_alquiler`.`id_metodo_pago` = `mp_alquiler`.`id_metodo_pago`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_elementos_completa`  AS SELECT `e`.`id_elemento` AS `id_elemento`, `e`.`codigo_elemento` AS `codigo_elemento`, `e`.`codigo_barras_elemento` AS `codigo_barras_elemento`, `e`.`descripcion_elemento` AS `descripcion_elemento`, `e`.`numero_serie_elemento` AS `numero_serie_elemento`, `e`.`modelo_elemento` AS `modelo_elemento`, `e`.`nave_elemento` AS `nave_elemento`, `e`.`pasillo_columna_elemento` AS `pasillo_columna_elemento`, `e`.`altura_elemento` AS `altura_elemento`, concat_ws(' | ',coalesce(`e`.`nave_elemento`,''),coalesce(`e`.`pasillo_columna_elemento`,''),coalesce(`e`.`altura_elemento`,'')) AS `ubicacion_completa_elemento`, `e`.`peso_elemento` AS `peso_elemento`, `e`.`fecha_compra_elemento` AS `fecha_compra_elemento`, `e`.`precio_compra_elemento` AS `precio_compra_elemento`, `e`.`fecha_alta_elemento` AS `fecha_alta_elemento`, `e`.`fecha_fin_garantia_elemento` AS `fecha_fin_garantia_elemento`, `e`.`proximo_mantenimiento_elemento` AS `proximo_mantenimiento_elemento`, `e`.`observaciones_elemento` AS `observaciones_elemento`, `e`.`es_propio_elemento` AS `es_propio_elemento`, `e`.`id_proveedor_compra_elemento` AS `id_proveedor_compra_elemento`, `e`.`id_proveedor_alquiler_elemento` AS `id_proveedor_alquiler_elemento`, `e`.`precio_dia_alquiler_elemento` AS `precio_dia_alquiler_elemento`, `e`.`id_forma_pago_alquiler_elemento` AS `id_forma_pago_alquiler_elemento`, `e`.`observaciones_alquiler_elemento` AS `observaciones_alquiler_elemento`, `prov_compra`.`codigo_proveedor` AS `codigo_proveedor_compra`, `prov_compra`.`nombre_proveedor` AS `nombre_proveedor_compra`, `prov_compra`.`telefono_proveedor` AS `telefono_proveedor_compra`, `prov_compra`.`email_proveedor` AS `email_proveedor_compra`, `prov_compra`.`nif_proveedor` AS `nif_proveedor_compra`, `prov_alquiler`.`codigo_proveedor` AS `codigo_proveedor_alquiler`, `prov_alquiler`.`nombre_proveedor` AS `nombre_proveedor_alquiler`, `prov_alquiler`.`telefono_proveedor` AS `telefono_proveedor_alquiler`, `prov_alquiler`.`email_proveedor` AS `email_proveedor_alquiler`, `prov_alquiler`.`nif_proveedor` AS `nif_proveedor_alquiler`, `prov_alquiler`.`persona_contacto_proveedor` AS `persona_contacto_proveedor_alquiler`, `fp_alquiler`.`codigo_pago` AS `codigo_forma_pago_alquiler`, `fp_alquiler`.`nombre_pago` AS `nombre_forma_pago_alquiler`, `fp_alquiler`.`porcentaje_anticipo_pago` AS `porcentaje_anticipo_alquiler`, `fp_alquiler`.`dias_anticipo_pago` AS `dias_anticipo_alquiler`, `fp_alquiler`.`porcentaje_final_pago` AS `porcentaje_final_alquiler`, `fp_alquiler`.`dias_final_pago` AS `dias_final_alquiler`, `fp_alquiler`.`descuento_pago` AS `descuento_forma_pago_alquiler`, `mp_alquiler`.`codigo_metodo_pago` AS `codigo_metodo_pago_alquiler`, `mp_alquiler`.`nombre_metodo_pago` AS `nombre_metodo_pago_alquiler`, `a`.`id_articulo` AS `id_articulo`, `a`.`codigo_articulo` AS `codigo_articulo`, `a`.`nombre_articulo` AS `nombre_articulo`, `a`.`name_articulo` AS `name_articulo`, `a`.`precio_alquiler_articulo` AS `precio_alquiler_articulo`, `f`.`id_familia` AS `id_familia`, `f`.`codigo_familia` AS `codigo_familia`, `f`.`nombre_familia` AS `nombre_familia`, `f`.`name_familia` AS `name_familia`, `g`.`id_grupo` AS `id_grupo`, `g`.`codigo_grupo` AS `codigo_grupo`, `g`.`nombre_grupo` AS `nombre_grupo`, `m`.`id_marca` AS `id_marca`, `m`.`codigo_marca` AS `codigo_marca`, `m`.`nombre_marca` AS `nombre_marca`, `est`.`id_estado_elemento` AS `id_estado_elemento`, `est`.`codigo_estado_elemento` AS `codigo_estado_elemento`, `est`.`descripcion_estado_elemento` AS `descripcion_estado_elemento`, `est`.`color_estado_elemento` AS `color_estado_elemento`, `est`.`permite_alquiler_estado_elemento` AS `permite_alquiler_estado_elemento`, `e`.`activo_elemento` AS `activo_elemento`, `e`.`created_at_elemento` AS `created_at_elemento`, `e`.`updated_at_elemento` AS `updated_at_elemento`, concat_ws(' > ',coalesce(`g`.`nombre_grupo`,'Sin grupo'),`f`.`nombre_familia`,`a`.`nombre_articulo`,`e`.`descripcion_elemento`) AS `jerarquia_completa_elemento`, (case when (`e`.`es_propio_elemento` = true) then 'PROPIO' else 'ALQUILADO A PROVEEDOR' end) AS `tipo_propiedad_elemento`, (case when (`e`.`es_propio_elemento` = true) then `prov_compra`.`nombre_proveedor` else `prov_alquiler`.`nombre_proveedor` end) AS `proveedor_principal_elemento`, (case when (`e`.`es_propio_elemento` = true) then 'N/A - Equipo propio' when (`e`.`id_proveedor_alquiler_elemento` is null) then 'Sin proveedor asignado' when ((`e`.`precio_dia_alquiler_elemento` is null) or (`e`.`precio_dia_alquiler_elemento` = 0)) then 'Proveedor asignado - Falta precio' when (`e`.`id_forma_pago_alquiler_elemento` is null) then 'Proveedor y precio OK - Falta forma de pago' else 'Completamente configurado' end) AS `estado_configuracion_alquiler`, (case when ((`e`.`es_propio_elemento` = false) and (`fp_alquiler`.`id_pago` is not null)) then (case when (`fp_alquiler`.`porcentaje_anticipo_pago` = 100.00) then concat(`mp_alquiler`.`nombre_metodo_pago`,' - ',`fp_alquiler`.`nombre_pago`,(case when (`fp_alquiler`.`descuento_pago` > 0) then concat(' (Dto: ',`fp_alquiler`.`descuento_pago`,'%)') else '' end)) else concat(`mp_alquiler`.`nombre_metodo_pago`,' - ',`fp_alquiler`.`porcentaje_anticipo_pago`,'% + ',`fp_alquiler`.`porcentaje_final_pago`,'%') end) else NULL end) AS `descripcion_forma_pago_alquiler`, (case when ((`e`.`es_propio_elemento` = false) and (`e`.`precio_dia_alquiler_elemento` is not null)) then round((`e`.`precio_dia_alquiler_elemento` * 30),2) else NULL end) AS `costo_mensual_estimado_alquiler`, (to_days(curdate()) - to_days(`e`.`fecha_alta_elemento`)) AS `dias_en_servicio_elemento`, round(((to_days(curdate()) - to_days(`e`.`fecha_alta_elemento`)) / 365.25),2) AS `anios_en_servicio_elemento` FROM (((((((((`elemento` `e` join `articulo` `a` on((`e`.`id_articulo_elemento` = `a`.`id_articulo`))) join `familia` `f` on((`a`.`id_familia` = `f`.`id_familia`))) left join `grupo_articulo` `g` on((`f`.`id_grupo` = `g`.`id_grupo`))) left join `marca` `m` on((`e`.`id_marca_elemento` = `m`.`id_marca`))) join `estado_elemento` `est` on((`e`.`id_estado_elemento` = `est`.`id_estado_elemento`))) left join `proveedor` `prov_compra` on((`e`.`id_proveedor_compra_elemento` = `prov_compra`.`id_proveedor`))) left join `proveedor` `prov_alquiler` on((`e`.`id_proveedor_alquiler_elemento` = `prov_alquiler`.`id_proveedor`))) left join `forma_pago` `fp_alquiler` on((`e`.`id_forma_pago_alquiler_elemento` = `fp_alquiler`.`id_pago`))) left join `metodo_pago` `mp_alquiler` on((`fp_alquiler`.`id_metodo_pago` = `mp_alquiler`.`id_metodo_pago`))) ;
 
 -- --------------------------------------------------------
 
@@ -4145,6 +4359,24 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_k
 -- --------------------------------------------------------
 
 --
+-- Estructura para la vista `vista_kit_peso_total`
+--
+DROP TABLE IF EXISTS `vista_kit_peso_total`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_kit_peso_total`  AS SELECT `k`.`id_articulo_maestro` AS `id_articulo`, `am`.`codigo_articulo` AS `codigo_articulo`, `am`.`nombre_articulo` AS `nombre_articulo`, `am`.`es_kit_articulo` AS `es_kit_articulo`, count(distinct `k`.`id_articulo_componente`) AS `total_componentes`, count(distinct (case when (`vpm`.`peso_medio_kg` is not null) then `k`.`id_articulo_componente` end)) AS `componentes_con_peso`, sum((`k`.`cantidad_kit` * coalesce(`vpm`.`peso_medio_kg`,0))) AS `peso_total_kit_kg` FROM ((`articulo` `am` join `kit` `k` on(((`am`.`id_articulo` = `k`.`id_articulo_maestro`) and (`k`.`activo_kit` = 1)))) left join `vista_articulo_peso_medio` `vpm` on((`k`.`id_articulo_componente` = `vpm`.`id_articulo`))) WHERE ((`am`.`activo_articulo` = 1) AND (`am`.`es_kit_articulo` = 1)) GROUP BY `k`.`id_articulo_maestro`, `am`.`codigo_articulo`, `am`.`nombre_articulo`, `am`.`es_kit_articulo` ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `vista_linea_peso`
+--
+DROP TABLE IF EXISTS `vista_linea_peso`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_linea_peso`  AS SELECT `lp`.`id_linea_ppto` AS `id_linea_ppto`, `lp`.`id_version_presupuesto` AS `id_version_presupuesto`, `lp`.`id_articulo` AS `id_articulo`, `lp`.`numero_linea_ppto` AS `numero_linea_ppto`, `lp`.`tipo_linea_ppto` AS `tipo_linea_ppto`, `lp`.`cantidad_linea_ppto` AS `cantidad_linea_ppto`, `lp`.`descripcion_linea_ppto` AS `descripcion_linea_ppto`, `lp`.`codigo_linea_ppto` AS `codigo_linea_ppto`, `vap`.`codigo_articulo` AS `codigo_articulo`, `vap`.`nombre_articulo` AS `nombre_articulo`, `vap`.`es_kit_articulo` AS `es_kit_articulo`, `vap`.`peso_articulo_kg` AS `peso_articulo_kg`, `vap`.`metodo_calculo` AS `metodo_calculo`, `vap`.`tiene_datos_peso` AS `tiene_datos_peso`, (`lp`.`cantidad_linea_ppto` * coalesce(`vap`.`peso_articulo_kg`,0)) AS `peso_total_linea_kg`, (case when ((`lp`.`tipo_linea_ppto` in ('articulo','kit')) and (`vap`.`tiene_datos_peso` = true)) then true else false end) AS `linea_tiene_peso` FROM (`linea_presupuesto` `lp` left join `vista_articulo_peso` `vap` on((`lp`.`id_articulo` = `vap`.`id_articulo`))) WHERE ((`lp`.`activo_linea_ppto` = 1) AND (`lp`.`mostrar_en_presupuesto` = 1)) ;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura para la vista `vista_mantenimiento_completo`
 --
 DROP TABLE IF EXISTS `vista_mantenimiento_completo`;
@@ -4158,7 +4390,16 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_m
 --
 DROP TABLE IF EXISTS `vista_presupuesto_completa`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_presupuesto_completa`  AS SELECT `p`.`id_presupuesto` AS `id_presupuesto`, `p`.`numero_presupuesto` AS `numero_presupuesto`, `p`.`version_actual_presupuesto` AS `version_actual_presupuesto`, `p`.`fecha_presupuesto` AS `fecha_presupuesto`, `p`.`fecha_validez_presupuesto` AS `fecha_validez_presupuesto`, `p`.`fecha_inicio_evento_presupuesto` AS `fecha_inicio_evento_presupuesto`, `p`.`fecha_fin_evento_presupuesto` AS `fecha_fin_evento_presupuesto`, `p`.`numero_pedido_cliente_presupuesto` AS `numero_pedido_cliente_presupuesto`, `p`.`aplicar_coeficientes_presupuesto` AS `aplicar_coeficientes_presupuesto`, `p`.`descuento_presupuesto` AS `descuento_presupuesto`, `p`.`nombre_evento_presupuesto` AS `nombre_evento_presupuesto`, `p`.`direccion_evento_presupuesto` AS `direccion_evento_presupuesto`, `p`.`poblacion_evento_presupuesto` AS `poblacion_evento_presupuesto`, `p`.`cp_evento_presupuesto` AS `cp_evento_presupuesto`, `p`.`provincia_evento_presupuesto` AS `provincia_evento_presupuesto`, `p`.`observaciones_cabecera_presupuesto` AS `observaciones_cabecera_presupuesto`, `p`.`observaciones_pie_presupuesto` AS `observaciones_pie_presupuesto`, `p`.`observaciones_cabecera_ingles_presupuesto` AS `observaciones_cabecera_ingles_presupuesto`, `p`.`observaciones_pie_ingles_presupuesto` AS `observaciones_pie_ingles_presupuesto`, `p`.`mostrar_obs_familias_presupuesto` AS `mostrar_obs_familias_presupuesto`, `p`.`mostrar_obs_articulos_presupuesto` AS `mostrar_obs_articulos_presupuesto`, `p`.`observaciones_internas_presupuesto` AS `observaciones_internas_presupuesto`, `p`.`activo_presupuesto` AS `activo_presupuesto`, `p`.`created_at_presupuesto` AS `created_at_presupuesto`, `p`.`updated_at_presupuesto` AS `updated_at_presupuesto`, `c`.`id_cliente` AS `id_cliente`, `c`.`codigo_cliente` AS `codigo_cliente`, `c`.`nombre_cliente` AS `nombre_cliente`, `c`.`nif_cliente` AS `nif_cliente`, `c`.`direccion_cliente` AS `direccion_cliente`, `c`.`cp_cliente` AS `cp_cliente`, `c`.`poblacion_cliente` AS `poblacion_cliente`, `c`.`provincia_cliente` AS `provincia_cliente`, `c`.`telefono_cliente` AS `telefono_cliente`, `c`.`email_cliente` AS `email_cliente`, `c`.`porcentaje_descuento_cliente` AS `porcentaje_descuento_cliente`, `c`.`nombre_facturacion_cliente` AS `nombre_facturacion_cliente`, `c`.`direccion_facturacion_cliente` AS `direccion_facturacion_cliente`, `c`.`cp_facturacion_cliente` AS `cp_facturacion_cliente`, `c`.`poblacion_facturacion_cliente` AS `poblacion_facturacion_cliente`, `c`.`provincia_facturacion_cliente` AS `provincia_facturacion_cliente`, `cc`.`id_contacto_cliente` AS `id_contacto_cliente`, `cc`.`nombre_contacto_cliente` AS `nombre_contacto_cliente`, `cc`.`apellidos_contacto_cliente` AS `apellidos_contacto_cliente`, `cc`.`telefono_contacto_cliente` AS `telefono_contacto_cliente`, `cc`.`email_contacto_cliente` AS `email_contacto_cliente`, `ep`.`id_estado_ppto` AS `id_estado_ppto`, `ep`.`codigo_estado_ppto` AS `codigo_estado_ppto`, `ep`.`nombre_estado_ppto` AS `nombre_estado_ppto`, `ep`.`color_estado_ppto` AS `color_estado_ppto`, `ep`.`orden_estado_ppto` AS `orden_estado_ppto`, `fp`.`id_pago` AS `id_forma_pago`, `fp`.`codigo_pago` AS `codigo_pago`, `fp`.`nombre_pago` AS `nombre_pago`, `fp`.`porcentaje_anticipo_pago` AS `porcentaje_anticipo_pago`, `fp`.`dias_anticipo_pago` AS `dias_anticipo_pago`, `fp`.`porcentaje_final_pago` AS `porcentaje_final_pago`, `fp`.`dias_final_pago` AS `dias_final_pago`, `fp`.`descuento_pago` AS `descuento_pago`, `mp`.`id_metodo_pago` AS `id_metodo_pago`, `mp`.`codigo_metodo_pago` AS `codigo_metodo_pago`, `mp`.`nombre_metodo_pago` AS `nombre_metodo_pago`, `mc`.`id_metodo` AS `id_metodo_contacto`, `mc`.`nombre` AS `nombre_metodo_contacto`, `c`.`id_forma_pago_habitual` AS `id_forma_pago_habitual`, `fph`.`nombre_pago` AS `nombre_forma_pago_habitual_cliente`, concat_ws(', ',`p`.`direccion_evento_presupuesto`,concat(`p`.`cp_evento_presupuesto`,' ',`p`.`poblacion_evento_presupuesto`),`p`.`provincia_evento_presupuesto`) AS `direccion_completa_evento_presupuesto`, concat_ws(', ',`c`.`direccion_cliente`,concat(`c`.`cp_cliente`,' ',`c`.`poblacion_cliente`),`c`.`provincia_cliente`) AS `direccion_completa_cliente`, concat_ws(', ',`c`.`direccion_facturacion_cliente`,concat(`c`.`cp_facturacion_cliente`,' ',`c`.`poblacion_facturacion_cliente`),`c`.`provincia_facturacion_cliente`) AS `direccion_facturacion_completa_cliente`, concat_ws(' ',`cc`.`nombre_contacto_cliente`,`cc`.`apellidos_contacto_cliente`) AS `nombre_completo_contacto`, (to_days(`p`.`fecha_validez_presupuesto`) - to_days(curdate())) AS `dias_validez_restantes`, (case when (`p`.`fecha_validez_presupuesto` is null) then 'Sin fecha de validez' when (`p`.`fecha_validez_presupuesto` < curdate()) then 'Caducado' when (`p`.`fecha_validez_presupuesto` = curdate()) then 'Caduca hoy' when ((to_days(`p`.`fecha_validez_presupuesto`) - to_days(curdate())) <= 7) then 'Próximo a caducar' else 'Vigente' end) AS `estado_validez_presupuesto`, ((to_days(`p`.`fecha_fin_evento_presupuesto`) - to_days(`p`.`fecha_inicio_evento_presupuesto`)) + 1) AS `duracion_evento_dias`, (to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) AS `dias_hasta_inicio_evento`, (to_days(`p`.`fecha_fin_evento_presupuesto`) - to_days(curdate())) AS `dias_hasta_fin_evento`, (case when (`p`.`fecha_inicio_evento_presupuesto` is null) then 'Sin fecha de evento' when ((`p`.`fecha_inicio_evento_presupuesto` < curdate()) and (`p`.`fecha_fin_evento_presupuesto` < curdate())) then 'Evento finalizado' when ((`p`.`fecha_inicio_evento_presupuesto` <= curdate()) and (`p`.`fecha_fin_evento_presupuesto` >= curdate())) then 'Evento en curso' when (`p`.`fecha_inicio_evento_presupuesto` = curdate()) then 'Evento HOY' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) = 1) then 'Evento MAÑANA' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 7) then 'Evento esta semana' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 30) then 'Evento este mes' else 'Evento futuro' end) AS `estado_evento_presupuesto`, (case when (`p`.`fecha_inicio_evento_presupuesto` is null) then 'Sin prioridad' when (`p`.`fecha_inicio_evento_presupuesto` = curdate()) then 'HOY' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) = 1) then 'MAÑANA' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 7) then 'Esta semana' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 15) then 'Próximo' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 30) then 'Este mes' else 'Futuro' end) AS `prioridad_presupuesto`, (case when (`fp`.`id_pago` is null) then 'Sin forma de pago' when (`fp`.`porcentaje_anticipo_pago` = 100.00) then 'Pago único' when (`fp`.`porcentaje_anticipo_pago` < 100.00) then 'Pago fraccionado' else 'Sin forma de pago' end) AS `tipo_pago_presupuesto`, (case when (`fp`.`id_pago` is null) then 'Sin forma de pago asignada' when (`fp`.`porcentaje_anticipo_pago` = 100.00) then concat(`mp`.`nombre_metodo_pago`,' - ',`fp`.`nombre_pago`,(case when (`fp`.`descuento_pago` > 0) then concat(' (Dto: ',`fp`.`descuento_pago`,'%)') else '' end)) else concat(`mp`.`nombre_metodo_pago`,' - ',`fp`.`porcentaje_anticipo_pago`,'% + ',`fp`.`porcentaje_final_pago`,'%') end) AS `descripcion_completa_forma_pago`, (case when (`fp`.`dias_anticipo_pago` = 0) then `p`.`fecha_presupuesto` else (`p`.`fecha_presupuesto` + interval `fp`.`dias_anticipo_pago` day) end) AS `fecha_vencimiento_anticipo`, (case when ((`fp`.`dias_final_pago` = 0) and (`p`.`fecha_fin_evento_presupuesto` is not null)) then `p`.`fecha_fin_evento_presupuesto` when (`fp`.`dias_final_pago` > 0) then (`p`.`fecha_presupuesto` + interval `fp`.`dias_final_pago` day) when ((`fp`.`dias_final_pago` < 0) and (`p`.`fecha_inicio_evento_presupuesto` is not null)) then (`p`.`fecha_inicio_evento_presupuesto` + interval `fp`.`dias_final_pago` day) else NULL end) AS `fecha_vencimiento_final`, (case when (`p`.`descuento_presupuesto` = `c`.`porcentaje_descuento_cliente`) then 'Igual al habitual' when (`p`.`descuento_presupuesto` > `c`.`porcentaje_descuento_cliente`) then 'Mayor al habitual' when (`p`.`descuento_presupuesto` < `c`.`porcentaje_descuento_cliente`) then 'Menor al habitual' else 'Sin comparar' end) AS `comparacion_descuento`, (case when (`p`.`descuento_presupuesto` = 0.00) then 'Sin descuento' when ((`p`.`descuento_presupuesto` > 0.00) and (`p`.`descuento_presupuesto` <= 5.00)) then concat('Descuento bajo: ',`p`.`descuento_presupuesto`,'%') when ((`p`.`descuento_presupuesto` > 5.00) and (`p`.`descuento_presupuesto` <= 15.00)) then concat('Descuento medio: ',`p`.`descuento_presupuesto`,'%') when (`p`.`descuento_presupuesto` > 15.00) then concat('Descuento alto: ',`p`.`descuento_presupuesto`,'%') else 'Sin descuento' end) AS `estado_descuento_presupuesto`, (case when (`p`.`descuento_presupuesto` > 0.00) then true else false end) AS `aplica_descuento_presupuesto`, (`p`.`descuento_presupuesto` - `c`.`porcentaje_descuento_cliente`) AS `diferencia_descuento`, (case when (`c`.`direccion_facturacion_cliente` is not null) then true else false end) AS `tiene_direccion_facturacion_diferente`, (to_days(curdate()) - to_days(`p`.`fecha_presupuesto`)) AS `dias_desde_emision`, `pv`.`id_version_presupuesto` AS `id_version_actual`, `pv`.`numero_version_presupuesto` AS `numero_version_actual`, `pv`.`estado_version_presupuesto` AS `estado_version_actual`, `pv`.`fecha_creacion_version` AS `fecha_creacion_version_actual`, (case when (`ep`.`codigo_estado_ppto` = 'CANC') then 'Cancelado' when (`ep`.`codigo_estado_ppto` = 'FACT') then 'Facturado' when ((`p`.`fecha_validez_presupuesto` < curdate()) and (`ep`.`codigo_estado_ppto` not in ('ACEP','RECH','CANC','FACT'))) then 'Caducado' when ((`p`.`fecha_inicio_evento_presupuesto` < curdate()) and (`p`.`fecha_fin_evento_presupuesto` < curdate())) then 'Evento finalizado' when ((`p`.`fecha_inicio_evento_presupuesto` <= curdate()) and (`p`.`fecha_fin_evento_presupuesto` >= curdate())) then 'Evento en curso' when (`ep`.`codigo_estado_ppto` = 'ACEP') then 'Aceptado - Pendiente evento' else `ep`.`nombre_estado_ppto` end) AS `estado_general_presupuesto` FROM ((((((((`presupuesto` `p` join `cliente` `c` on((`p`.`id_cliente` = `c`.`id_cliente`))) left join `contacto_cliente` `cc` on((`p`.`id_contacto_cliente` = `cc`.`id_contacto_cliente`))) join `estado_presupuesto` `ep` on((`p`.`id_estado_ppto` = `ep`.`id_estado_ppto`))) left join `forma_pago` `fp` on((`p`.`id_forma_pago` = `fp`.`id_pago`))) left join `metodo_pago` `mp` on((`fp`.`id_metodo_pago` = `mp`.`id_metodo_pago`))) left join `metodos_contacto` `mc` on((`p`.`id_metodo` = `mc`.`id_metodo`))) left join `forma_pago` `fph` on((`c`.`id_forma_pago_habitual` = `fph`.`id_pago`))) left join `presupuesto_version` `pv` on(((`p`.`id_presupuesto` = `pv`.`id_presupuesto`) and (`pv`.`numero_version_presupuesto` = `p`.`version_actual_presupuesto`)))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_presupuesto_completa`  AS SELECT `p`.`id_presupuesto` AS `id_presupuesto`, `p`.`numero_presupuesto` AS `numero_presupuesto`, `p`.`version_actual_presupuesto` AS `version_actual_presupuesto`, `p`.`fecha_presupuesto` AS `fecha_presupuesto`, `p`.`fecha_validez_presupuesto` AS `fecha_validez_presupuesto`, `p`.`fecha_inicio_evento_presupuesto` AS `fecha_inicio_evento_presupuesto`, `p`.`fecha_fin_evento_presupuesto` AS `fecha_fin_evento_presupuesto`, `p`.`numero_pedido_cliente_presupuesto` AS `numero_pedido_cliente_presupuesto`, `p`.`aplicar_coeficientes_presupuesto` AS `aplicar_coeficientes_presupuesto`, `p`.`descuento_presupuesto` AS `descuento_presupuesto`, `p`.`nombre_evento_presupuesto` AS `nombre_evento_presupuesto`, `p`.`direccion_evento_presupuesto` AS `direccion_evento_presupuesto`, `p`.`poblacion_evento_presupuesto` AS `poblacion_evento_presupuesto`, `p`.`cp_evento_presupuesto` AS `cp_evento_presupuesto`, `p`.`provincia_evento_presupuesto` AS `provincia_evento_presupuesto`, `p`.`observaciones_cabecera_presupuesto` AS `observaciones_cabecera_presupuesto`, `p`.`observaciones_pie_presupuesto` AS `observaciones_pie_presupuesto`, `p`.`observaciones_cabecera_ingles_presupuesto` AS `observaciones_cabecera_ingles_presupuesto`, `p`.`observaciones_pie_ingles_presupuesto` AS `observaciones_pie_ingles_presupuesto`, `p`.`mostrar_obs_familias_presupuesto` AS `mostrar_obs_familias_presupuesto`, `p`.`mostrar_obs_articulos_presupuesto` AS `mostrar_obs_articulos_presupuesto`, `p`.`observaciones_internas_presupuesto` AS `observaciones_internas_presupuesto`, `p`.`activo_presupuesto` AS `activo_presupuesto`, `p`.`created_at_presupuesto` AS `created_at_presupuesto`, `p`.`updated_at_presupuesto` AS `updated_at_presupuesto`, `c`.`id_cliente` AS `id_cliente`, `c`.`codigo_cliente` AS `codigo_cliente`, `c`.`nombre_cliente` AS `nombre_cliente`, `c`.`nif_cliente` AS `nif_cliente`, `c`.`direccion_cliente` AS `direccion_cliente`, `c`.`cp_cliente` AS `cp_cliente`, `c`.`poblacion_cliente` AS `poblacion_cliente`, `c`.`provincia_cliente` AS `provincia_cliente`, `c`.`telefono_cliente` AS `telefono_cliente`, `c`.`email_cliente` AS `email_cliente`, `c`.`porcentaje_descuento_cliente` AS `porcentaje_descuento_cliente`, `c`.`nombre_facturacion_cliente` AS `nombre_facturacion_cliente`, `c`.`direccion_facturacion_cliente` AS `direccion_facturacion_cliente`, `c`.`cp_facturacion_cliente` AS `cp_facturacion_cliente`, `c`.`poblacion_facturacion_cliente` AS `poblacion_facturacion_cliente`, `c`.`provincia_facturacion_cliente` AS `provincia_facturacion_cliente`, `c`.`exento_iva_cliente` AS `exento_iva_cliente`, `c`.`justificacion_exencion_iva_cliente` AS `justificacion_exencion_iva_cliente`, `cc`.`id_contacto_cliente` AS `id_contacto_cliente`, `cc`.`nombre_contacto_cliente` AS `nombre_contacto_cliente`, `cc`.`apellidos_contacto_cliente` AS `apellidos_contacto_cliente`, `cc`.`telefono_contacto_cliente` AS `telefono_contacto_cliente`, `cc`.`email_contacto_cliente` AS `email_contacto_cliente`, `ep`.`id_estado_ppto` AS `id_estado_ppto`, `ep`.`codigo_estado_ppto` AS `codigo_estado_ppto`, `ep`.`nombre_estado_ppto` AS `nombre_estado_ppto`, `ep`.`color_estado_ppto` AS `color_estado_ppto`, `ep`.`orden_estado_ppto` AS `orden_estado_ppto`, `fp`.`id_pago` AS `id_forma_pago`, `fp`.`codigo_pago` AS `codigo_pago`, `fp`.`nombre_pago` AS `nombre_pago`, `fp`.`porcentaje_anticipo_pago` AS `porcentaje_anticipo_pago`, `fp`.`dias_anticipo_pago` AS `dias_anticipo_pago`, `fp`.`porcentaje_final_pago` AS `porcentaje_final_pago`, `fp`.`dias_final_pago` AS `dias_final_pago`, `fp`.`descuento_pago` AS `descuento_pago`, `mp`.`id_metodo_pago` AS `id_metodo_pago`, `mp`.`codigo_metodo_pago` AS `codigo_metodo_pago`, `mp`.`nombre_metodo_pago` AS `nombre_metodo_pago`, `mc`.`id_metodo` AS `id_metodo_contacto`, `mc`.`nombre` AS `nombre_metodo_contacto`, `c`.`id_forma_pago_habitual` AS `id_forma_pago_habitual`, `fph`.`nombre_pago` AS `nombre_forma_pago_habitual_cliente`, concat_ws(', ',`p`.`direccion_evento_presupuesto`,concat(`p`.`cp_evento_presupuesto`,' ',`p`.`poblacion_evento_presupuesto`),`p`.`provincia_evento_presupuesto`) AS `direccion_completa_evento_presupuesto`, concat_ws(', ',`c`.`direccion_cliente`,concat(`c`.`cp_cliente`,' ',`c`.`poblacion_cliente`),`c`.`provincia_cliente`) AS `direccion_completa_cliente`, concat_ws(', ',`c`.`direccion_facturacion_cliente`,concat(`c`.`cp_facturacion_cliente`,' ',`c`.`poblacion_facturacion_cliente`),`c`.`provincia_facturacion_cliente`) AS `direccion_facturacion_completa_cliente`, concat_ws(' ',`cc`.`nombre_contacto_cliente`,`cc`.`apellidos_contacto_cliente`) AS `nombre_completo_contacto`, (to_days(`p`.`fecha_validez_presupuesto`) - to_days(curdate())) AS `dias_validez_restantes`, (case when (`p`.`fecha_validez_presupuesto` is null) then 'Sin fecha de validez' when (`p`.`fecha_validez_presupuesto` < curdate()) then 'Caducado' when (`p`.`fecha_validez_presupuesto` = curdate()) then 'Caduca hoy' when ((to_days(`p`.`fecha_validez_presupuesto`) - to_days(curdate())) <= 7) then 'Próximo a caducar' else 'Vigente' end) AS `estado_validez_presupuesto`, ((to_days(`p`.`fecha_fin_evento_presupuesto`) - to_days(`p`.`fecha_inicio_evento_presupuesto`)) + 1) AS `duracion_evento_dias`, (to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) AS `dias_hasta_inicio_evento`, (to_days(`p`.`fecha_fin_evento_presupuesto`) - to_days(curdate())) AS `dias_hasta_fin_evento`, (case when (`p`.`fecha_inicio_evento_presupuesto` is null) then 'Sin fecha de evento' when ((`p`.`fecha_inicio_evento_presupuesto` < curdate()) and (`p`.`fecha_fin_evento_presupuesto` < curdate())) then 'Evento finalizado' when ((`p`.`fecha_inicio_evento_presupuesto` <= curdate()) and (`p`.`fecha_fin_evento_presupuesto` >= curdate())) then 'Evento en curso' when (`p`.`fecha_inicio_evento_presupuesto` = curdate()) then 'Evento HOY' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) = 1) then 'Evento MAÑANA' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 7) then 'Evento esta semana' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 30) then 'Evento este mes' else 'Evento futuro' end) AS `estado_evento_presupuesto`, (case when (`p`.`fecha_inicio_evento_presupuesto` is null) then 'Sin prioridad' when (`p`.`fecha_inicio_evento_presupuesto` = curdate()) then 'HOY' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) = 1) then 'MAÑANA' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 7) then 'Esta semana' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 15) then 'Próximo' when ((to_days(`p`.`fecha_inicio_evento_presupuesto`) - to_days(curdate())) <= 30) then 'Este mes' else 'Futuro' end) AS `prioridad_presupuesto`, (case when (`fp`.`id_pago` is null) then 'Sin forma de pago' when (`fp`.`porcentaje_anticipo_pago` = 100.00) then 'Pago único' when (`fp`.`porcentaje_anticipo_pago` < 100.00) then 'Pago fraccionado' else 'Sin forma de pago' end) AS `tipo_pago_presupuesto`, (case when (`fp`.`id_pago` is null) then 'Sin forma de pago asignada' when (`fp`.`porcentaje_anticipo_pago` = 100.00) then concat(`mp`.`nombre_metodo_pago`,' - ',`fp`.`nombre_pago`,(case when (`fp`.`descuento_pago` > 0) then concat(' (Dto: ',`fp`.`descuento_pago`,'%)') else '' end)) else concat(`mp`.`nombre_metodo_pago`,' - ',`fp`.`porcentaje_anticipo_pago`,'% + ',`fp`.`porcentaje_final_pago`,'%') end) AS `descripcion_completa_forma_pago`, (case when (`fp`.`dias_anticipo_pago` = 0) then `p`.`fecha_presupuesto` else (`p`.`fecha_presupuesto` + interval `fp`.`dias_anticipo_pago` day) end) AS `fecha_vencimiento_anticipo`, (case when ((`fp`.`dias_final_pago` = 0) and (`p`.`fecha_fin_evento_presupuesto` is not null)) then `p`.`fecha_fin_evento_presupuesto` when (`fp`.`dias_final_pago` > 0) then (`p`.`fecha_presupuesto` + interval `fp`.`dias_final_pago` day) when ((`fp`.`dias_final_pago` < 0) and (`p`.`fecha_inicio_evento_presupuesto` is not null)) then (`p`.`fecha_inicio_evento_presupuesto` + interval `fp`.`dias_final_pago` day) else NULL end) AS `fecha_vencimiento_final`, (case when (`p`.`descuento_presupuesto` = `c`.`porcentaje_descuento_cliente`) then 'Igual al habitual' when (`p`.`descuento_presupuesto` > `c`.`porcentaje_descuento_cliente`) then 'Mayor al habitual' when (`p`.`descuento_presupuesto` < `c`.`porcentaje_descuento_cliente`) then 'Menor al habitual' else 'Sin comparar' end) AS `comparacion_descuento`, (case when (`p`.`descuento_presupuesto` = 0.00) then 'Sin descuento' when ((`p`.`descuento_presupuesto` > 0.00) and (`p`.`descuento_presupuesto` <= 5.00)) then concat('Descuento bajo: ',`p`.`descuento_presupuesto`,'%') when ((`p`.`descuento_presupuesto` > 5.00) and (`p`.`descuento_presupuesto` <= 15.00)) then concat('Descuento medio: ',`p`.`descuento_presupuesto`,'%') when (`p`.`descuento_presupuesto` > 15.00) then concat('Descuento alto: ',`p`.`descuento_presupuesto`,'%') else 'Sin descuento' end) AS `estado_descuento_presupuesto`, (case when (`p`.`descuento_presupuesto` > 0.00) then true else false end) AS `aplica_descuento_presupuesto`, (`p`.`descuento_presupuesto` - `c`.`porcentaje_descuento_cliente`) AS `diferencia_descuento`, (case when (`c`.`direccion_facturacion_cliente` is not null) then true else false end) AS `tiene_direccion_facturacion_diferente`, (to_days(curdate()) - to_days(`p`.`fecha_presupuesto`)) AS `dias_desde_emision`, `pv`.`id_version_presupuesto` AS `id_version_actual`, `pv`.`numero_version_presupuesto` AS `numero_version_actual`, `pv`.`estado_version_presupuesto` AS `estado_version_actual`, `pv`.`fecha_creacion_version` AS `fecha_creacion_version_actual`, (case when (`ep`.`codigo_estado_ppto` = 'CANC') then 'Cancelado' when (`ep`.`codigo_estado_ppto` = 'FACT') then 'Facturado' when ((`p`.`fecha_validez_presupuesto` < curdate()) and (`ep`.`codigo_estado_ppto` not in ('ACEP','RECH','CANC','FACT'))) then 'Caducado' when ((`p`.`fecha_inicio_evento_presupuesto` < curdate()) and (`p`.`fecha_fin_evento_presupuesto` < curdate())) then 'Evento finalizado' when ((`p`.`fecha_inicio_evento_presupuesto` <= curdate()) and (`p`.`fecha_fin_evento_presupuesto` >= curdate())) then 'Evento en curso' when (`ep`.`codigo_estado_ppto` = 'ACEP') then 'Aceptado - Pendiente evento' else `ep`.`nombre_estado_ppto` end) AS `estado_general_presupuesto` FROM ((((((((`presupuesto` `p` join `cliente` `c` on((`p`.`id_cliente` = `c`.`id_cliente`))) left join `contacto_cliente` `cc` on((`p`.`id_contacto_cliente` = `cc`.`id_contacto_cliente`))) join `estado_presupuesto` `ep` on((`p`.`id_estado_ppto` = `ep`.`id_estado_ppto`))) left join `forma_pago` `fp` on((`p`.`id_forma_pago` = `fp`.`id_pago`))) left join `metodo_pago` `mp` on((`fp`.`id_metodo_pago` = `mp`.`id_metodo_pago`))) left join `metodos_contacto` `mc` on((`p`.`id_metodo` = `mc`.`id_metodo`))) left join `forma_pago` `fph` on((`c`.`id_forma_pago_habitual` = `fph`.`id_pago`))) left join `presupuesto_version` `pv` on(((`p`.`id_presupuesto` = `pv`.`id_presupuesto`) and (`pv`.`numero_version_presupuesto` = `p`.`version_actual_presupuesto`)))) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `vista_presupuesto_peso`
+--
+DROP TABLE IF EXISTS `vista_presupuesto_peso`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vista_presupuesto_peso`  AS SELECT `pv`.`id_version_presupuesto` AS `id_version_presupuesto`, `pv`.`id_presupuesto` AS `id_presupuesto`, coalesce(sum(`vlp`.`peso_total_linea_kg`),0.000) AS `peso_total_kg`, sum((case when (`vlp`.`metodo_calculo` = 'MEDIA_ELEMENTOS') then `vlp`.`peso_total_linea_kg` else 0 end)) AS `peso_articulos_normales_kg`, sum((case when (`vlp`.`metodo_calculo` = 'SUMA_COMPONENTES') then `vlp`.`peso_total_linea_kg` else 0 end)) AS `peso_kits_kg`, count(`vlp`.`id_linea_ppto`) AS `total_lineas`, count((case when (`vlp`.`linea_tiene_peso` = true) then 1 end)) AS `lineas_con_peso`, count((case when (`vlp`.`linea_tiene_peso` = false) then 1 end)) AS `lineas_sin_peso`, round(((count((case when (`vlp`.`linea_tiene_peso` = true) then 1 end)) * 100.0) / nullif(count(`vlp`.`id_linea_ppto`),0)),2) AS `porcentaje_completitud` FROM (`presupuesto_version` `pv` left join `vista_linea_peso` `vlp` on((`pv`.`id_version_presupuesto` = `vlp`.`id_version_presupuesto`))) GROUP BY `pv`.`id_version_presupuesto`, `pv`.`id_presupuesto` ;
 
 -- --------------------------------------------------------
 
@@ -4280,6 +4521,12 @@ ALTER TABLE `elemento`
   ADD CONSTRAINT `fk_elemento_marca` FOREIGN KEY (`id_marca_elemento`) REFERENCES `marca` (`id_marca`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_elemento_proveedor_alquiler` FOREIGN KEY (`id_proveedor_alquiler_elemento`) REFERENCES `proveedor` (`id_proveedor`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_elemento_proveedor_compra` FOREIGN KEY (`id_proveedor_compra_elemento`) REFERENCES `proveedor` (`id_proveedor`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `empresa`
+--
+ALTER TABLE `empresa`
+  ADD CONSTRAINT `fk_empresa_plantilla` FOREIGN KEY (`id_plantilla_default`) REFERENCES `plantilla_impresion` (`id_plantilla`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `familia`

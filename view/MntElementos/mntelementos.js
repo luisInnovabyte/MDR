@@ -351,6 +351,14 @@ $(document).ready(function () {
                                             ${d.altura_elemento || '<span class="text-muted fst-italic">--</span>'}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="row" class="ps-4 w-40 align-top">
+                                            <i class="bi bi-box-seam me-2"></i>Peso
+                                        </th>
+                                        <td class="pe-4">
+                                            ${d.peso_elemento ? parseFloat(d.peso_elemento).toFixed(3) + ' kg' : '<span class="text-muted fst-italic">--</span>'}
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

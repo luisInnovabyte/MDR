@@ -50,9 +50,15 @@ class Articulo
         try {
             $sql = "SELECT 
                         vac.*, 
-                        COUNT(CASE WHEN e.activo_elemento = 1 THEN 1 END) as total_elementos
+                        COUNT(CASE WHEN e.activo_elemento = 1 THEN 1 END) as total_elementos,
+                        MAX(vap.peso_articulo_kg) as peso_articulo_kg,
+                        MAX(vap.metodo_calculo) as metodo_calculo,
+                        MAX(vap.tiene_datos_peso) as tiene_datos_peso,
+                        MAX(vap.items_con_peso) as items_con_peso,
+                        MAX(vap.total_items) as total_items
                     FROM vista_articulo_completa vac
                     LEFT JOIN elemento e ON vac.id_articulo = e.id_articulo_elemento
+                    LEFT JOIN vista_articulo_peso vap ON vac.id_articulo = vap.id_articulo
                     GROUP BY vac.id_articulo";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
@@ -101,7 +107,16 @@ class Articulo
     public function get_articuloxid($id_articulo)
     {
         try {
-            $sql = "SELECT * FROM vista_articulo_completa where id_articulo=?";
+            $sql = "SELECT 
+                        a.*,
+                        ap.peso_articulo_kg AS peso_medio_kg,
+                        ap.items_con_peso AS elementos_con_peso,
+                        ap.total_items AS total_elementos,
+                        ap.metodo_calculo,
+                        ap.tiene_datos_peso
+                    FROM vista_articulo_completa a
+                    LEFT JOIN vista_articulo_peso ap ON a.id_articulo = ap.id_articulo
+                    WHERE a.id_articulo = ?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $id_articulo, PDO::PARAM_INT);
             $stmt->execute();

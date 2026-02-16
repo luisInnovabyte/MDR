@@ -157,7 +157,16 @@ switch ($op) {
                 "id_version_actual" => $row["id_version_actual"] ?? null,
                 "numero_version_actual" => $row["numero_version_actual"] ?? null,
                 "estado_version_actual" => $row["estado_version_actual"] ?? null,
-                "fecha_creacion_version_actual" => $row["fecha_creacion_version_actual"] ?? null
+                "fecha_creacion_version_actual" => $row["fecha_creacion_version_actual"] ?? null,
+                
+                // Datos de peso del presupuesto
+                "peso_total_kg" => $row["peso_total_kg"] ?? null,
+                "peso_articulos_normales_kg" => $row["peso_articulos_normales_kg"] ?? null,
+                "peso_kits_kg" => $row["peso_kits_kg"] ?? null,
+                "total_lineas" => $row["total_lineas"] ?? null,
+                "lineas_con_peso" => $row["lineas_con_peso"] ?? null,
+                "lineas_sin_peso" => $row["lineas_sin_peso"] ?? null,
+                "porcentaje_completitud_peso" => $row["porcentaje_completitud_peso"] ?? null
             );
         }
 

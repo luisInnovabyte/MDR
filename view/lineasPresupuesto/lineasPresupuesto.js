@@ -2001,6 +2001,30 @@ function formatLineaDetalle(d) {
                                 <td class="text-muted">Descripción:</td>
                                 <td>${val(d.descripcion_linea_ppto)}</td>
                             </tr>
+                            <tr>
+                                <td class="text-muted">Peso Unitario:</td>
+                                <td>
+                                    ${(() => {
+                                        if (d.peso_unitario_kg === null || d.peso_unitario_kg === undefined) {
+                                            return '<span class="text-muted">Sin datos</span>';
+                                        }
+                                        let peso = parseFloat(d.peso_unitario_kg);
+                                        if (peso === 0) {
+                                            return '<span class="text-muted">0.000 kg (sin datos)</span>';
+                                        }
+                                        return `<strong>${peso.toFixed(3)} kg</strong>`;
+                                    })()}
+                                </td>
+                            </tr>
+                            ${d.peso_total_linea_kg && parseFloat(d.peso_total_linea_kg) > 0 ? `
+                            <tr>
+                                <td class="text-muted">Peso Total Línea:</td>
+                                <td>
+                                    <strong class="text-primary">${parseFloat(d.peso_total_linea_kg).toFixed(3)} kg</strong>
+                                    <small class="text-muted ms-1">(${parseFloat(d.cantidad_linea_ppto) || 1} × ${parseFloat(d.peso_unitario_kg).toFixed(3)} kg)</small>
+                                </td>
+                            </tr>
+                            ` : ''}
                             ${d.simbolo_unidad || d.nombre_unidad ? `
                             <tr>
                                 <td class="text-muted">Unidad:</td>

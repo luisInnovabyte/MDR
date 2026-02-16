@@ -483,6 +483,38 @@ $(document).ready(function () {
                                 <p class="mb-1"><strong><i class="bi bi-cash me-1"></i>Tipo Pago:</strong> ${val(d.tipo_pago_presupuesto)}</p>
                             </div>
 
+                            <!-- DATOS DE PESO -->
+                            <h6 class="text-secondary border-bottom pb-2 mb-3">
+                                <i class="bi bi-box-seam me-2"></i>Peso del Presupuesto
+                            </h6>
+                            <div class="mb-3">
+                                ${d.peso_total_kg !== null && d.peso_total_kg !== undefined ? `
+                                    <p class="mb-1">
+                                        <strong><i class="bi bi-box me-1"></i>Peso Total:</strong> 
+                                        <span class="badge bg-info text-dark fs-6">${parseFloat(d.peso_total_kg).toFixed(3)} kg</span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong><i class="bi bi-list-ol me-1"></i>Líneas con peso:</strong> 
+                                        ${d.lineas_con_peso || 0} / ${d.total_lineas || 0}
+                                        ${d.porcentaje_completitud_peso !== null ? `
+                                            <span class="badge ${parseFloat(d.porcentaje_completitud_peso) >= 80 ? 'bg-success' : parseFloat(d.porcentaje_completitud_peso) >= 50 ? 'bg-warning text-dark' : 'bg-danger'} ms-1">
+                                                ${parseFloat(d.porcentaje_completitud_peso).toFixed(1)}%
+                                            </span>
+                                        ` : ''}
+                                    </p>
+                                    ${d.peso_articulos_normales_kg > 0 || d.peso_kits_kg > 0 ? `
+                                        <p class="mb-1 ms-3 small text-muted">
+                                            <i class="bi bi-arrow-return-right me-1"></i>Artículos: ${parseFloat(d.peso_articulos_normales_kg || 0).toFixed(3)} kg<br>
+                                            <i class="bi bi-arrow-return-right me-1"></i>KITs: ${parseFloat(d.peso_kits_kg || 0).toFixed(3)} kg
+                                        </p>
+                                    ` : ''}
+                                ` : `
+                                    <p class="mb-1 text-muted">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Sin datos de peso disponibles
+                                    </p>
+                                `}
+                            </div>
+
                             <!-- CONTROL -->
                             <h6 class="text-muted border-bottom pb-2 mb-3">
                                 <i class="bi bi-info-circle me-2"></i>Control

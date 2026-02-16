@@ -24,10 +24,12 @@ ADD COLUMN peso_elemento DECIMAL(10,3) DEFAULT NULL
     COMMENT 'Peso en kilogramos (NULL=no aplica o desconocido)';
 
 -- Índice simple para búsquedas por peso
+DROP INDEX IF EXISTS idx_peso_elemento ON elemento;
 ALTER TABLE elemento 
 ADD INDEX idx_peso_elemento (peso_elemento);
 
 -- Índice compuesto para optimizar agregaciones por artículo
+DROP INDEX IF EXISTS idx_articulo_peso ON elemento;
 ALTER TABLE elemento 
 ADD INDEX idx_articulo_peso (id_articulo_elemento, activo_elemento, peso_elemento);
 
@@ -283,16 +285,19 @@ GROUP BY pv.id_version_presupuesto, pv.id_presupuesto;
 -- ───────────────────────────────────────────────────────────
 
 -- Optimizar joins en linea_presupuesto
+DROP INDEX IF EXISTS idx_version_articulo_peso ON linea_presupuesto;
 ALTER TABLE linea_presupuesto 
-ADD INDEX IF NOT EXISTS idx_version_articulo_peso (id_version_presupuesto, id_articulo, activo_linea_ppto);
+ADD INDEX idx_version_articulo_peso (id_version_presupuesto, id_articulo, activo_linea_ppto);
 
 -- Optimizar joins en kit
+DROP INDEX IF EXISTS idx_maestro_activo_peso ON kit;
 ALTER TABLE kit 
-ADD INDEX IF NOT EXISTS idx_maestro_activo_peso (id_articulo_maestro, activo_kit);
+ADD INDEX idx_maestro_activo_peso (id_articulo_maestro, activo_kit);
 
 -- Optimizar filtros en articulo
+DROP INDEX IF EXISTS idx_es_kit_activo_peso ON articulo;
 ALTER TABLE articulo 
-ADD INDEX IF NOT EXISTS idx_es_kit_activo_peso (es_kit_articulo, activo_articulo);
+ADD INDEX idx_es_kit_activo_peso (es_kit_articulo, activo_articulo);
 
 -- ═══════════════════════════════════════════════════════════
 -- VERIFICACIÓN DE MIGRACIÓN

@@ -441,6 +441,26 @@ $(document).ready(function () {
                             </tr>
                             <tr>
                                 <th scope="row" class="ps-4 w-25 align-top">
+                                    <i class="bi bi-box-seam me-2"></i>Peso Medio
+                                </th>
+                                <td class="pe-4">
+                                    ${d.peso_medio_kg !== null && d.peso_medio_kg !== undefined
+                                        ? (() => {
+                                            const peso = parseFloat(d.peso_medio_kg);
+                                            const badgeClass = peso > 0 ? 'bg-info' : 'bg-secondary';
+                                            const tipoItem = d.es_kit_articulo == 1 ? 'componentes' : 'elementos';
+                                            const textoDetalle = peso > 0 
+                                                ? `Calculado de ${d.items_con_peso || 0} ${tipoItem} con peso (total: ${d.total_items || 0})`
+                                                : `Sin peso: 0 de ${d.total_items || 0} ${tipoItem} con peso definido`;
+                                            return `<span class="badge ${badgeClass} fs-6">${peso.toFixed(3)} kg</span>
+                                                    <br><small class="text-muted mt-1">${textoDetalle}</small>`;
+                                        })()
+                                        : '<span class="text-muted fst-italic">Sin peso calculado</span>'
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="ps-4 w-25 align-top">
                                     <i class="bi bi-box-seam me-2"></i>Tipo de Artículo
                                 </th>
                                 <td class="pe-4">

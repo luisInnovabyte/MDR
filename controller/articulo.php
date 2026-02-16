@@ -163,7 +163,13 @@ switch ($_GET["op"]) {
                 "activo_articulo" => $row["activo_articulo"],
                 "created_at_articulo" => $row["created_at_articulo"],
                 "updated_at_articulo" => $row["updated_at_articulo"],
-                "total_elementos" => $row["total_elementos"] ?? 0
+                "total_elementos" => $row["total_elementos"] ?? 0,
+                // Campos de peso
+                "peso_medio_kg" => $row["peso_articulo_kg"] ?? null,
+                "items_con_peso" => $row["items_con_peso"] ?? 0,
+                "total_items" => $row["total_items"] ?? 0,
+                "metodo_calculo" => $row["metodo_calculo"] ?? null,
+                "tiene_datos_peso" => $row["tiene_datos_peso"] ?? false
             );
         }
 

@@ -268,27 +268,28 @@ class Elemento
                               
             $stmt->bindValue(1, $id_articulo_elemento, PDO::PARAM_INT); 
             $stmt->bindValue(2, $id_marca_elemento ?: null, PDO::PARAM_INT); 
-            $stmt->bindValue(3, $modelo_elemento, PDO::PARAM_STR); 
-            $stmt->bindValue(4, $codigo_barras_elemento, PDO::PARAM_STR); 
-            $stmt->bindValue(5, $descripcion_elemento, PDO::PARAM_STR); 
-            $stmt->bindValue(6, $numero_serie_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(3, $modelo_elemento ?: null, PDO::PARAM_STR); 
+            $stmt->bindValue(4, !empty($codigo_barras_elemento) ? $codigo_barras_elemento : null, PDO::PARAM_STR); 
+            $stmt->bindValue(5, !empty($descripcion_elemento) ? $descripcion_elemento : null, PDO::PARAM_STR); 
+            $stmt->bindValue(6, !empty($numero_serie_elemento) ? $numero_serie_elemento : null, PDO::PARAM_STR); 
             $stmt->bindValue(7, $id_estado_elemento ?: 1, PDO::PARAM_INT); 
             $stmt->bindValue(8, $nave_elemento, PDO::PARAM_STR); 
             $stmt->bindValue(9, $pasillo_columna_elemento, PDO::PARAM_STR); 
             $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(11, $peso_elemento ?: null, PDO::PARAM_STR); // DECIMAL como string
+            // Peso: permitir 0.000 como válido, solo null si no está definido
+            $stmt->bindValue(11, ($peso_elemento !== null && $peso_elemento !== '') ? $peso_elemento : null, PDO::PARAM_STR);
             $stmt->bindValue(12, $fecha_compra_elemento ?: null, PDO::PARAM_STR); 
             $stmt->bindValue(13, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR); 
             $stmt->bindValue(14, $fecha_alta_elemento ?: null, PDO::PARAM_STR); 
             $stmt->bindValue(15, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR); 
             $stmt->bindValue(16, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR); 
-            $stmt->bindValue(17, $observaciones_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(17, !empty($observaciones_elemento) ? $observaciones_elemento : null, PDO::PARAM_STR); 
             $stmt->bindValue(18, (int)$es_propio_elemento, PDO::PARAM_INT);
             $stmt->bindValue(19, $id_proveedor_compra_elemento ?: null, PDO::PARAM_INT);
             $stmt->bindValue(20, $id_proveedor_alquiler_elemento ?: null, PDO::PARAM_INT);
             $stmt->bindValue(21, $precio_dia_alquiler_elemento ?: null, PDO::PARAM_STR);
             $stmt->bindValue(22, $id_forma_pago_alquiler_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(23, $observaciones_alquiler_elemento, PDO::PARAM_STR); 
+            $stmt->bindValue(23, !empty($observaciones_alquiler_elemento) ? $observaciones_alquiler_elemento : null, PDO::PARAM_STR); 
                               
             $resultado = $stmt->execute();
             
@@ -381,27 +382,28 @@ class Elemento
             
             $stmt->bindValue(1, $id_articulo_elemento, PDO::PARAM_INT);
             $stmt->bindValue(2, $id_marca_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(3, $modelo_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(4, $codigo_barras_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(5, $descripcion_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(6, $numero_serie_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(3, $modelo_elemento ?: null, PDO::PARAM_STR);
+            $stmt->bindValue(4, !empty($codigo_barras_elemento) ? $codigo_barras_elemento : null, PDO::PARAM_STR);
+            $stmt->bindValue(5, !empty($descripcion_elemento) ? $descripcion_elemento : null, PDO::PARAM_STR);
+            $stmt->bindValue(6, !empty($numero_serie_elemento) ? $numero_serie_elemento : null, PDO::PARAM_STR);
             $stmt->bindValue(7, $id_estado_elemento, PDO::PARAM_INT);
             $stmt->bindValue(8, $nave_elemento, PDO::PARAM_STR);
             $stmt->bindValue(9, $pasillo_columna_elemento, PDO::PARAM_STR);
             $stmt->bindValue(10, $altura_elemento, PDO::PARAM_STR);
-            $stmt->bindValue(11, $peso_elemento ?: null, PDO::PARAM_STR); // DECIMAL como string
+            // Peso: permitir 0.000 como válido, solo null si no está definido
+            $stmt->bindValue(11, ($peso_elemento !== null && $peso_elemento !== '') ? $peso_elemento : null, PDO::PARAM_STR);
             $stmt->bindValue(12, $fecha_compra_elemento ?: null, PDO::PARAM_STR);
             $stmt->bindValue(13, $precio_compra_elemento ?: 0.00, PDO::PARAM_STR);
             $stmt->bindValue(14, $fecha_alta_elemento ?: null, PDO::PARAM_STR);
             $stmt->bindValue(15, $fecha_fin_garantia_elemento ?: null, PDO::PARAM_STR);
             $stmt->bindValue(16, $proximo_mantenimiento_elemento ?: null, PDO::PARAM_STR);
-            $stmt->bindValue(17, $observaciones_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(17, !empty($observaciones_elemento) ? $observaciones_elemento : null, PDO::PARAM_STR);
             $stmt->bindValue(18, (int)$es_propio_elemento, PDO::PARAM_INT);
             $stmt->bindValue(19, $id_proveedor_compra_elemento ?: null, PDO::PARAM_INT);
             $stmt->bindValue(20, $id_proveedor_alquiler_elemento ?: null, PDO::PARAM_INT);
             $stmt->bindValue(21, $precio_dia_alquiler_elemento ?: null, PDO::PARAM_STR);
             $stmt->bindValue(22, $id_forma_pago_alquiler_elemento ?: null, PDO::PARAM_INT);
-            $stmt->bindValue(23, $observaciones_alquiler_elemento, PDO::PARAM_STR);
+            $stmt->bindValue(23, !empty($observaciones_alquiler_elemento) ? $observaciones_alquiler_elemento : null, PDO::PARAM_STR);
             $stmt->bindValue(24, $id_elemento, PDO::PARAM_INT);
 
             $resultado = $stmt->execute();
@@ -834,4 +836,4 @@ class Elemento
             );
             return false;
         }
-    }
+    }}
