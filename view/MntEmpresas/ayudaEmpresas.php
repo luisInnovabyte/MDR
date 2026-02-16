@@ -147,6 +147,48 @@
                             </div>
                         </div>
 
+                        <!-- Sección: Nuevos campos y dónde se usan -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="card-title mb-0 fw-bold text-primary">
+                                    <i class="bi bi-diagram-3-fill me-2"></i>Nuevos Campos y Uso en el Programa
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-primary">Observaciones por Defecto (ES/EN)</h6>
+                                    <ul class="list-unstyled small mb-0">
+                                        <li><i class="bi bi-dot me-1"></i><strong>Se configura en:</strong> Mantenimiento de Empresas → sección "Observaciones por Defecto para Nuevos Presupuestos".</li>
+                                        <li><i class="bi bi-dot me-1"></i><strong>Se utiliza en:</strong> Alta de <strong>nuevo presupuesto</strong>, precargando las observaciones de cabecera.</li>
+                                        <li><i class="bi bi-dot me-1"></i><strong>Importante:</strong> Solo afecta presupuestos nuevos; no modifica presupuestos ya creados.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-success">PDF de Presupuestos</h6>
+                                    <ul class="list-unstyled small mb-0">
+                                        <li><i class="bi bi-dot me-1"></i><strong>Mostrar subtotales por fecha:</strong> controla si se imprime la línea "Subtotal Fecha ..." en el PDF.</li>
+                                        <li><i class="bi bi-dot me-1"></i><strong>Cabecera de firma:</strong> define el texto del bloque de firma de empresa en el PDF de presupuesto.</li>
+                                        <li><i class="bi bi-dot me-1"></i><strong>Se utiliza en:</strong> impresión/exportación PDF de presupuestos.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-success">PDF de Albaranes de Carga</h6>
+                                    <ul class="list-unstyled small mb-0">
+                                        <li><i class="bi bi-dot me-1"></i><strong>Mostrar KITs detallados:</strong> incluye el desglose de componentes.</li>
+                                        <li><i class="bi bi-dot me-1"></i><strong>Mostrar observaciones técnicas:</strong> incluye observaciones de familias y artículos.</li>
+                                        <li><i class="bi bi-dot me-1"></i><strong>Mostrar observaciones de pie:</strong> incluye observaciones finales en el albarán.</li>
+                                        <li><i class="bi bi-dot me-1"></i><strong>Se utiliza en:</strong> generación PDF del albarán de carga.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="alert alert-secondary py-2 mb-0">
+                                    <small><i class="bi bi-sliders me-1"></i><strong>Avanzado:</strong> La configuración JSON de PDF está reservada para parametrizaciones técnicas y futuras ampliaciones.</small>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Sección: Conceptos importantes -->
                         <div class="card border-0 shadow-sm">
                             <div class="card-header bg-light">
@@ -157,26 +199,26 @@
                             <div class="card-body">
                                 <div class="mb-3">
                                     <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-shield-check text-success fa-2x me-2"></i>
-                                        <span class="fw-bold">VeriFactu</span>
+                                        <i class="bi bi-file-earmark-text text-success fa-2x me-2"></i>
+                                        <span class="fw-bold">Plantillas por Empresa</span>
                                     </div>
-                                    <p class="small text-muted">Sistema AEAT para verificación de facturación. Solo para empresas reales.</p>
+                                    <p class="small text-muted">Las observaciones por defecto se guardan a nivel de empresa para estandarizar la creación de nuevos presupuestos.</p>
                                 </div>
 
                                 <div class="mb-3">
                                     <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-list-ol text-info fa-2x me-2"></i>
-                                        <span class="fw-bold">Series de Numeración</span>
+                                        <i class="bi bi-file-pdf text-info fa-2x me-2"></i>
+                                        <span class="fw-bold">Salida de Documentos PDF</span>
                                     </div>
-                                    <p class="small text-muted">Prefijos para presupuestos, facturas y abonos (PRE, FAC, ABO).</p>
+                                    <p class="small text-muted">Los nuevos switches controlan el contenido visible en PDF de presupuestos y albaranes de carga.</p>
                                 </div>
 
                                 <div class="alert alert-warning py-2">
-                                    <small><i class="bi bi-exclamation-triangle me-1"></i><strong>Importante:</strong> Solo puede existir UNA empresa ficticia principal en el sistema.</small>
+                                    <small><i class="bi bi-exclamation-triangle me-1"></i><strong>Importante:</strong> Cambiar estos campos impacta documentos nuevos que se generen o impriman desde ese momento.</small>
                                 </div>
 
                                 <div class="alert alert-danger py-2">
-                                    <small><i class="bi bi-exclamation-octagon me-1"></i><strong>Crítico:</strong> Modificar series puede causar duplicados en la numeración.</small>
+                                    <small><i class="bi bi-exclamation-octagon me-1"></i><strong>Crítico:</strong> Si desactiva opciones de contenido, el PDF puede omitir información operativa relevante para montaje/carga.</small>
                                 </div>
                             </div>
                         </div>
@@ -200,9 +242,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <ul class="list-unstyled small">
-                                        <li><i class="bi bi-check2 text-success me-2"></i>VeriFactu solo para empresas reales</li>
-                                        <li><i class="bi bi-check2 text-success me-2"></i>Empresas ficticias NO pueden facturar</li>
-                                        <li><i class="bi bi-check2 text-success me-2"></i>Series de numeración deben ser únicas</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>Las observaciones por defecto se aplican solo al crear presupuestos nuevos</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>Subtotales por fecha y cabecera de firma afectan la salida PDF de presupuesto</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>Los 3 switches de albarán afectan solo el PDF de albarán de carga</li>
                                     </ul>
                                 </div>
                             </div>
@@ -223,7 +265,7 @@
                                         <li><i class="bi bi-check2 text-success me-2"></i>Use códigos descriptivos y cortos (EMP001, TOLDOS)</li>
                                         <li><i class="bi bi-check2 text-success me-2"></i>Complete todos los datos bancarios para cobros</li>
                                         <li><i class="bi bi-check2 text-success me-2"></i>Configure series antes de emitir documentos</li>
-                                        <li><i class="bi bi-check2 text-success me-2"></i>Revise datos VeriFactu con su asesor fiscal</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>Revise plantillas por idioma antes de crear nuevos presupuestos</li>
                                     </ul>
                                 </div>
                                 <div class="col-md-6">
@@ -231,7 +273,7 @@
                                         <li><i class="bi bi-check2 text-success me-2"></i>Mantenga actualizados logotipos y textos legales</li>
                                         <li><i class="bi bi-check2 text-success me-2"></i>Verifique que email de facturación sea correcto</li>
                                         <li><i class="bi bi-check2 text-success me-2"></i>No modifique series con documentos emitidos</li>
-                                        <li><i class="bi bi-check2 text-success me-2"></i>Active solo la empresa que corresponda</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>Revise la vista previa PDF tras cambiar subtotales/firma/albarán</li>
                                     </ul>
                                 </div>
                             </div>
@@ -294,11 +336,12 @@
                                     </ul>
                                 </div>
                                 <div class="col-md-4">
-                                    <h6 class="fw-bold text-danger small">VeriFactu</h6>
+                                    <h6 class="fw-bold text-danger small">PDF y Albarán</h6>
                                     <ul class="list-unstyled small text-muted">
-                                        <li>• Estado (Online/Offline)</li>
-                                        <li>• Datos del software</li>
-                                        <li>• Número de instalación</li>
+                                        <li>• Observaciones cabecera ES/EN</li>
+                                        <li>• Subtotales por fecha (PDF ppto)</li>
+                                        <li>• Cabecera firma (PDF ppto)</li>
+                                        <li>• KITs y observaciones (PDF albarán)</li>
                                     </ul>
                                 </div>
                             </div>
@@ -312,7 +355,7 @@
                 <div class="text-left flex-grow-1">
                     <small class="text-muted">
                         <i class="bi bi-clock mr-1"></i>
-                        Versión del sistema: SMM v1.0 - Última actualización: 01-12-2025
+                        Versión del sistema: SMM v1.0 - Última actualización: 16-02-2026
                     </small>
                 </div>
                   <button type="button" class="btn btn-primary" data-bs-dismiss="modal">

@@ -6,6 +6,28 @@
 
 ## 📋 Índice de Cambios
 
+- [1. Observaciones de Líneas de Presupuesto](#1-observaciones-de-líneas-de-presupuesto--completada) ✅ COMPLETADA
+- [2. Formato de Líneas de Artículos](#2-formato-de-líneas-de-artículos--completada) ✅ COMPLETADA
+- [3. Cabecera - Nº Presupuesto de Cliente](#3-cabecera---nº-presupuesto-de-cliente--completada) ✅ COMPLETADA
+- [4. Ubicación del Evento](#4-ubicación-del-evento--completada) ✅ COMPLETADA
+- [5. Título Principal "PRESUPUESTO"](#5-título-principal-presupuesto--completada) ✅ COMPLETADA
+- [6. CIF de la Empresa](#6-cif-de-la-empresa--completada) ✅ COMPLETADA
+- [7. Observación Cabecera - Montaje y Alquiler](#7-observación-cabecera---montaje-y-alquiler--completada) ✅ COMPLETADA
+- [8. Subtotales por Fecha](#8-subtotales-por-fecha--completada) ✅ COMPLETADA
+- [9. Totales Finales - Descuento](#9-totales-finales---descuento--completada) ✅ COMPLETADA
+- [10. Observaciones - Formato de Referencias](#10-observaciones---formato-de-referencias--completada) ✅ COMPLETADA
+- [11. Pies de Empresa](#11-pies-de-empresa--completada) ✅ COMPLETADA
+- [12. Firmas - Posicionamiento](#12-firmas---posicionamiento--completada) ✅ COMPLETADA
+- [13. Firma - Texto del Departamento](#13-firma---texto-del-departamento--completada) ✅ COMPLETADA
+- [14. Nueva Funcionalidad - Firma de Empleado](#14-nueva-funcionalidad---firma-de-empleado--completada) ✅ COMPLETADA
+- [15. Líneas del Presupuesto - Bordes Grises](#15-líneas-del-presupuesto---bordes-grises--completada) ✅ COMPLETADA
+- [16. Fechas de Montaje y Desmontaje - Optimización de Espacio](#16-fechas-de-montaje-y-desmontaje---optimización-de-espacio--completada) ✅ COMPLETADA
+- [17. Clientes Exentos de IVA - Operaciones Intracomunitarias](#17-clientes-exentos-de-iva---operaciones-intracomunitarias--completado) ✅ COMPLETADO
+- [18. Ocultar sección observaciones si está vacía](#18-ocultar-sección-observaciones-si-está-vacía--pendiente) ⏳ PENDIENTE
+- [19. Mostrar Datos Bancarios con Forma de Pago TRANSFERENCIA](#19-mostrar-datos-bancarios-con-forma-de-pago-transferencia--completado) ✅ COMPLETADO
+- [20. Sistema de Peso en Presupuestos](#20-sistema-de-peso-en-presupuestos--completada) ✅ COMPLETADA
+- [21. Impresión de Albaranes](#21-impresión-de-albaranes--completada-y-finalizada) ✅ COMPLETADA Y FINALIZADA
+
 ### 1. Observaciones de Líneas de Presupuesto ✅ **COMPLETADA**
 **Situación actual**: Las observaciones de las líneas se pierden o no se muestran correctamente.
 
@@ -906,6 +928,32 @@ if ($cliente_exento_iva) {
 
 ---
 
+### 18. Ocultar sección observaciones si está vacía ⏳ **PENDIENTE**
+
+**Fecha alta**: 11 de febrero de 2026  
+**Estado**: ⏳ Pendiente  
+**Prioridad**: Media  
+**Tipo**: Ajuste de layout PDF
+
+#### 📋 Descripción
+
+Cuando un presupuesto no tenga contenido en la sección de observaciones, el PDF no debe reservar bloque visual ni dejar hueco en blanco.
+
+#### 🎯 Objetivo funcional
+
+- Mostrar sección de observaciones solo si existe contenido real.
+- Recolocar automáticamente las secciones siguientes para optimizar el espacio.
+- Mantener coherencia de paginación cuando el bloque desaparece.
+
+#### 🔍 Criterios de validación
+
+- Presupuesto con observaciones: sección visible con formato habitual.
+- Presupuesto sin observaciones: sección completamente oculta.
+- No deben aparecer títulos vacíos ni saltos innecesarios.
+- Las secciones posteriores deben subir de posición sin solaparse.
+
+---
+
 ### 19. Mostrar Datos Bancarios con Forma de Pago TRANSFERENCIA ✅ **COMPLETADO**
 
 **Fecha inicio**: 14 de febrero de 2026  
@@ -1554,4 +1602,60 @@ WHERE p.numero_presupuesto = '2026-001';
 **Commits**: ba01d1e - feat(seccion20): Implementar sistema de peso en presupuestos  
 **Pendiente**: Ejecutar migración SQL en servidor (`php ejecutar_migracion_peso.php`)  
 **Archivo**: `docs/presupuestos_20260211.md`
+
+---
+
+### 21. Impresión de Albaranes ✅ **COMPLETADA Y FINALIZADA**
+
+**Fecha inicio**: 16 de febrero de 2026  
+**Fecha finalización**: 16 de febrero de 2026  
+**Prioridad**: Alta  
+**Tipo**: Ajuste funcional + documentación
+
+#### 📋 Descripción
+
+Se documenta y cierra la funcionalidad de **impresión de albaranes de carga** con control de visibilidad por empresa. La configuración se gestiona en Mantenimiento de Empresas y afecta directamente al contenido mostrado en el PDF del albarán.
+
+#### 🎯 Trabajo realizado
+
+##### 21.1 Configuración por empresa ✅
+- ✅ Se habilitaron y consolidaron 3 controles en Empresa para albarán de carga:
+   - `mostrar_kits_albaran_empresa`
+   - `mostrar_obs_familias_articulos_albaran_empresa`
+   - `mostrar_obs_pie_albaran_empresa`
+- ✅ Estos controles se exponen en la sección **"Configuración de PDF de ALBARANES DE CARGA"** del formulario de empresa.
+
+##### 21.2 Persistencia de parámetros ✅
+- ✅ Los 3 campos se guardan y actualizan correctamente desde controller/model de empresas.
+- ✅ Los valores quedan asociados a cada empresa para comportamiento multiempresa.
+
+##### 21.3 Aplicación en impresión PDF ✅
+- ✅ La generación del PDF de albarán respeta los switches configurados por empresa.
+- ✅ Se controla de forma independiente:
+   - Mostrar/ocultar desglose de KITs.
+   - Mostrar/ocultar observaciones técnicas de familias y artículos.
+   - Mostrar/ocultar observaciones de pie.
+
+##### 21.4 Ayuda funcional actualizada ✅
+- ✅ Se actualizó la ayuda de empresas para dejar claro:
+   - Dónde se configuran los nuevos campos.
+   - En qué parte del programa impactan.
+   - Qué efecto tienen en la impresión de albaranes.
+
+#### 📂 Archivos relacionados
+
+| Archivo | Tipo | Descripción |
+|---------|------|-------------|
+| `view/MntEmpresas/formularioEmpresa.php` | Modificado | Controles de configuración PDF de albaranes |
+| `view/MntEmpresas/formularioEmpresa.js` | Modificado | Carga/envío de switches de albarán |
+| `controller/empresas.php` | Modificado | Recepción y persistencia de campos |
+| `models/Empresas.php` | Modificado | Inserción/actualización de configuración |
+| `controller/impresionpartetrabajo_m2_pdf_es.php` | Modificado | Render condicional del contenido de albarán |
+| `view/MntEmpresas/ayudaEmpresas.php` | Modificado | Documentación funcional de uso de nuevos campos |
+
+#### ✅ Cierre
+
+- **Estado**: ✅ COMPLETADA Y FINALIZADA
+- **Resultado**: La impresión de albaranes queda parametrizada por empresa y documentada para usuario funcional.
+- **Pendiente**: Ninguno en esta tarea.
 
