@@ -733,6 +733,52 @@ $(document).ready(function () {
         }
     });
 
+    // Event handler para el botón "Albarán de Carga"
+    $(document).on('click', '#btnAlbaranCarga', function() {
+        console.log('Generando Albarán de Carga');
+        
+        // Obtener ID del presupuesto (usa los mismos campos que la impresión normal)
+        var id_presupuesto = $('#impresion_id_presupuesto').val();
+        
+        console.log('ID presupuesto:', id_presupuesto);
+        
+        if (!id_presupuesto) {
+            Swal.fire('Error', 'No se ha seleccionado ningún presupuesto', 'error');
+            return;
+        }
+        
+        // Crear formulario dinámico para enviar POST
+        var form = $('<form>', {
+            'method': 'POST',
+            'action': '../../controller/impresionpartetrabajo_m2_pdf_es.php?op=albaran_carga',
+            'target': '_blank'
+        });
+        
+        // Añadir campo hidden con el ID del presupuesto
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': 'id_presupuesto',
+            'value': id_presupuesto
+        }));
+        
+        // Añadir el formulario al body, enviarlo y eliminarlo
+        $('body').append(form);
+        form.submit();
+        form.remove();
+        
+        // Cerrar el modal
+        $('#modalImpresionPresupuesto').modal('hide');
+        
+        // Notificar al usuario
+        Swal.fire({
+            icon: 'success',
+            title: 'Generando Albarán de Carga',
+            text: 'Se abrirá el documento en una nueva ventana',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+
     /************************************/
     //     FUNCIONES                   //
     /************************************/

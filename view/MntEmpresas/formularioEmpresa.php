@@ -570,6 +570,64 @@
                         </div>
                     </div>
 
+                    <!-- SECCIÓN: Configuración de PDF de ALBARANES DE CARGA -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-truck me-2"></i>Configuración de PDF de ALBARANES DE CARGA
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check mb-3">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       id="mostrar_kits_albaran_empresa"
+                                       name="mostrar_kits_albaran_empresa"
+                                       value="1"
+                                       checked>
+                                <label class="form-check-label" for="mostrar_kits_albaran_empresa">
+                                    <strong>Mostrar KITs detallados</strong>
+                                </label>
+                                <small class="text-muted d-block">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Muestra el desglose de componentes de los KITs en el PDF del albarán de carga.
+                                </small>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       id="mostrar_obs_familias_articulos_albaran_empresa"
+                                       name="mostrar_obs_familias_articulos_albaran_empresa"
+                                       value="1"
+                                       checked>
+                                <label class="form-check-label" for="mostrar_obs_familias_articulos_albaran_empresa">
+                                    <strong>Mostrar observaciones técnicas</strong>
+                                </label>
+                                <small class="text-muted d-block">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Muestra las observaciones de familias y artículos en el PDF del albarán de carga.
+                                </small>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       id="mostrar_obs_pie_albaran_empresa"
+                                       name="mostrar_obs_pie_albaran_empresa"
+                                       value="1"
+                                       checked>
+                                <label class="form-check-label" for="mostrar_obs_pie_albaran_empresa">
+                                    <strong>Mostrar observaciones de pie</strong>
+                                </label>
+                                <small class="text-muted d-block">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Muestra las observaciones de pie del presupuesto en el PDF del albarán de carga.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SECCIÓN: Estado de la Empresa -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-info text-white">

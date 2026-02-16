@@ -141,6 +141,25 @@ $(document).ready(function () {
                         $('#cabecera_firma_presupuesto_empresa').val('Departamento comercial');
                     }
 
+                    // Configuración PDF Albarán - Switches
+                    var mostrarKits = data.mostrar_kits_albaran_empresa;
+                    var marcarKits = mostrarKits == 1 || 
+                                     mostrarKits === '1' || 
+                                     mostrarKits === true;
+                    $('#mostrar_kits_albaran_empresa').prop('checked', marcarKits);
+
+                    var mostrarObsFamilias = data.mostrar_obs_familias_articulos_albaran_empresa;
+                    var marcarObsFamilias = mostrarObsFamilias == 1 || 
+                                            mostrarObsFamilias === '1' || 
+                                            mostrarObsFamilias === true;
+                    $('#mostrar_obs_familias_articulos_albaran_empresa').prop('checked', marcarObsFamilias);
+
+                    var mostrarObsPie = data.mostrar_obs_pie_albaran_empresa;
+                    var marcarObsPie = mostrarObsPie == 1 || 
+                                       mostrarObsPie === '1' || 
+                                       mostrarObsPie === true;
+                    $('#mostrar_obs_pie_albaran_empresa').prop('checked', marcarObsPie);
+
                     // Estado activo
                     $('#activo_empresa_hidden').val(data.activo_empresa);
                     $('#activo_empresa_display').prop('checked', data.activo_empresa == 1);
@@ -280,6 +299,11 @@ $(document).ready(function () {
             cabecera_firma_presupuesto_empresa = 'Departamento comercial';
         }
 
+        // Configuración PDF Albarán de Carga
+        var mostrar_kits_albaran_empresa = $('#mostrar_kits_albaran_empresa').is(':checked') ? '1' : '0';
+        var mostrar_obs_familias_articulos_albaran_empresa = $('#mostrar_obs_familias_articulos_albaran_empresa').is(':checked') ? '1' : '0';
+        var mostrar_obs_pie_albaran_empresa = $('#mostrar_obs_pie_albaran_empresa').is(':checked') ? '1' : '0';
+
         // Estado
         var activo_empresa;
         if (id_empresa) {
@@ -307,6 +331,9 @@ $(document).ready(function () {
             observaciones_cabecera_presupuesto_empresa, observaciones_cabecera_ingles_presupuesto_empresa,
             mostrar_subtotales_fecha_presupuesto_empresa,
             cabecera_firma_presupuesto_empresa,
+            mostrar_kits_albaran_empresa,
+            mostrar_obs_familias_articulos_albaran_empresa,
+            mostrar_obs_pie_albaran_empresa,
             activo_empresa
         );
     });
@@ -448,7 +475,10 @@ $(document).ready(function () {
             observaciones_cabecera_ingles_presupuesto_empresa: params[42],
             mostrar_subtotales_fecha_presupuesto_empresa: params[43],
             cabecera_firma_presupuesto_empresa: params[44],
-            activo_empresa: params[45]
+            mostrar_kits_albaran_empresa: params[45],
+            mostrar_obs_familias_articulos_albaran_empresa: params[46],
+            mostrar_obs_pie_albaran_empresa: params[47],
+            activo_empresa: params[48]
         };
         
         console.log('💾 Datos a guardar:', datosEnvio);

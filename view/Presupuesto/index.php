@@ -368,6 +368,9 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Cancelar
                 </button>
+                <button type="button" class="btn btn-success" id="btnAlbaranCarga">
+                    <i class="fas fa-truck me-2"></i>Albarán de Carga
+                </button>
                 <button type="button" class="btn btn-primary" id="btnImprimirPresupuesto">
                     <i class="fas fa-print me-2"></i>Imprimir
                 </button>

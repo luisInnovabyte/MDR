@@ -255,13 +255,19 @@ class Empresas
         $observaciones_cabecera_presupuesto_empresa,
         $observaciones_cabecera_ingles_presupuesto_empresa,
         $mostrar_subtotales_fecha_presupuesto_empresa,
-        $cabecera_firma_presupuesto_empresa = 'Departamento comercial'
+        $cabecera_firma_presupuesto_empresa = 'Departamento comercial',
+        $mostrar_kits_albaran_empresa = 1,
+        $mostrar_obs_familias_articulos_albaran_empresa = 1,
+        $mostrar_obs_pie_albaran_empresa = 1
     ) {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
 
-            // Asegurar que el valor booleano nunca sea NULL
+            // Asegurar que los valores booleanos nunca sean NULL
             $mostrar_subtotales_fecha_presupuesto_empresa = intval($mostrar_subtotales_fecha_presupuesto_empresa) ? 1 : 0;
+            $mostrar_kits_albaran_empresa = intval($mostrar_kits_albaran_empresa) ? 1 : 0;
+            $mostrar_obs_familias_articulos_albaran_empresa = intval($mostrar_obs_familias_articulos_albaran_empresa) ? 1 : 0;
+            $mostrar_obs_pie_albaran_empresa = intval($mostrar_obs_pie_albaran_empresa) ? 1 : 0;
 
             $sql = "INSERT INTO empresa (
                 codigo_empresa, nombre_empresa, nombre_comercial_empresa, ficticia_empresa, empresa_ficticia_principal,
@@ -280,6 +286,9 @@ class Empresas
                 observaciones_cabecera_presupuesto_empresa, observaciones_cabecera_ingles_presupuesto_empresa,
                 mostrar_subtotales_fecha_presupuesto_empresa,
                 cabecera_firma_presupuesto_empresa,
+                mostrar_kits_albaran_empresa,
+                mostrar_obs_familias_articulos_albaran_empresa,
+                mostrar_obs_pie_albaran_empresa,
                 activo_empresa, created_at_empresa, updated_at_empresa
             ) VALUES (
                 ?, ?, ?, ?, ?,
@@ -299,6 +308,7 @@ class Empresas
                 ?,
                 ?,
                 ?,
+                ?, ?, ?,
                 1, NOW(), NOW()
             )";
             
@@ -349,6 +359,9 @@ class Empresas
             $stmt->bindValue(44, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
             $stmt->bindValue(45, $mostrar_subtotales_fecha_presupuesto_empresa, PDO::PARAM_INT);
             $stmt->bindValue(46, $cabecera_firma_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(47, $mostrar_kits_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(48, $mostrar_obs_familias_articulos_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(49, $mostrar_obs_pie_albaran_empresa, PDO::PARAM_INT);
 
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId();
@@ -422,13 +435,19 @@ class Empresas
         $observaciones_cabecera_presupuesto_empresa,
         $observaciones_cabecera_ingles_presupuesto_empresa,
         $mostrar_subtotales_fecha_presupuesto_empresa,
-        $cabecera_firma_presupuesto_empresa = 'Departamento comercial'
+        $cabecera_firma_presupuesto_empresa = 'Departamento comercial',
+        $mostrar_kits_albaran_empresa = 1,
+        $mostrar_obs_familias_articulos_albaran_empresa = 1,
+        $mostrar_obs_pie_albaran_empresa = 1
     ) {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
 
-            // Asegurar que el valor booleano nunca sea NULL
+            // Asegurar que los valores booleanos nunca sean NULL
             $mostrar_subtotales_fecha_presupuesto_empresa = intval($mostrar_subtotales_fecha_presupuesto_empresa) ? 1 : 0;
+            $mostrar_kits_albaran_empresa = intval($mostrar_kits_albaran_empresa) ? 1 : 0;
+            $mostrar_obs_familias_articulos_albaran_empresa = intval($mostrar_obs_familias_articulos_albaran_empresa) ? 1 : 0;
+            $mostrar_obs_pie_albaran_empresa = intval($mostrar_obs_pie_albaran_empresa) ? 1 : 0;
 
             $sql = "UPDATE empresa SET 
                 codigo_empresa = ?, nombre_empresa = ?, nombre_comercial_empresa = ?, ficticia_empresa = ?, empresa_ficticia_principal = ?,
@@ -446,7 +465,11 @@ class Empresas
                 observaciones_empresa = ?, modelo_impresion_empresa = ?, configuracion_pdf_presupuesto_empresa = ?,
                 observaciones_cabecera_presupuesto_empresa = ?, observaciones_cabecera_ingles_presupuesto_empresa = ?,
                 mostrar_subtotales_fecha_presupuesto_empresa = ?,
-                cabecera_firma_presupuesto_empresa = ?, updated_at_empresa = NOW()
+                cabecera_firma_presupuesto_empresa = ?,
+                mostrar_kits_albaran_empresa = ?,
+                mostrar_obs_familias_articulos_albaran_empresa = ?,
+                mostrar_obs_pie_albaran_empresa = ?,
+                updated_at_empresa = NOW()
                 WHERE id_empresa = ?";
             
             $stmt = $this->conexion->prepare($sql);
@@ -496,7 +519,10 @@ class Empresas
             $stmt->bindValue(44, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
             $stmt->bindValue(45, $mostrar_subtotales_fecha_presupuesto_empresa, PDO::PARAM_INT);
             $stmt->bindValue(46, $cabecera_firma_presupuesto_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(47, $id_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(47, $mostrar_kits_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(48, $mostrar_obs_familias_articulos_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(49, $mostrar_obs_pie_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(50, $id_empresa, PDO::PARAM_INT);
 
             $stmt->execute();
 

@@ -220,11 +220,14 @@ class ImpresionPresupuesto
                         dias_validez_presupuesto_empresa,
                         texto_pie_presupuesto_empresa,
                         mostrar_subtotales_fecha_presupuesto_empresa,
-                        cabecera_firma_presupuesto_empresa
-                    FROM empresa 
-                    WHERE empresa_ficticia_principal = 1 
-                    AND activo_empresa = 1
-                    LIMIT 1";
+                    cabecera_firma_presupuesto_empresa,
+                    mostrar_kits_albaran_empresa,
+                    mostrar_obs_familias_articulos_albaran_empresa,
+                    mostrar_obs_pie_albaran_empresa
+                FROM empresa 
+                WHERE empresa_ficticia_principal = 1 
+                AND activo_empresa = 1
+                LIMIT 1";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
