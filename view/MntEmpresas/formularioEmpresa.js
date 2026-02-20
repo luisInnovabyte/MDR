@@ -141,6 +141,15 @@ $(document).ready(function () {
                         $('#cabecera_firma_presupuesto_empresa').val('Departamento comercial');
                     }
 
+                    // Configuración PDF - Mostrar cuenta bancaria
+                    var cuentaBancaria = data.mostrar_cuenta_bancaria_pdf_presupuesto_empresa;
+                    var marcarCuentaBancaria = cuentaBancaria === null || 
+                                       cuentaBancaria === undefined || 
+                                       cuentaBancaria == 1 || 
+                                       cuentaBancaria === '1' || 
+                                       cuentaBancaria === true;
+                    $('#mostrar_cuenta_bancaria_pdf_presupuesto_empresa').prop('checked', marcarCuentaBancaria);
+
                     // Configuración PDF Albarán - Switches
                     var mostrarKits = data.mostrar_kits_albaran_empresa;
                     var marcarKits = mostrarKits == 1 || 
@@ -159,6 +168,13 @@ $(document).ready(function () {
                                        mostrarObsPie === '1' || 
                                        mostrarObsPie === true;
                     $('#mostrar_obs_pie_albaran_empresa').prop('checked', marcarObsPie);
+
+                    // Configuración PDF Presupuesto - Alineación observaciones de línea
+                    var obsLineaAlineadas = data.obs_linea_alineadas_descripcion_empresa;
+                    var marcarObsLinea = obsLineaAlineadas == 1 || 
+                                        obsLineaAlineadas === '1' || 
+                                        obsLineaAlineadas === true;
+                    $('#obs_linea_alineadas_descripcion_empresa').prop('checked', marcarObsLinea);
 
                     // Estado activo
                     $('#activo_empresa_hidden').val(data.activo_empresa);
@@ -292,17 +308,21 @@ $(document).ready(function () {
 
         // Configuración PDF
         var mostrar_subtotales_fecha_presupuesto_empresa = $('#mostrar_subtotales_fecha_presupuesto_empresa').is(':checked') ? '1' : '0';
-        console.log('Valor checkbox al enviar:', mostrar_subtotales_fecha_presupuesto_empresa);
         
         var cabecera_firma_presupuesto_empresa = $('#cabecera_firma_presupuesto_empresa').val().trim();
         if (cabecera_firma_presupuesto_empresa === '') {
             cabecera_firma_presupuesto_empresa = 'Departamento comercial';
         }
 
+        var mostrar_cuenta_bancaria_pdf_presupuesto_empresa = $('#mostrar_cuenta_bancaria_pdf_presupuesto_empresa').is(':checked') ? '1' : '0';
+
         // Configuración PDF Albarán de Carga
         var mostrar_kits_albaran_empresa = $('#mostrar_kits_albaran_empresa').is(':checked') ? '1' : '0';
         var mostrar_obs_familias_articulos_albaran_empresa = $('#mostrar_obs_familias_articulos_albaran_empresa').is(':checked') ? '1' : '0';
         var mostrar_obs_pie_albaran_empresa = $('#mostrar_obs_pie_albaran_empresa').is(':checked') ? '1' : '0';
+
+        // Configuración PDF Presupuesto - Alineación observaciones de línea
+        var obs_linea_alineadas_descripcion_empresa = $('#obs_linea_alineadas_descripcion_empresa').is(':checked') ? '1' : '0';
 
         // Estado
         var activo_empresa;
@@ -331,9 +351,11 @@ $(document).ready(function () {
             observaciones_cabecera_presupuesto_empresa, observaciones_cabecera_ingles_presupuesto_empresa,
             mostrar_subtotales_fecha_presupuesto_empresa,
             cabecera_firma_presupuesto_empresa,
+            mostrar_cuenta_bancaria_pdf_presupuesto_empresa,
             mostrar_kits_albaran_empresa,
             mostrar_obs_familias_articulos_albaran_empresa,
             mostrar_obs_pie_albaran_empresa,
+            obs_linea_alineadas_descripcion_empresa,
             activo_empresa
         );
     });
@@ -475,10 +497,12 @@ $(document).ready(function () {
             observaciones_cabecera_ingles_presupuesto_empresa: params[42],
             mostrar_subtotales_fecha_presupuesto_empresa: params[43],
             cabecera_firma_presupuesto_empresa: params[44],
-            mostrar_kits_albaran_empresa: params[45],
-            mostrar_obs_familias_articulos_albaran_empresa: params[46],
-            mostrar_obs_pie_albaran_empresa: params[47],
-            activo_empresa: params[48]
+            mostrar_cuenta_bancaria_pdf_presupuesto_empresa: params[45],
+            mostrar_kits_albaran_empresa: params[46],
+            mostrar_obs_familias_articulos_albaran_empresa: params[47],
+            mostrar_obs_pie_albaran_empresa: params[48],
+            obs_linea_alineadas_descripcion_empresa: params[49],
+            activo_empresa: params[50]
         };
         
         console.log('💾 Datos a guardar:', datosEnvio);

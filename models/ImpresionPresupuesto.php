@@ -83,6 +83,7 @@ class ImpresionPresupuesto
                         p.provincia_evento_presupuesto,
                         p.observaciones_cabecera_presupuesto,
                         p.observaciones_pie_presupuesto,
+                        p.destacar_observaciones_pie_presupuesto,
                         p.version_actual_presupuesto,
                         DATEDIFF(p.fecha_fin_evento_presupuesto, p.fecha_inicio_evento_presupuesto) + 1 AS duracion_evento_dias,
                         
@@ -228,9 +229,11 @@ class ImpresionPresupuesto
                         texto_pie_presupuesto_empresa,
                         mostrar_subtotales_fecha_presupuesto_empresa,
                     cabecera_firma_presupuesto_empresa,
+                    mostrar_cuenta_bancaria_pdf_presupuesto_empresa,
                     mostrar_kits_albaran_empresa,
                     mostrar_obs_familias_articulos_albaran_empresa,
-                    mostrar_obs_pie_albaran_empresa
+                    mostrar_obs_pie_albaran_empresa,
+                    obs_linea_alineadas_descripcion_empresa
                 FROM empresa 
                 WHERE empresa_ficticia_principal = 1 
                 AND activo_empresa = 1

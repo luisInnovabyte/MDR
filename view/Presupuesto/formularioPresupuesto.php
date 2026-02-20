@@ -463,6 +463,21 @@
 
                             <div class="row mb-3">
                                 <div class="col-12">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="destacar_observaciones_pie_presupuesto" id="destacar_observaciones_pie_presupuesto" checked>
+                                        <label class="form-check-label" for="destacar_observaciones_pie_presupuesto">
+                                            <i class="fas fa-star text-warning me-2"></i>Destacar observaciones de pie en el PDF
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Si está activo, las observaciones de pie aparecerán destacadas con líneas decorativas y centradas. 
+                                        Si está desactivado, se mostrarán integradas con las demás observaciones y alineadas a la izquierda.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
                                     <label for="observaciones_internas_presupuesto" class="form-label">Observaciones internas:</label>
                                     <textarea class="form-control" name="observaciones_internas_presupuesto" id="observaciones_internas_presupuesto" rows="3" placeholder="Notas internas (no se imprimirán en el PDF)..."></textarea>
                                     <small class="form-text text-muted">Notas internas, no se imprimen en el PDF</small>

@@ -256,6 +256,7 @@ switch ($op) {
                     $_POST["observaciones_cabecera_ingles_presupuesto"] ?? '', 
                     $_POST["observaciones_pie_presupuesto"], 
                     $_POST["observaciones_pie_ingles_presupuesto"] ?? '', 
+                    isset($_POST["destacar_observaciones_pie_presupuesto"]) ? $_POST["destacar_observaciones_pie_presupuesto"] : 1, 
                     isset($_POST["mostrar_obs_familias_presupuesto"]) ? $_POST["mostrar_obs_familias_presupuesto"] : 1, 
                     isset($_POST["mostrar_obs_articulos_presupuesto"]) ? $_POST["mostrar_obs_articulos_presupuesto"] : 1, 
                     $_POST["observaciones_internas_presupuesto"]
@@ -346,6 +347,7 @@ switch ($op) {
                     $_POST["observaciones_cabecera_ingles_presupuesto"] ?? '', 
                     $_POST["observaciones_pie_presupuesto"], 
                     $_POST["observaciones_pie_ingles_presupuesto"] ?? '', 
+                    isset($_POST["destacar_observaciones_pie_presupuesto"]) ? $_POST["destacar_observaciones_pie_presupuesto"] : 1, 
                     isset($_POST["mostrar_obs_familias_presupuesto"]) ? $_POST["mostrar_obs_familias_presupuesto"] : 1, 
                     isset($_POST["mostrar_obs_articulos_presupuesto"]) ? $_POST["mostrar_obs_articulos_presupuesto"] : 1, 
                     $_POST["observaciones_internas_presupuesto"]

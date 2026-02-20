@@ -100,15 +100,19 @@ class MYPDF extends TCPDF {
             $this->Cell(95, 2.5, 'CIF: ' . $nif_empresa, 0, 1, 'L');
         }
 
-        // Dirección fiscal
+        // Dirección fiscal - LÍNEA 1
         $this->SetX(8);
         $this->SetFont('helvetica', '', 7.5);
         $this->SetTextColor(52, 73, 94); // Color normal
-        $direccion_completa = ($this->datos_empresa['direccion_fiscal_empresa'] ?? '') . ', ' .
-                              ($this->datos_empresa['cp_fiscal_empresa'] ?? '') . ' ' .
-                              ($this->datos_empresa['poblacion_fiscal_empresa'] ?? '') . ' (' .
-                              ($this->datos_empresa['provincia_fiscal_empresa'] ?? '') . ')';
-        $this->MultiCell(95, 3, $direccion_completa, 0, 'L');
+        $direccion_fiscal = $this->datos_empresa['direccion_fiscal_empresa'] ?? '';
+        $this->Cell(95, 3, $direccion_fiscal, 0, 1, 'L');
+        
+        // Dirección fiscal - LÍNEA 2 (CP, Población, Provincia)
+        $this->SetX(8);
+        $cp_poblacion_provincia = ($this->datos_empresa['cp_fiscal_empresa'] ?? '') . ' ' .
+                                  ($this->datos_empresa['poblacion_fiscal_empresa'] ?? '') . ' (' .
+                                  ($this->datos_empresa['provincia_fiscal_empresa'] ?? '') . ')';
+        $this->Cell(95, 3, $cp_poblacion_provincia, 0, 1, 'L');
 
         // Teléfono, móvil y email
         $this->SetX(8);
@@ -134,7 +138,7 @@ class MYPDF extends TCPDF {
         // Fondo de color para la caja de info
         $this->SetFillColor(102, 126, 234); // Color azul/morado
         $this->SetTextColor(255, 255, 255); // Texto blanco
-        $this->SetFont('helvetica', 'B', 7);
+        $this->SetFont('helvetica', 'B', 8.5);
 
         $this->SetXY(8, $y_info);
         $this->Cell(95, 10, '', 0, 0, 'L', true); // Fondo de la caja ajustado al nuevo ancho
@@ -286,7 +290,7 @@ class MYPDF extends TCPDF {
             // Título "A la atención de:"
             $this->SetXY($col2_x + 2, $this->GetY());
             $this->SetFont('helvetica', 'B', 8);
-            $this->SetTextColor(156, 89, 182); // Color morado
+            $this->SetTextColor(39, 174, 96); // Color verde
             $this->Cell($col2_width - 4, 3, 'A la atencion de:', 0, 1, 'L');
 
             $this->SetX($col2_x + 2);
@@ -340,12 +344,12 @@ class MYPDF extends TCPDF {
 
         // Título de la sección de evento
         $this->SetFont('helvetica', 'B', 8);
-        $this->SetTextColor(243, 156, 18); // Color naranja
+        $this->SetTextColor(39, 174, 96); // Color verde
         $this->Cell($evento_width, 4, 'DATOS DEL EVENTO', 0, 1, 'L');
 
         // Fechas del evento en formato tabla compacta (3 columnas)
         $this->SetX($evento_x);
-        $this->SetFont('helvetica', '', 6.5);
+        $this->SetFont('helvetica', '', 8);
         $this->SetTextColor(127, 140, 141); // Gris para labels
 
         // Crear mini tabla de 3 columnas: Inicio | Fin | Duración
@@ -358,7 +362,7 @@ class MYPDF extends TCPDF {
 
         // Valores
         $this->SetX($evento_x);
-        $this->SetFont('helvetica', 'B', 6.5);
+        $this->SetFont('helvetica', 'B', 8);
         $this->SetTextColor(52, 73, 94);
 
         $fecha_inicio_str = '';
@@ -873,7 +877,7 @@ switch ($_GET["op"]) {
                 if ($info_fechas['ocultar_columnas']) {
                     $mtje_formateada = !empty($info_fechas['fecha_montaje']) ? date('d/m/Y', strtotime($info_fechas['fecha_montaje'])) : '-';
                     $dsmtje_formateada = !empty($info_fechas['fecha_desmontaje']) ? date('d/m/Y', strtotime($info_fechas['fecha_desmontaje'])) : '-';
-                    $texto_cabecera .= ' | Mtje: ' . $mtje_formateada . ' | Dsmtje: ' . $dsmtje_formateada;
+                    $texto_cabecera .= ' | Montaje: ' . $mtje_formateada . ' | Desmontaje: ' . $dsmtje_formateada;
                 }
                 
                 // Fecha de inicio con fondo azul
@@ -892,7 +896,8 @@ switch ($_GET["op"]) {
                     $pdf->SetFont('helvetica', 'B', 8);
                     $ubicacion_text = $grupo_ubicacion['nombre_ubicacion'];
                     if ($id_ubicacion > 0) {
-                        $ubicacion_text .= ' (ID: ' . $id_ubicacion . ')';
+                       // $ubicacion_text .= ' (ID: ' . $id_ubicacion . ')';
+                        
                     }
                     $pdf->Cell(194, 5, $ubicacion_text, 0, 1, 'L');
                     
@@ -1056,14 +1061,20 @@ switch ($_GET["op"]) {
                             $pdf->SetFont('helvetica', '', 6.5);
                             $pdf->SetTextColor(80, 80, 80);
                             
-                            // Renderizar observaciones con indentación
-                            $texto_observaciones = '    ' . $observaciones_a_mostrar;
+                            // Determinar alineación según configuración de empresa
+                            $obs_alineadas = !empty($datos_empresa['obs_linea_alineadas_descripcion_empresa']);
                             
-                            // Calcular altura necesaria para las observaciones
-                            $altura_obs = $pdf->getStringHeight(170, $texto_observaciones);
-                            
-                            // Renderizar MultiCell en la posición actual
-                            $pdf->MultiCell(170, 4, $texto_observaciones, 0, 'L', false, 1, '', $y_antes_obs);
+                            if ($obs_alineadas) {
+                                // Alineado bajo columna Descripción: sin indentación manual,
+                                // el propio SetX posiciona el texto correctamente
+                                $texto_observaciones = $observaciones_a_mostrar;
+                                $ancho_obs = 170 - ($x_desc - $x_inicial);
+                                $pdf->MultiCell($ancho_obs, 4, $texto_observaciones, 0, 'L', false, 1, $x_desc, $y_antes_obs);
+                            } else {
+                                // Desde margen izquierdo con indentación de 4 espacios (comportamiento original)
+                                $texto_observaciones = '    ' . $observaciones_a_mostrar;
+                                $pdf->MultiCell(170, 4, $texto_observaciones, 0, 'L', false, 1, '', $y_antes_obs);
+                            }
                             
                             // Resetear colores y fuente para siguientes elementos
                             $pdf->SetTextColor(0, 0, 0);
@@ -1233,65 +1244,6 @@ switch ($_GET["op"]) {
             $pdf->SetDrawColor(0, 0, 0);
             $pdf->SetLineWidth(0.2);
             
-            // =====================================================
-            // *** SECCIÓN 20: PESO TOTAL ESTIMADO ***
-            // =====================================================
-            
-            // Obtener peso total del presupuesto
-            $datos_peso = null;
-            if (!empty($datos_presupuesto['id_version_presupuesto'])) {
-                $datos_peso = $impresion->get_peso_total_presupuesto($datos_presupuesto['id_version_presupuesto']);
-            }
-            
-            // Mostrar peso solo si hay datos disponibles y peso > 0
-            if ($datos_peso && 
-                isset($datos_peso['peso_total_kg']) && 
-                floatval($datos_peso['peso_total_kg']) > 0) {
-                
-                $pdf->Ln(6);
-                
-                // Título de la sección
-                $pdf->SetFont('helvetica', 'B', 9);
-                $pdf->SetFillColor(233, 236, 239); // Fondo gris claro
-                $pdf->SetDrawColor(173, 181, 189); // Borde gris
-                $pdf->SetTextColor(52, 58, 64); // Texto gris oscuro
-                $pdf->Cell(0, 6, 'PESO TOTAL ESTIMADO', 1, 1, 'C', 1);
-                
-                // Contenido: Peso y completitud
-                $pdf->SetFont('helvetica', 'B', 10);
-                $pdf->SetFillColor(248, 249, 250); // Fondo gris muy claro
-                $pdf->SetTextColor(28, 126, 214); // Azul (mismo tono que elementos del diseño)
-                
-                // Formatear peso con separador de miles y 2 decimales
-                $peso_formateado = number_format($datos_peso['peso_total_kg'], 2, ',', '.');
-                $texto_peso = $peso_formateado . ' KG';
-                
-                // Añadir nota de completitud si no está al 100%
-                $porcentaje_completitud = floatval($datos_peso['porcentaje_completitud'] ?? 0);
-                if ($porcentaje_completitud < 100 && $porcentaje_completitud > 0) {
-                    // Hay líneas sin peso definido
-                    $lineas_sin_peso = intval($datos_peso['lineas_sin_peso'] ?? 0);
-                    $texto_peso .= ' *';
-                    $mostrar_nota_completitud = true;
-                } else {
-                    $mostrar_nota_completitud = false;
-                }
-                
-                $pdf->Cell(0, 7, $texto_peso, 1, 1, 'C', 1);
-                
-                // Nota aclaratoria si no está completo
-                if ($mostrar_nota_completitud) {
-                    $pdf->SetFont('helvetica', 'I', 7);
-                    $pdf->SetTextColor(108, 117, 125); // Gris medio
-                    $nota = "* Peso estimado basado en " . $datos_peso['lineas_con_peso'] . " de " . $datos_peso['total_lineas'] . " líneas ";
-                    $nota .= "(" . number_format($porcentaje_completitud, 0) . "% de datos disponibles)";
-                    $pdf->Cell(0, 4, $nota, 0, 1, 'C');
-                }
-                
-                // Restaurar colores
-                $pdf->SetTextColor(0, 0, 0);
-                $pdf->SetDrawColor(0, 0, 0);
-            }
             
             // =====================================================
             // *** PUNTO 17: JUSTIFICACIÓN EXENCIÓN IVA ***
@@ -1407,8 +1359,11 @@ switch ($_GET["op"]) {
                     !empty($datos_empresa['banco_empresa'])
                 );
                 
-                // Solo mostrar si es transferencia Y hay datos bancarios
-                if ($es_transferencia && $tiene_datos_bancarios) {
+                // Verificar si el switch de mostrar cuenta bancaria está activado (default: 1)
+                $mostrar_cuenta_bancaria_activado = ($datos_empresa['mostrar_cuenta_bancaria_pdf_presupuesto_empresa'] ?? 1);
+                
+                // Solo mostrar si es transferencia Y hay datos bancarios Y el switch está activado
+                if ($es_transferencia && $tiene_datos_bancarios && $mostrar_cuenta_bancaria_activado) {
                     
                     // Calcular altura dinámica según campos disponibles
                     $altura_bloque = 5; // 5mm overhead (título + márgenes) - REDUCIDO
@@ -1512,7 +1467,7 @@ switch ($_GET["op"]) {
                 // Título de la sección
                 $pdf->SetFont('helvetica', 'B', 9.5);
                 $pdf->SetTextColor(66, 66, 66);
-                $pdf->Cell(0, 6, 'OBSERVACIONES DEL PRESUPUESTO', 0, 1, 'L');
+                $pdf->Cell(0, 6, 'OBSERVACIONES', 0, 1, 'L');
                 
                 $pdf->Ln(2);
                 
@@ -1534,10 +1489,39 @@ switch ($_GET["op"]) {
             }
             
             // =====================================================
-            // OBSERVACIONES DE PIE DEL PRESUPUESTO
+            // OBSERVACIONES DE PIE INTEGRADAS (cuando NO se destacan)
             // =====================================================
             
-            if (!empty($datos_presupuesto['observaciones_pie_presupuesto'])) {
+            // Si destacar_observaciones_pie_presupuesto es 0 (FALSE), mostrar aquí integradas
+            if (!empty($datos_presupuesto['observaciones_pie_presupuesto']) && 
+                isset($datos_presupuesto['destacar_observaciones_pie_presupuesto']) && 
+                $datos_presupuesto['destacar_observaciones_pie_presupuesto'] == 0) {
+                
+                // Si no había observaciones anteriores, agregar el título de sección
+                if (empty($obs_con_contenido)) {
+                    $pdf->Ln(8);
+                    $pdf->SetFont('helvetica', 'B', 9.5);
+                    $pdf->SetTextColor(66, 66, 66);
+                    $pdf->Cell(0, 6, 'OBSERVACIONES', 0, 1, 'L');
+                    $pdf->Ln(2);
+                }
+                
+                // Símbolo *** para observaciones de pie
+                $pdf->SetFillColor(250, 250, 250);
+                $pdf->SetFont('helvetica', '', 8);
+                $pdf->SetTextColor(97, 97, 97);
+                $pdf->MultiCell(0, 4, $datos_presupuesto['observaciones_pie_presupuesto'], 0, 'L', 1);
+                $pdf->Ln(3);
+            }
+            
+            // =====================================================
+            // OBSERVACIONES DE PIE DEL PRESUPUESTO (DESTACADAS)
+            // =====================================================
+            
+            // Solo mostrar destacadas si el campo es 1 o no está definido (compatibilidad con registros antiguos)
+            if (!empty($datos_presupuesto['observaciones_pie_presupuesto']) && 
+                (!isset($datos_presupuesto['destacar_observaciones_pie_presupuesto']) || 
+                 $datos_presupuesto['destacar_observaciones_pie_presupuesto'] == 1)) {
                 $pdf->Ln(10);
                 
                 // Línea superior decorativa
@@ -1615,16 +1599,22 @@ switch ($_GET["op"]) {
             // Punto 14: Nueva Funcionalidad - Firma de Empleado
             // ========================================
             
-            // Obtener firma digital si el usuario está en sesión
+            // Obtener firma digital y datos del comercial si el usuario está en sesión
             $firma_comercial = null;
+            $nombre_firmante = null;
             
             if (isset($_SESSION['id_usuario']) && !empty($_SESSION['id_usuario'])) {
                 try {
                     $comercialesModel = new Comerciales();
-                    $firma_comercial = $comercialesModel->get_firma_by_usuario($_SESSION['id_usuario']);
+                    $datos_comercial = $comercialesModel->get_comercial_by_usuario($_SESSION['id_usuario']);
+                    if ($datos_comercial) {
+                        $firma_comercial = $datos_comercial['firma_comercial'] ?? null;
+                        $nombre_raw = trim(($datos_comercial['nombre'] ?? '') . ' ' . ($datos_comercial['apellidos'] ?? ''));
+                        $nombre_firmante = !empty($nombre_raw) ? $nombre_raw : null;
+                    }
                 } catch (Exception $e) {
                     // Log del error pero continuar sin firma
-                    error_log("Error al obtener firma del comercial: " . $e->getMessage());
+                    error_log("Error al obtener datos del comercial: " . $e->getMessage());
                 }
             }
             
@@ -1689,10 +1679,16 @@ switch ($_GET["op"]) {
             
             $pdf->SetXY($x_inicio_izq, $y_linea_izq + 2);
             $pdf->SetFont('helvetica', '', 8);
-            $pdf->Cell($ancho_casilla, 4, 'Firma y Sello', 0, 1, 'C');
+            //$pdf->Cell($ancho_casilla, 4, 'Firma y Sello', 0, 1, 'C');
             
-            $pdf->SetX($x_inicio_izq);
-            $pdf->Ln(2);
+            // Nombre del firmante (si se obtuvo del comercial asociado al usuario)
+            if (!empty($nombre_firmante)) {
+                $pdf->SetXY($x_inicio_izq, $pdf->GetY());
+                $pdf->SetFont('helvetica', 'I', 7);
+                $pdf->Cell($ancho_casilla, 4, $nombre_firmante, 0, 1, 'C');
+            } else {
+                $pdf->Ln(2);
+            }
             
             // Fecha (fecha actual de impresión)
             $pdf->SetXY($x_inicio_izq, $pdf->GetY());

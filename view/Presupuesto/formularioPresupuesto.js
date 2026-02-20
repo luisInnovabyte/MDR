@@ -617,6 +617,7 @@ $(document).ready(function () {
                     $('#observaciones_internas_presupuesto').val(data.observaciones_internas_presupuesto);
                     
                     // Checkboxes
+                    $('#destacar_observaciones_pie_presupuesto').prop('checked', data.destacar_observaciones_pie_presupuesto == 1);
                     $('#mostrar_obs_familias_presupuesto').prop('checked', data.mostrar_obs_familias_presupuesto == 1);
                     $('#mostrar_obs_articulos_presupuesto').prop('checked', data.mostrar_obs_articulos_presupuesto == 1);
                     $('#activo_presupuesto').prop('checked', data.activo_presupuesto == 1);
@@ -743,6 +744,7 @@ $(document).ready(function () {
         var observaciones_cabecera_ingles_presupuestoR = $('#observaciones_cabecera_ingles_presupuesto').val() || '';
         var observaciones_pie_presupuestoR = $('#observaciones_pie_presupuesto').val() || '';
         var observaciones_pie_ingles_presupuestoR = $('#observaciones_pie_ingles_presupuesto').val() || '';
+        var destacar_observaciones_pie_presupuestoR = $('#destacar_observaciones_pie_presupuesto').is(':checked') ? 1 : 0;
         var mostrar_obs_familias_presupuestoR = $('#mostrar_obs_familias_presupuesto').is(':checked') ? 1 : 0;
         var mostrar_obs_articulos_presupuestoR = $('#mostrar_obs_articulos_presupuesto').is(':checked') ? 1 : 0;
         var observaciones_internas_presupuestoR = $('#observaciones_internas_presupuesto').val() || '';
@@ -794,6 +796,7 @@ $(document).ready(function () {
             observaciones_cabecera_ingles_presupuestoR,
             observaciones_pie_presupuestoR,
             observaciones_pie_ingles_presupuestoR,
+            destacar_observaciones_pie_presupuestoR,
             mostrar_obs_familias_presupuestoR,
             mostrar_obs_articulos_presupuestoR,
             observaciones_internas_presupuestoR,
@@ -825,6 +828,7 @@ $(document).ready(function () {
         observaciones_cabecera_ingles_presupuesto,
         observaciones_pie_presupuesto,
         observaciones_pie_ingles_presupuesto,
+        destacar_observaciones_pie_presupuesto,
         mostrar_obs_familias_presupuesto,
         mostrar_obs_articulos_presupuesto,
         observaciones_internas_presupuesto,
@@ -868,6 +872,7 @@ $(document).ready(function () {
                         observaciones_cabecera_ingles_presupuesto,
                         observaciones_pie_presupuesto,
                         observaciones_pie_ingles_presupuesto,
+                        destacar_observaciones_pie_presupuesto,
                         mostrar_obs_familias_presupuesto,
                         mostrar_obs_articulos_presupuesto,
                         observaciones_internas_presupuesto,
@@ -916,6 +921,7 @@ $(document).ready(function () {
         observaciones_cabecera_ingles_presupuesto,
         observaciones_pie_presupuesto,
         observaciones_pie_ingles_presupuesto,
+        destacar_observaciones_pie_presupuesto,
         mostrar_obs_familias_presupuesto,
         mostrar_obs_articulos_presupuesto,
         observaciones_internas_presupuesto,
@@ -948,6 +954,7 @@ $(document).ready(function () {
             'observaciones_cabecera_ingles_presupuesto': observaciones_cabecera_ingles_presupuesto,
             'observaciones_pie_presupuesto': observaciones_pie_presupuesto,
             'observaciones_pie_ingles_presupuesto': observaciones_pie_ingles_presupuesto,
+            'destacar_observaciones_pie_presupuesto': destacar_observaciones_pie_presupuesto,
             'mostrar_obs_familias_presupuesto': mostrar_obs_familias_presupuesto,
             'mostrar_obs_articulos_presupuesto': mostrar_obs_articulos_presupuesto,
             'observaciones_internas_presupuesto': observaciones_internas_presupuesto,

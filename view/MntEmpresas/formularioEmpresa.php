@@ -567,6 +567,37 @@
                                     Texto que aparecerá en la cabecera de la casilla de firma de la empresa en el PDF.
                                 </small>
                             </div>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       id="mostrar_cuenta_bancaria_pdf_presupuesto_empresa"
+                                       name="mostrar_cuenta_bancaria_pdf_presupuesto_empresa"
+                                       value="1"
+                                       checked>
+                                <label class="form-check-label" for="mostrar_cuenta_bancaria_pdf_presupuesto_empresa">
+                                    <strong>Mostrar cuenta bancaria en PDF (pagos por transferencia)</strong>
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mb-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Si está activado y la forma de pago es "transferencia", se mostrará el bloque de datos bancarios (IBAN, SWIFT, Banco) en el PDF del presupuesto. Si está desactivado, no se mostrará aunque la forma de pago sea transferencia.
+                            </small>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       id="obs_linea_alineadas_descripcion_empresa"
+                                       name="obs_linea_alineadas_descripcion_empresa"
+                                       value="1">
+                                <label class="form-check-label" for="obs_linea_alineadas_descripcion_empresa">
+                                    <strong>Observaciones de línea alineadas bajo columna Descripción en PDF</strong>
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mb-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Si está activado, las observaciones introducidas en cada línea de artículo del presupuesto se imprimirán en el PDF alineadas bajo la columna "Descripción". Si está desactivado (por defecto), se imprimen desde el margen izquierdo del documento.
+                            </small>
                         </div>
                     </div>
 
@@ -693,7 +724,7 @@
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
-    <script type="text/javascript" src="formularioEmpresa.js"></script>
+    <script type="text/javascript" src="formularioEmpresa.js?v=<?php echo time(); ?>"></script>
 
     <!-- Botones flotantes para navegación -->
     <!-- Botón para ir al inicio del formulario -->
