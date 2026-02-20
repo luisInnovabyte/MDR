@@ -437,8 +437,31 @@ switch ($_GET["op"]) {
             
             $id_presupuesto = intval($_POST['id_presupuesto']);
             
-            // 2. Obtener datos del presupuesto
-            $datos_presupuesto = $impresion->get_datos_cabecera($id_presupuesto);
+            // 1b. Buscar la versión aprobada del presupuesto
+            $numero_version_aprobada = $impresion->get_numero_version_aprobada($id_presupuesto);
+            
+            if (is_null($numero_version_aprobada)) {
+                // Sin versión aprobada: salir con página de error clara
+                ob_end_clean();
+                header('Content-Type: text/html; charset=utf-8');
+                echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+                <title>Albarán de carga — Sin versión aprobada</title>
+                <style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f8f9fa}
+                .card{max-width:420px;padding:2.5rem 3rem;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.1);text-align:center}
+                .icon{font-size:3rem;margin-bottom:1rem}
+                h2{color:#d97706;margin:0 0 .75rem}
+                p{color:#6b7280;line-height:1.6;margin:0}</style></head>
+                <body><div class="card">
+                <div class="icon">⚠️</div>
+                <h2>Sin versión aprobada</h2>
+                <p>El albarán de carga solo puede generarse a partir de una <strong>versión aprobada</strong> del presupuesto.<br><br>
+                Aprueba una versión desde el historial de versiones y vuelve a intentarlo.</p>
+                </div></body></html>';
+                exit;
+            }
+            
+            // 2. Obtener datos del presupuesto (usando la versión aprobada)
+            $datos_presupuesto = $impresion->get_datos_cabecera($id_presupuesto, $numero_version_aprobada);
             
             if (!$datos_presupuesto) {
                 throw new Exception("No se encontraron datos del presupuesto ID: $id_presupuesto");
@@ -481,8 +504,8 @@ switch ($_GET["op"]) {
                 ? date('d/m/Y', strtotime($datos_presupuesto['fecha_inicio_evento_presupuesto'])) 
                 : '';
             
-            // 6. Obtener líneas del presupuesto
-            $lineas = $impresion->get_lineas_impresion($id_presupuesto);
+            // 6. Obtener líneas del presupuesto (versión aprobada)
+            $lineas = $impresion->get_lineas_impresion($id_presupuesto, $numero_version_aprobada);
             
             // 6.1 Agrupar líneas por fecha de inicio y ubicación
             $lineas_agrupadas = [];
@@ -507,8 +530,8 @@ switch ($_GET["op"]) {
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['lineas'][] = $linea;
             }
             
-            // 7. Obtener observaciones de familias y artículos
-            $observaciones_array = $impresion->get_observaciones_presupuesto($id_presupuesto, 'es');
+            // 7. Obtener observaciones de familias y artículos (versión aprobada)
+            $observaciones_array = $impresion->get_observaciones_presupuesto($id_presupuesto, 'es', $numero_version_aprobada);
             $observaciones = '';
             if (!empty($observaciones_array) && is_array($observaciones_array)) {
                 $textos = [];

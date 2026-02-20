@@ -23,7 +23,7 @@
 - [15. Líneas del Presupuesto - Bordes Grises](#15-líneas-del-presupuesto---bordes-grises--completada) ✅ COMPLETADA
 - [16. Fechas de Montaje y Desmontaje - Optimización de Espacio](#16-fechas-de-montaje-y-desmontaje---optimización-de-espacio--completada) ✅ COMPLETADA
 - [17. Clientes Exentos de IVA - Operaciones Intracomunitarias](#17-clientes-exentos-de-iva---operaciones-intracomunitarias--completado) ✅ COMPLETADO
-- [18. Ocultar sección observaciones si está vacía](#18-ocultar-sección-observaciones-si-está-vacía--pendiente) ⏳ PENDIENTE
+- [18. Ocultar sección observaciones si está vacía](#18-ocultar-sección-observaciones-si-está-vacía--completado) ✅ COMPLETADO
 - [19. Mostrar Datos Bancarios con Forma de Pago TRANSFERENCIA](#19-mostrar-datos-bancarios-con-forma-de-pago-transferencia--completado) ✅ COMPLETADO
 - [20. Sistema de Peso en Presupuestos](#20-sistema-de-peso-en-presupuestos--completada) ✅ COMPLETADA
 - [21. Impresión de Albaranes](#21-impresión-de-albaranes--completada-y-finalizada) ✅ COMPLETADA Y FINALIZADA
@@ -928,10 +928,11 @@ if ($cliente_exento_iva) {
 
 ---
 
-### 18. Ocultar sección observaciones si está vacía ⏳ **PENDIENTE**
+### 18. Ocultar sección observaciones si está vacía ✅ **COMPLETADO**
 
 **Fecha alta**: 11 de febrero de 2026  
-**Estado**: ⏳ Pendiente  
+**Fecha finalización**: 19 de febrero de 2026  
+**Estado**: ✅ Completado  
 **Prioridad**: Media  
 **Tipo**: Ajuste de layout PDF
 
@@ -939,18 +940,35 @@ if ($cliente_exento_iva) {
 
 Cuando un presupuesto no tenga contenido en la sección de observaciones, el PDF no debe reservar bloque visual ni dejar hueco en blanco.
 
-#### 🎯 Objetivo funcional
+#### 🎯 Implementación realizada
 
-- Mostrar sección de observaciones solo si existe contenido real.
-- Recolocar automáticamente las secciones siguientes para optimizar el espacio.
-- Mantener coherencia de paginación cuando el bloque desaparece.
+**Archivo modificado**: `controller/impresionpresupuesto_m2_pdf_es.php`
 
-#### 🔍 Criterios de validación
+**Problema**: El bloque `OBSERVACIONES DE FAMILIAS Y ARTÍCULOS` pintaba el título "OBSERVACIONES DEL PRESUPUESTO" y los saltos `Ln(8)` / `Ln(2)` incluso cuando todos los ítems del array tenían `observacion_es` vacío, porque la guardia exterior solo comprobaba que `$observaciones_array` no era vacío, sin verificar si algún ítem tenía contenido real.
 
-- Presupuesto con observaciones: sección visible con formato habitual.
-- Presupuesto sin observaciones: sección completamente oculta.
-- No deben aparecer títulos vacíos ni saltos innecesarios.
-- Las secciones posteriores deben subir de posición sin solaparse.
+**Solución**: Se añade un pre-filtrado (`array_filter`) antes de cualquier renderizado. Solo si el array filtrado tiene al menos un elemento se pinta el título y el bloque completo:
+
+```php
+$obs_con_contenido = array_filter(
+    is_array($observaciones_array) ? $observaciones_array : [],
+    function ($obs) {
+        $nombre = ''; // ... resuelve nombre según tipo ...
+        $texto = $obs['observacion_es'] ?? '';
+        return !empty($nombre) && !empty(trim($texto));
+    }
+);
+
+if (!empty($obs_con_contenido)) {
+    // Ln(8), título, Ln(2), foreach...
+}
+```
+
+#### ✅ Criterios de validación
+
+- ✅ Presupuesto con observaciones: sección visible con formato habitual.
+- ✅ Presupuesto sin observaciones: sección completamente oculta (sin título ni saltos).
+- ✅ No aparecen títulos vacíos ni saltos innecesarios.
+- ✅ Las secciones posteriores (PIE, FIRMAS) suben de posición sin solaparse.
 
 ---
 

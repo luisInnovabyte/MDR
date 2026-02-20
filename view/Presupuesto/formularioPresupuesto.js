@@ -26,9 +26,6 @@ $(document).ready(function () {
         },
         id_cliente: {
             required: true
-        },
-        id_estado_ppto: {
-            required: true
         }
     });
 
@@ -133,7 +130,7 @@ $(document).ready(function () {
 
     // Cargar opciones de selects
     cargarClientes();
-    cargarEstadosPresupuesto();
+    // Estado: se muestra como badge (solo lectura), inicializado con BORRADOR por defecto
     cargarFormasPago();
     cargarMetodosContacto();
     
@@ -253,30 +250,31 @@ $(document).ready(function () {
         });
     }
 
-    // Función para cargar estados de presupuesto
-    function cargarEstadosPresupuesto() {
-        $.ajax({
-            url: "../../controller/estado_presupuesto.php?op=listar",
-            type: "GET",
-            dataType: "json",
-            success: function(data) {
-                var select = $('#id_estado_ppto');
-                select.empty();
-                select.append('<option value="">Seleccione un estado</option>');
-                
-                if (data.data && Array.isArray(data.data)) {
-                    $.each(data.data, function(index, estado) {
-                        if (estado.activo_estado_ppto == 1) {
-                            select.append('<option value="' + estado.id_estado_ppto + '">' + estado.nombre_estado_ppto + '</option>');
-                        }
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error al cargar estados:', error);
-                toastr.error('Error al cargar la lista de estados');
-            }
-        });
+    /**
+     * Muestra el estado del presupuesto como badge de solo lectura.
+     * Actualiza #badge_estado_ppto (visual) y #id_estado_ppto (hidden input).
+     *
+     * @param {number|string} id    - id_estado_ppto
+     * @param {string}        nombre - nombre_estado_ppto (texto del badge)
+     * @param {string}        color  - color_estado_ppto (hex, p.ej. '#28a745')
+     */
+    function mostrarBadgeEstado(id, nombre, color) {
+        var badge = $('#badge_estado_ppto');
+        var input = $('#id_estado_ppto');
+
+        if (id && nombre) {
+            badge.text(nombre);
+            badge.css({
+                'background-color': color || '#6c757d',
+                'color': '#fff'
+            });
+            input.val(id);
+        } else {
+            // Fallback: BORRADOR
+            badge.text('BORRADOR');
+            badge.css({ 'background-color': '#0000ff', 'color': '#fff' });
+            input.val(1);
+        }
     }
 
     // Función para cargar formas de pago
@@ -626,7 +624,8 @@ $(document).ready(function () {
                     // Selects - esperar a que se carguen primero
                     setTimeout(function() {
                         $('#id_cliente').val(data.id_cliente);
-                        $('#id_estado_ppto').val(data.id_estado_ppto);
+                        // Estado: mostrar como badge de solo lectura
+                        mostrarBadgeEstado(data.id_estado_ppto, data.nombre_estado_ppto, data.color_estado_ppto);
                         $('#id_forma_pago').val(data.id_forma_pago);
                         $('#id_metodo').val(data.id_metodo);
                         

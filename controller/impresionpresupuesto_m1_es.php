@@ -37,9 +37,10 @@ switch ($_GET["op"]) {
             }
             
             $id_presupuesto = intval($_POST['id_presupuesto']);
+            $numero_version = !empty($_POST['numero_version']) ? intval($_POST['numero_version']) : null;
             
-            // 2. Obtener datos del presupuesto (versión actual)
-            $datos_presupuesto = $impresion->get_datos_cabecera($id_presupuesto);
+            // 2. Obtener datos del presupuesto (versión actual o la indicada)
+            $datos_presupuesto = $impresion->get_datos_cabecera($id_presupuesto, $numero_version);
             
             if (!$datos_presupuesto) {
                 throw new Exception("No se encontraron datos del presupuesto ID: $id_presupuesto");
@@ -113,7 +114,7 @@ switch ($_GET["op"]) {
                 : '';
             
             // 6. Obtener líneas del presupuesto
-            $lineas = $impresion->get_lineas_impresion($id_presupuesto);
+            $lineas = $impresion->get_lineas_impresion($id_presupuesto, $numero_version);
             
             if ($lineas === false) {
                 throw new Exception("Error al obtener las líneas del presupuesto");
@@ -191,7 +192,7 @@ switch ($_GET["op"]) {
             }
             
             // 8. Obtener observaciones de familias/artículos
-            $observaciones = $impresion->get_observaciones_presupuesto($id_presupuesto, 'es');
+            $observaciones = $impresion->get_observaciones_presupuesto($id_presupuesto, 'es', $numero_version);
             
             // 9. Registrar actividad
             $registro->registrarActividad(

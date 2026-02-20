@@ -126,6 +126,17 @@ $(document).ready(function () {
         searchable: true,
         orderable: true,
         className: "text-center",
+        render: function (data, type, row) {
+          if (type === "display") {
+            let html = `<span>${row.nombre_estado_ppto}</span>`;
+            if (row.es_sistema_estado_ppto == 1) {
+              html += ` <span class="badge bg-warning text-dark ms-1" data-bs-toggle="tooltip" title="Gestionado automáticamente por el sistema">
+                          <i class="fas fa-lock"></i> Sistema</span>`;
+            }
+            return html;
+          }
+          return data;
+        },
       },
       // Columna 4: color_estado_ppto
       {
@@ -186,9 +197,8 @@ $(document).ready(function () {
         orderable: false,
         class: "text-center",
         render: function (data, type, row) {
-          // Códigos de estado protegidos del sistema que no pueden ser modificados
-          const codigosProtegidos = ['APROB', 'CANC', 'ESPE-RESP', 'PEND', 'PROC', 'RECH'];
-          const esProtegido = codigosProtegidos.includes(row.codigo_estado_ppto);
+          // Estado del sistema: protegido - se determina desde BD via es_sistema_estado_ppto
+          const esProtegido = row.es_sistema_estado_ppto == 1;
           
           // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
           if (row.activo_estado_ppto == 1) {
@@ -226,9 +236,8 @@ $(document).ready(function () {
         orderable: false,
         class: "text-center",
         render: function (data, type, row) {
-          // Códigos de estado protegidos del sistema que no pueden ser modificados
-          const codigosProtegidos = ['APROB', 'CANC', 'ESPE-RESP', 'PEND', 'PROC', 'RECH'];
-          const esProtegido = codigosProtegidos.includes(row.codigo_estado_ppto);
+          // Estado del sistema: protegido - se determina desde BD via es_sistema_estado_ppto
+          const esProtegido = row.es_sistema_estado_ppto == 1;
           
           // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
           // botón editar el estado de presupuesto - deshabilitado si es un estado protegido
@@ -454,14 +463,14 @@ $(document).ready(function () {
           "../../controller/estado_presupuesto.php?op=eliminar",
           { id_estado_ppto: id },
           function (data) {
-            $table.DataTable().ajax.reload();
-
-            Swal.fire(
-              "Desactivado",
-              "El estado de presupuesto ha sido desactivado",
-              "success"
-            );
-          }
+            if (data.success) {
+              $table.DataTable().ajax.reload();
+              Swal.fire("Desactivado", data.message, "success");
+            } else {
+              Swal.fire("No permitido", data.message, "warning");
+            }
+          },
+          "json"
         );
       }
     });
@@ -495,10 +504,14 @@ $(document).ready(function () {
           "../../controller/estado_presupuesto.php?op=activar",
           { id_estado_ppto: id },
           function (data) {
-            $table.DataTable().ajax.reload();
-
-            Swal.fire("Activado", "El estado de presupuesto ha sido activado", "success");
-          }
+            if (data.success) {
+              $table.DataTable().ajax.reload();
+              Swal.fire("Activado", data.message, "success");
+            } else {
+              Swal.fire("No permitido", data.message, "warning");
+            }
+          },
+          "json"
         );
       }
     });

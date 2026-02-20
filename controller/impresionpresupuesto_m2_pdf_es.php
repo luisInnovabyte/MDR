@@ -521,9 +521,10 @@ switch ($_GET["op"]) {
             }
             
             $id_presupuesto = intval($_POST['id_presupuesto']);
+            $numero_version = !empty($_POST['numero_version']) ? intval($_POST['numero_version']) : null;
             
-            // 2. Obtener datos del presupuesto
-            $datos_presupuesto = $impresion->get_datos_cabecera($id_presupuesto);
+            // 2. Obtener datos del presupuesto (versión actual o la indicada)
+            $datos_presupuesto = $impresion->get_datos_cabecera($id_presupuesto, $numero_version);
             
             if (!$datos_presupuesto) {
                 throw new Exception("No se encontraron datos del presupuesto ID: $id_presupuesto");
@@ -591,7 +592,7 @@ switch ($_GET["op"]) {
                 : '';
             
             // 6. Obtener líneas del presupuesto
-            $lineas = $impresion->get_lineas_impresion($id_presupuesto);
+            $lineas = $impresion->get_lineas_impresion($id_presupuesto, $numero_version);
             
             // 6.1 Agrupar líneas por fecha de inicio y ubicación
             $lineas_agrupadas = [];
@@ -639,7 +640,7 @@ switch ($_GET["op"]) {
             }
             
             // 7. Obtener observaciones (convertir a string si es necesario)
-            $observaciones_array = $impresion->get_observaciones_presupuesto($id_presupuesto, 'es');
+            $observaciones_array = $impresion->get_observaciones_presupuesto($id_presupuesto, 'es', $numero_version);
             $observaciones = '';
             if (!empty($observaciones_array) && is_array($observaciones_array)) {
                 $textos = [];
@@ -1489,7 +1490,23 @@ switch ($_GET["op"]) {
             // OBSERVACIONES DE FAMILIAS Y ARTÍCULOS
             // =====================================================
             
-            if (!empty($observaciones_array) && is_array($observaciones_array)) {
+            // Pre-filtrar: solo ítems con nombre Y texto real para evitar
+            // que se pinte el título aunque no haya contenido visible (ítem 18)
+            $obs_con_contenido = array_filter(
+                is_array($observaciones_array) ? $observaciones_array : [],
+                function ($obs) {
+                    $nombre = '';
+                    if ($obs['tipo_observacion'] == 'familia' && !empty($obs['nombre_familia'])) {
+                        $nombre = $obs['nombre_familia'];
+                    } elseif ($obs['tipo_observacion'] == 'articulo' && !empty($obs['nombre_articulo'])) {
+                        $nombre = $obs['nombre_articulo'];
+                    }
+                    $texto = $obs['observacion_es'] ?? '';
+                    return !empty($nombre) && !empty(trim($texto));
+                }
+            );
+            
+            if (!empty($obs_con_contenido)) {
                 $pdf->Ln(8);
                 
                 // Título de la sección
@@ -1499,34 +1516,20 @@ switch ($_GET["op"]) {
                 
                 $pdf->Ln(2);
                 
-                // Recorrer cada observación
-                foreach ($observaciones_array as $obs) {
-                    // Obtener nombre según tipo
-                    $nombre = '';
-                    if ($obs['tipo_observacion'] == 'familia' && !empty($obs['nombre_familia'])) {
-                        $nombre = $obs['nombre_familia'];
-                    } elseif ($obs['tipo_observacion'] == 'articulo' && !empty($obs['nombre_articulo'])) {
-                        $nombre = $obs['nombre_articulo'];
-                    }
+                // Recorrer cada observación (ya filtrada: nombre y texto garantizados)
+                foreach ($obs_con_contenido as $obs) {
+                    // Determinar símbolo según tipo: * para familia, ** para artículo
+                    $simbolo = ($obs['tipo_observacion'] == 'familia') ? '*' : '**';
                     
-                    // Obtener texto de observación
-                    $texto = $obs['observacion_es'] ?? '';
+                    // Fondo gris claro para cada observación
+                    $pdf->SetFillColor(250, 250, 250);
                     
-                    // Solo mostrar si hay nombre y texto
-                    if (!empty($nombre) && !empty(trim($texto))) {
-                        // Determinar símbolo según tipo: * para familia, ** para artículo
-                        $simbolo = ($obs['tipo_observacion'] == 'familia') ? '*' : '**';
-                        
-                        // Fondo gris claro para cada observación
-                        $pdf->SetFillColor(250, 250, 250);
-                        
-                        // Símbolo y texto en la misma línea
-                        $pdf->SetFont('helvetica', '', 8);
-                        $pdf->SetTextColor(97, 97, 97);
-                        $pdf->MultiCell(0, 4, $simbolo . ' ' . $texto, 0, 'L', 1);
-                        
-                        $pdf->Ln(3);
-                    }
+                    // Símbolo y texto en la misma línea
+                    $pdf->SetFont('helvetica', '', 8);
+                    $pdf->SetTextColor(97, 97, 97);
+                    $pdf->MultiCell(0, 4, $simbolo . ' ' . ($obs['observacion_es'] ?? ''), 0, 'L', 1);
+                    
+                    $pdf->Ln(3);
                 }
             }
             

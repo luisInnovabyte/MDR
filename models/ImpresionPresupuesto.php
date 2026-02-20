@@ -60,11 +60,13 @@ class ImpresionPresupuesto
      * @param int $id_presupuesto ID del presupuesto
      * @return array|false Datos del presupuesto o false si hay error
      */
-    public function get_datos_cabecera($id_presupuesto)
+    public function get_datos_cabecera($id_presupuesto, $numero_version = null)
     {
         try {
             // Obtener datos del presupuesto con los datos del cliente
-            // Similar a vista_presupuesto_completa pero solo para un presupuesto específico
+            // Similar a vista_presupuesto_completa pero solo para un presupuesto específica
+            // Condición de versión: si se proporciona, usar esa; si no, la versión actual
+            $pv_version_condition = is_null($numero_version) ? "p.version_actual_presupuesto" : "?";
             $sql = "SELECT 
                         p.id_presupuesto,
                         p.id_empresa,
@@ -134,7 +136,7 @@ class ImpresionPresupuesto
                         ON p.id_contacto_cliente = cc.id_contacto_cliente
                     LEFT JOIN presupuesto_version pv
                         ON p.id_presupuesto = pv.id_presupuesto
-                        AND pv.numero_version_presupuesto = p.version_actual_presupuesto
+                        AND pv.numero_version_presupuesto = $pv_version_condition
                     LEFT JOIN forma_pago fp
                         ON p.id_forma_pago = fp.id_pago
                     LEFT JOIN metodo_pago mp
@@ -143,7 +145,12 @@ class ImpresionPresupuesto
                     LIMIT 1";
             
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            if (!is_null($numero_version)) {
+                $stmt->bindValue(1, $numero_version, PDO::PARAM_INT);
+                $stmt->bindValue(2, $id_presupuesto, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            }
             $stmt->execute();
             
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -391,9 +398,13 @@ class ImpresionPresupuesto
      * @param int $id_presupuesto ID del presupuesto
      * @return array|false Array de líneas o false si hay error
      */
-    public function get_lineas_impresion($id_presupuesto)
+    public function get_lineas_impresion($id_presupuesto, $numero_version = null)
     {
         try {
+            // Condición de versión: si se proporciona, usar esa; si no, subquery a la actual
+            $version_sql_condition = is_null($numero_version)
+                ? "(SELECT version_actual_presupuesto FROM presupuesto WHERE id_presupuesto = ?)"
+                : "?";
             $sql = "SELECT 
                         vlpc.id_linea_ppto,
                         vlpc.fecha_inicio_linea_ppto,
@@ -423,11 +434,7 @@ class ImpresionPresupuesto
                         vlpc.observaciones_linea_ppto
                     FROM v_linea_presupuesto_calculada vlpc
                     WHERE vlpc.id_presupuesto = ?
-                    AND vlpc.numero_version_presupuesto = (
-                        SELECT version_actual_presupuesto 
-                        FROM presupuesto 
-                        WHERE id_presupuesto = ?
-                    )
+                    AND vlpc.numero_version_presupuesto = $version_sql_condition
                     AND vlpc.activo_linea_ppto = 1
                     AND vlpc.mostrar_en_presupuesto = 1
                     ORDER BY 
@@ -436,9 +443,9 @@ class ImpresionPresupuesto
                         vlpc.nombre_articulo ASC";
             
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
-            $stmt->bindValue(2, $id_presupuesto, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute(is_null($numero_version)
+                ? [$id_presupuesto, $id_presupuesto]
+                : [$id_presupuesto, $numero_version]);
             
             $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
@@ -480,11 +487,11 @@ class ImpresionPresupuesto
      *   - totales_generales: subtotal, total_iva, total
      *   - desglose_iva: Array con base_imponible e importe_iva por % IVA
      */
-    public function get_lineas_agrupadas($id_presupuesto)
+    public function get_lineas_agrupadas($id_presupuesto, $numero_version = null)
     {
         try {
             // 1. Obtener líneas del presupuesto
-            $lineas = $this->get_lineas_impresion($id_presupuesto);
+            $lineas = $this->get_lineas_impresion($id_presupuesto, $numero_version);
             
             if ($lineas === false) {
                 throw new Exception("Error al obtener las líneas del presupuesto");
@@ -602,11 +609,13 @@ class ImpresionPresupuesto
      * @param string $idioma Idioma de las observaciones ('es' o 'en')
      * @return array Array de observaciones ordenadas (familias primero, luego artículos)
      */
-    public function get_observaciones_presupuesto($id_presupuesto, $idioma = 'es')
+    public function get_observaciones_presupuesto($id_presupuesto, $idioma = 'es', $numero_version = null)
     {
         try {
             // NO usar v_observaciones_presupuesto porque depende de vista_presupuesto_completa
             // que puede filtrar presupuestos. Usar consulta directa que sabemos que funciona.
+            // Condición de versión
+            $pv_version_condition = is_null($numero_version) ? "p.version_actual_presupuesto" : "?";
             $sql = "
             -- Observaciones de FAMILIAS
             SELECT 
@@ -617,7 +626,7 @@ class ImpresionPresupuesto
                 f.orden_obs_familia AS orden_observacion
             FROM presupuesto p
             JOIN presupuesto_version pv ON p.id_presupuesto = pv.id_presupuesto 
-                AND pv.numero_version_presupuesto = p.version_actual_presupuesto
+                AND pv.numero_version_presupuesto = $pv_version_condition
             JOIN linea_presupuesto lp ON pv.id_version_presupuesto = lp.id_version_presupuesto
                 AND lp.activo_linea_ppto = 1
             JOIN articulo a ON lp.id_articulo = a.id_articulo
@@ -642,7 +651,7 @@ class ImpresionPresupuesto
                 a.orden_obs_articulo AS orden_observacion
             FROM presupuesto p
             JOIN presupuesto_version pv ON p.id_presupuesto = pv.id_presupuesto 
-                AND pv.numero_version_presupuesto = p.version_actual_presupuesto
+                AND pv.numero_version_presupuesto = $pv_version_condition
             JOIN linea_presupuesto lp ON pv.id_version_presupuesto = lp.id_version_presupuesto
                 AND lp.activo_linea_ppto = 1
             JOIN articulo a ON lp.id_articulo = a.id_articulo
@@ -658,9 +667,13 @@ class ImpresionPresupuesto
             ORDER BY orden_observacion, tipo_observacion";
             
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
-            $stmt->bindValue(2, $id_presupuesto, PDO::PARAM_INT);
-            $stmt->execute();
+            if (!is_null($numero_version)) {
+                // Con versión explícita: 4 parámetros (? en cada JOIN × 2 queries UNION)
+                $stmt->execute([$numero_version, $id_presupuesto, $numero_version, $id_presupuesto]);
+            } else {
+                // Versión actual: solo los 2 WHERE
+                $stmt->execute([$id_presupuesto, $id_presupuesto]);
+            }
             
             $observaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
@@ -904,6 +917,38 @@ class ImpresionPresupuesto
                 'error'
             );
             return [];
+        }
+    }
+
+    /**
+     * Obtener el número de la versión aprobada de un presupuesto
+     *
+     * @param int $id_presupuesto
+     * @return int|null Número de versión aprobada o null si no existe
+     */
+    public function get_numero_version_aprobada($id_presupuesto)
+    {
+        try {
+            $sql = "SELECT numero_version_presupuesto 
+                    FROM presupuesto_version 
+                    WHERE id_presupuesto = ? 
+                      AND estado_version_presupuesto = 'aprobado' 
+                    ORDER BY numero_version_presupuesto DESC 
+                    LIMIT 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row ? (int)$row['numero_version_presupuesto'] : null;
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_numero_version_aprobada',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+            return null;
         }
     }
 }

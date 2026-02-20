@@ -41,6 +41,7 @@ switch ($_GET["op"]) {
                 "orden_estado_ppto" => $row["orden_estado_ppto"],
                 "observaciones_estado_ppto" => $row["observaciones_estado_ppto"],
                 "activo_estado_ppto" => $row["activo_estado_ppto"],
+                "es_sistema_estado_ppto" => $row["es_sistema_estado_ppto"] ?? 0,
                 "created_at_estado_ppto" => $row["created_at_estado_ppto"],
                 "updated_at_estado_ppto" => $row["updated_at_estado_ppto"]
             );
@@ -69,6 +70,7 @@ switch ($_GET["op"]) {
                 "orden_estado_ppto" => $row["orden_estado_ppto"],
                 "observaciones_estado_ppto" => $row["observaciones_estado_ppto"],
                 "activo_estado_ppto" => $row["activo_estado_ppto"],
+                "es_sistema_estado_ppto" => $row["es_sistema_estado_ppto"] ?? 0,
                 "created_at_estado_ppto" => $row["created_at_estado_ppto"],
                 "updated_at_estado_ppto" => $row["updated_at_estado_ppto"]
             );
@@ -149,7 +151,12 @@ switch ($_GET["op"]) {
                         $observaciones_estado_ppto
                     );
         
-                    if ($resultado !== false) {
+                    if ($resultado === 'sistema') {
+                        echo json_encode([
+                            "success" => false,
+                            "message" => "Este estado es gestionado automáticamente por el sistema y no puede ser editado."
+                        ], JSON_UNESCAPED_UNICODE);
+                    } elseif ($resultado !== false) {
                         $registro->registrarActividad(
                             'admin',
                             'estado_presupuesto.php',
@@ -161,12 +168,12 @@ switch ($_GET["op"]) {
                         echo json_encode([
                             "success" => true,
                             "message" => "Estado de presupuesto actualizado correctamente"
-                        ]);
+                        ], JSON_UNESCAPED_UNICODE);
                     } else {
                         echo json_encode([
                             "success" => false,
                             "message" => "Error al actualizar el estado de presupuesto"
-                        ]);
+                        ], JSON_UNESCAPED_UNICODE);
                     }
                 }
             } catch (Exception $e) {
@@ -197,11 +204,45 @@ switch ($_GET["op"]) {
             
 
     case "eliminar":
-        $estado_presupuesto->delete_estado_presupuestoxid($_POST["id_estado_ppto"]);
+        header('Content-Type: application/json');
+        $resultado = $estado_presupuesto->delete_estado_presupuestoxid($_POST["id_estado_ppto"]);
+        if ($resultado === 'sistema') {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Este estado es gestionado automáticamente por el sistema y no puede ser desactivado.'
+            ], JSON_UNESCAPED_UNICODE);
+        } elseif ($resultado) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Estado desactivado correctamente.'
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al desactivar el estado de presupuesto.'
+            ], JSON_UNESCAPED_UNICODE);
+        }
         break;
 
     case "activar":
-        $estado_presupuesto->activar_estado_presupuestoxid($_POST["id_estado_ppto"]);
+        header('Content-Type: application/json');
+        $resultado = $estado_presupuesto->activar_estado_presupuestoxid($_POST["id_estado_ppto"]);
+        if ($resultado === 'sistema') {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Este estado es gestionado automáticamente por el sistema y no puede ser activado manualmente.'
+            ], JSON_UNESCAPED_UNICODE);
+        } elseif ($resultado) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Estado activado correctamente.'
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al activar el estado de presupuesto.'
+            ], JSON_UNESCAPED_UNICODE);
+        }
         break;
 
     case "verificarEstadoPresupuesto":

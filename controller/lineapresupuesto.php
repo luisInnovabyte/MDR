@@ -533,10 +533,45 @@ switch ($_GET["op"]) {
     // =========================================================
     case "guardaryeditar":
         try {
+            // -------------------------------------------------------
+            // VALIDACIÓN: solo se permite INSERT/UPDATE en versiones borrador
+            // -------------------------------------------------------
+            $id_version_check = $_POST['id_version_presupuesto'] ?? null;
+            if ($id_version_check) {
+                $sql_check = "SELECT estado_version_presupuesto
+                              FROM presupuesto_version
+                              WHERE id_version_presupuesto = ?
+                              AND activo_version = 1";
+                $conexion_check = (new Conexion())->getConexion();
+                $stmt_check = $conexion_check->prepare($sql_check);
+                $stmt_check->execute([$id_version_check]);
+                $ver_check = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+                if (!$ver_check) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Versión de presupuesto no encontrada'
+                    ], JSON_UNESCAPED_UNICODE);
+                    exit;
+                }
+
+                if ($ver_check['estado_version_presupuesto'] !== 'borrador') {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success'        => false,
+                        'message'        => 'No se pueden añadir ni modificar líneas en versiones cerradas. Cree una nueva versión desde la gestión de versiones del presupuesto.',
+                        'sugerencia'     => 'crear_nueva_version',
+                        'estado_version' => $ver_check['estado_version_presupuesto']
+                    ], JSON_UNESCAPED_UNICODE);
+                    exit;
+                }
+            }
+            // -------------------------------------------------------
+
             // Preparar datos
             $datos = [
                 'id_version_presupuesto' => $_POST['id_version_presupuesto'],
-                'id_articulo' => null,
                 'id_linea_padre' => null,
                 'id_ubicacion' => null,
                 'id_coeficiente' => null,

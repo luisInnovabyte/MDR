@@ -202,13 +202,19 @@ $(document).ready(function () {
                     }
                 }
             },
-            // Columna 14: BOTON PARA EDITAR PRESUPUESTO
+            // Columna 14: BOTON PARA EDITAR PRESUPUESTO + HISTORIAL DE VERSIONES
             {
-                targets: "editar:name", width: '5%', searchable: false, orderable: false, class: "text-center",
+                targets: "editar:name", width: '8%', searchable: false, orderable: false, class: "text-center",
                 render: function (data, type, row) {
-                    return `<button type="button" class="btn btn-info btn-sm editarPresupuesto" data-toggle="tooltip-primary" data-placement="top" title="Editar"  
+                    return `<button type="button" class="btn btn-info btn-sm editarPresupuesto me-1" data-toggle="tooltip-primary" data-placement="top" title="Editar"  
                              data-id_presupuesto="${row.id_presupuesto}"> 
                              <i class="fa-solid fa-edit"></i>
+                             </button><button type="button" class="btn btn-secondary btn-sm verVersiones" title="Historial de versiones (v${row.numero_version_actual || 1})"  
+                             data-id_presupuesto="${row.id_presupuesto}"
+                             data-numero_presupuesto="${row.numero_presupuesto}"
+                             data-nombre_cliente="${row.nombre_cliente || ''}"
+                             data-nombre_evento="${row.nombre_evento_presupuesto || ''}"> 
+                             <i class="fas fa-history"></i>
                              </button>`;
                 }
             },
@@ -236,7 +242,10 @@ $(document).ready(function () {
                     return `<button type="button" class="btn btn-success btn-sm imprimirPresupuesto" 
                              data-toggle="tooltip-primary" data-placement="top" title="Imprimir presupuesto"  
                              data-id_presupuesto="${row.id_presupuesto}"
-                             data-id_empresa="${row.id_empresa}"> 
+                             data-id_empresa="${row.id_empresa}"
+                             data-codigo_estado="${row.codigo_estado_ppto}"
+                             data-numero_presupuesto="${row.numero_presupuesto}"
+                             data-nombre_cliente="${row.nombre_cliente}"> 
                              <i class="fas fa-print"></i>
                              </button>`;
                 }
@@ -612,21 +621,48 @@ $(document).ready(function () {
     
     // Abrir modal de impresión
     $(document).on('click', '.imprimirPresupuesto', function () {
-        var id_presupuesto = $(this).data('id_presupuesto');
-        var id_empresa = $(this).data('id_empresa');
-        
-        console.log('Abriendo modal de impresión para presupuesto:', id_presupuesto, 'Empresa:', id_empresa);
-        
-        // Guardar el ID del presupuesto y empresa en campos ocultos del formulario
+        var id_presupuesto    = $(this).data('id_presupuesto');
+        var id_empresa        = $(this).data('id_empresa');
+        var codigo_estado     = $(this).data('codigo_estado');
+        var numero_presupuesto = $(this).data('numero_presupuesto');
+        var nombre_cliente    = $(this).data('nombre_cliente');
+
+        console.log('Abriendo modal de impresión — presupuesto:', id_presupuesto, '| empresa:', id_empresa, '| estado:', codigo_estado);
+
+        // Guardar datos en campos ocultos del formulario
         $('#impresion_id_presupuesto').val(id_presupuesto);
         $('#impresion_id_empresa').val(id_empresa);
-        
+        $('#impresion_codigo_estado').val(codigo_estado);
+
+        // Actualizar banda informativa del modal
+        $('#impresion_info_presupuesto').text(numero_presupuesto + '  —  ' + nombre_cliente);
+
         // Resetear opciones del modal a valores por defecto
         $('#tipo_cliente').prop('checked', true);
         $('#idioma_espanol').prop('checked', true);
         
+        // Ocultar selector de versión y mostrar el modal de inmediato
+        $('#divSelectorVersion').hide();
+        $('#alertaVersionActual').show();
+        $('#impresion_numero_version').empty();
+        
         // Mostrar el modal
         $('#modalImpresionPresupuesto').modal('show');
+        
+        // Cargar versiones disponibles (sólo si hay más de una se mostrará el selector)
+        $.post('../../controller/presupuesto.php?op=get_versiones_impresion', { id_presupuesto: id_presupuesto })
+            .done(function(response) {
+                if (response.success && response.versiones && response.versiones.length > 1) {
+                    var select = $('#impresion_numero_version');
+                    $.each(response.versiones, function(i, v) {
+                        var etiqueta = 'Versión ' + v.numero_version + ' — ' + v.estado;
+                        if (v.es_actual) { etiqueta += ' (actual)'; }
+                        select.append($('<option>', { value: v.numero_version, text: etiqueta, selected: v.es_actual }));
+                    });
+                    $('#divSelectorVersion').show();
+                    $('#alertaVersionActual').hide();
+                }
+            });
     });
     
     // Procesar impresión cuando se hace clic en el botón "Imprimir" del modal
@@ -635,14 +671,12 @@ $(document).ready(function () {
         var id_empresa = $('#impresion_id_empresa').val();
         var tipo = $('input[name="tipo_presupuesto"]:checked').val();
         var idioma = $('input[name="idioma"]:checked').val();
-        var formato = $('input[name="formato"]:checked').val();
-        
+
         console.log('Procesando impresión:', {
             id_presupuesto: id_presupuesto,
             id_empresa: id_empresa,
             tipo: tipo,
-            idioma: idioma,
-            formato: formato
+            idioma: idioma
         });
         
         // Validar que se haya seleccionado un presupuesto
@@ -681,6 +715,15 @@ $(document).ready(function () {
                 'value': id_presupuesto
             }));
             
+            // Añadir versión seleccionada si el selector está visible
+            if ($('#divSelectorVersion').is(':visible')) {
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': 'numero_version',
+                    'value': $('#impresion_numero_version').val()
+                }));
+            }
+            
             // Añadir el formulario al body, enviarlo y eliminarlo
             $('body').append(form);
             form.submit();
@@ -699,48 +742,31 @@ $(document).ready(function () {
             });
         }
         
-        // Determinar el controlador según el formato seleccionado
-        var modeloController;
-        
-        if (formato === 'pdf') {
-            // Usar controlador PDF
-            modeloController = 'impresionpresupuesto_m2_pdf_es.php';
-            console.log('Usando controlador PDF:', modeloController);
-            generarImpresion(modeloController);
-        } else {
-            // Usar HTML dinámico desde BD
-            $.ajax({
-                url: '../../controller/presupuesto.php?op=obtener_modelo_impresion',
-                type: 'POST',
-                data: {
-                    id_empresa: id_empresa
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        modeloController = response.modelo;
-                        console.log('Usando modelo HTML:', modeloController);
-                        generarImpresion(modeloController);
-                    } else {
-                        Swal.fire('Error', response.message || 'No se pudo obtener el modelo de impresión', 'error');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error al obtener modelo:', error);
-                    Swal.fire('Error', 'Error al obtener el modelo de impresión', 'error');
-                }
-            });
-        }
+        // Siempre generar en PDF
+        generarImpresion('impresionpresupuesto_m2_pdf_es.php');
     });
 
     // Event handler para el botón "Albarán de Carga"
     $(document).on('click', '#btnAlbaranCarga', function() {
         console.log('Generando Albarán de Carga');
-        
-        // Obtener ID del presupuesto (usa los mismos campos que la impresión normal)
+
+        // Obtener datos del presupuesto (mismos campos que impresión normal)
         var id_presupuesto = $('#impresion_id_presupuesto').val();
-        
-        console.log('ID presupuesto:', id_presupuesto);
+        var codigo_estado  = $('#impresion_codigo_estado').val();
+
+        console.log('ID presupuesto:', id_presupuesto, '| estado:', codigo_estado);
+
+        // Validar que el presupuesto tenga una versión aprobada
+        if (codigo_estado !== 'APROB') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Versión no aprobada',
+                html: 'El <strong>albarán de carga</strong> solo puede generarse para presupuestos con una versión <strong>aprobada</strong>.<br><br>Aprueba una versión antes de generar este documento.',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#1a73e8'
+            });
+            return;
+        }
         
         if (!id_presupuesto) {
             Swal.fire('Error', 'No se ha seleccionado ningún presupuesto', 'error');
@@ -866,3 +892,438 @@ function formatoFechaEuropeo(fechaString) {
     var anio = fecha.getFullYear();
     return dia + "/" + mes + "/" + anio;
 }
+
+/* ================================================================
+   SISTEMA DE VERSIONES - Gestión de versiones de presupuesto
+   ================================================================ */
+
+// Variables globales del módulo de versiones
+let _tablaVersiones = null;
+let _idPresupuestoVersiones = null;
+let _versionesCache = [];
+
+// Colores de badge por estado de versión
+const VERSION_BADGES = {
+    borrador:  'bg-secondary',
+    enviado:   'bg-primary',
+    aprobado:  'bg-success',
+    rechazado: 'bg-danger',
+    cancelado: 'bg-dark'
+};
+
+const VERSION_LABELS = {
+    borrador:  'Borrador',
+    enviado:   'Enviado',
+    aprobado:  'Aprobado',
+    rechazado: 'Rechazado',
+    cancelado: 'Cancelado'
+};
+
+/**
+ * Abre el modal de historial de versiones de un presupuesto.
+ */
+function abrirHistorialVersiones(id_presupuesto, numero_presupuesto, nombre_cliente, nombre_evento) {
+    _idPresupuestoVersiones = id_presupuesto;
+
+    // Rellenar cabecera informativa
+    $('#hv_numeroPresupuesto').text(numero_presupuesto || '-');
+    $('#hv_nombreCliente').text(nombre_cliente || '-');
+    $('#hv_nombreEvento').text(nombre_evento || '-');
+
+    // Mostrar modal y cargar versiones
+    $('#modalHistorialVersiones').modal('show');
+    cargarVersiones(id_presupuesto);
+}
+
+/**
+ * Carga y renderiza las versiones en el modal.
+ */
+function cargarVersiones(id_presupuesto) {
+    $('#tblHistorialVersiones tbody').html(
+        '<tr><td colspan="7" class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>'
+    );
+
+    $.post('../../controller/presupuesto.php?op=listar_versiones',
+        { id_presupuesto: id_presupuesto },
+        function (resp) {
+            if (!resp || !resp.success) {
+                $('#tblHistorialVersiones tbody').html(
+                    '<tr><td colspan="7" class="text-danger text-center">' + (resp ? resp.message : 'Error de comunicación') + '</td></tr>'
+                );
+                return;
+            }
+
+            _versionesCache = resp.data || [];
+            renderizarTablaVersiones(_versionesCache);
+            _rellenarSelectoresComparacion(_versionesCache);
+        }, 'json'
+    ).fail(function () {
+        $('#tblHistorialVersiones tbody').html(
+            '<tr><td colspan="7" class="text-danger text-center">Error de comunicación con el servidor.</td></tr>'
+        );
+    });
+}
+
+/**
+ * Renderiza las filas del historial de versiones.
+ */
+function renderizarTablaVersiones(versiones) {
+    // Destruir DataTable anterior si existe
+    if (_tablaVersiones) {
+        _tablaVersiones.destroy();
+        _tablaVersiones = null;
+    }
+
+    var $tbody = $('#tblHistorialVersiones tbody');
+    $tbody.empty();
+
+    if (!versiones.length) {
+        $tbody.html('<tr><td colspan="7" class="text-center text-muted">Sin versiones registradas.</td></tr>');
+        return;
+    }
+
+    versiones.forEach(function (v) {
+        var badge = VERSION_BADGES[v.estado_version_presupuesto] || 'bg-secondary';
+        var label = VERSION_LABELS[v.estado_version_presupuesto] || v.estado_version_presupuesto;
+        var estado = v.estado_version_presupuesto;
+
+        // Botones según estado
+        var btns = `<button class="btn btn-xs btn-info btn-sm me-1" onclick="verVersion(${v.id_version_presupuesto})" title="Ver líneas">
+                        <i class="fas fa-list"></i>
+                    </button>`;
+        if (estado === 'borrador') {
+            btns += `<button class="btn btn-xs btn-primary btn-sm me-1" onclick="enviarVersion(${v.id_version_presupuesto})" title="Marcar como enviada">
+                         <i class="fas fa-paper-plane"></i>
+                     </button>`;
+        }
+        if (estado === 'enviado') {
+            btns += `<button class="btn btn-xs btn-success btn-sm me-1" onclick="aprobarVersion(${v.id_version_presupuesto})" title="Aprobar">
+                         <i class="fas fa-check"></i>
+                     </button>
+                     <button class="btn btn-xs btn-danger btn-sm me-1" onclick="rechazarVersion(${v.id_version_presupuesto})" title="Rechazar">
+                         <i class="fas fa-times"></i>
+                     </button>`;
+        }
+
+        var motivo = v.motivo_modificacion_version
+            ? `<span title="${v.motivo_modificacion_version}" style="cursor:help">${v.motivo_modificacion_version.substring(0, 40)}${v.motivo_modificacion_version.length > 40 ? '…' : ''}</span>`
+            : '<span class="text-muted">-</span>';
+
+        var fCreacion = v.fecha_creacion_version ? formatoFechaEuropeo(v.fecha_creacion_version) : '-';
+        var fEnvio   = v.fecha_envio_version      ? formatoFechaEuropeo(v.fecha_envio_version)     : '-';
+
+        $tbody.append(`
+            <tr>
+                <td class="text-center"><strong>v${v.numero_version_presupuesto}</strong></td>
+                <td class="text-center"><span class="badge ${badge}">${label}</span></td>
+                <td class="text-center">${fCreacion}</td>
+                <td class="text-center">${fEnvio}</td>
+                <td>${motivo}</td>
+                <td class="text-center">${v.total_lineas || 0}</td>
+                <td class="text-center text-nowrap">${btns}</td>
+            </tr>
+        `);
+    });
+
+    // Inicializar como DataTable ligero
+    _tablaVersiones = $('#tblHistorialVersiones').DataTable({
+        paging: false,
+        searching: false,
+        info: false,
+        ordering: false,
+        scrollX: true,
+        destroy: true
+    });
+}
+
+/**
+ * Rellena los selectores del comparador de versiones.
+ */
+function _rellenarSelectoresComparacion(versiones) {
+    var opts = '<option value="">-- Selecciona --</option>';
+    versiones.forEach(function (v) {
+        var label = VERSION_LABELS[v.estado_version_presupuesto] || v.estado_version_presupuesto;
+        opts += `<option value="${v.id_version_presupuesto}">v${v.numero_version_presupuesto} – ${label} (${formatoFechaEuropeo(v.fecha_creacion_version)})</option>`;
+    });
+    $('#cmp_selectVersionA, #cmp_selectVersionB').html(opts);
+}
+
+// ── Botón "Nueva versión" dentro del modal historial ──────────────
+$(document).on('click', '#btnNuevaVersion', function () {
+    if (!_idPresupuestoVersiones) return;
+    $('#nv_idPresupuesto').val(_idPresupuestoVersiones);
+    $('#nv_motivo').val('');
+    $('#modalNuevaVersion').modal('show');
+});
+
+// ── Botón "Crear versión" dentro del modal nueva versión ──────────
+$(document).on('click', '#btnConfirmarNuevaVersion', function () {
+    var id_presupuesto = $('#nv_idPresupuesto').val();
+    var motivo = $.trim($('#nv_motivo').val());
+
+    if (!motivo) {
+        Swal.fire('Campo requerido', 'Por favor introduce el motivo de la nueva versión.', 'warning');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Creando versión…',
+        text: 'Por favor espera',
+        allowOutsideClick: false,
+        didOpen: function () { Swal.showLoading(); }
+    });
+
+    $.post('../../controller/presupuesto.php?op=crear_version', {
+        id_presupuesto: id_presupuesto,
+        motivo: motivo,
+        id_usuario: 1
+    }, function (resp) {
+        Swal.close();
+        if (resp && resp.success) {
+            $('#modalNuevaVersion').modal('hide');
+            Swal.fire({
+                icon: 'success',
+                title: 'Versión creada',
+                html: `Se creó la <strong>v${resp.numero_version}</strong> con ${resp.lineas_duplicadas} líneas copiadas.`,
+                timer: 2500,
+                showConfirmButton: false
+            });
+            // Recargar tabla de versiones y presupuestos
+            cargarVersiones(id_presupuesto);
+            $('#presupuestos_data').DataTable().ajax.reload(null, false);
+        } else {
+            Swal.fire('Error', (resp && resp.message) ? resp.message : 'No se pudo crear la versión.', 'error');
+        }
+    }, 'json').fail(function () {
+        Swal.close();
+        Swal.fire('Error', 'Error de comunicación con el servidor.', 'error');
+    });
+});
+
+// ── Botón "Abrir comparador" dentro del modal historial ──────────
+$(document).on('click', '#btnAbrirComparador', function () {
+    $('#cmp_resultado').hide();
+    $('#modalCompararVersiones').modal('show');
+});
+
+// ── Botón "Comparar" en el modal comparador ──────────────────────
+$(document).on('click', '#btnEjecutarComparacion', function () {
+    var idA = $('#cmp_selectVersionA').val();
+    var idB = $('#cmp_selectVersionB').val();
+
+    if (!idA || !idB) {
+        Swal.fire('Selección incompleta', 'Selecciona ambas versiones para comparar.', 'warning');
+        return;
+    }
+    if (idA === idB) {
+        Swal.fire('Misma versión', 'Selecciona versiones distintas.', 'warning');
+        return;
+    }
+
+    $.post('../../controller/presupuesto.php?op=comparar_versiones', {
+        id_version_a: idA,
+        id_version_b: idB
+    }, function (resp) {
+        if (!resp || !resp.success) {
+            Swal.fire('Error', (resp && resp.message) ? resp.message : 'Error al comparar.', 'error');
+            return;
+        }
+
+        var r = resp.data;
+
+        // Resumen
+        $('#cmp_resumen').html(
+            `Comparación: <strong>${r.resumen.total_anadidas} añadidas</strong>, ` +
+            `<strong>${r.resumen.total_eliminadas} eliminadas</strong>, ` +
+            `<strong>${r.resumen.total_modificadas} modificadas</strong>.`
+        );
+
+        // Añadidas
+        var $ta = $('#cmp_tbodyAnadidas').empty();
+        if (r.anadidas && r.anadidas.length) {
+            r.anadidas.forEach(function (l) {
+                $ta.append(`<tr><td>${l.codigo_articulo || '-'}</td><td>${l.descripcion_linea_ppto || '-'}</td><td>${l.cantidad_linea_ppto}</td><td>${parseFloat(l.precio_unitario_linea_ppto || 0).toFixed(2)}</td><td>${parseFloat(l.total_linea_ppto || 0).toFixed(2)}</td></tr>`);
+            });
+            $('#cmp_seccionAnadidas').show();
+        } else {
+            $('#cmp_seccionAnadidas').hide();
+        }
+
+        // Eliminadas
+        var $te = $('#cmp_tbodyEliminadas').empty();
+        if (r.eliminadas && r.eliminadas.length) {
+            r.eliminadas.forEach(function (l) {
+                $te.append(`<tr><td>${l.codigo_articulo || '-'}</td><td>${l.descripcion_linea_ppto || '-'}</td><td>${l.cantidad_linea_ppto}</td><td>${parseFloat(l.precio_unitario_linea_ppto || 0).toFixed(2)}</td><td>${parseFloat(l.total_linea_ppto || 0).toFixed(2)}</td></tr>`);
+            });
+            $('#cmp_seccionEliminadas').show();
+        } else {
+            $('#cmp_seccionEliminadas').hide();
+        }
+
+        // Modificadas
+        var $tm = $('#cmp_tbodyModificadas').empty();
+        if (r.modificadas && r.modificadas.length) {
+            r.modificadas.forEach(function (l) {
+                $tm.append(`<tr>
+                    <td>${l.descripcion_linea_ppto || '-'}</td>
+                    <td>${l.cantidad_antigua}</td><td>${l.cantidad_linea_ppto}</td>
+                    <td>${parseFloat(l.precio_antiguo || 0).toFixed(2)}</td><td>${parseFloat(l.precio_unitario_linea_ppto || 0).toFixed(2)}</td>
+                    <td>${parseFloat(l.total_antiguo || 0).toFixed(2)}</td><td>${parseFloat(l.total_linea_ppto || 0).toFixed(2)}</td>
+                </tr>`);
+            });
+            $('#cmp_seccionModificadas').show();
+        } else {
+            $('#cmp_seccionModificadas').hide();
+        }
+
+        $('#cmp_resultado').show();
+    }, 'json').fail(function () {
+        Swal.fire('Error', 'Error de comunicación con el servidor.', 'error');
+    });
+});
+
+// ── Delegación del botón ".verVersiones" en el DataTable ─────────
+$(document).on('click', '.verVersiones', function () {
+    var id  = $(this).data('id_presupuesto');
+    var num = $(this).data('numero_presupuesto');
+    var cli = $(this).data('nombre_cliente');
+    var evt = $(this).data('nombre_evento');
+    abrirHistorialVersiones(id, num, cli, evt);
+});
+
+// ── Funciones de acción sobre versiones individuales ─────────────
+
+function verVersion(id_version) {
+    window.open('../lineasPresupuesto/index.php?id_version_presupuesto=' + id_version, '_blank');
+}
+
+function enviarVersion(id_version) {
+    Swal.fire({
+        title: '¿Marcar como enviada?',
+        text: 'Se registrará la fecha de envío al cliente.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, enviar',
+        cancelButtonText: 'Cancelar'
+    }).then(function (result) {
+        if (!result.isConfirmed) return;
+        $.post('../../controller/presupuesto.php?op=cambiar_estado_version', {
+            id_version: id_version,
+            nuevo_estado: 'enviado'
+        }, function (resp) {
+            if (resp && resp.success) {
+                Swal.fire({ icon: 'success', title: 'Versión enviada', timer: 1800, showConfirmButton: false });
+                cargarVersiones(_idPresupuestoVersiones);
+                $('#presupuestos_data').DataTable().ajax.reload(null, false);
+            } else {
+                Swal.fire('Error', (resp && resp.message) ? resp.message : 'No se pudo cambiar el estado.', 'error');
+            }
+        }, 'json').fail(function () {
+            Swal.fire('Error', 'Error de comunicación.', 'error');
+        });
+    });
+}
+
+function aprobarVersion(id_version) {
+    Swal.fire({
+        title: '¿Aprobar esta versión?',
+        text: 'La versión quedará marcada como aprobada. No podrá modificarse.',
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, aprobar',
+        confirmButtonColor: '#28a745',
+        cancelButtonText: 'Cancelar'
+    }).then(function (result) {
+        if (!result.isConfirmed) return;
+        $.post('../../controller/presupuesto.php?op=aprobar_version', {
+            id_version: id_version
+        }, function (resp) {
+            if (resp && resp.success) {
+                Swal.fire({ icon: 'success', title: 'Versión aprobada', timer: 1800, showConfirmButton: false });
+                cargarVersiones(_idPresupuestoVersiones);
+                $('#presupuestos_data').DataTable().ajax.reload(null, false);
+            } else {
+                Swal.fire('Error', (resp && resp.message) ? resp.message : 'No se pudo aprobar.', 'error');
+            }
+        }, 'json').fail(function () {
+            Swal.fire('Error', 'Error de comunicación.', 'error');
+        });
+    });
+}
+
+function rechazarVersion(id_version) {
+    Swal.fire({
+        title: 'Rechazar versión',
+        input: 'textarea',
+        inputLabel: 'Motivo del rechazo',
+        inputPlaceholder: 'Indica por qué se rechaza esta versión…',
+        inputAttributes: { 'aria-label': 'Motivo del rechazo' },
+        showCancelButton: true,
+        confirmButtonText: 'Rechazar',
+        confirmButtonColor: '#dc3545',
+        cancelButtonText: 'Cancelar',
+        didOpen: function () {
+            // Bootstrap 5 registra su focus trap con addEventListener nativo,
+            // no con jQuery, por lo tanto $.off('focusin.bs.modal') NO lo elimina.
+            // Solución: listener en fase de captura (se ejecuta ANTES que Bootstrap)
+            // que bloquea la propagación cuando el foco está dentro del Swal.
+            var swalContainer = document.querySelector('.swal2-container');
+            window._swalFocusTrapBlocker = function (e) {
+                if (swalContainer && swalContainer.contains(e.target)) {
+                    e.stopImmediatePropagation();
+                }
+            };
+            document.addEventListener('focusin', window._swalFocusTrapBlocker, true);
+
+            var textarea = document.querySelector('.swal2-textarea');
+            if (textarea) {
+                textarea.removeAttribute('readonly');
+                setTimeout(function () { textarea.focus(); }, 80);
+            }
+        },
+        didClose: function () {
+            // Limpiar el bloqueador al cerrar el Swal
+            if (window._swalFocusTrapBlocker) {
+                document.removeEventListener('focusin', window._swalFocusTrapBlocker, true);
+                delete window._swalFocusTrapBlocker;
+            }
+        },
+        inputValidator: function (value) {
+            if (!$.trim(value)) return 'El motivo es obligatorio.';
+        }
+    }).then(function (result) {
+        if (!result.isConfirmed) return;
+        $.post('../../controller/presupuesto.php?op=rechazar_version', {
+            id_version: id_version,
+            motivo_rechazo: result.value
+        }, function (resp) {
+            if (resp && resp.success) {
+                $('#presupuestos_data').DataTable().ajax.reload(null, false);
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Versión rechazada',
+                    text: '¿Deseas crear una nueva versión basada en ésta?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, nueva versión',
+                    cancelButtonText: 'No por ahora'
+                }).then(function (res2) {
+                    if (res2.isConfirmed) {
+                        $('#nv_idPresupuesto').val(_idPresupuestoVersiones);
+                        $('#nv_motivo').val('Revisión tras rechazo: ' + result.value);
+                        cargarVersiones(_idPresupuestoVersiones);
+                        $('#modalNuevaVersion').modal('show');
+                    } else {
+                        cargarVersiones(_idPresupuestoVersiones);
+                    }
+                });
+            } else {
+                Swal.fire('Error', (resp && resp.message) ? resp.message : 'No se pudo rechazar.', 'error');
+            }
+        }, 'json').fail(function () {
+            Swal.fire('Error', 'Error de comunicación.', 'error');
+        });
+    });
+}
+/* ================================================================
+   FIN SISTEMA DE VERSIONES
+   ================================================================ */

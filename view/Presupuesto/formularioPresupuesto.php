@@ -243,18 +243,22 @@
 
                             <div class="row mb-3">
                                 <div class="col-12 col-md-6">
-                                    <div class="p-3 bg-warning bg-opacity-10 border border-warning border-2 rounded">
-                                        <label for="id_estado_ppto" class="form-label fw-bold">
-                                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                                            Estado presupuesto: <span class="tx-danger">*</span>
-                                            <span class="badge bg-warning text-dark ms-2">IMPORTANTE</span>
+                                    <div class="p-3 bg-light border rounded">
+                                        <label class="form-label fw-bold">
+                                            <i class="fas fa-tag me-2 text-secondary"></i>
+                                            Estado presupuesto:
+                                            <small class="text-muted fw-normal ms-1">(gestionado automáticamente)</small>
                                         </label>
-                                        <select class="form-control border-warning" name="id_estado_ppto" id="id_estado_ppto" required>
-                                            <option value="">Seleccione un estado</option>
-                                        </select>
-                                        <div class="invalid-feedback small-invalid-feedback">Debe seleccionar un estado</div>
-                                        <small class="form-text text-muted">
-                                            <strong>Estado actual del presupuesto - Define el ciclo de vida</strong>
+                                        <div class="mt-1">
+                                            <span id="badge_estado_ppto"
+                                                  class="badge fs-6 p-2"
+                                                  style="background-color:#0000ff; color:#fff;">
+                                                BORRADOR
+                                            </span>
+                                        </div>
+                                        <input type="hidden" name="id_estado_ppto" id="id_estado_ppto" value="1">
+                                        <small class="form-text text-muted mt-1 d-block">
+                                            El estado se actualiza al cambiar el estado de una versión.
                                         </small>
                                     </div>
                                 </div>

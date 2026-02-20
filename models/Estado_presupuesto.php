@@ -131,9 +131,39 @@ class Estado_presupuesto
         }
     }
 
+    /**
+     * Comprueba si un estado está marcado como gestionado por el sistema.
+     * @return bool  true = sistema (protegido), false = usuario
+     */
+    private function _esSistema($id_estado_ppto)
+    {
+        try {
+            $sql = "SELECT es_sistema_estado_ppto FROM estado_presupuesto WHERE id_estado_ppto = ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_estado_ppto, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return ($row && $row['es_sistema_estado_ppto'] == 1);
+        } catch (PDOException $e) {
+            return false; // Si no existe la columna aún, no bloquear
+        }
+    }
+
     public function delete_estado_presupuestoxid($id_estado_ppto)
     {
         try {
+            // Protección: no se puede desactivar un estado del sistema
+            if ($this->_esSistema($id_estado_ppto)) {
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Estado_presupuesto',
+                    'delete_estado_presupuestoxid',
+                    "Intento de desactivar estado del sistema ID: $id_estado_ppto - BLOQUEADO",
+                    'warning'
+                );
+                return 'sistema';
+            }
+
             $sql = "UPDATE estado_presupuesto set activo_estado_ppto=0 where id_estado_ppto=?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $id_estado_ppto, PDO::PARAM_INT);
@@ -175,6 +205,18 @@ class Estado_presupuesto
     public function activar_estado_presupuestoxid($id_estado_ppto)
     {
         try {
+            // Protección: no se puede reactivar manualmente un estado del sistema
+            if ($this->_esSistema($id_estado_ppto)) {
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Estado_presupuesto',
+                    'activar_estado_presupuestoxid',
+                    "Intento de activar estado del sistema ID: $id_estado_ppto - BLOQUEADO",
+                    'warning'
+                );
+                return 'sistema';
+            }
+
             $sql = "UPDATE estado_presupuesto set activo_estado_ppto=1 where id_estado_ppto=?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $id_estado_ppto, PDO::PARAM_INT);
@@ -288,6 +330,18 @@ class Estado_presupuesto
 
     public function update_estado_presupuesto($id_estado_ppto, $codigo_estado_ppto, $nombre_estado_ppto, $color_estado_ppto, $orden_estado_ppto, $observaciones_estado_ppto){
         try {
+            // Protección: no se puede editar un estado del sistema
+            if ($this->_esSistema($id_estado_ppto)) {
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Estado_presupuesto',
+                    'update_estado_presupuesto',
+                    "Intento de editar estado del sistema ID: $id_estado_ppto - BLOQUEADO",
+                    'warning'
+                );
+                return 'sistema';
+            }
+
             // Establecer zona horaria Madrid antes de la consulta
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
             

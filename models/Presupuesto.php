@@ -631,6 +631,48 @@ class Presupuesto
     }
 
     /**
+     * Obtener todas las versiones de un presupuesto para selector de impresión
+     *
+     * @param int $id_presupuesto ID del presupuesto
+     * @return array Array de versiones ordenadas ASC
+     */
+    public function get_versiones_presupuesto($id_presupuesto)
+    {
+        try {
+            $sql = "SELECT
+                        pv.id_version_presupuesto,
+                        pv.numero_version_presupuesto,
+                        pv.estado_version_presupuesto,
+                        pv.fecha_creacion_version,
+                        p.version_actual_presupuesto,
+                        (pv.numero_version_presupuesto = p.version_actual_presupuesto) AS es_actual
+                    FROM presupuesto_version pv
+                    INNER JOIN presupuesto p ON pv.id_presupuesto = p.id_presupuesto
+                    WHERE pv.id_presupuesto = ?
+                    AND pv.activo_version = 1
+                    ORDER BY pv.numero_version_presupuesto ASC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if (isset($this->registro)) {
+                $this->registro->registrarActividad(
+                    'admin',
+                    'Presupuesto',
+                    'get_versiones_presupuesto',
+                    "Error: " . $e->getMessage(),
+                    'error'
+                );
+            }
+            return [];
+        }
+    }
+
+    /**
      * Obtener estadísticas completas de presupuestos
      * Incluye: totales por estado, alertas de caducidad, estadísticas mensuales
      */
@@ -864,6 +906,214 @@ class Presupuesto
      * @param int $year Año (YYYY)
      * @return array Lista de presupuestos con eventos en ese mes
      */
+    // ============================================
+    // MÉTODOS DE GESTIÓN DE VERSIONES
+    // ============================================
+
+    /**
+     * Crear nueva versión duplicando líneas de la versión actual
+     * Usa transacción para garantizar consistencia.
+     * @param int $id_presupuesto
+     * @param string|null $motivo
+     * @param int $id_usuario
+     * @return array ['success' => bool, 'id_version' => int, 'numero_version' => int, 'lineas_duplicadas' => int]
+     */
+    public function crear_nueva_version($id_presupuesto, $motivo = null, $id_usuario = 1)
+    {
+        try {
+            $this->conexion->beginTransaction();
+
+            // Obtener versión actual
+            $sql_actual = "SELECT pv.id_version_presupuesto,
+                                  pv.numero_version_presupuesto,
+                                  pv.estado_version_presupuesto
+                           FROM presupuesto_version pv
+                           INNER JOIN presupuesto p ON pv.id_presupuesto = p.id_presupuesto
+                           WHERE pv.id_presupuesto = ?
+                           AND pv.numero_version_presupuesto = p.version_actual_presupuesto
+                           AND pv.activo_version = 1";
+
+            $stmt = $this->conexion->prepare($sql_actual);
+            $stmt->execute([$id_presupuesto]);
+            $version_actual = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$version_actual) {
+                throw new Exception("No se encontró la versión actual del presupuesto");
+            }
+
+            $estado = $version_actual['estado_version_presupuesto'];
+            if ($estado === 'aprobado') {
+                throw new Exception("No se puede crear una nueva versión de un presupuesto aprobado");
+            }
+            if ($estado === 'cancelado') {
+                throw new Exception("No se puede crear una nueva versión de un presupuesto cancelado");
+            }
+
+            // Crear nueva versión vacía (los triggers calculan numero_version y validan)
+            require_once 'PresupuestoVersion.php';
+            $modeloVersion = new PresupuestoVersion();
+
+            $id_version_nueva = $modeloVersion->crear_version(
+                $id_presupuesto,
+                $motivo ?? 'Nueva versión solicitada',
+                $id_usuario
+            );
+
+            if (!$id_version_nueva) {
+                throw new Exception("Error al insertar la nueva versión en la base de datos");
+            }
+
+            // Duplicar líneas de la versión actual a la nueva
+            $lineas_duplicadas = $modeloVersion->duplicar_lineas(
+                $version_actual['id_version_presupuesto'],
+                $id_version_nueva
+            );
+
+            // Obtener número de la nueva versión
+            $sql_num = "SELECT numero_version_presupuesto FROM presupuesto_version WHERE id_version_presupuesto = ?";
+            $stmt_num = $this->conexion->prepare($sql_num);
+            $stmt_num->execute([$id_version_nueva]);
+            $row_num = $stmt_num->fetch(PDO::FETCH_ASSOC);
+            $numero_nueva_version = $row_num ? (int)$row_num['numero_version_presupuesto'] : ($version_actual['numero_version_presupuesto'] + 1);
+
+            // Actualizar versión actual en la cabecera del presupuesto
+            $sql_update = "UPDATE presupuesto SET 
+                               version_actual_presupuesto = ?
+                           WHERE id_presupuesto = ?";
+            $stmt_update = $this->conexion->prepare($sql_update);
+            $stmt_update->execute([$numero_nueva_version, $id_presupuesto]);
+
+            $this->conexion->commit();
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Presupuesto',
+                'crear_nueva_version',
+                "Presupuesto $id_presupuesto: versión $numero_nueva_version creada (ID=$id_version_nueva) con $lineas_duplicadas líneas",
+                'info'
+            );
+
+            return [
+                'success'          => true,
+                'id_version'       => (int)$id_version_nueva,
+                'numero_version'   => $numero_nueva_version,
+                'lineas_duplicadas' => $lineas_duplicadas
+            ];
+
+        } catch (Exception $e) {
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Presupuesto',
+                'crear_nueva_version',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+
+            return [
+                'success' => false,
+                'error'   => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Cambiar la versión activa de un presupuesto (solo borradores)
+     * @param int $id_presupuesto
+     * @param int $numero_version
+     * @return bool
+     */
+    public function activar_version($id_presupuesto, $numero_version)
+    {
+        try {
+            // Verificar que la versión existe y está en borrador
+            $sql_ver = "SELECT id_version_presupuesto, estado_version_presupuesto
+                        FROM presupuesto_version
+                        WHERE id_presupuesto = ?
+                        AND numero_version_presupuesto = ?
+                        AND activo_version = 1";
+
+            $stmt = $this->conexion->prepare($sql_ver);
+            $stmt->execute([$id_presupuesto, $numero_version]);
+            $version = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$version) {
+                throw new Exception("Versión no encontrada");
+            }
+
+            if ($version['estado_version_presupuesto'] !== 'borrador') {
+                throw new Exception("Solo se pueden activar versiones en estado borrador");
+            }
+
+            $sql_update = "UPDATE presupuesto SET version_actual_presupuesto = ? WHERE id_presupuesto = ?";
+            $stmt_update = $this->conexion->prepare($sql_update);
+            $stmt_update->execute([$numero_version, $id_presupuesto]);
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Presupuesto',
+                'activar_version',
+                "Presupuesto $id_presupuesto: versión $numero_version activada",
+                'info'
+            );
+
+            return true;
+
+        } catch (Exception $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Presupuesto',
+                'activar_version',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Obtener estadísticas de versiones de un presupuesto
+     * @param int $id_presupuesto
+     * @return array
+     */
+    public function get_estadisticas_versiones($id_presupuesto)
+    {
+        try {
+            $sql = "SELECT 
+                        COUNT(*) as total_versiones,
+                        MAX(numero_version_presupuesto) as ultima_version,
+                        SUM(CASE WHEN estado_version_presupuesto = 'borrador'  THEN 1 ELSE 0 END) as borradores,
+                        SUM(CASE WHEN estado_version_presupuesto = 'enviado'   THEN 1 ELSE 0 END) as enviadas,
+                        SUM(CASE WHEN estado_version_presupuesto = 'aprobado'  THEN 1 ELSE 0 END) as aprobadas,
+                        SUM(CASE WHEN estado_version_presupuesto = 'rechazado' THEN 1 ELSE 0 END) as rechazadas,
+                        MAX(updated_at_version) as ultima_modificacion
+                    FROM presupuesto_version
+                    WHERE id_presupuesto = ?
+                    AND activo_version = 1";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Presupuesto',
+                'get_estadisticas_versiones',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+            return [];
+        }
+    }
+
+    // ============================================
+
     public function get_presupuestos_por_mes($month, $year)
     {
         try {

@@ -1068,5 +1068,274 @@ break;
             ], JSON_UNESCAPED_UNICODE);
         }
         break;
+
+    // =========================================================
+    // CASE: get_versiones_impresion
+    // Devuelve las versiones de un presupuesto para el modal de impresión
+    // =========================================================
+    case "get_versiones_impresion":
+        try {
+            $id_presupuesto = !empty($_POST['id_presupuesto']) ? intval($_POST['id_presupuesto']) : null;
+
+            if (!$id_presupuesto) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'ID de presupuesto no proporcionado'], JSON_UNESCAPED_UNICODE);
+                break;
+            }
+
+            $versiones_raw = $presupuesto->get_versiones_presupuesto($id_presupuesto);
+            $versiones = [];
+            foreach ($versiones_raw as $v) {
+                $versiones[] = [
+                    'id_version'     => $v['id_version_presupuesto'],
+                    'numero_version' => (int)$v['numero_version_presupuesto'],
+                    'estado'         => $v['estado_version_presupuesto'],
+                    'fecha_creacion' => $v['fecha_creacion_version'],
+                    'es_actual'      => (bool)$v['es_actual']
+                ];
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'versiones' => $versiones], JSON_UNESCAPED_UNICODE);
+
+        } catch (Exception $e) {
+            $registro->registrarActividad('admin', 'presupuesto.php', 'get_versiones_impresion', "Error: " . $e->getMessage(), 'error');
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // =========================================================
+    // CASE: crear_version
+    // Crea una nueva versión del presupuesto duplicando líneas
+    // =========================================================
+    case "crear_version":
+        $id_presupuesto = $_POST["id_presupuesto"] ?? null;
+        $motivo = htmlspecialchars(trim($_POST["motivo"] ?? ''), ENT_QUOTES, 'UTF-8');
+        $id_usuario = $_SESSION['id_usuario'] ?? 1;
+
+        if (!$id_presupuesto) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de presupuesto no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $resultado = $presupuesto->crear_nueva_version($id_presupuesto, $motivo, $id_usuario);
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
+        break;
+
+    // =========================================================
+    // CASE: listar_versiones
+    // Devuelve todas las versiones de un presupuesto
+    // =========================================================
+    case "listar_versiones":
+        require_once "../models/PresupuestoVersion.php";
+        $modeloVersion = new PresupuestoVersion();
+
+        $id_presupuesto = $_POST["id_presupuesto"] ?? null;
+
+        if (!$id_presupuesto) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de presupuesto no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $versiones = $modeloVersion->get_versiones($id_presupuesto);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data'    => $versiones
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // =========================================================
+    // CASE: activar_version
+    // Cambia la versión activa del presupuesto (solo borradores)
+    // =========================================================
+    case "activar_version":
+        $id_presupuesto  = $_POST["id_presupuesto"] ?? null;
+        $numero_version  = $_POST["numero_version"]  ?? null;
+
+        if (!$id_presupuesto || !$numero_version) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Parámetros insuficientes'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $resultado = $presupuesto->activar_version($id_presupuesto, $numero_version);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => $resultado,
+            'message' => $resultado ? 'Versión activada correctamente' : 'Error al activar la versión'
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // =========================================================
+    // CASE: cambiar_estado_version
+    // Transición de estado de una versión (workflow)
+    // =========================================================
+    case "cambiar_estado_version":
+        require_once "../models/PresupuestoVersion.php";
+        $modeloVersion = new PresupuestoVersion();
+
+        $id_version  = $_POST["id_version"]   ?? null;
+        $nuevo_estado = $_POST["nuevo_estado"] ?? null;
+        $id_usuario  = $_SESSION['id_usuario'] ?? 1;
+
+        if (!$id_version || !$nuevo_estado) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Parámetros insuficientes'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $datos_extra = [];
+        if ($nuevo_estado === 'enviado') {
+            $datos_extra['enviado_por'] = $id_usuario;
+        }
+        if ($nuevo_estado === 'rechazado') {
+            $datos_extra['motivo_rechazo'] = htmlspecialchars(
+                trim($_POST["motivo_rechazo"] ?? ''),
+                ENT_QUOTES,
+                'UTF-8'
+            );
+        }
+
+        $resultado = $modeloVersion->cambiar_estado($id_version, $nuevo_estado, $datos_extra);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => $resultado,
+            'message' => $resultado ? "Estado cambiado a $nuevo_estado" : 'Error al cambiar el estado'
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // =========================================================
+    // CASE: aprobar_version  (shortcut enviar → aprobado)
+    // =========================================================
+    case "aprobar_version":
+        require_once "../models/PresupuestoVersion.php";
+        $modeloVersion = new PresupuestoVersion();
+
+        $id_version = $_POST["id_version"] ?? null;
+
+        if (!$id_version) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de versión no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $resultado = $modeloVersion->cambiar_estado($id_version, 'aprobado');
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => $resultado,
+            'message' => $resultado ? 'Versión aprobada correctamente' : 'Error al aprobar la versión'
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // =========================================================
+    // CASE: rechazar_version  (shortcut enviado → rechazado)
+    // =========================================================
+    case "rechazar_version":
+        require_once "../models/PresupuestoVersion.php";
+        $modeloVersion = new PresupuestoVersion();
+
+        $id_version     = $_POST["id_version"]     ?? null;
+        $motivo_rechazo = htmlspecialchars(trim($_POST["motivo_rechazo"] ?? ''), ENT_QUOTES, 'UTF-8');
+
+        if (!$id_version) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de versión no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $resultado = $modeloVersion->cambiar_estado(
+            $id_version,
+            'rechazado',
+            ['motivo_rechazo' => $motivo_rechazo]
+        );
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => $resultado,
+            'message' => $resultado ? 'Versión rechazada' : 'Error al rechazar la versión'
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // =========================================================
+    // CASE: comparar_versiones
+    // Devuelve las diferencias de líneas entre dos versiones
+    // =========================================================
+    case "comparar_versiones":
+        require_once "../models/PresupuestoVersion.php";
+        $modeloVersion = new PresupuestoVersion();
+
+        $id_version_a = $_POST["id_version_a"] ?? null;
+        $id_version_b = $_POST["id_version_b"] ?? null;
+
+        if (!$id_version_a || !$id_version_b) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Se requieren dos versiones para comparar'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $diferencias = $modeloVersion->comparar_versiones($id_version_a, $id_version_b);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data'    => $diferencias
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // =========================================================
+    // CASE: estadisticas_versiones
+    // Estadísticas de versiones de un presupuesto
+    // =========================================================
+    case "estadisticas_versiones":
+        $id_presupuesto = $_POST["id_presupuesto"] ?? null;
+
+        if (!$id_presupuesto) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID de presupuesto no proporcionado'
+            ], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $estadisticas = $presupuesto->get_estadisticas_versiones($id_presupuesto);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data'    => $estadisticas
+        ], JSON_UNESCAPED_UNICODE);
+        break;
 }
 ?>

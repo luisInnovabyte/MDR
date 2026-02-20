@@ -287,95 +287,108 @@
 <!-- MODAL DE IMPRESIÓN DE PRESUPUESTO -->
 <!-- ============================================ -->
 <div class="modal fade" id="modalImpresionPresupuesto" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
-                    <i class="fas fa-print me-2"></i>Imprimir Presupuesto
+    <div class="modal-dialog modal-dialog-centered" style="max-width:480px;" role="document">
+        <div class="modal-content shadow-lg border-0">
+            <!-- Cabecera -->
+            <div class="modal-header border-0 text-white" style="background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fas fa-file-pdf me-2"></i>Generar documento
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+
+            <div class="modal-body p-0">
                 <form id="formImpresionPresupuesto">
                     <input type="hidden" id="impresion_id_presupuesto" name="id_presupuesto">
                     <input type="hidden" id="impresion_id_empresa" name="id_empresa">
-                    
-                    <!-- Tipo de presupuesto -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-file-alt me-2"></i>Tipo de presupuesto:
-                        </label>
-                        <div class="form-check mb-2">
+                    <input type="hidden" id="impresion_codigo_estado" name="codigo_estado">
+
+                    <!-- Banda informativa: presupuesto seleccionado -->
+                    <div class="d-flex align-items-center gap-2 px-4 py-3 border-bottom bg-light">
+                        <span class="text-primary"><i class="fas fa-file-invoice fs-5"></i></span>
+                        <span id="impresion_info_presupuesto" class="small text-muted fw-semibold">—</span>
+                    </div>
+
+                    <div class="px-4 pt-3 pb-2">
+
+                        <!-- Destinatario -->
+                        <p class="text-uppercase text-muted fw-bold mb-2" style="font-size:.7rem; letter-spacing:.06em;">
+                            <i class="fas fa-user me-1"></i>Destinatario
+                        </p>
+                        <div class="form-check mb-1">
                             <input class="form-check-input" type="radio" name="tipo_presupuesto" id="tipo_cliente" value="cliente" checked>
                             <label class="form-check-label" for="tipo_cliente">
-                                <strong>Cliente Final</strong> - Presupuesto detallado para el cliente
+                                <strong>Cliente final</strong>
+                                <small class="d-block text-muted">Presupuesto detallado con precios y condiciones</small>
                             </label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check mb-3">
                             <input class="form-check-input" type="radio" name="tipo_presupuesto" id="tipo_intermediario" value="intermediario" disabled>
                             <label class="form-check-label text-muted" for="tipo_intermediario">
-                                <strong>Intermediario</strong> - Presupuesto para empresa intermediaria <small>(Próximamente)</small>
+                                <strong>Intermediario</strong>
+                                <span class="badge bg-secondary ms-1" style="font-size:.62rem;">Próximamente</span>
                             </label>
                         </div>
-                    </div>
-                    
-                    <!-- Idioma -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-language me-2"></i>Idioma:
-                        </label>
-                        <div class="form-check mb-2">
+
+                        <hr class="my-3">
+
+                        <!-- Idioma -->
+                        <p class="text-uppercase text-muted fw-bold mb-2" style="font-size:.7rem; letter-spacing:.06em;">
+                            <i class="fas fa-language me-1"></i>Idioma
+                        </p>
+                        <div class="form-check mb-1">
                             <input class="form-check-input" type="radio" name="idioma" id="idioma_espanol" value="espanol" checked>
                             <label class="form-check-label" for="idioma_espanol">
-                                <strong>Español</strong> 🇪🇸
+                                <strong>Español</strong> <span class="ms-1">🇪🇸</span>
                             </label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check mb-3">
                             <input class="form-check-input" type="radio" name="idioma" id="idioma_ingles" value="ingles" disabled>
                             <label class="form-check-label text-muted" for="idioma_ingles">
-                                <strong>Inglés</strong> 🇬🇧 <small>(Próximamente)</small>
+                                <strong>English</strong> <span class="ms-1">🇬🇧</span>
+                                <span class="badge bg-secondary ms-1" style="font-size:.62rem;">Próximamente</span>
                             </label>
                         </div>
-                    </div>
-                    
-                    <!-- Formato -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-file-pdf me-2"></i>Formato de salida:
-                        </label>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="formato" id="formato_pdf" value="pdf" checked>
-                            <label class="form-check-label" for="formato_pdf">
-                                <strong>PDF</strong> - Archivo PDF con cabecera en cada página
-                            </label>
+
+                        <!-- Selector de versión (aparece solo si hay más de una) -->
+                        <div class="mb-3" id="divSelectorVersion" style="display:none;">
+                            <hr class="my-3">
+                            <p class="text-uppercase text-muted fw-bold mb-2" style="font-size:.7rem; letter-spacing:.06em;">
+                                <i class="fas fa-code-branch me-1"></i>Versión a imprimir
+                            </p>
+                            <select class="form-select form-select-sm" id="impresion_numero_version" name="numero_version">
+                            </select>
+                            <div class="form-text text-muted mt-1">
+                                <i class="fas fa-info-circle me-1"></i>Selecciona la versión que quieres imprimir.
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="formato" id="formato_html" value="html">
-                            <label class="form-check-label" for="formato_html">
-                                <strong>HTML</strong> - Vista previa en navegador
-                            </label>
+
+                        <!-- Alerta versión actual -->
+                        <div class="alert alert-info py-2 mb-1 d-flex align-items-center gap-2" id="alertaVersionActual">
+                            <i class="fas fa-info-circle flex-shrink-0"></i>
+                            <span class="small">Se imprimirá la <strong>versión actual</strong> del presupuesto.</span>
                         </div>
-                    </div>
-                    
-                    <!-- Información adicional -->
-                    <div class="alert alert-info mb-0">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Se imprimirá la <strong>versión actual</strong> del presupuesto con formato europeo.
-                    </div>
+
+                    </div><!-- /px-4 -->
                 </form>
+            </div><!-- /modal-body -->
+
+            <div class="modal-footer border-top bg-light d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-warning btn-sm" id="btnAlbaranCarga"
+                            title="Solo disponible para presupuestos con versión aprobada">
+                        <i class="fas fa-truck me-1"></i>Albarán de carga
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btnImprimirPresupuesto">
+                        <i class="fas fa-file-pdf me-1"></i>Generar PDF
+                    </button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancelar
-                </button>
-                <button type="button" class="btn btn-success" id="btnAlbaranCarga">
-                    <i class="fas fa-truck me-2"></i>Albarán de Carga
-                </button>
-                <button type="button" class="btn btn-primary" id="btnImprimirPresupuesto">
-                    <i class="fas fa-print me-2"></i>Imprimir
-                </button>
-            </div>
-        </div>
+
+        </div><!-- /modal-content -->
     </div>
 </div>
 <!-- ============================================ -->
@@ -482,6 +495,163 @@
             window.cargarEstadisticasModal();
         });
 </script>
+
+<!-- ============================================================ -->
+<!-- MODAL: Historial de Versiones                                -->
+<!-- ============================================================ -->
+<div class="modal fade" id="modalHistorialVersiones" tabindex="-1" aria-labelledby="tituloHistorialVersiones" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="max-width:95%;">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="tituloHistorialVersiones">
+                    <i class="fas fa-history me-2"></i>Historial de Versiones
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info py-2 mb-3" id="infoPresupuestoVersiones">
+                    <strong>Presupuesto:</strong> <span id="hv_numeroPresupuesto"></span> &nbsp;|&nbsp;
+                    <strong>Cliente:</strong> <span id="hv_nombreCliente"></span> &nbsp;|&nbsp;
+                    <strong>Evento:</strong> <span id="hv_nombreEvento"></span>
+                </div>
+                <table id="tblHistorialVersiones" class="table table-striped table-bordered table-sm nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Ver.</th>
+                            <th>Estado</th>
+                            <th>Creación</th>
+                            <th>Envío</th>
+                            <th>Motivo</th>
+                            <th>Líneas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-info" id="btnAbrirComparador">
+                    <i class="fas fa-code-branch me-1"></i>Comparar versiones
+                </button>
+                <button type="button" class="btn btn-success" id="btnNuevaVersion">
+                    <i class="fas fa-plus me-1"></i>Nueva versión
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Nueva Versión                                         -->
+<!-- ============================================================ -->
+<div class="modal fade" id="modalNuevaVersion" tabindex="-1" aria-labelledby="tituloNuevaVersion" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloNuevaVersion">
+                    <i class="fas fa-plus-circle me-2"></i>Nueva versión del presupuesto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="nv_idPresupuesto">
+                <div class="mb-3">
+                    <label for="nv_motivo" class="form-label fw-semibold">
+                        Motivo de la nueva versión <span class="text-danger">*</span>
+                    </label>
+                    <textarea
+                        class="form-control"
+                        id="nv_motivo"
+                        rows="3"
+                        placeholder="Ej: Cliente solicita 2 focos adicionales y descuento del 5%"
+                    ></textarea>
+                    <div class="form-text text-muted">
+                        Explica brevemente qué cambia en esta versión. Se guardará como historial.
+                    </div>
+                </div>
+                <div class="alert alert-warning py-2">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Se copiarán todas las líneas de la versión actual a la nueva versión. La nueva versión quedará en estado <strong>borrador</strong>.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmarNuevaVersion">
+                    <i class="fas fa-check me-1"></i>Crear versión
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Comparar Versiones                                    -->
+<!-- ============================================================ -->
+<div class="modal fade" id="modalCompararVersiones" tabindex="-1" aria-labelledby="tituloCompararVersiones" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 50vw; width: 50vw;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloCompararVersiones">
+                    <i class="fas fa-code-branch me-2"></i>Comparar versiones
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold">Versión A (base):</label>
+                        <select class="form-select" id="cmp_selectVersionA"></select>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <i class="fas fa-exchange-alt fa-2x text-muted"></i>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold">Versión B (nueva):</label>
+                        <select class="form-select" id="cmp_selectVersionB"></select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-primary" id="btnEjecutarComparacion">
+                        <i class="fas fa-search me-1"></i>Comparar
+                    </button>
+                </div>
+
+                <div id="cmp_resultado" style="display:none;">
+                    <div class="alert alert-info" id="cmp_resumen"></div>
+
+                    <div id="cmp_seccionAnadidas" style="display:none;">
+                        <h6 class="text-success"><i class="fas fa-plus-circle me-1"></i>Líneas añadidas en versión B</h6>
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-success"><tr><th>Código</th><th>Descripción</th><th>Cantidad</th><th>P.Unit.</th><th>Total</th></tr></thead>
+                            <tbody id="cmp_tbodyAnadidas"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="cmp_seccionEliminadas" style="display:none;">
+                        <h6 class="text-danger"><i class="fas fa-minus-circle me-1"></i>Líneas eliminadas en versión B</h6>
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-danger"><tr><th>Código</th><th>Descripción</th><th>Cantidad</th><th>P.Unit.</th><th>Total</th></tr></thead>
+                            <tbody id="cmp_tbodyEliminadas"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="cmp_seccionModificadas" style="display:none;">
+                        <h6 class="text-warning"><i class="fas fa-pencil-alt me-1"></i>Líneas modificadas</h6>
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-warning"><tr><th>Descripción</th><th>Cant. A</th><th>Cant. B</th><th>P. A</th><th>P. B</th><th>Total A</th><th>Total B</th></tr></thead>
+                            <tbody id="cmp_tbodyModificadas"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN MODALES VERSIONES -->
 
 
 </body>
