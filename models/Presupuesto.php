@@ -1169,7 +1169,242 @@ class Presupuesto
             return [];
         }
     }
-    
+
+    // =========================================================
+    // COPIAR PRESUPUESTO
+    // Copia cabecera + primera versión + líneas en transacción
+    // =========================================================
+    public function copiar_presupuesto($id_presupuesto)
+    {
+        try {
+            // 1. Obtener datos de la cabecera del presupuesto original
+            $sql = "SELECT * FROM presupuesto WHERE id_presupuesto = ? AND activo_presupuesto = 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            $original = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$original) {
+                return false;
+            }
+
+            // 2. Obtener la versión actual del presupuesto original
+            $sql = "SELECT * FROM presupuesto_version
+                    WHERE id_presupuesto = ?
+                    AND numero_version_presupuesto = ?
+                    AND activo_version = 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->bindValue(2, $original['version_actual_presupuesto'], PDO::PARAM_INT);
+            $stmt->execute();
+            $version_original = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // 3. Generar número único para la copia
+            $fecha_hoy = date('Ymd');
+            $numero_base = 'COPIA-' . $original['numero_presupuesto'] . '-' . $fecha_hoy;
+            $sql = "SELECT COUNT(*) AS total FROM presupuesto WHERE numero_presupuesto LIKE ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $numero_base . '%', PDO::PARAM_STR);
+            $stmt->execute();
+            $count = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+            $numero_nuevo = $numero_base . ($count > 0 ? '-' . ($count + 1) : '');
+
+            // 4. Iniciar transacción
+            $this->conexion->beginTransaction();
+
+            // 5. Insertar nueva cabecera (estado inicial = borrador o estado PROC)
+            $sql_ppto = "INSERT INTO presupuesto (
+                numero_presupuesto, id_cliente, id_contacto_cliente, id_estado_ppto, id_forma_pago, id_metodo,
+                fecha_presupuesto, fecha_validez_presupuesto, fecha_inicio_evento_presupuesto, fecha_fin_evento_presupuesto,
+                numero_pedido_cliente_presupuesto, aplicar_coeficientes_presupuesto, descuento_presupuesto,
+                nombre_evento_presupuesto, direccion_evento_presupuesto, poblacion_evento_presupuesto,
+                cp_evento_presupuesto, provincia_evento_presupuesto,
+                observaciones_cabecera_presupuesto, observaciones_cabecera_ingles_presupuesto,
+                observaciones_pie_presupuesto, observaciones_pie_ingles_presupuesto,
+                subtotal_presupuesto, total_iva_presupuesto, total_presupuesto,
+                version_actual_presupuesto, id_empresa, activo_presupuesto, created_at_presupuesto
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?,
+                CURDATE(), ?, ?, ?,
+                ?, ?, ?,
+                ?, ?, ?,
+                ?, ?,
+                ?, ?,
+                ?, ?,
+                0, 0, 0,
+                1, ?, 1, NOW()
+            )";
+
+            $stmt = $this->conexion->prepare($sql_ppto);
+            $stmt->execute([
+                $numero_nuevo,
+                $original['id_cliente'],
+                $original['id_contacto_cliente'],
+                $original['id_estado_ppto'],
+                $original['id_forma_pago'],
+                $original['id_metodo'],
+                $original['fecha_validez_presupuesto'],
+                $original['fecha_inicio_evento_presupuesto'],
+                $original['fecha_fin_evento_presupuesto'],
+                $original['numero_pedido_cliente_presupuesto'],
+                $original['aplicar_coeficientes_presupuesto'],
+                $original['descuento_presupuesto'],
+                $original['nombre_evento_presupuesto'],
+                $original['direccion_evento_presupuesto'],
+                $original['poblacion_evento_presupuesto'],
+                $original['cp_evento_presupuesto'],
+                $original['provincia_evento_presupuesto'],
+                $original['observaciones_cabecera_presupuesto'],
+                $original['observaciones_cabecera_ingles_presupuesto'],
+                $original['observaciones_pie_presupuesto'],
+                $original['observaciones_pie_ingles_presupuesto'],
+                $original['id_empresa']
+            ]);
+            $id_nuevo_presupuesto = $this->conexion->lastInsertId();
+
+            // 6. Insertar nueva versión (versión 1)
+            $sql_version = "INSERT INTO presupuesto_version (
+                id_presupuesto, numero_version_presupuesto, estado_version_presupuesto,
+                motivo_modificacion_version, creado_por_version, activo_version, created_at_version
+            ) VALUES (?, 1, 'borrador', ?, 1, 1, NOW())";
+            $stmt = $this->conexion->prepare($sql_version);
+            $stmt->execute([
+                $id_nuevo_presupuesto,
+                'Copia del presupuesto ' . $original['numero_presupuesto']
+            ]);
+            $id_nueva_version = $this->conexion->lastInsertId();
+
+            // 7. Copiar líneas si existe versión original
+            if ($version_original) {
+                $sql_lineas = "SELECT * FROM linea_presupuesto
+                               WHERE id_version_presupuesto = ?
+                               AND activo_linea_ppto = 1
+                               ORDER BY orden_linea_ppto ASC";
+                $stmt = $this->conexion->prepare($sql_lineas);
+                $stmt->bindValue(1, $version_original['id_version_presupuesto'], PDO::PARAM_INT);
+                $stmt->execute();
+                $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Mapa de IDs: id_linea_original => id_linea_nueva (para líneas padre)
+                $mapa_ids = [];
+
+                foreach ($lineas as $linea) {
+                    $id_linea_padre_nuevo = null;
+                    if ($linea['id_linea_padre'] && isset($mapa_ids[$linea['id_linea_padre']])) {
+                        $id_linea_padre_nuevo = $mapa_ids[$linea['id_linea_padre']];
+                    }
+
+                    $sql_insert_linea = "INSERT INTO linea_presupuesto (
+                        id_version_presupuesto, id_articulo, id_linea_padre, id_ubicacion, id_coeficiente, id_impuesto,
+                        numero_linea_ppto, tipo_linea_ppto, nivel_jerarquia, orden_linea_ppto, codigo_linea_ppto,
+                        descripcion_linea_ppto, cantidad_linea_ppto, precio_unitario_linea_ppto, descuento_linea_ppto,
+                        jornadas_linea_ppto, aplicar_coeficiente_linea_ppto, valor_coeficiente_linea_ppto,
+                        porcentaje_iva_linea_ppto, fecha_montaje_linea_ppto, fecha_desmontaje_linea_ppto,
+                        fecha_inicio_linea_ppto, fecha_fin_linea_ppto, observaciones_linea_ppto,
+                        mostrar_obs_articulo_linea_ppto, ocultar_detalle_kit_linea_ppto,
+                        mostrar_en_presupuesto, es_opcional, activo_linea_ppto
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                    $stmt_linea = $this->conexion->prepare($sql_insert_linea);
+                    $stmt_linea->execute([
+                        $id_nueva_version,
+                        $linea['id_articulo'],
+                        $id_linea_padre_nuevo,
+                        $linea['id_ubicacion'],
+                        $linea['id_coeficiente'],
+                        $linea['id_impuesto'],
+                        $linea['numero_linea_ppto'],
+                        $linea['tipo_linea_ppto'],
+                        $linea['nivel_jerarquia'],
+                        $linea['orden_linea_ppto'],
+                        $linea['codigo_linea_ppto'],
+                        $linea['descripcion_linea_ppto'],
+                        $linea['cantidad_linea_ppto'],
+                        $linea['precio_unitario_linea_ppto'],
+                        $linea['descuento_linea_ppto'],
+                        $linea['jornadas_linea_ppto'],
+                        $linea['aplicar_coeficiente_linea_ppto'],
+                        $linea['valor_coeficiente_linea_ppto'],
+                        $linea['porcentaje_iva_linea_ppto'],
+                        $linea['fecha_montaje_linea_ppto'],
+                        $linea['fecha_desmontaje_linea_ppto'],
+                        $linea['fecha_inicio_linea_ppto'],
+                        $linea['fecha_fin_linea_ppto'],
+                        $linea['observaciones_linea_ppto'],
+                        $linea['mostrar_obs_articulo_linea_ppto'],
+                        $linea['ocultar_detalle_kit_linea_ppto'],
+                        $linea['mostrar_en_presupuesto'],
+                        $linea['es_opcional'],
+                        1
+                    ]);
+                    $mapa_ids[$linea['id_linea_ppto']] = $this->conexion->lastInsertId();
+                }
+            }
+
+            $this->conexion->commit();
+
+            $this->registro->registrarActividad('admin', 'Presupuesto', 'copiar_presupuesto',
+                "Presupuesto $id_presupuesto copiado → nuevo ID: $id_nuevo_presupuesto ($numero_nuevo)", 'info');
+
+            return [
+                'id_nuevo' => $id_nuevo_presupuesto,
+                'numero_nuevo' => $numero_nuevo
+            ];
+
+        } catch (PDOException $e) {
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+            $this->registro->registrarActividad('admin', 'Presupuesto', 'copiar_presupuesto',
+                "Error: " . $e->getMessage(), 'error');
+            return false;
+        }
+    }
+
+    // =========================================================
+    // OBTENER ESTADOS DE PRESUPUESTO (para cambio de estado)
+    // =========================================================
+    public function get_estados_presupuesto()
+    {
+        try {
+            $sql = "SELECT id_estado_ppto, nombre_estado_ppto, codigo_estado_ppto, color_estado_ppto
+                    FROM estado_presupuesto
+                    WHERE activo_estado_ppto = 1
+                    ORDER BY nombre_estado_ppto ASC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad('admin', 'Presupuesto', 'get_estados_presupuesto',
+                "Error: " . $e->getMessage(), 'error');
+            return false;
+        }
+    }
+
+    // =========================================================
+    // CAMBIAR ESTADO DE UN PRESUPUESTO
+    // =========================================================
+    public function cambiar_estado_presupuesto($id_presupuesto, $id_estado_ppto)
+    {
+        try {
+            $sql = "UPDATE presupuesto SET
+                        id_estado_ppto = ?,
+                        updated_at_presupuesto = NOW()
+                    WHERE id_presupuesto = ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_estado_ppto, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            $this->registro->registrarActividad('admin', 'Presupuesto', 'cambiar_estado_presupuesto',
+                "Presupuesto ID $id_presupuesto → nuevo estado ID: $id_estado_ppto", 'info');
+            return $stmt->rowCount() >= 0;
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad('admin', 'Presupuesto', 'cambiar_estado_presupuesto',
+                "Error: " . $e->getMessage(), 'error');
+            return false;
+        }
+    }
+
 }
 
 

@@ -201,10 +201,7 @@
                             <th colspan="8" class="text-center">EVENTO</th>
                             <th colspan="3" class="text-center">PRESUPUESTO</th>
                             <th rowspan="2">Activo</th>
-                            <th rowspan="2">Act./Desac.</th>
-                            <th rowspan="2">Edit.</th>
-                            <th rowspan="2">Líneas</th>
-                            <th rowspan="2">Imprimir</th>
+                            <th rowspan="2">Acciones</th>
                         </tr>
                         <tr>
                             <th>Número</th>
@@ -263,8 +260,7 @@
                                 </select>
                             </th>
                             <th></th>
-                            <th></th>
-                            <th></th>                            <th></th>                        </tr>
+                        </tr>
                     </tfoot>
                 </table>
             </div><!-- table-wrapper -->

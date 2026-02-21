@@ -11,6 +11,12 @@ $(document).ready(function () {
             .table-hover tbody tr:hover {
                 background-color: #f8f9fa;
             }
+            /* Dropdown acciones dentro de DataTables / fixedColumns */
+            .dtfc-fixed-left .dropdown-menu,
+            .dtfc-fixed-right .dropdown-menu,
+            table.dataTable td .dropdown-menu {
+                z-index: 9999 !important;
+            }
         `;
         document.head.appendChild(style);
     }
@@ -60,10 +66,7 @@ $(document).ready(function () {
             { name: 'nombre_estado_ppto', data: 'nombre_estado_ppto', className: "text-center align-middle" }, // Columna 10: ESTADO
             { name: 'total_presupuesto', data: 'total_presupuesto', className: "text-center align-middle" }, // Columna 11: IMPORTE
             { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center align-middle" }, // Columna 12: ACTIVO
-            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 13: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle" }, // Columna 14: EDITAR
-            { name: 'lineas', data: null, defaultContent: '', className: "text-center align-middle" }, // Columna 15: LÍNEAS
-            { name: 'imprimir', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 16: IMPRIMIR
+            { name: 'acciones', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 13: ACCIONES (dropdown)
         ],
         columnDefs: [
             // Columna 0: id_presupuesto
@@ -185,69 +188,34 @@ $(document).ready(function () {
                     return row.activo_presupuesto;
                 }
             },
-            // Columna 13: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
+            // Columna 13: ACCIONES — Dropdown Bootstrap con todas las acciones
             {
-                targets: "activar:name", width: '5%', searchable: false, orderable: false, class: "text-center",
+                targets: "acciones:name", width: '5%', searchable: false, orderable: false, className: "text-center align-middle",
                 render: function (data, type, row) {
-                    if (row.activo_presupuesto == 1) {
-                        return `<button type="button" class="btn btn-danger btn-sm desacPresupuesto" data-bs-toggle="tooltip-primary" data-placement="top" title="Desactivar" 
-                             data-id_presupuesto="${row.id_presupuesto}"> 
-                             <i class="fa-solid fa-trash"></i>
-                             </button>`;
-                    } else {
-                        return `<button class="btn btn-success btn-sm activarPresupuesto" data-bs-toggle="tooltip-primary" data-placement="top" title="Activar" 
-                             data-id_presupuesto="${row.id_presupuesto}"> 
-                             <i class="bi bi-hand-thumbs-up-fill"></i>
-                            </button>`;
-                    }
-                }
-            },
-            // Columna 14: BOTON PARA EDITAR PRESUPUESTO + HISTORIAL DE VERSIONES
-            {
-                targets: "editar:name", width: '8%', searchable: false, orderable: false, class: "text-center",
-                render: function (data, type, row) {
-                    return `<button type="button" class="btn btn-info btn-sm editarPresupuesto me-1" data-toggle="tooltip-primary" data-placement="top" title="Editar"  
-                             data-id_presupuesto="${row.id_presupuesto}"> 
-                             <i class="fa-solid fa-edit"></i>
-                             </button><button type="button" class="btn btn-secondary btn-sm verVersiones" title="Historial de versiones (v${row.numero_version_actual || 1})"  
-                             data-id_presupuesto="${row.id_presupuesto}"
-                             data-numero_presupuesto="${row.numero_presupuesto}"
-                             data-nombre_cliente="${row.nombre_cliente || ''}"
-                             data-nombre_evento="${row.nombre_evento_presupuesto || ''}"> 
-                             <i class="fas fa-history"></i>
-                             </button>`;
-                }
-            },
-            // Columna 15: BOTON PARA GESTIONAR LÍNEAS DEL PRESUPUESTO
-            {
-                targets: "lineas:name", width: '5%', searchable: false, orderable: false, class: "text-center",
-                render: function (data, type, row) {
-                    // Verificar si existe versión actual
-                    if (!row.id_version_actual) {
-                        return `<button type="button" class="btn btn-secondary btn-sm" disabled title="Sin versión actual"> 
-                                 <i class="fas fa-list"></i>
-                                 </button>`;
-                    }
-                    return `<button type="button" class="btn btn-info btn-sm gestionarLineas" data-toggle="tooltip-primary" data-placement="top" title="Ver líneas de presupuesto (versión actual)"  
-                             data-id_version_presupuesto="${row.id_version_actual}"
-                             data-numero_version="${row.numero_version_actual || 1}"> 
-                             <i class="fas fa-list"></i>
-                             </button>`;
-                }
-            },
-            // Columna 16: BOTON PARA IMPRIMIR PRESUPUESTO
-            {
-                targets: 16, width: '5%', searchable: false, orderable: false, class: "text-center",
-                render: function (data, type, row) {
-                    return `<button type="button" class="btn btn-success btn-sm imprimirPresupuesto" 
-                             data-toggle="tooltip-primary" data-placement="top" title="Imprimir presupuesto"  
-                             data-id_presupuesto="${row.id_presupuesto}"
-                             data-id_empresa="${row.id_empresa}"
-                             data-codigo_estado="${row.codigo_estado_ppto}"
-                             data-numero_presupuesto="${row.numero_presupuesto}"
-                             data-nombre_cliente="${row.nombre_cliente}"> 
-                             <i class="fas fa-print"></i>
-                             </button>`;
+                    var tieneVersion = row.id_version_actual ? '' : ' disabled';
+                    var labelActivar = row.activo_presupuesto == 1
+                        ? '<i class="fa-solid fa-trash me-1"></i>Desactivar'
+                        : '<i class="bi bi-hand-thumbs-up-fill me-1"></i>Activar';
+                    var claseActivar = row.activo_presupuesto == 1 ? 'desacPresupuesto' : 'activarPresupuesto';
+                    var colorActivar = row.activo_presupuesto == 1 ? 'text-danger' : 'text-success';
+                    return `<div class="dropdown">
+                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bolt"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><a class="dropdown-item editarPresupuesto" href="#" data-id_presupuesto="${row.id_presupuesto}"><i class="fa-solid fa-edit me-2 text-info"></i>Editar</a></li>
+                            <li><a class="dropdown-item gestionarLineas${tieneVersion}" href="#" data-id_version_presupuesto="${row.id_version_actual}" data-numero_version="${row.numero_version_actual || 1}"><i class="fas fa-list me-2 text-info"></i>Gestionar Líneas</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item verVersiones" href="#" data-id_presupuesto="${row.id_presupuesto}" data-numero_presupuesto="${row.numero_presupuesto}" data-nombre_cliente="${row.nombre_cliente || ''}" data-nombre_evento="${row.nombre_evento_presupuesto || ''}"><i class="fas fa-history me-2 text-secondary"></i>Historial versiones</a></li>
+                            <li><a class="dropdown-item copiarPresupuesto" href="#" data-id_presupuesto="${row.id_presupuesto}" data-numero_presupuesto="${row.numero_presupuesto}"><i class="fas fa-copy me-2 text-warning"></i>Copiar presupuesto</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item cambiarEstadoPpto" href="#" data-id_presupuesto="${row.id_presupuesto}" data-id_estado_actual="${row.id_estado_ppto}"><i class="fas fa-exchange-alt me-2 text-primary"></i>Cambiar estado</a></li>
+                            <li><a class="dropdown-item imprimirPresupuesto" href="#" data-id_presupuesto="${row.id_presupuesto}" data-id_empresa="${row.id_empresa}" data-codigo_estado="${row.codigo_estado_ppto}" data-numero_presupuesto="${row.numero_presupuesto}" data-nombre_cliente="${row.nombre_cliente}"><i class="fas fa-print me-2 text-success"></i>Imprimir (opciones)</a></li>
+                            <li><a class="dropdown-item pdfRapido" href="#" data-id_presupuesto="${row.id_presupuesto}"><i class="fas fa-bolt me-2 text-success"></i>PDF rápido</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item ${claseActivar}" href="#" data-id_presupuesto="${row.id_presupuesto}"><span class="${colorActivar}">${labelActivar}</span></a></li>
+                        </ul>
+                    </div>`;
                 }
             }
         ],
@@ -801,6 +769,140 @@ $(document).ready(function () {
             title: 'Generando Albarán de Carga',
             text: 'Se abrirá el documento en una nueva ventana',
             timer: 2000,
+            showConfirmButton: false
+        });
+    });
+
+    // ============================================
+    // COPIAR PRESUPUESTO
+    // ============================================
+    $(document).on('click', '.copiarPresupuesto', function (e) {
+        e.preventDefault();
+        var id_presupuesto    = $(this).data('id_presupuesto');
+        var numero_presupuesto = $(this).data('numero_presupuesto');
+
+        Swal.fire({
+            title: '¿Copiar presupuesto?',
+            html: 'Se creará un nuevo presupuesto duplicado a partir de <strong>' + numero_presupuesto + '</strong> con todas sus líneas.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#f0ad4e',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-copy me-1"></i> Sí, copiar',
+            cancelButtonText: 'Cancelar'
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../../controller/presupuesto.php?op=copiar',
+                    type: 'POST',
+                    data: { id_presupuesto: id_presupuesto },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Presupuesto copiado',
+                                html: 'Se ha creado el presupuesto <strong>' + (response.numero_nuevo || '') + '</strong>',
+                                confirmButtonText: 'Aceptar'
+                            }).then(function () { table_e.ajax.reload(); });
+                        } else {
+                            Swal.fire('Error', response.message || 'No se pudo copiar el presupuesto.', 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Error de comunicación con el servidor.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    // ============================================
+    // CAMBIAR ESTADO DEL PRESUPUESTO
+    // ============================================
+    $(document).on('click', '.cambiarEstadoPpto', function (e) {
+        e.preventDefault();
+        var id_presupuesto  = $(this).data('id_presupuesto');
+        var id_estado_actual = $(this).data('id_estado_actual');
+
+        // Cargar estados disponibles
+        $.ajax({
+            url: '../../controller/presupuesto.php?op=get_estados',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (!response.success || !response.data || !response.data.length) {
+                    Swal.fire('Error', 'No se pudieron cargar los estados.', 'error');
+                    return;
+                }
+
+                var optionsHtml = '<select id="swal_select_estado" class="swal2-input">';
+                $.each(response.data, function (i, estado) {
+                    var selected = (estado.id_estado_ppto == id_estado_actual) ? ' selected' : '';
+                    optionsHtml += '<option value="' + estado.id_estado_ppto + '"' + selected + '>' + estado.nombre_estado_ppto + '</option>';
+                });
+                optionsHtml += '</select>';
+
+                Swal.fire({
+                    title: 'Cambiar estado del presupuesto',
+                    html: optionsHtml,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-exchange-alt me-1"></i> Cambiar estado',
+                    cancelButtonText: 'Cancelar',
+                    preConfirm: function () {
+                        return document.getElementById('swal_select_estado').value;
+                    }
+                }).then(function (result) {
+                    if (result.isConfirmed && result.value) {
+                        $.ajax({
+                            url: '../../controller/presupuesto.php?op=cambiar_estado',
+                            type: 'POST',
+                            data: { id_presupuesto: id_presupuesto, id_estado_ppto: result.value },
+                            dataType: 'json',
+                            success: function (resp) {
+                                if (resp.success) {
+                                    Swal.fire({ icon: 'success', title: 'Estado actualizado', timer: 1500, showConfirmButton: false });
+                                    table_e.ajax.reload();
+                                } else {
+                                    Swal.fire('Error', resp.message || 'No se pudo cambiar el estado.', 'error');
+                                }
+                            },
+                            error: function () {
+                                Swal.fire('Error', 'Error de comunicación con el servidor.', 'error');
+                            }
+                        });
+                    }
+                });
+            },
+            error: function () {
+                Swal.fire('Error', 'Error de comunicación con el servidor.', 'error');
+            }
+        });
+    });
+
+    // ============================================
+    // PDF RÁPIDO (sin modal de opciones)
+    // ============================================
+    $(document).on('click', '.pdfRapido', function (e) {
+        e.preventDefault();
+        var id_presupuesto = $(this).data('id_presupuesto');
+
+        var form = $('<form>', {
+            'method': 'POST',
+            'action': '../../controller/impresionpresupuesto_m2_pdf_es.php?op=cli_esp',
+            'target': '_blank'
+        });
+        form.append($('<input>', { 'type': 'hidden', 'name': 'id_presupuesto', 'value': id_presupuesto }));
+        $('body').append(form);
+        form.submit();
+        form.remove();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Generando PDF',
+            text: 'Se abrirá el presupuesto en una nueva ventana',
+            timer: 1500,
             showConfirmButton: false
         });
     });

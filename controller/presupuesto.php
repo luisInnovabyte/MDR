@@ -1339,5 +1339,70 @@ break;
             'data'    => $estadisticas
         ], JSON_UNESCAPED_UNICODE);
         break;
+
+    // =========================================================
+    // CASE: copiar
+    // Copia un presupuesto completo (cabecera + versión + líneas)
+    // =========================================================
+    case "copiar":
+        $id_presupuesto = $_POST['id_presupuesto'] ?? null;
+
+        if (!$id_presupuesto) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'ID de presupuesto no proporcionado'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $resultado = $presupuesto->copiar_presupuesto((int)$id_presupuesto);
+
+        header('Content-Type: application/json');
+        if ($resultado) {
+            echo json_encode([
+                'success'     => true,
+                'message'     => 'Presupuesto copiado correctamente',
+                'id_nuevo'    => $resultado['id_nuevo'],
+                'numero_nuevo' => $resultado['numero_nuevo']
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se pudo copiar el presupuesto'], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // =========================================================
+    // CASE: get_estados
+    // Devuelve lista de estados de presupuesto (para selector)
+    // =========================================================
+    case "get_estados":
+        $estados = $presupuesto->get_estados_presupuesto();
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => ($estados !== false),
+            'data'    => $estados ?: []
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // =========================================================
+    // CASE: cambiar_estado
+    // Cambia el estado de un presupuesto
+    // =========================================================
+    case "cambiar_estado":
+        $id_presupuesto  = $_POST['id_presupuesto'] ?? null;
+        $id_estado_ppto  = $_POST['id_estado_ppto'] ?? null;
+
+        if (!$id_presupuesto || !$id_estado_ppto) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Faltan parámetros requeridos'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $resultado = $presupuesto->cambiar_estado_presupuesto((int)$id_presupuesto, (int)$id_estado_ppto);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => $resultado,
+            'message' => $resultado ? 'Estado actualizado correctamente' : 'No se pudo actualizar el estado'
+        ], JSON_UNESCAPED_UNICODE);
+        break;
 }
 ?>
