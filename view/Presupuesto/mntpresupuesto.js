@@ -64,8 +64,7 @@ $(document).ready(function () {
             { name: 'estado_evento_presupuesto', data: 'estado_evento_presupuesto', className: "text-center align-middle" }, // Columna 8: ESTADO EVENTO
             { name: 'dias_validez_restantes', data: 'dias_validez_restantes', className: "text-center align-middle" }, // Columna 9: DÍAS VALIDEZ
             { name: 'nombre_estado_ppto', data: 'nombre_estado_ppto', className: "text-center align-middle" }, // Columna 10: ESTADO
-            { name: 'total_presupuesto', data: 'total_presupuesto', className: "text-center align-middle" }, // Columna 11: IMPORTE
-            { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center align-middle" }, // Columna 12: ACTIVO
+            { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center align-middle" }, // Columna 11: ACTIVO
             { name: 'acciones', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 13: ACCIONES (dropdown)
         ],
         columnDefs: [
@@ -167,18 +166,7 @@ $(document).ready(function () {
             },
             // Columna 10: nombre_estado_ppto
             { targets: "nombre_estado_ppto:name", width: '8%', searchable: true, orderable: true, className: "text-center" },
-            // Columna 11: total_presupuesto
-            {
-                targets: "total_presupuesto:name", width: '8%', searchable: true, orderable: true, className: "text-center",
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        let importe = parseFloat(row.total_presupuesto) || 0;
-                        return '<span class="fw-bold text-success">' + importe.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €</span>';
-                    }
-                    return row.total_presupuesto;
-                }
-            },
-            // Columna 12: activo_presupuesto
+            // Columna 11: activo_presupuesto
             {
                 targets: "activo_presupuesto:name", width: '5%', orderable: true, searchable: true, className: "text-center",
                 render: function (data, type, row) {
@@ -269,7 +257,7 @@ $(document).ready(function () {
             'border-color': '#bee5eb'
         });
         
-        $('#presupuestos_data thead tr:first-child th[colspan="3"]').css({
+        $('#presupuestos_data thead tr:first-child th[colspan="2"]').css({
             'background-color': '#d4edda',
             'color': '#155724',
             'border-color': '#c3e6cb'
@@ -289,10 +277,9 @@ $(document).ready(function () {
             'border-color': '#bee5eb'
         });
         
-        // Segunda fila - columnas individuales del grupo PRESUPUESTO (columnas 9-11)
+        // Segunda fila - columnas individuales del grupo PRESUPUESTO (columnas 9-10)
         $('#presupuestos_data thead tr:nth-child(2) th:nth-child(9), ' +
-          '#presupuestos_data thead tr:nth-child(2) th:nth-child(10), ' +
-          '#presupuestos_data thead tr:nth-child(2) th:nth-child(11)').css({
+          '#presupuestos_data thead tr:nth-child(2) th:nth-child(10)').css({
             'background-color': '#d4edda',
             'color': '#155724',
             'border-color': '#c3e6cb'

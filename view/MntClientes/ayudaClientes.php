@@ -31,59 +31,87 @@
                             </div>
                             <div class="card-body">
                                 <div class="d-flex align-items-start mb-3">
-                                    <div class="btn btn-success btn-sm me-3 flex-shrink-0">
-                                        <i class="bi bi-plus-circle"></i>
+                                    <div class="btn btn-outline-primary btn-sm me-3 flex-shrink-0">
+                                        <i class="fas fa-plus-circle"></i>
                                     </div>
                                     <div>
                                         <strong>Nuevo Cliente</strong>
-                                        <p class="small text-muted mb-0">Crear un nuevo registro de cliente con toda la información necesaria.</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="btn btn-info btn-sm me-3 flex-shrink-0">
-                                        <i class="fa-solid fa-edit"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Editar Cliente</strong>
-                                        <p class="small text-muted mb-0">Modificar la información existente de un cliente.</p>
+                                        <p class="small text-muted mb-0">Crear un nuevo registro de cliente con toda la información necesaria. Se abre el formulario completo de alta.</p>
                                     </div>
                                 </div>
 
                                 <div class="d-flex align-items-start mb-3">
-                                    <div class="btn btn-primary btn-sm me-3 flex-shrink-0">
-                                        <i class="fa-solid fa-file-alt"></i>
+                                    <div class="btn btn-secondary btn-sm me-3 flex-shrink-0">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
                                     </div>
                                     <div>
-                                        <strong>Gestión de Contactos</strong>
-                                        <p class="small text-muted mb-0">Administrar contactos y personas relacionadas con el cliente.</p>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="btn btn-danger btn-sm me-3 flex-shrink-0">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Desactivar</strong>
-                                        <p class="small text-muted mb-0">Deshabilitar un cliente sin eliminarlo permanentemente.</p>
+                                        <strong>Menú Acciones</strong>
+                                        <p class="small text-muted mb-0">Cada fila dispone de un botón <span class="badge bg-secondary"><i class="fa-solid fa-ellipsis-vertical"></i></span> que despliega todas las acciones disponibles para ese cliente:</p>
+                                        <ul class="small text-muted mt-1 mb-0 ps-3">
+                                            <li><i class="fa-solid fa-pen-to-square me-1"></i><strong>Editar</strong> — Modificar los datos del cliente.</li>
+                                            <li><i class="fas fa-users me-1"></i><strong>Contactos</strong> — Gestionar las personas de contacto asociadas.</li>
+                                            <li><i class="bi bi-geo-alt-fill me-1"></i><strong>Ubicaciones</strong> — Gestionar las ubicaciones o sedes del cliente.</li>
+                                            <li><i class="fa-solid fa-ban me-1 text-danger"></i><strong>Desactivar</strong> — Deshabilitar el cliente sin eliminarlo (soft delete).</li>
+                                            <li><i class="bi bi-hand-thumbs-up-fill me-1 text-success"></i><strong>Activar</strong> — Rehabilitar un cliente previamente desactivado.</li>
+                                        </ul>
+                                        <div class="alert alert-info py-1 mt-2 mb-0">
+                                            <small><i class="bi bi-info-circle me-1"></i>Las opciones <em>Desactivar</em> y <em>Activar</em> aparecen de forma alternativa según el estado actual del cliente.</small>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="d-flex align-items-start">
-                                    <div class="btn btn-success btn-sm me-3 flex-shrink-0">
-                                        <i class="bi bi-hand-thumbs-up-fill"></i>
+                                    <div class="me-3 flex-shrink-0" style="width:30px; text-align:center;">
+                                        <i class="bi bi-plus-circle-fill text-primary fs-5"></i>
                                     </div>
                                     <div>
-                                        <strong>Activar</strong>
-                                        <p class="small text-muted mb-0">Rehabilitar un cliente previamente desactivado.</p>
+                                        <strong>Ver más detalles</strong>
+                                        <p class="small text-muted mb-0">Haz clic en el botón <span class="badge bg-light text-dark border"><i class="bi bi-plus"></i></span> de la primera columna para expandir una fila y ver todos los datos del cliente: dirección, facturación, forma de pago, observaciones y fechas.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Sección: Filtros y búsqueda -->
+                        <!-- Sección: Contactos del cliente -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="card-title mb-0 fw-bold text-primary">
+                                    <i class="fas fa-users me-2"></i>Contactos del Cliente
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted mb-2">Cada cliente puede tener múltiples personas de contacto asociadas (responsable comercial, responsable de compras, etc.).</p>
+                                <p class="small text-muted mb-2">Accede a la gestión de contactos desde el menú <span class="badge bg-secondary"><i class="fa-solid fa-ellipsis-vertical"></i></span> → <strong>Contactos</strong>.</p>
+                                <ul class="list-unstyled small mb-0">
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Nombre y apellidos del contacto</li>
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Cargo o departamento</li>
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Teléfono directo y email personal</li>
+                                    <li><i class="bi bi-check2 text-success me-2"></i>El contador <span class="badge bg-success"><i class="bi bi-people-fill"></i></span> de la tabla muestra cuántos contactos activos tiene el cliente</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Sección: Ubicaciones del cliente -->
                         <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-light">
+                                <h6 class="card-title mb-0 fw-bold text-primary">
+                                    <i class="bi bi-geo-alt-fill me-2"></i>Ubicaciones del Cliente
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted mb-2">Registra las distintas sedes, almacenes o lugares de entrega de un cliente. Útil cuando los trabajos o servicios se realizan en direcciones diferentes a la principal.</p>
+                                <p class="small text-muted mb-2">Accede a la gestión de ubicaciones desde el menú <span class="badge bg-secondary"><i class="fa-solid fa-ellipsis-vertical"></i></span> → <strong>Ubicaciones</strong>.</p>
+                                <ul class="list-unstyled small mb-0">
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Nombre descriptivo de la ubicación</li>
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Dirección completa y código postal</li>
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Persona de contacto en esa sede</li>
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Notas u observaciones específicas del lugar</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Sección: Filtros y búsqueda -->
+                        <div class="card border-0 shadow-sm mt-4">
                             <div class="card-header bg-light">
                                 <h6 class="card-title mb-0 fw-bold text-primary">
                                     <i class="bi bi-funnel-fill me-2"></i>Filtros y Búsqueda
@@ -252,7 +280,7 @@
                 <div class="text-left flex-grow-1">
                     <small class="text-muted">
                         <i class="bi bi-clock mr-1"></i>
-                        Versión del sistema: SMM v1.0 - Última actualización: 24-11-2025
+                        Versión del sistema: SMM v1.0 - Última actualización: 21-02-2026
                     </small>
                 </div>
                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">

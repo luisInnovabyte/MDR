@@ -313,12 +313,33 @@
                     <!-- SECCIÓN 6: OBSERVACIONES -->
                     <div class="card mb-3">
                         <div class="card-header bg-dark text-white py-2">
-                            <h6 class="mb-0"><i class="bi bi-chat-square-text-fill me-2"></i>6. Observaciones</h6>
+                            <h6 class="mb-0"><i class="bi bi-chat-square-text-fill me-2"></i>6. Observaciones / Notes</h6>
                         </div>
-                        <div class="card-body">
-                            <textarea class="form-control" id="observaciones_linea_ppto" name="observaciones_linea_ppto" 
-                                      rows="3" maxlength="500" placeholder="Observaciones o notas específicas de esta línea..."></textarea>
-                            <small class="text-muted">Máximo 500 caracteres</small>
+                        <div class="card-body pb-2">
+                            <ul class="nav nav-tabs mb-3" id="tabsObservaciones" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="tab-obs-es" data-bs-toggle="tab" data-bs-target="#pane-obs-es" type="button" role="tab">
+                                        🇪🇸 Español
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="tab-obs-en" data-bs-toggle="tab" data-bs-target="#pane-obs-en" type="button" role="tab">
+                                        🇬🇧 English
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="pane-obs-es" role="tabpanel">
+                                    <textarea class="form-control" id="observaciones_linea_ppto" name="observaciones_linea_ppto"
+                                              rows="3" maxlength="500" placeholder="Observaciones o notas específicas de esta línea..."></textarea>
+                                    <small class="text-muted">Máximo 500 caracteres</small>
+                                </div>
+                                <div class="tab-pane fade" id="pane-obs-en" role="tabpanel">
+                                    <textarea class="form-control" id="observaciones_linea_ppto_en" name="observaciones_linea_ppto_en"
+                                              rows="3" maxlength="500" placeholder="Specific observations or notes for this line..."></textarea>
+                                    <small class="text-muted">Maximum 500 characters</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

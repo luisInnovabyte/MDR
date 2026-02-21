@@ -133,14 +133,10 @@
                             <th>Nombre cliente</th>
                             <th>NIF</th>
                             <th>Teléfono</th>
-                            <th>Email</th>
                             <th><i class="bi bi-percent"></i> Descuento</th>
                             <th><i class="bi bi-people-fill"></i> Contactos</th>
                             <th>Estado</th>
-                            <th>Act./Desac.</th>
-                            <th>Edit.</th>
-                            <th>Contactos</th>
-                            <th><i class="bi bi-geo-alt-fill"></i> Ubicaciones</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -154,7 +150,6 @@
                             <th><input type="text" placeholder="Buscar nombre cliente" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar NIF" class="form-control form-control-sm" /></th>
                             <th><input type="text" placeholder="Buscar teléfono" class="form-control form-control-sm" /></th>
-                            <th><input type="text" placeholder="Buscar email" class="form-control form-control-sm" /></th>
                             <th></th>
                             <th></th>
                             <th>
@@ -164,8 +159,6 @@
                                     <option value="0">Inactivo</option>
                                 </select>
                             </th>
-                            <th class="d-none"><input type="text" placeholder="NO Buscar" class="form-control form-control-sm" /></th>
-                            <th></th>
                             <th></th>
                         </tr>
                     </tfoot>

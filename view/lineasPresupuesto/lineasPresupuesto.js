@@ -1013,6 +1013,11 @@ function editarLinea(id_linea_ppto) {
                     $('#observaciones_linea_ppto').val(data.observaciones_linea_ppto || '');
                 }
                 
+                // Rellenar observaciones inglés
+                if ($('#observaciones_linea_ppto_en').length) {
+                    $('#observaciones_linea_ppto_en').val(data.observaciones_linea_ppto_en || '');
+                }
+                
                 // Rellenar checkboxes opcionales
                 if ($('[name="mostrar_obs_articulo_linea_ppto"]').length) {
                     $('[name="mostrar_obs_articulo_linea_ppto"]').val(data.mostrar_obs_articulo_linea_ppto || 1);

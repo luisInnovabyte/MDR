@@ -232,6 +232,7 @@ switch ($_GET["op"]) {
                     "notas_tecnicas_linea_ppto" => $row["notas_tecnicas_linea_ppto"] ?? null,
                     "notas_comerciales_linea_ppto" => $row["notas_comerciales_linea_ppto"] ?? null,
                     "observaciones_linea_ppto" => $row["observaciones_linea_ppto"] ?? null,
+                    "observaciones_linea_ppto_en" => $row["observaciones_linea_ppto_en"] ?? null,
                     
                     // Localización
                     "localizacion_linea_ppto" => $row["localizacion_linea_ppto"] ?? null,
@@ -480,6 +481,7 @@ switch ($_GET["op"]) {
                 'fecha_inicio_linea_ppto' => $linea_original['fecha_inicio_linea_ppto'],
                 'fecha_fin_linea_ppto' => $linea_original['fecha_fin_linea_ppto'],
                 'observaciones_linea_ppto' => $linea_original['observaciones_linea_ppto'],
+                'observaciones_linea_ppto_en' => $linea_original['observaciones_linea_ppto_en'],
                 'mostrar_obs_articulo_linea_ppto' => $linea_original['mostrar_obs_articulo_linea_ppto'],
                 'ocultar_detalle_kit_linea_ppto' => $linea_original['ocultar_detalle_kit_linea_ppto'],
                 'mostrar_en_presupuesto' => $linea_original['mostrar_en_presupuesto'],
@@ -594,6 +596,7 @@ switch ($_GET["op"]) {
                 'fecha_inicio_linea_ppto' => null,
                 'fecha_fin_linea_ppto' => null,
                 'observaciones_linea_ppto' => null,
+                'observaciones_linea_ppto_en' => null,
                 'mostrar_obs_articulo_linea_ppto' => isset($_POST['mostrar_obs_articulo_linea_ppto']) ? intval($_POST['mostrar_obs_articulo_linea_ppto']) : 1,
                 'ocultar_detalle_kit_linea_ppto' => isset($_POST['ocultar_detalle_kit_linea_ppto']) ? intval($_POST['ocultar_detalle_kit_linea_ppto']) : 0,
                 'mostrar_en_presupuesto' => isset($_POST['mostrar_en_presupuesto']) ? intval($_POST['mostrar_en_presupuesto']) : 1,
@@ -682,6 +685,10 @@ switch ($_GET["op"]) {
 
             if (isset($_POST["observaciones_linea_ppto"]) && $_POST["observaciones_linea_ppto"] !== '' && $_POST["observaciones_linea_ppto"] !== 'null') {
                 $datos['observaciones_linea_ppto'] = $_POST["observaciones_linea_ppto"];
+            }
+
+            if (isset($_POST["observaciones_linea_ppto_en"]) && $_POST["observaciones_linea_ppto_en"] !== '' && $_POST["observaciones_linea_ppto_en"] !== 'null') {
+                $datos['observaciones_linea_ppto_en'] = $_POST["observaciones_linea_ppto_en"];
             }
 
             // *** PUNTO 17: Verificar si el cliente está exento de IVA ***

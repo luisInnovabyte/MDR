@@ -183,15 +183,16 @@ class LineaPresupuesto
                 fecha_inicio_linea_ppto,
                 fecha_fin_linea_ppto,
                 observaciones_linea_ppto,
+                observaciones_linea_ppto_en,
                 mostrar_obs_articulo_linea_ppto,
                 ocultar_detalle_kit_linea_ppto,
                 mostrar_en_presupuesto,
                 es_opcional,
                 activo_linea_ppto
             ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )";
 
             $stmt = $this->conexion->prepare($sql);
@@ -221,6 +222,7 @@ class LineaPresupuesto
                 $datos['fecha_inicio_linea_ppto'] ?? null,
                 $datos['fecha_fin_linea_ppto'] ?? null,
                 $datos['observaciones_linea_ppto'] ?? null,
+                $datos['observaciones_linea_ppto_en'] ?? null,
                 $datos['mostrar_obs_articulo_linea_ppto'] ?? 1,
                 $datos['ocultar_detalle_kit_linea_ppto'] ?? 0,
                 $datos['mostrar_en_presupuesto'] ?? 1,
@@ -289,6 +291,7 @@ class LineaPresupuesto
                 fecha_inicio_linea_ppto = ?,
                 fecha_fin_linea_ppto = ?,
                 observaciones_linea_ppto = ?,
+                observaciones_linea_ppto_en = ?,
                 mostrar_obs_articulo_linea_ppto = ?,
                 ocultar_detalle_kit_linea_ppto = ?,
                 mostrar_en_presupuesto = ?,
@@ -321,6 +324,7 @@ class LineaPresupuesto
                 $datos['fecha_inicio_linea_ppto'] ?? null,
                 $datos['fecha_fin_linea_ppto'] ?? null,
                 $datos['observaciones_linea_ppto'] ?? null,
+                $datos['observaciones_linea_ppto_en'] ?? null,
                 $datos['mostrar_obs_articulo_linea_ppto'] ?? 1,
                 $datos['ocultar_detalle_kit_linea_ppto'] ?? 0,
                 $datos['mostrar_en_presupuesto'] ?? 1,

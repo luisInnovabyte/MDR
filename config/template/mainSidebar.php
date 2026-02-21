@@ -167,7 +167,7 @@ function puedeVerMenu($idRol, $modulo) {
     <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
     <li class="br-menu-item">
         <a href="#" class="br-menu-link with-sub">
-            <i class="menu-item-icon icon ion-ios-paper tx-24"></i>
+            <i class="menu-item-icon icon ion-android-car tx-24"></i>
             <span class="menu-item-label">Vehículos</span>
         </a>
         <ul class="br-menu-sub">

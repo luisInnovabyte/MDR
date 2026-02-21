@@ -79,15 +79,10 @@ $(document).ready(function () {
             { name: 'nombre_cliente', data: 'nombre_cliente', className: "text-center align-middle"  }, // Columna 3: NOMBRE_CLIENTE
             { name: 'nif_cliente', data: 'nif_cliente', className: "text-center align-middle"  }, // Columna 4: NIF_CLIENTE
             { name: 'telefono_cliente', data: 'telefono_cliente', className: "text-center align-middle"  }, // Columna 5: TELEFONO_CLIENTE
-            { name: 'email_cliente', data: 'email_cliente', className: "text-center align-middle"  }, // Columna 6: EMAIL_CLIENTE
-            { name: 'porcentaje_descuento_cliente', data: 'porcentaje_descuento_cliente', className: "text-center align-middle"  }, // Columna 7: DESCUENTO
+            { name: 'porcentaje_descuento_cliente', data: 'porcentaje_descuento_cliente', className: "text-center align-middle"  }, // Columna 6: DESCUENTO
             { name: 'cantidad_contactos', data: 'cantidad_contactos', className: "text-center align-middle"  }, // Columna 8: CANTIDAD_CONTACTOS
             { name: 'activo_cliente', data: 'activo_cliente', className: "text-center align-middle"  }, // Columna 9: ESTADO
-            { name: 'activar', data: null, className: "text-center align-middle" }, // Columna 10: ACTIVAR/DESACTIVAR
-            { name: 'editar', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 11: EDITAR
-            { name: 'formulario', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 12: FORMULARIO
-            { name: 'ubicaciones', data: null, defaultContent: '', className: "text-center align-middle"  },  // Columna 13: UBICACIONES
-            
+            { name: 'acciones', data: null, defaultContent: '', className: "text-center align-middle" }, // Columna 10: ACCIONES
         ], // de las columnas
         columnDefs: [
             // Cuidado que el ordrData puede interferir con el ordenamiento de la tabla    
@@ -104,9 +99,7 @@ $(document).ready(function () {
             { targets: "nif_cliente:name", width: '10%', searchable: true, orderable: true, className: "text-center" },
             // Columna 5: telefono_cliente
             { targets: "telefono_cliente:name", width: '12%', searchable: true, orderable: true, className: "text-center" },
-            // Columna 6: email_cliente
-            { targets: "email_cliente:name", width: '15%', searchable: true, orderable: true, className: "text-center" },
-            // Columna 7: porcentaje_descuento_cliente
+            // Columna 6: porcentaje_descuento_cliente
             {
                 targets: "porcentaje_descuento_cliente:name", width: '8%', orderable: true, searchable: false, className: "text-center",
                 render: function (data, type, row) {
@@ -159,61 +152,68 @@ $(document).ready(function () {
                     return row.activo_cliente;
                 }
             },
-            // Columna 10: BOTON PARA ACTIVAR/DESACTIVAR ESTADO
-            {   
-                targets: "activar:name", width: '8%', searchable: false, orderable: false, class: "text-center",
+            // Columna 10: DROPDOWN DE ACCIONES
+            {
+                targets: "acciones:name", width: '8%', searchable: false, orderable: false, className: "text-center",
                 render: function (data, type, row) {
-                    // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
+                    // Label dinámico Activar / Desactivar
+                    let itemActivarDesactivar = '';
                     if (row.activo_cliente == 1) {
-                        // permito desactivar el cliente
-                        return `<button type="button" class="btn btn-danger btn-sm desacCliente" data-bs-toggle="tooltip-primary" data-placement="top" title="Desactivar" data-original-title="Tooltip on top" 
-                             data-id_cliente="${row.id_cliente}"> 
-                             <i class="fa-solid fa-trash"></i>
-                             </button>`}
-                    else {
-                        // debo permitir activar de nuevo el cliente
-                        return `<button class="btn btn-success btn-sm activarCliente" data-bs-toggle="tooltip-primary" data-placement="top" title="Activar" data-original-title="Tooltip on top" 
-                             data-id_cliente="${row.id_cliente}"> 
-                             <i class="bi bi-hand-thumbs-up-fill"></i>
-                            </button>`}
-                } // de la function
-            },// 
-            // Columna 11: BOTON PARA EDITAR CLIENTE
-            {   
-                targets: "editar:name", width: '8%', searchable: false, orderable: false, class: "text-center",
-                render: function (data, type, row) {
-                    // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
-                    // botón editar el cliente
-                    return `<button type="button" class="btn btn-info btn-sm editarCliente" data-toggle="tooltip-primary" data-placement="top" title="Editar"  
-                             data-id_cliente="${row.id_cliente}"> 
-                             <i class="fa-solid fa-edit"></i>
-                             </button>`
-                } // de la function
-            },
-            // Columna 12: BOTON PARA CONTACTOS CLIENTE
-            {   
-                targets: "formulario:name", width: '8%', searchable: false, orderable: false, class: "text-center",
-                render: function (data, type, row) {
-                    // El nombre que de la variable que se pasa por data-xxx debe ser el mismo que el nombre de la columna en la base de datos
-                    // botón para ir a los contactos del cliente
-                    return `<button type="button" class="btn btn-secondary btn-sm formularioCliente" data-toggle="tooltip-primary" data-placement="top" title="Contactos"  
-                             data-id_cliente="${row.id_cliente}"> 
-                             <i class="fas fa-users"></i>
-                             </button>`
-                } // de la function
-            },
-            // Columna 13: BOTON PARA UBICACIONES CLIENTE
-            {   
-                targets: "ubicaciones:name", width: '8%', searchable: false, orderable: false, class: "text-center",
-                render: function (data, type, row) {
-                    // botón para ir a las ubicaciones del cliente
-                    return `<a href="../MntClientes_ubicaciones/index.php?id_cliente=${row.id_cliente}" 
-                             class="btn btn-primary btn-sm" data-toggle="tooltip-primary" data-placement="top" title="Ubicaciones">
-                             <i class="bi bi-geo-alt-fill"></i>
-                             </a>`
+                        itemActivarDesactivar = `
+                            <li>
+                                <a class="dropdown-item text-danger desacCliente" href="#"
+                                   data-id_cliente="${row.id_cliente}">
+                                    <i class="fa-solid fa-ban me-2"></i>Desactivar
+                                </a>
+                            </li>`;
+                    } else {
+                        itemActivarDesactivar = `
+                            <li>
+                                <a class="dropdown-item text-success activarCliente" href="#"
+                                   data-id_cliente="${row.id_cliente}">
+                                    <i class="bi bi-hand-thumbs-up-fill me-2"></i>Activar
+                                </a>
+                            </li>`;
+                    }
+
+                    return `
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <!-- Editar -->
+                                <li>
+                                    <a class="dropdown-item editarCliente" href="#"
+                                       data-id_cliente="${row.id_cliente}">
+                                        <i class="fa-solid fa-pen-to-square me-2"></i>Editar
+                                    </a>
+                                </li>
+                                <!-- Contactos -->
+                                <li>
+                                    <a class="dropdown-item formularioCliente" href="#"
+                                       data-id_cliente="${row.id_cliente}">
+                                        <i class="fas fa-users me-2"></i>Contactos
+                                    </a>
+                                </li>
+                                <!-- Ubicaciones -->
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="../MntClientes_ubicaciones/index.php?id_cliente=${row.id_cliente}">
+                                        <i class="bi bi-geo-alt-fill me-2"></i>Ubicaciones
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <!-- Activar / Desactivar (dinámico) -->
+                                ${itemActivarDesactivar}
+                            </ul>
+                        </div>`;
                 } // de la function
             }
-             // De la columna 13
+            // De la columna 10 (acciones)
         ], // de la columnDefs
         ajax: {
             url: '../../controller/cliente.php?op=listar',
