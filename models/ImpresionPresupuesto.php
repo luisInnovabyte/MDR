@@ -85,6 +85,7 @@ class ImpresionPresupuesto
                         p.observaciones_pie_presupuesto,
                         p.destacar_observaciones_pie_presupuesto,
                         p.version_actual_presupuesto,
+                        p.descuento_presupuesto,
                         DATEDIFF(p.fecha_fin_evento_presupuesto, p.fecha_inicio_evento_presupuesto) + 1 AS duracion_evento_dias,
                         
                         -- Datos del cliente
@@ -920,6 +921,95 @@ class ImpresionPresupuesto
                 'error'
             );
             return [];
+        }
+    }
+
+    /**
+     * Obtener líneas del presupuesto para impresión versión HOTEL
+     *
+     * Idéntico a get_lineas_impresion() pero añade dos campos extra por línea:
+     *   - permitir_descuentos_articulo : 1=sí permite descuento hotel, 0=no
+     *   - permite_descuento_familia    : 1=sí permite descuento hotel, 0=no
+     * Si el artículo o la familia no existen (línea libre) se devuelve 1 (sí aplica).
+     *
+     * @param int      $id_presupuesto  ID del presupuesto
+     * @param int|null $numero_version  Versión concreta o null para la versión actual
+     * @return array|false Array de líneas o false si hay error
+     */
+    public function get_lineas_impresion_hotel($id_presupuesto, $numero_version = null)
+    {
+        try {
+            $version_sql_condition = is_null($numero_version)
+                ? "(SELECT version_actual_presupuesto FROM presupuesto WHERE id_presupuesto = ?)"
+                : "?";
+
+            $sql = "SELECT
+                        vlpc.id_linea_ppto,
+                        vlpc.fecha_inicio_linea_ppto,
+                        vlpc.fecha_fin_linea_ppto,
+                        vlpc.fecha_montaje_linea_ppto,
+                        vlpc.fecha_desmontaje_linea_ppto,
+                        vlpc.dias_linea,
+                        vlpc.id_ubicacion,
+                        vlpc.nombre_ubicacion,
+                        vlpc.ubicacion_completa_agrupacion,
+                        vlpc.nombre_articulo,
+                        vlpc.codigo_articulo,
+                        vlpc.id_articulo,
+                        vlpc.es_kit_articulo,
+                        vlpc.ocultar_detalle_kit_linea_ppto,
+                        vlpc.cantidad_linea_ppto,
+                        vlpc.precio_unitario_linea_ppto,
+                        vlpc.descuento_linea_ppto,
+                        vlpc.porcentaje_iva_linea_ppto,
+                        vlpc.valor_coeficiente_linea_ppto,
+                        vlpc.base_imponible,
+                        vlpc.importe_iva,
+                        vlpc.total_linea,
+                        vlpc.tipo_linea_ppto,
+                        vlpc.nivel_jerarquia,
+                        vlpc.descripcion_linea_ppto,
+                        vlpc.observaciones_linea_ppto,
+                        COALESCE(a.permitir_descuentos_articulo, 1) AS permitir_descuentos_articulo,
+                        COALESCE(f.permite_descuento_familia, 1)    AS permite_descuento_familia
+                    FROM v_linea_presupuesto_calculada vlpc
+                    LEFT JOIN articulo a ON vlpc.id_articulo = a.id_articulo
+                    LEFT JOIN familia  f ON a.id_familia = f.id_familia
+                    WHERE vlpc.id_presupuesto = ?
+                    AND vlpc.numero_version_presupuesto = $version_sql_condition
+                    AND vlpc.activo_linea_ppto = 1
+                    AND vlpc.mostrar_en_presupuesto = 1
+                    ORDER BY
+                        vlpc.fecha_inicio_linea_ppto ASC,
+                        vlpc.id_ubicacion ASC,
+                        vlpc.nombre_articulo ASC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute(is_null($numero_version)
+                ? [$id_presupuesto, $id_presupuesto]
+                : [$id_presupuesto, $numero_version]);
+
+            $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_impresion_hotel',
+                "Líneas HOTEL obtenidas para presupuesto ID: $id_presupuesto - Total: " . count($lineas),
+                'info'
+            );
+
+            return $lineas;
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_impresion_hotel',
+                "Error al obtener líneas hotel: " . $e->getMessage(),
+                'error'
+            );
+            return false;
         }
     }
 

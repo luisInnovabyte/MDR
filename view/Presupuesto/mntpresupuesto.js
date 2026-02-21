@@ -690,7 +690,7 @@ $(document).ready(function () {
         var operacion = 'cli_esp';
         
         if (tipo === 'intermediario') {
-            Swal.fire('Próximamente', 'El presupuesto para intermediario estará disponible pronto', 'info');
+            generarImpresion('impresionpresupuestohotel_m2_pdf_es.php');
             return;
         }
         

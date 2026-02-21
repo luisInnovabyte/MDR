@@ -323,10 +323,10 @@
                             </label>
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="tipo_presupuesto" id="tipo_intermediario" value="intermediario" disabled>
-                            <label class="form-check-label text-muted" for="tipo_intermediario">
-                                <strong>Intermediario</strong>
-                                <span class="badge bg-secondary ms-1" style="font-size:.62rem;">Próximamente</span>
+                            <input class="form-check-input" type="radio" name="tipo_presupuesto" id="tipo_intermediario" value="intermediario">
+                            <label class="form-check-label" for="tipo_intermediario">
+                                <strong>Intermediario (Hotel)</strong>
+                                <small class="d-block text-muted">Presupuesto con descuento de intermediario aplicado</small>
                             </label>
                         </div>
 
