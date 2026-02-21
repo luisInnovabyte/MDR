@@ -1212,7 +1212,9 @@ class Presupuesto
             // 4. Iniciar transacción
             $this->conexion->beginTransaction();
 
-            // 5. Insertar nueva cabecera (estado inicial = borrador o estado PROC)
+            // 5. Insertar nueva cabecera
+            // NOTA: el trigger trg_presupuesto_after_insert crea automáticamente la versión 1
+            // NO insertar subtotal/total_iva/total (no existen en la tabla, son calculados en la vista)
             $sql_ppto = "INSERT INTO presupuesto (
                 numero_presupuesto, id_cliente, id_contacto_cliente, id_estado_ppto, id_forma_pago, id_metodo,
                 fecha_presupuesto, fecha_validez_presupuesto, fecha_inicio_evento_presupuesto, fecha_fin_evento_presupuesto,
@@ -1221,8 +1223,8 @@ class Presupuesto
                 cp_evento_presupuesto, provincia_evento_presupuesto,
                 observaciones_cabecera_presupuesto, observaciones_cabecera_ingles_presupuesto,
                 observaciones_pie_presupuesto, observaciones_pie_ingles_presupuesto,
-                subtotal_presupuesto, total_iva_presupuesto, total_presupuesto,
-                version_actual_presupuesto, id_empresa, activo_presupuesto, created_at_presupuesto
+                mostrar_obs_familias_presupuesto, mostrar_obs_articulos_presupuesto,
+                observaciones_internas_presupuesto, id_empresa, activo_presupuesto
             ) VALUES (
                 ?, ?, ?, ?, ?, ?,
                 CURDATE(), ?, ?, ?,
@@ -1231,8 +1233,7 @@ class Presupuesto
                 ?, ?,
                 ?, ?,
                 ?, ?,
-                0, 0, 0,
-                1, ?, 1, NOW()
+                ?, ?, ?, ?, 1
             )";
 
             $stmt = $this->conexion->prepare($sql_ppto);
@@ -1258,24 +1259,31 @@ class Presupuesto
                 $original['observaciones_cabecera_ingles_presupuesto'],
                 $original['observaciones_pie_presupuesto'],
                 $original['observaciones_pie_ingles_presupuesto'],
+                $original['mostrar_obs_familias_presupuesto'],
+                $original['mostrar_obs_articulos_presupuesto'],
+                $original['observaciones_internas_presupuesto'],
                 $original['id_empresa']
             ]);
             $id_nuevo_presupuesto = $this->conexion->lastInsertId();
 
-            // 6. Insertar nueva versión (versión 1)
-            $sql_version = "INSERT INTO presupuesto_version (
-                id_presupuesto, numero_version_presupuesto, estado_version_presupuesto,
-                motivo_modificacion_version, creado_por_version, activo_version, created_at_version
-            ) VALUES (?, 1, 'borrador', ?, 1, 1, NOW())";
-            $stmt = $this->conexion->prepare($sql_version);
-            $stmt->execute([
-                $id_nuevo_presupuesto,
-                'Copia del presupuesto ' . $original['numero_presupuesto']
-            ]);
-            $id_nueva_version = $this->conexion->lastInsertId();
+            // 6. Recuperar la versión 1 creada automáticamente por el trigger
+            $sql_get_version = "SELECT id_version_presupuesto FROM presupuesto_version
+                                WHERE id_presupuesto = ? AND numero_version_presupuesto = 1";
+            $stmt = $this->conexion->prepare($sql_get_version);
+            $stmt->bindValue(1, $id_nuevo_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            $nueva_version_row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $id_nueva_version = $nueva_version_row ? $nueva_version_row['id_version_presupuesto'] : null;
 
-            // 7. Copiar líneas si existe versión original
-            if ($version_original) {
+            // Actualizar el motivo de la versión creada por el trigger
+            if ($id_nueva_version) {
+                $sql_upd = "UPDATE presupuesto_version SET motivo_modificacion_version = ? WHERE id_version_presupuesto = ?";
+                $stmt = $this->conexion->prepare($sql_upd);
+                $stmt->execute(['Copia del presupuesto ' . $original['numero_presupuesto'], $id_nueva_version]);
+            }
+
+            // 7. Copiar líneas si existe versión original y se obtuvo la nueva versión
+            if ($version_original && $id_nueva_version) {
                 $sql_lineas = "SELECT * FROM linea_presupuesto
                                WHERE id_version_presupuesto = ?
                                AND activo_linea_ppto = 1
