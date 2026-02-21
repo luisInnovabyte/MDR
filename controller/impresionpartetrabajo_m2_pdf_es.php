@@ -101,11 +101,18 @@ class MYPDF_ALBARAN extends TCPDF {
         $this->SetX(8);
         $this->SetFont('helvetica', '', 7.5);
         $this->SetTextColor(52, 73, 94); // Color normal
-        $direccion_completa = ($this->datos_empresa['direccion_fiscal_empresa'] ?? '') . ', ' .
-                              ($this->datos_empresa['cp_fiscal_empresa'] ?? '') . ' ' .
-                              ($this->datos_empresa['poblacion_fiscal_empresa'] ?? '') . ' (' .
-                              ($this->datos_empresa['provincia_fiscal_empresa'] ?? '') . ')';
-        $this->MultiCell(95, 3, $direccion_completa, 0, 'L');
+        $linea1_dir = ($this->datos_empresa['direccion_fiscal_empresa'] ?? '');
+        $prov = trim($this->datos_empresa['provincia_fiscal_empresa'] ?? '');
+        $linea2_dir = trim(($this->datos_empresa['cp_fiscal_empresa'] ?? '') . ' ' .
+                      ($this->datos_empresa['poblacion_fiscal_empresa'] ?? ''));
+        if (!empty($prov)) {
+            $linea2_dir .= ' (' . $prov . ')';
+        }
+        $this->MultiCell(95, 3, trim($linea1_dir), 0, 'L');
+        if (!empty(trim($linea2_dir))) {
+            $this->SetX(8);
+            $this->MultiCell(95, 3, $linea2_dir, 0, 'L');
+        }
 
         // Teléfono, móvil y email
         $this->SetX(8);
@@ -131,7 +138,7 @@ class MYPDF_ALBARAN extends TCPDF {
         // Fondo de color para la caja de info (verde para distinguir)
         $this->SetFillColor(46, 204, 113); // Color verde
         $this->SetTextColor(255, 255, 255); // Texto blanco
-        $this->SetFont('helvetica', 'B', 7);
+        $this->SetFont('helvetica', 'B', 8.5);
 
         $this->SetXY(8, $y_info);
         $this->Cell(95, 6, '', 0, 0, 'L', true); // Fondo de la caja ajustado
@@ -255,7 +262,7 @@ class MYPDF_ALBARAN extends TCPDF {
             
             $this->SetXY($col2_x + 2, $this->GetY());
             $this->SetFont('helvetica', 'B', 8);
-            $this->SetTextColor(156, 89, 182);
+            $this->SetTextColor(39, 174, 96);
             $this->Cell($col2_width - 4, 3, 'A la atencion de:', 0, 1, 'L');
 
             $this->SetX($col2_x + 2);
@@ -299,12 +306,12 @@ class MYPDF_ALBARAN extends TCPDF {
         // FECHAS DEL EVENTO
         $this->SetXY($evento_x, $y_evento);
         $this->SetFont('helvetica', 'B', 8);
-        $this->SetTextColor(243, 156, 18);
+        $this->SetTextColor(39, 174, 96);
         $this->Cell($evento_width, 4, 'DATOS DEL EVENTO', 0, 1, 'L');
 
         // Fechas del evento en formato tabla compacta (3 columnas)
         $this->SetX($evento_x);
-        $this->SetFont('helvetica', '', 6.5);
+        $this->SetFont('helvetica', '', 8);
         $this->SetTextColor(127, 140, 141);
 
         $mini_col_width = $evento_width / 3;
@@ -316,7 +323,7 @@ class MYPDF_ALBARAN extends TCPDF {
 
         // Valores
         $this->SetX($evento_x);
-        $this->SetFont('helvetica', 'B', 6.5);
+        $this->SetFont('helvetica', 'B', 8);
         $this->SetTextColor(52, 73, 94);
 
         $fecha_inicio_str = '';
@@ -386,7 +393,7 @@ class MYPDF_ALBARAN extends TCPDF {
         if (!empty($ubicacion_completa)) {
             $this->SetX($evento_x);
             $this->SetFont('helvetica', 'B', 8);
-            $this->SetTextColor(243, 156, 18);
+            $this->SetTextColor(39, 174, 96);
             $this->Cell($evento_width, 4, 'UBICACION DEL EVENTO', 0, 1, 'L');
 
             $this->SetX($evento_x);
@@ -609,31 +616,42 @@ switch ($_GET["op"]) {
                     $combinaciones[$clave]['indices'][] = $linea['id_linea_ppto'];
                 }
                 
-                uasort($combinaciones, function($a, $b) {
-                    return $b['count'] - $a['count'];
-                });
-                
-                $primera_combinacion = reset($combinaciones);
-                $porcentaje = ($primera_combinacion['count'] / $total_lineas) * 100;
-                
-                $ocultar = ($porcentaje >= 80);
-                
-                $excepciones = [];
-                if ($ocultar) {
-                    foreach ($combinaciones as $clave => $combo) {
-                        if ($combo['fecha_montaje'] != $primera_combinacion['fecha_montaje'] ||
-                            $combo['fecha_desmontaje'] != $primera_combinacion['fecha_desmontaje']) {
-                            $excepciones = array_merge($excepciones, $combo['indices']);
-                        }
+                // Encontrar la combinación más frecuente
+                $max_count = 0;
+                $combinacion_predominante = null;
+
+                foreach ($combinaciones as $clave => $datos) {
+                    if ($datos['count'] > $max_count) {
+                        $max_count = $datos['count'];
+                        $combinacion_predominante = $datos;
                     }
                 }
-                
-                $analisis_fechas[$fecha_inicio] = [
-                    'ocultar_columnas' => $ocultar,
-                    'fecha_montaje' => $primera_combinacion['fecha_montaje'],
-                    'fecha_desmontaje' => $primera_combinacion['fecha_desmontaje'],
-                    'excepciones' => $excepciones
-                ];
+
+                // Calcular porcentaje - si >= 30% ocultar columnas (igual que presupuesto)
+                $porcentaje = ($max_count / $total_lineas) * 100;
+
+                if ($porcentaje >= 30) {
+                    $excepciones = [];
+                    foreach ($todas_lineas as $linea) {
+                        if (!in_array($linea['id_linea_ppto'], $combinacion_predominante['indices'])) {
+                            $excepciones[] = $linea['id_linea_ppto'];
+                        }
+                    }
+
+                    $analisis_fechas[$fecha_inicio] = [
+                        'ocultar_columnas' => true,
+                        'fecha_montaje' => $combinacion_predominante['fecha_montaje'],
+                        'fecha_desmontaje' => $combinacion_predominante['fecha_desmontaje'],
+                        'excepciones' => $excepciones
+                    ];
+                } else {
+                    $analisis_fechas[$fecha_inicio] = [
+                        'ocultar_columnas' => false,
+                        'fecha_montaje' => null,
+                        'fecha_desmontaje' => null,
+                        'excepciones' => []
+                    ];
+                }
             }
             
             // =====================================================
@@ -682,7 +700,7 @@ switch ($_GET["op"]) {
                 if ($info_fechas['ocultar_columnas']) {
                     $mtje_formateada = !empty($info_fechas['fecha_montaje']) ? date('d/m/Y', strtotime($info_fechas['fecha_montaje'])) : '-';
                     $dsmtje_formateada = !empty($info_fechas['fecha_desmontaje']) ? date('d/m/Y', strtotime($info_fechas['fecha_desmontaje'])) : '-';
-                    $texto_cabecera .= ' | Mtje: ' . $mtje_formateada . ' | Dsmtje: ' . $dsmtje_formateada;
+                    $texto_cabecera .= ' | Montaje: ' . $mtje_formateada . ' | Desmontaje: ' . $dsmtje_formateada;
                 }
                 
                 $pdf->SetFillColor(46, 204, 113); // Verde
@@ -697,9 +715,6 @@ switch ($_GET["op"]) {
                     // Mostrar nombre de ubicación
                     $pdf->SetFont('helvetica', 'B', 8);
                     $ubicacion_text = $grupo_ubicacion['nombre_ubicacion'];
-                    if ($id_ubicacion > 0) {
-                        $ubicacion_text .= ' (ID: ' . $id_ubicacion . ')';
-                    }
                     $pdf->Cell(194, 5, $ubicacion_text, 0, 1, 'L');
                     
                     $pdf->Ln(1);
@@ -716,7 +731,7 @@ switch ($_GET["op"]) {
                     
                     if (!$ocultar_cols) {
                         $pdf->Cell(15, 6, 'Mtje', 1, 0, 'C', 1);
-                        $pdf->Cell(15, 6, 'Dsmtje', 1, 0, 'C', 1);
+                        $pdf->Cell(15, 6, 'DesMtje', 1, 0, 'C', 1);
                     }
                     
                     $pdf->Cell(8, 6, 'Días', 1, 0, 'C', 1);
@@ -807,7 +822,7 @@ switch ($_GET["op"]) {
                         }
                         
                         if ($es_excepcion && $ocultar_cols) {
-                            $obs_fechas = 'Mtje: ' . $fecha_montaje . ' - Dsmtje: ' . $fecha_desmontaje;
+                            $obs_fechas = 'Montaje: ' . $fecha_montaje . ' - Desmontaje: ' . $fecha_desmontaje;
                             if (!empty($observaciones_a_mostrar)) {
                                 $observaciones_a_mostrar .= ' | ' . $obs_fechas;
                             } else {
@@ -819,8 +834,14 @@ switch ($_GET["op"]) {
                             $y_antes_obs = $pdf->GetY();
                             $pdf->SetFont('helvetica', '', 6.5);
                             $pdf->SetTextColor(80, 80, 80);
-                            $texto_observaciones = '    ' . $observaciones_a_mostrar;
-                            $pdf->MultiCell(170, 4, $texto_observaciones, 0, 'L', false, 1, '', $y_antes_obs);
+                            $obs_alineadas = !empty($datos_empresa['obs_linea_alineadas_descripcion_empresa']);
+                            if ($obs_alineadas) {
+                                $ancho_obs = 170 - ($x_desc - $x_inicial);
+                                $pdf->MultiCell($ancho_obs, 4, $observaciones_a_mostrar, 0, 'L', false, 1, $x_desc, $y_antes_obs);
+                            } else {
+                                $texto_observaciones = '    ' . $observaciones_a_mostrar;
+                                $pdf->MultiCell(170, 4, $texto_observaciones, 0, 'L', false, 1, '', $y_antes_obs);
+                            }
                             $pdf->SetTextColor(0, 0, 0);
                             $pdf->SetFont('helvetica', '', 7);
                         }
@@ -875,10 +896,60 @@ switch ($_GET["op"]) {
             
             // =====================================================
             // NO MOSTRAR TOTALES FINALES (eliminado completamente)
-            // NO MOSTRAR PESO TOTAL (eliminado)
             // NO MOSTRAR JUSTIFICACIÓN EXENCIÓN IVA (eliminado)
             // NO MOSTRAR FORMA DE PAGO (eliminado)
             // =====================================================
+
+            // =====================================================
+            // SECCIÓN: PESO TOTAL ESTIMADO
+            // SE MANTIENE en albarán de carga (útil para logística)
+            // =====================================================
+            $datos_peso = null;
+            if (!empty($datos_presupuesto['id_version_presupuesto'])) {
+                $datos_peso = $impresion->get_peso_total_presupuesto($datos_presupuesto['id_version_presupuesto']);
+            }
+
+            if ($datos_peso &&
+                isset($datos_peso['peso_total_kg']) &&
+                floatval($datos_peso['peso_total_kg']) > 0) {
+
+                $pdf->Ln(6);
+
+                $pdf->SetFont('helvetica', 'B', 9);
+                $pdf->SetFillColor(233, 236, 239);
+                $pdf->SetDrawColor(173, 181, 189);
+                $pdf->SetTextColor(52, 58, 64);
+                $pdf->Cell(0, 6, 'PESO TOTAL ESTIMADO', 1, 1, 'C', 1);
+
+                $pdf->SetFont('helvetica', 'B', 10);
+                $pdf->SetFillColor(248, 249, 250);
+                $pdf->SetTextColor(28, 126, 214);
+
+                $peso_formateado = number_format($datos_peso['peso_total_kg'], 2, ',', '.');
+                $texto_peso = $peso_formateado . ' KG';
+
+                $porcentaje_completitud = floatval($datos_peso['porcentaje_completitud'] ?? 0);
+                if ($porcentaje_completitud < 100 && $porcentaje_completitud > 0) {
+                    $texto_peso .= ' *';
+                    $mostrar_nota_completitud = true;
+                } else {
+                    $mostrar_nota_completitud = false;
+                }
+
+                $pdf->Cell(0, 7, $texto_peso, 1, 1, 'C', 1);
+
+                if ($mostrar_nota_completitud) {
+                    $pdf->SetFont('helvetica', 'I', 7);
+                    $pdf->SetTextColor(108, 117, 125);
+                    $nota = '* Peso estimado basado en ' . $datos_peso['lineas_con_peso'] . ' de ' . $datos_peso['total_lineas'] . ' lineas ';
+                    $nota .= '(' . number_format($porcentaje_completitud, 0) . '% de datos disponibles)';
+                    $pdf->Cell(0, 4, $nota, 0, 1, 'C');
+                }
+
+                // Restaurar colores
+                $pdf->SetTextColor(0, 0, 0);
+                $pdf->SetDrawColor(0, 0, 0);
+            }
             
             // =====================================================
             // SECCIÓN: OBSERVACIONES DE FAMILIAS Y ARTÍCULOS
