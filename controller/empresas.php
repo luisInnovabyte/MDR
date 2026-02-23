@@ -158,7 +158,8 @@ switch ($_GET["op"]) {
                     intval($_POST["mostrar_kits_albaran_empresa"] ?? 1),
                     intval($_POST["mostrar_obs_familias_articulos_albaran_empresa"] ?? 1),
                     intval($_POST["mostrar_obs_pie_albaran_empresa"] ?? 1),
-                    intval($_POST["obs_linea_alineadas_descripcion_empresa"] ?? 0)
+                    intval($_POST["obs_linea_alineadas_descripcion_empresa"] ?? 0),
+                    intval($_POST["permitir_descuentos_lineas_empresa"] ?? 1)
                 );
                 
                 if ($resultado !== false && $resultado > 0) {
@@ -237,7 +238,8 @@ switch ($_GET["op"]) {
                     intval($_POST["mostrar_kits_albaran_empresa"] ?? 1),
                     intval($_POST["mostrar_obs_familias_articulos_albaran_empresa"] ?? 1),
                     intval($_POST["mostrar_obs_pie_albaran_empresa"] ?? 1),
-                    intval($_POST["obs_linea_alineadas_descripcion_empresa"] ?? 0)
+                    intval($_POST["obs_linea_alineadas_descripcion_empresa"] ?? 0),
+                    intval($_POST["permitir_descuentos_lineas_empresa"] ?? 1)
                 );
 
                 if ($resultado !== false) {
@@ -367,6 +369,17 @@ switch ($_GET["op"]) {
         echo json_encode([
             "status" => true,
             "data" => $observaciones
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    case "get_config_pdf":
+        // Devuelve la configuración PDF de la empresa activa/principal
+        // Usada por la vista de líneas de presupuesto para controlar el campo de descuento
+        $datos_empresa_config = $empresa->get_empresaActiva();
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'permitir_descuentos_lineas_empresa' => intval($datos_empresa_config['permitir_descuentos_lineas_empresa'] ?? 1)
         ], JSON_UNESCAPED_UNICODE);
         break;
 }

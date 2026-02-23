@@ -598,6 +598,22 @@
                                 <i class="bi bi-info-circle me-1"></i>
                                 Si está activado, las observaciones introducidas en cada línea de artículo del presupuesto se imprimirán en el PDF alineadas bajo la columna "Descripción". Si está desactivado (por defecto), se imprimen desde el margen izquierdo del documento.
                             </small>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       id="permitir_descuentos_lineas_empresa"
+                                       name="permitir_descuentos_lineas_empresa"
+                                       value="1"
+                                       checked>
+                                <label class="form-check-label" for="permitir_descuentos_lineas_empresa">
+                                    <strong>Permitir descuentos en líneas de presupuesto</strong>
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mb-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Si está activado (por defecto), el campo % Descuento en las líneas de presupuesto es editable y la columna y fila de descuento aparecen en el PDF. Si está desactivado, el campo queda bloqueado a 0 y la columna / fila de descuento no se muestra en el PDF.
+                            </small>
                         </div>
                     </div>
 
