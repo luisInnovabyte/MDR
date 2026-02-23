@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulación PDF Presupuesto — MDR ERP</title>
+  <style>
+    /* ─────────────────────────────────────────
+       RESET & BODY
+    ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #d0d0d0;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      color: #222;
+      padding: 20px;
+    }
+
+    /* ─────────────────────────────────────────
+       LEYENDA FIJA
+    ───────────────────────────────────────── */
+    #leyenda {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    #leyenda strong { font-size: 11px; color: #555; margin-right: 4px; }
+    .leg {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .leg-auto       { background: #888; }
+    .leg-empresa    { background: #7c3aed; }
+    .leg-ppto       { background: #2563eb; }
+    .leg-cliente    { background: #16a34a; }
+    .leg-contacto   { background: #a3a000; }
+    .leg-ubicacion  { background: #c2410c; }
+    .leg-linea      { background: #dc2626; }
+    .leg-articulo   { background: #374151; }
+    .leg-kit        { background: #0891b2; }
+    .leg-comercial  { background: #9333ea; }
+    .leg-formapago  { background: #0f766e; }
+    .leg-impuesto   { background: #b45309; }
+
+    /* ─────────────────────────────────────────
+       HOJA A4
+    ───────────────────────────────────────── */
+    .a4 {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fff;
+      margin: 0 auto;
+      box-shadow: 0 4px 24px rgba(0,0,0,.35);
+      position: relative;
+      padding: 0;
+      overflow: visible;
+    }
+
+    /* ─────────────────────────────────────────
+       ETIQUETA DE ORIGEN
+    ───────────────────────────────────────── */
+    .bloque {
+      position: relative;
+    }
+    .tag {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 7.5px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 8px;
+      color: #fff;
+      opacity: 0.88;
+      white-space: nowrap;
+      z-index: 10;
+      pointer-events: all;
+      cursor: help;
+    }
+    .tag:hover { opacity: 1; outline: 2px solid #000; }
+    .tag-auto       { background: #888; }
+    .tag-empresa    { background: #7c3aed; }
+    .tag-ppto       { background: #2563eb; }
+    .tag-cliente    { background: #16a34a; }
+    .tag-contacto   { background: #a3a000; }
+    .tag-ubicacion  { background: #c2410c; }
+    .tag-linea      { background: #dc2626; }
+    .tag-articulo   { background: #374151; }
+    .tag-kit        { background: #0891b2; }
+    .tag-comercial  { background: #9333ea; }
+    .tag-formapago  { background: #0f766e; }
+    .tag-impuesto   { background: #b45309; }
+
+    /* ─────────────────────────────────────────
+       PIE — se pinta arriba por simplicidad HTML
+    ───────────────────────────────────────── */
+    .pie-pagina {
+      border-top: 0.5px solid #2C3E50;
+      padding: 2mm 8mm 2mm 8mm;
+      text-align: center;
+      background: #fff;
+    }
+    .pie-pagina .pie-texto {
+      font-size: 7pt;
+      color: #636E72;
+    }
+    .pie-pagina .pie-num {
+      font-style: italic;
+      font-size: 8pt;
+      color: #333;
+      margin-top: 1mm;
+    }
+
+    /* ─────────────────────────────────────────
+       CABECERA — margen top 5mm
+    ───────────────────────────────────────── */
+    .cabecera {
+      padding: 5mm 8mm 3mm 8mm;
+      border-bottom: 1px solid #eee;
+    }
+
+    /* Título PRESUPUESTO */
+    .titulo-presupuesto {
+      text-align: right;
+      font-size: 16pt;
+      font-weight: bold;
+      color: #667EEA;
+      letter-spacing: 2px;
+      margin-bottom: 3mm;
+    }
+
+    /* Grid 2 columnas: empresa (95mm) + cliente (94mm) separadas por 11mm */
+    .cab-grid {
+      display: grid;
+      grid-template-columns: 95mm 94mm;
+      gap: 0 11mm;
+      align-items: start;
+    }
+
+    /* ── Columna izquierda: empresa ── */
+    .empresa-logo-placeholder {
+      width: 35mm;
+      height: 14mm;
+      background: #e0e0e0;
+      border: 1px dashed #aaa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8pt;
+      color: #888;
+      margin-bottom: 2mm;
+    }
+    .empresa-nombre {
+      font-size: 9pt;
+      font-weight: bold;
+      color: #2C3E50;
+      line-height: 3.5mm;
+    }
+    .empresa-cif {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #E74C3C;
+      line-height: 2.5mm;
+      margin-top: 1mm;
+    }
+    .empresa-dato {
+      font-size: 7.5pt;
+      color: #34495E;
+      line-height: 3mm;
+    }
+
+    /* Caja info presupuesto */
+    .caja-info-ppto {
+      margin-top: 3mm;
+      background: #667EEA;
+      color: #fff;
+      padding: 2mm 2mm 2mm 2mm;
+      font-size: 8.5pt;
+      font-weight: bold;
+      width: 95mm;
+      min-height: 10mm;
+      line-height: 4mm;
+    }
+    .caja-info-ppto .ref {
+      font-size: 7pt;
+      font-weight: normal;
+      margin-top: 1mm;
+    }
+
+    /* Obs presentación */
+    .obs-presentacion {
+      margin-top: 2mm;
+      font-size: 6.5pt;
+      color: #636E72;
+      line-height: 3mm;
+      width: 95mm;
+    }
+
+    /* ── Columna derecha: cliente + evento ── */
+    .box-cliente {
+      background: #F8F9FA;
+      border: 0.5px solid #27AE60;
+      padding: 1.5mm 2mm 2mm 2mm;
+      width: 94mm;
+    }
+    .box-cliente .titulo-seccion {
+      font-size: 9pt;
+      font-weight: bold;
+      color: #2C3E50;
+      margin-bottom: 0.5mm;
+    }
+    .linea-verde {
+      border: none;
+      border-top: 0.5px solid #27AE60;
+      margin: 1mm 0 1.5mm 0;
+    }
+    .cliente-nombre {
+      font-size: 8.5pt;
+      font-weight: bold;
+      color: #2C3E50;
+      margin-bottom: 1mm;
+    }
+    .dato-row {
+      display: grid;
+      grid-template-columns: 15mm auto;
+      gap: 0;
+      font-size: 7.5pt;
+      color: #34495E;
+      line-height: 2.5mm;
+      margin-bottom: 0.5mm;
+    }
+    .dato-label { color: #7F8C8D; }
+    .dato-valor { font-weight: bold; word-break: break-all; }
+
+    .atencion-titulo {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #27AE60;
+      margin: 2mm 0 1mm 0;
+    }
+
+    /* Datos del evento */
+    .datos-evento {
+      margin-top: 3mm;
+      width: 94mm;
+    }
+    .evento-titulo {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #27AE60;
+      margin-bottom: 1mm;
+    }
+    .evento-dates-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+      margin-bottom: 2mm;
+    }
+    .evento-dates-grid .label {
+      font-size: 8pt;
+      color: #7F8C8D;
+      line-height: 3mm;
+    }
+    .evento-dates-grid .valor {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #34495E;
+      line-height: 4mm;
+    }
+    .nombre-evento {
+      background: #FFF3CD;
+      color: #856404;
+      font-size: 7.5pt;
+      font-weight: bold;
+      padding: 1mm 2mm;
+      margin-bottom: 1mm;
+    }
+    .ubicacion-titulo {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #F39C12;
+    }
+    .ubicacion-texto {
+      font-size: 7pt;
+      color: #34495E;
+      line-height: 3.5mm;
+    }
+
+    /* Obs de cabecera (ancho completo) */
+    .obs-cabecera {
+      margin: 6mm 8mm 0 8mm;
+      font-size: 8pt;
+      color: #636E72;
+      line-height: 4mm;
+      padding-bottom: 2mm;
+    }
+
+    /* ─────────────────────────────────────────
+       CUERPO: tabla de líneas
+    ───────────────────────────────────────── */
+    .cuerpo {
+      padding: 4mm 8mm;
+    }
+
+    /* Cabecera de agrupación por fecha */
+    .fila-fecha {
+      background: #3498DB;
+      color: #fff;
+      font-size: 9pt;
+      font-weight: bold;
+      padding: 1.5mm 2mm;
+      margin-bottom: 0;
+      height: 6mm;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Nombre ubicación */
+    .fila-ubicacion {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #2C3E50;
+      padding: 1mm 0;
+      height: 5mm;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Tabla de líneas */
+    .tabla-lineas {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 7pt;
+    }
+    .tabla-lineas thead th {
+      background: #F0F0F0;
+      border: 0.3px solid #C8C8C8;
+      text-align: center;
+      font-weight: bold;
+      font-size: 8pt;
+      height: 6mm;
+      padding: 0 1mm;
+    }
+    .tabla-lineas tbody td {
+      border: 0.3px solid #C8C8C8;
+      padding: 1mm;
+      vertical-align: top;
+      font-size: 7pt;
+      color: #333;
+      min-height: 5mm;
+    }
+    /* Anchos columnas (194mm total) */
+    .col-inicio   { width: 17mm; text-align: center; }
+    .col-fin      { width: 17mm; text-align: center; }
+    .col-mtje     { width: 15mm; text-align: center; }
+    .col-dsmtje   { width: 15mm; text-align: center; }
+    .col-dias     { width: 8mm;  text-align: center; }
+    .col-coef     { width: 10mm; text-align: center; }
+    .col-desc     { width: 49mm; text-align: left; }
+    .col-cant     { width: 12mm; text-align: center; }
+    .col-punit    { width: 15mm; text-align: right; }
+    .col-dto      { width: 12mm; text-align: center; }
+    .col-importe  { width: 24mm; text-align: right; }
+
+    /* Fila obs de línea */
+    .obs-linea {
+      font-size: 6.5pt;
+      color: #505050;
+      font-style: italic;
+      padding: 0.5mm 0 0.5mm 8mm;
+    }
+
+    /* Fila KIT componente */
+    .fila-kit td {
+      font-size: 6pt;
+      font-style: italic;
+      color: #646464;
+      border: none;
+      border-bottom: 0.3px dotted #ddd;
+      padding: 0.5mm 1mm;
+    }
+
+    /* Subtotal ubicación */
+    .fila-subtotal-ubicacion td {
+      background: #F5F5F5;
+      font-weight: bold;
+      font-size: 7pt;
+      border: 0.3px solid #C8C8C8;
+      padding: 1mm;
+    }
+    .fila-subtotal-ubicacion .label-right {
+      text-align: right;
+      color: #555;
+    }
+    .fila-subtotal-ubicacion .importe-right {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    /* Subtotal fecha */
+    .fila-subtotal-fecha td {
+      background: #DCDCDC;
+      font-weight: bold;
+      font-size: 8pt;
+      border: 0.3px solid #C8C8C8;
+      padding: 1.5mm 1mm;
+    }
+
+    /* ─────────────────────────────────────────
+       TOTALES
+    ───────────────────────────────────────── */
+    .bloque-totales {
+      padding: 0 8mm;
+      margin-top: 5mm;
+    }
+    .sep-totales {
+      border: none;
+      border-top: 0.3px solid #C8C8C8;
+      margin: 0 0 3mm 0;
+      margin-left: calc(100% - 50mm - 8mm);  /* solo lado derecho */
+    }
+    .totales-tabla {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .totales-tabla td { padding: 0; }
+    .tot-espacio { width: calc(100% - 50mm); }
+    .tot-label {
+      width: 30mm;
+      text-align: right;
+      border: 0.3px solid #DCDCDC;
+      background: #F8F9FA;
+      font-size: 9pt;
+      padding: 1mm 1.5mm;
+      height: 6mm;
+    }
+    .tot-valor {
+      width: 20mm;
+      text-align: right;
+      border: 0.3px solid #DCDCDC;
+      background: #F8F9FA;
+      font-size: 9pt;
+      font-weight: bold;
+      padding: 1mm 1.5mm;
+      height: 6mm;
+    }
+    .tot-valor-rojo { color: #E74C3C; }
+
+    .tot-final .tot-espacio-final { width: calc(100% - 56mm); }
+    .tot-final .tot-label-final {
+      width: 20mm;
+      text-align: right;
+      background: #667EEA;
+      color: #fff;
+      font-size: 11pt;
+      font-weight: bold;
+      border: 0.5px solid #5064C8;
+      padding: 1.5mm 1.5mm;
+      height: 8mm;
+    }
+    .tot-final .tot-valor-final {
+      width: 36mm;
+      text-align: right;
+      background: #667EEA;
+      color: #fff;
+      font-size: 11pt;
+      font-weight: bold;
+      border: 0.5px solid #5064C8;
+      padding: 1.5mm 1.5mm;
+      height: 8mm;
+    }
+
+    .desglose-iva {
+      font-size: 8pt;
+      color: #555;
+      text-align: right;
+      margin-top: 1mm;
+    }
+
+    /* ─────────────────────────────────────────
+       SECCIONES POST-TOTALES
+    ───────────────────────────────────────── */
+    .post-totales {
+      padding: 0 8mm;
+    }
+
+    /* Exención IVA */
+    .exencion-iva {
+      margin-top: 6mm;
+      border: 0.5px solid #FFC107;
+    }
+    .exencion-iva-titulo {
+      background: #FFF3CD;
+      color: #856404;
+      font-size: 9pt;
+      font-weight: bold;
+      text-align: center;
+      padding: 1.5mm;
+    }
+    .exencion-iva-texto {
+      background: #FFFCF0;
+      font-size: 8pt;
+      font-style: italic;
+      color: #505050;
+      padding: 1.5mm 2mm;
+      line-height: 5mm;
+    }
+
+    /* Forma de pago */
+    .forma-pago {
+      margin-top: 6mm;
+      display: flex;
+      gap: 2mm;
+      align-items: flex-start;
+    }
+    .forma-pago-label {
+      font-size: 9pt;
+      font-weight: bold;
+      color: #34495E;
+      white-space: nowrap;
+      min-width: 40mm;
+    }
+    .forma-pago-texto {
+      font-size: 8pt;
+      color: #444;
+      line-height: 4mm;
+    }
+
+    /* Datos bancarios */
+    .datos-bancarios {
+      margin-top: 2mm;
+      background: #F5F5F5;
+      border: 0.5px solid #B4B4B4;
+      padding: 2mm 3mm;
+    }
+    .datos-bancarios .db-titulo {
+      font-size: 7pt;
+      font-weight: bold;
+      color: #34495E;
+      margin-bottom: 1.5mm;
+    }
+    .datos-bancarios .db-row {
+      display: grid;
+      grid-template-columns: 20mm auto;
+      font-size: 7pt;
+      gap: 0;
+      line-height: 3.5mm;
+    }
+    .datos-bancarios .db-label { color: #7F8C8D; }
+    .datos-bancarios .db-valor { font-weight: bold; color: #34495E; }
+
+    /* Observaciones familias/artículos */
+    .bloque-obs {
+      margin-top: 8mm;
+    }
+    .obs-titulo {
+      font-size: 9.5pt;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 2mm;
+    }
+    .obs-item {
+      background: #FAFAFA;
+      font-size: 8pt;
+      color: #616161;
+      padding: 1mm 2mm;
+      margin-bottom: 3mm;
+      line-height: 4mm;
+    }
+
+    /* Obs pie destacadas */
+    .obs-pie-destacadas {
+      margin-top: 10mm;
+    }
+    .obs-pie-linea-sup {
+      border: none;
+      border-top: 0.8px solid #2C3E50;
+      margin-bottom: 3mm;
+    }
+    .obs-pie-caja {
+      background: #F8F9FA;
+      font-size: 8pt;
+      color: #636E72;
+      text-align: center;
+      padding: 3mm 4mm;
+      line-height: 4mm;
+    }
+    .obs-pie-linea-inf {
+      border: none;
+      border-top: 0.3px solid #DFE6E9;
+      margin-top: 3mm;
+    }
+
+    /* ─────────────────────────────────────────
+       FIRMAS
+    ───────────────────────────────────────── */
+    .bloque-firmas {
+      padding: 10mm 8mm 8mm 8mm;
+      display: grid;
+      grid-template-columns: 90mm 90mm;
+      gap: 0 7mm;
+    }
+    .casilla-firma {
+      text-align: center;
+    }
+    .firma-titulo {
+      font-size: 9pt;
+      font-weight: bold;
+      color: #2C3E50;
+      margin-bottom: 2mm;
+      text-align: center;
+    }
+    .firma-imagen-placeholder {
+      width: 60mm;
+      height: 14mm;
+      background: #e8e8f8;
+      border: 1px dashed #aaa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7.5pt;
+      color: #888;
+      margin: 0 auto 2mm auto;
+    }
+    .firma-linea {
+      border: none;
+      border-top: 0.5px solid #333;
+      width: 70mm;
+      margin: 18mm auto 1mm auto;
+    }
+    .firma-firmante {
+      font-size: 7pt;
+      font-style: italic;
+      color: #555;
+      margin-bottom: 0.5mm;
+    }
+    .firma-fecha {
+      font-size: 7pt;
+      color: #555;
+    }
+
+    /* ─────────────────────────────────────────
+       NOTA INFORMATIVA
+    ───────────────────────────────────────── */
+    .nota-info {
+      width: 210mm;
+      margin: 16px auto 0 auto;
+      background: #fffbeb;
+      border: 1px solid #f59e0b;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #78350f;
+      line-height: 18px;
+    }
+    .nota-info strong { color: #92400e; }
+  </style>
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────
+     LEYENDA DE MÓDULOS ERP
+───────────────────────────────────────── -->
+<div id="leyenda">
+  <strong>Módulo origen:</strong>
+  <span class="leg leg-empresa">MntEmpresas</span>
+  <span class="leg leg-ppto">Presupuesto / formularioPresupuesto</span>
+  <span class="leg leg-cliente">MntClientes</span>
+  <span class="leg leg-contacto">MntClientes_contacto</span>
+  <span class="leg leg-ubicacion">MntClientes_ubicaciones</span>
+  <span class="leg leg-linea">lineasPresupuesto / formularioLinea</span>
+  <span class="leg leg-articulo">MntArticulos (familia/artículo)</span>
+  <span class="leg leg-kit">MntKit</span>
+  <span class="leg leg-comercial">MntComerciales</span>
+  <span class="leg leg-formapago">MntFormas_Pago</span>
+  <span class="leg leg-impuesto">MntImpuesto</span>
+  <span class="leg leg-auto">Automático (calculado PHP)</span>
+</div>
+
+<!-- ═══════════════════════════════════════
+     HOJA A4
+═══════════════════════════════════════ -->
+<div class="a4">
+
+  <!-- ①④ PIE (se muestra al final en HTML, pero se repite en cada pág. del PDF) -->
+  <!-- Mostrado aquí arriba para referencia visual -->
+  <div class="bloque" style="background:#fafafa; border-bottom:1px dashed #eee;">
+    <div class="pie-pagina">
+      <div class="pie-texto">MDR Audio S.L. · CIF: B12345678 · Calle Mayor 10, 28001 Madrid · info@mdraudio.es · www.mdraudio.es · Registro Mercantil de Madrid, Tomo 12345, Folio 123, Hoja M-123456</div>
+      <div class="pie-num">Página 1 de 2</div>
+    </div>
+    <span class="tag tag-empresa" title="view/MntEmpresas/ → empresa.texto_pie_presupuesto_empresa">MntEmpresas</span>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       ① CABECERA (margen top 5mm)
+       - Se repite en cada página del PDF
+  ══════════════════════════════════════ -->
+  <div class="cabecera">
+
+    <!-- Título PRESUPUESTO -->
+    <div class="bloque">
+      <div class="titulo-presupuesto">PRESUPUESTO</div>
+      <span class="tag tag-auto" title="Texto fijo generado automáticamente por el PDF">Automático</span>
+    </div>
+
+    <!-- Grid 2 columnas: empresa ← → cliente -->
+    <div class="cab-grid">
+
+      <!-- ─── COL. IZQUIERDA: EMPRESA + CAJA INFO PPTO ─── -->
+      <div>
+
+        <!-- Logo + datos empresa -->
+        <div class="bloque" style="padding-bottom:2mm; border:1px dashed rgba(124,58,237,.25); border-radius:3px; padding:2mm; margin-bottom:2mm;">
+          <span class="tag tag-empresa" title="view/MntEmpresas/ → empresa.logotipo_empresa, nombre_comercial_empresa, cif_empresa, direccion_empresa, email_empresa, telefono_empresa, web_empresa">MntEmpresas</span>
+          <div class="empresa-logo-placeholder">LOGO EMPRESA</div>
+          <div class="empresa-nombre">MDR Audio S.L.</div>
+          <div class="empresa-cif">B12345678</div>
+          <div class="empresa-dato">Calle Mayor 10, Planta 2</div>
+          <div class="empresa-dato">28001 Madrid, Madrid</div>
+          <div class="empresa-dato">Tel: 91 234 56 78 · Móvil: 666 123 456</div>
+          <div class="empresa-dato">info@mdraudio.es</div>
+          <div class="empresa-dato">www.mdraudio.es</div>
+        </div>
+
+        <!-- Caja info presupuesto -->
+        <div class="bloque">
+          <div class="caja-info-ppto">
+            N°: 2026-0042 &nbsp;|&nbsp; F: 23/02/2026 &nbsp;|&nbsp; Val: 25/03/2026 &nbsp;|&nbsp; Ver: 1
+            <div class="ref">Ref. Cliente: REF-CLI-2026/001</div>
+          </div>
+          <span class="tag tag-ppto" title="view/Presupuesto/formularioPresupuesto.php → numero_presupuesto, fecha_presupuesto, fecha_validez_presupuesto, numero_version, numero_pedido_cliente_presupuesto">Presupuesto / formulario</span>
+        </div>
+
+        <!-- Obs de presentación -->
+        <div class="obs-presentacion">
+          Agradecemos la confianza depositada en nuestros servicios. El presente presupuesto incluye todos los medios técnicos necesarios para el correcto desarrollo del evento.
+        </div>
+
+      </div>
+
+      <!-- ─── COL. DERECHA: CLIENTE + EVENTO ─── -->
+      <div>
+
+        <!-- Box cliente -->
+        <div class="bloque">
+          <div class="box-cliente">
+            <span class="tag tag-cliente" title="view/MntClientes/ → cliente.nombre_cliente, apellido_cliente, nif_cliente, direccion_cliente, cp_cliente, poblacion_cliente, provincia_cliente, email_cliente, telefono_cliente, exento_iva_cliente">MntClientes</span>
+            <div class="titulo-seccion">CLIENTE</div>
+            <hr class="linea-verde">
+            <div class="cliente-nombre">García Martínez, Juan Antonio</div>
+            <div class="dato-row">
+              <span class="dato-label">NIF:</span>
+              <span class="dato-valor">12345678A</span>
+            </div>
+            <div class="dato-row">
+              <span class="dato-label">Dir.:</span>
+              <span class="dato-valor">Av. de la Castellana 200, Planta 8</span>
+            </div>
+            <div class="dato-row">
+              <span class="dato-label">CP/Pob.:</span>
+              <span class="dato-valor">28046 Madrid, Madrid</span>
+            </div>
+            <div class="dato-row">
+              <span class="dato-label">Email:</span>
+              <span class="dato-valor">juan.garcia@ejemplo.es</span>
+            </div>
+            <div class="dato-row">
+              <span class="dato-label">Tel.:</span>
+              <span class="dato-valor">655 789 012</span>
+            </div>
+
+            <!-- A la atención de (contacto) -->
+            <div class="bloque">
+              <span class="tag tag-contacto" title="view/MntClientes_contacto/ → contacto_cliente.nombre_contacto_cliente, telefono_contacto_cliente, email_contacto_cliente">MntClientes_contacto</span>
+              <div class="atencion-titulo">· A la atención de:</div>
+              <div class="dato-row">
+                <span class="dato-label">Nombre:</span>
+                <span class="dato-valor">María López Rodríguez</span>
+              </div>
+              <div class="dato-row">
+                <span class="dato-label">Tel.:</span>
+                <span class="dato-valor">622 345 678</span>
+              </div>
+              <div class="dato-row">
+                <span class="dato-label">Email:</span>
+                <span class="dato-valor">m.lopez@ejemplo.es</span>
+              </div>
+            </div>
+
+          </div><!-- /box-cliente -->
+        </div>
+
+        <!-- Datos del evento -->
+        <div class="bloque">
+          <div class="datos-evento">
+            <span class="tag tag-ppto" title="view/Presupuesto/formularioPresupuesto.php → nombre_evento_presupuesto, fecha_inicio_evento_presupuesto, fecha_fin_evento_presupuesto, direccion_evento_presupuesto, cp_evento_presupuesto, poblacion_evento_presupuesto, provincia_evento_presupuesto">Presupuesto / formulario</span>
+            <div class="evento-titulo">DATOS DEL EVENTO</div>
+            <div class="evento-dates-grid">
+              <div><div class="label">Inicio</div><div class="valor">15/03/2026</div></div>
+              <div><div class="label">Fin</div><div class="valor">17/03/2026</div></div>
+              <div><div class="label">Duración</div><div class="valor">3 días</div></div>
+            </div>
+            <div class="nombre-evento">Congreso Nacional de Tecnología e Innovación 2026</div>
+            <div class="ubicacion-titulo">UBICACIÓN DEL EVENTO</div>
+            <div class="ubicacion-texto">
+              <span class="bloque" style="display:inline;">
+                <span class="tag tag-ubicacion" title="view/MntClientes_ubicaciones/ → ubicacion asignada en líneas de presupuesto">MntClientes_ubicaciones</span>
+              </span>
+              Palacio de Congresos de Madrid, Av. de la Capital s/n, 28042 Madrid, Madrid
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /col derecha -->
+    </div><!-- /cab-grid -->
+
+    <!-- Observaciones de cabecera (ancho completo) -->
+    <div class="bloque">
+      <div class="obs-cabecera">
+        <strong>Nota:</strong> Este presupuesto incluye el servicio de sonorización, iluminación y video para todas las salas del congreso durante los 3 días de celebración. Los precios indicados incluyen montaje, desmontaje, operadores técnicos y transporte desde nuestras instalaciones. IVA no incluido.
+      </div>
+      <span class="tag tag-ppto" title="view/Presupuesto/formularioPresupuesto.php → presupuesto.observaciones_cabecera_presupuesto">Presupuesto / formulario</span>
+    </div>
+
+  </div><!-- /cabecera -->
+
+  <!-- ══════════════════════════════════════
+       ② TABLA DE LÍNEAS
+  ══════════════════════════════════════ -->
+  <div class="cuerpo">
+
+    <!-- Agrupación por FECHA -->
+    <div class="bloque">
+      <div class="fila-fecha">
+        Fecha de inicio: 15/03/2026 &nbsp;|&nbsp; Montaje: 14/03/2026 08:00 &nbsp;|&nbsp; Desmontaje: 17/03/2026 22:00
+      </div>
+      <span class="tag tag-linea" title="view/lineasPresupuesto/formularioLinea.php → linea_presupuesto.fecha_inicio_linea_ppto, fecha_montaje_linea_ppto, fecha_desmontaje_linea_ppto (agrupado PHP)">lineasPresupuesto</span>
+    </div>
+
+    <!-- Nombre de ubicación -->
+    <div class="bloque">
+      <div class="fila-ubicacion">📍 Sala Plenaria — Palacio de Congresos</div>
+      <span class="tag tag-ubicacion" title="view/MntClientes_ubicaciones/ → ubicacion.nombre_ubicacion">MntClientes_ubicaciones</span>
+    </div>
+
+    <!-- Tabla de líneas -->
+    <table class="tabla-lineas">
+      <thead>
+        <tr>
+          <th class="col-inicio">Inicio</th>
+          <th class="col-fin">Fin</th>
+          <th class="col-mtje">Mtje</th>
+          <th class="col-dsmtje">Dsmtje</th>
+          <th class="col-dias">Días</th>
+          <th class="col-coef">Coef.</th>
+          <th class="col-desc">Descripción</th>
+          <th class="col-cant">Cant.</th>
+          <th class="col-punit">P.Unit.</th>
+          <th class="col-dto">%Dto</th>
+          <th class="col-importe">Importe (€)</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- LÍNEA 1 — artículo normal -->
+        <tr class="bloque">
+          <td class="col-inicio">15/03/2026</td>
+          <td class="col-fin">17/03/2026</td>
+          <td class="col-mtje">14/03/2026</td>
+          <td class="col-dsmtje">17/03/2026</td>
+          <td class="col-dias">3</td>
+          <td class="col-coef">1,00</td>
+          <td class="col-desc"><strong>Sistema de sonido line-array L-Acoustics K2</strong><br><em>Sistema principal 12+4 con subwoofers KS28</em></td>
+          <td class="col-cant">1</td>
+          <td class="col-punit">2.400,00</td>
+          <td class="col-dto">10</td>
+          <td class="col-importe">7.200,00</td>
+        </tr>
+        <!-- Obs de línea -->
+        <tr>
+          <td colspan="11" class="obs-linea bloque">
+            <span class="tag tag-linea" title="view/lineasPresupuesto/formularioLinea.php → linea_presupuesto.observaciones_linea_ppto">lineasPresupuesto</span>
+            → Incluye amplificadores LA12X. Ajuste de sistema por técnico certificado L-Acoustics. Avería cubierta por servicio de guardia.
+          </td>
+        </tr>
+
+        <!-- LÍNEA 2 — KIT -->
+        <tr class="bloque">
+          <td class="col-inicio">15/03/2026</td>
+          <td class="col-fin">17/03/2026</td>
+          <td class="col-mtje">14/03/2026</td>
+          <td class="col-dsmtje">17/03/2026</td>
+          <td class="col-dias">3</td>
+          <td class="col-coef">1,00</td>
+          <td class="col-desc"><strong>KIT Iluminación Escénica Completa</strong></td>
+          <td class="col-cant">1</td>
+          <td class="col-punit">1.800,00</td>
+          <td class="col-dto">0</td>
+          <td class="col-importe">5.400,00</td>
+          <span class="tag tag-linea" title="view/lineasPresupuesto/formularioLinea.php → campos de línea (artículo KIT maestro)">lineasPresupuesto</span>
+        </tr>
+        <!-- Componentes KIT -->
+        <tr class="fila-kit bloque">
+          <td colspan="6"></td>
+          <td colspan="5">
+            <span class="tag tag-kit" title="view/MntKit/ → vista_kit_completa.nombre_articulo_componente, cantidad_kit">MntKit</span>
+            &nbsp;• 12× Moving Head Beam Robe BMFL<br>
+            &nbsp;• 8× LED PAR 54x3W RGBWA<br>
+            &nbsp;• 1× Mesa de control MA Lighting grandMA3 full size<br>
+            &nbsp;• 2× Follow Spot 1200W MSR
+          </td>
+        </tr>
+
+        <!-- LÍNEA 3 -->
+        <tr class="bloque">
+          <td class="col-inicio">15/03/2026</td>
+          <td class="col-fin">17/03/2026</td>
+          <td class="col-mtje">14/03/2026</td>
+          <td class="col-dsmtje">17/03/2026</td>
+          <td class="col-dias">3</td>
+          <td class="col-coef">1,00</td>
+          <td class="col-desc"><strong>Técnico de Sonido Senior</strong></td>
+          <td class="col-cant">2</td>
+          <td class="col-punit">320,00</td>
+          <td class="col-dto">0</td>
+          <td class="col-importe">1.920,00</td>
+          <span class="tag tag-linea" title="view/lineasPresupuesto/formularioLinea.php → campos de línea de presupuesto">lineasPresupuesto</span>
+        </tr>
+
+        <!-- Subtotal ubicación -->
+        <tr class="fila-subtotal-ubicacion bloque">
+          <td colspan="10" class="label-right">
+            <span class="tag tag-auto" title="Calculado en PHP sumando importes de líneas de la ubicación">Automático (PHP)</span>
+            Subtotal Sala Plenaria
+          </td>
+          <td class="importe-right">14.520,00 €</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- Segunda agrupación de fecha -->
+    <div class="bloque" style="margin-top:4mm;">
+      <div class="fila-fecha">
+        Fecha de inicio: 16/03/2026 &nbsp;|&nbsp; Montaje: 15/03/2026 18:00 &nbsp;|&nbsp; Desmontaje: 16/03/2026 23:00
+      </div>
+      <span class="tag tag-linea" title="view/lineasPresupuesto/formularioLinea.php → segunda agrupación de fecha">lineasPresupuesto</span>
+    </div>
+
+    <!-- Nombre de ubicación 2 -->
+    <div class="bloque">
+      <div class="fila-ubicacion">📍 Sala VIP — Planta 1</div>
+      <span class="tag tag-ubicacion" title="view/MntClientes_ubicaciones/ → segunda ubicación">MntClientes_ubicaciones</span>
+    </div>
+
+    <table class="tabla-lineas">
+      <thead>
+        <tr>
+          <th class="col-inicio">Inicio</th>
+          <th class="col-fin">Fin</th>
+          <th class="col-mtje">Mtje</th>
+          <th class="col-dsmtje">Dsmtje</th>
+          <th class="col-dias">Días</th>
+          <th class="col-coef">Coef.</th>
+          <th class="col-desc">Descripción</th>
+          <th class="col-cant">Cant.</th>
+          <th class="col-punit">P.Unit.</th>
+          <th class="col-dto">%Dto</th>
+          <th class="col-importe">Importe (€)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bloque">
+          <td class="col-inicio">16/03/2026</td>
+          <td class="col-fin">16/03/2026</td>
+          <td class="col-mtje">15/03/2026</td>
+          <td class="col-dsmtje">16/03/2026</td>
+          <td class="col-dias">1</td>
+          <td class="col-coef">1,00</td>
+          <td class="col-desc"><strong>Sistema de sonido compacto — Sala VIP</strong><br>d&amp;b audiotechnik E6 + amplificadores D80</td>
+          <td class="col-cant">1</td>
+          <td class="col-punit">650,00</td>
+          <td class="col-dto">10</td>
+          <td class="col-importe">585,00</td>
+          <span class="tag tag-linea" title="view/lineasPresupuesto/formularioLinea.php">lineasPresupuesto</span>
+        </tr>
+        <!-- Subtotal ubicación 2 -->
+        <tr class="fila-subtotal-ubicacion bloque">
+          <td colspan="10" class="label-right">
+            <span class="tag tag-auto" title="Calculado en PHP">Automático (PHP)</span>
+            Subtotal Sala VIP
+          </td>
+          <td class="importe-right">585,00 €</td>
+        </tr>
+        <!-- Subtotal fecha -->
+        <tr class="fila-subtotal-fecha bloque">
+          <td colspan="10" style="text-align:right;">
+            <span class="tag tag-empresa" title="view/MntEmpresas/ → empresa.mostrar_subtotales_fecha_presupuesto_empresa (configurable por empresa)">MntEmpresas (config)</span>
+            Subtotal Fecha 16/03/2026
+          </td>
+          <td style="text-align:right; font-weight:bold;">585,00 €</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div><!-- /cuerpo -->
+
+  <!-- ══════════════════════════════════════
+       ③ TOTALES
+  ══════════════════════════════════════ -->
+  <div class="bloque-totales bloque">
+    <hr style="border:none; border-top:0.3px solid #C8C8C8; margin-bottom:3mm;">
+
+    <table class="totales-tabla">
+      <!-- Subtotal (antes descuento global) -->
+      <tr class="bloque">
+        <td class="tot-espacio">
+          <span class="tag tag-auto" title="Suma de importes de todas las líneas antes de descuentos. Visible solo si empresa.permitir_descuentos_lineas_empresa = 1">Automático (PHP)</span>
+        </td>
+        <td class="tot-label">Subtotal</td>
+        <td class="tot-valor">15.105,00 €</td>
+      </tr>
+      <!-- Descuento global -->
+      <tr class="bloque">
+        <td class="tot-espacio">
+          <span class="tag tag-ppto" title="view/Presupuesto/formularioPresupuesto.php → presupuesto.descuento_presupuesto (campo en formulario presupuesto)">Presupuesto / formulario</span>
+        </td>
+        <td class="tot-label">Descuento (5%)</td>
+        <td class="tot-valor tot-valor-rojo">−755,25 €</td>
+      </tr>
+      <!-- Base imponible -->
+      <tr>
+        <td class="tot-espacio"></td>
+        <td class="tot-label">Base Imponible</td>
+        <td class="tot-valor">14.349,75 €</td>
+      </tr>
+      <!-- Desglose IVA (si >1 tipo) -->
+      <tr>
+        <td class="tot-espacio" colspan="3">
+          <div class="desglose-iva bloque">
+            <span class="tag tag-impuesto" title="view/MntImpuesto/ → impuesto.porcentaje_iva asignado en cada línea de presupuesto">MntImpuesto</span>
+            &nbsp;&nbsp;Base IVA 21%: 13.349,75 € &nbsp;|&nbsp; IVA 21%: 2.803,45 €<br>
+            &nbsp;&nbsp;Base IVA 10%: 1.000,00 € &nbsp;|&nbsp; IVA 10%: 100,00 €
+          </div>
+        </td>
+      </tr>
+      <!-- Total IVA -->
+      <tr>
+        <td class="tot-espacio"></td>
+        <td class="tot-label">Total IVA</td>
+        <td class="tot-valor">2.903,45 €</td>
+      </tr>
+      <!-- TOTAL FINAL -->
+      <tr class="tot-final bloque">
+        <td class="tot-espacio-final">
+          <span class="tag tag-auto" title="Calculado en PHP: Base Imponible + Total IVA">Automático (PHP)</span>
+        </td>
+        <td class="tot-label-final">TOTAL:</td>
+        <td class="tot-valor-final">17.253,20 €</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       ④ SECCIONES POST-TOTALES
+  ══════════════════════════════════════ -->
+  <div class="post-totales">
+
+    <!-- Exención IVA (solo si cliente.exento_iva_cliente = 1) -->
+    <div class="exencion-iva bloque">
+      <span class="tag tag-cliente" title="view/MntClientes/ → cliente.exento_iva_cliente, cliente.justificacion_exencion_iva_cliente">MntClientes</span>
+      <div class="exencion-iva-titulo">⚠ INFORMACIÓN FISCAL — CLIENTE EXENTO DE IVA</div>
+      <div class="exencion-iva-texto">
+        Exención de IVA al amparo del Artículo 20.Uno.9.º de la Ley 37/1992 del Impuesto sobre el Valor Añadido. El cliente ha acreditado su condición de entidad sin fines lucrativos mediante certificado de la AEAT de fecha 01/01/2026. Referencia expediente: EXE-2026-0023.
+      </div>
+    </div>
+
+    <!-- Forma de pago + datos bancarios -->
+    <div class="forma-pago bloque">
+      <span class="tag tag-formapago" title="view/MntFormas_Pago/ → forma_pago.nombre_forma_pago + metodo_pago.nombre_metodo. Asociado al presupuesto en view/Presupuesto/formularioPresupuesto.php → id_forma_pago, id_metodo">MntFormas_Pago + Presupuesto</span>
+      <div class="forma-pago-label">FORMA DE PAGO:</div>
+      <div class="forma-pago-texto">
+        Método: Transferencia Bancaria &nbsp;|&nbsp; Anticipo 30% a la firma: <strong>5.175,96 €</strong><br>
+        Pago final 70% a la finalización del evento: <strong>12.077,24 €</strong>
+      </div>
+    </div>
+
+    <div class="datos-bancarios bloque">
+      <span class="tag tag-empresa" title="view/MntEmpresas/ → empresa.iban_empresa, empresa.swift_empresa, empresa.banco_empresa (visible solo si pago = transferencia)">MntEmpresas</span>
+      <div class="db-titulo">DATOS BANCARIOS PARA TRANSFERENCIA</div>
+      <div class="db-row"><span class="db-label">Banco:</span><span class="db-valor">Banco Santander S.A.</span></div>
+      <div class="db-row"><span class="db-label">IBAN:</span><span class="db-valor">ES76 0049 1234 5678 9012 3456</span></div>
+      <div class="db-row"><span class="db-label">SWIFT:</span><span class="db-valor">BSCHESMMXXX</span></div>
+    </div>
+
+    <!-- Observaciones de familias y artículos -->
+    <div class="bloque-obs bloque">
+      <span class="tag tag-articulo" title="view/MntArticulos/ → familia.observaciones_presupuesto_familia (*) y articulo.notas_presupuesto_articulo (**)">MntArticulos (familia / artículo)</span>
+      <div class="obs-titulo">OBSERVACIONES</div>
+      <div class="obs-item">
+        <strong>*</strong> <em>Familia: Sistemas de Sonido Profesional</em><br>
+        Todos los equipos de audio se suministran con garantía de funcionamiento durante el evento. En caso de avería, se procederá a la sustitución inmediata sin cargo adicional. Los equipos deberán operarse únicamente por personal técnico cualificado.
+      </div>
+      <div class="obs-item">
+        <strong>**</strong> <em>Artículo: L-Acoustics K2</em><br>
+        Sistema certificado para salas de más de 500 personas. Cumple normativa europea EN 60268-1. Proceso de verificación de sistema (System Check) incluido en el precio. Manual de operación disponible en soporte digital.
+      </div>
+      <div class="obs-item">
+        <strong>**</strong> <em>Artículo: KIT Iluminación Escénica Completa</em><br>
+        Kit de iluminación montado y testado en nuestras instalaciones. Incluye programación básica de show estática. Personalización de escenas bajo petición con coste adicional de 200€/hora.
+      </div>
+    </div>
+
+    <!-- Observaciones de pie — DESTACADAS -->
+    <div class="obs-pie-destacadas bloque">
+      <span class="tag tag-ppto" title="view/Presupuesto/formularioPresupuesto.php → presupuesto.observaciones_pie_presupuesto. Switch 'destacar_observaciones_pie_presupuesto' controla si aparece con caja destacada (=1) o integrado en obs. anteriores (=0)">Presupuesto / formulario</span>
+      <hr class="obs-pie-linea-sup">
+      <div class="obs-pie-caja">
+        Este presupuesto tiene una validez de 30 días desde su fecha de emisión. Los precios pueden estar sujetos a variaciones por costes de transporte en función de la distancia definitiva al lugar del evento. Cualquier modificación del presupuesto deberá ser acordada por escrito entre ambas partes. MDR Audio S.L. se reserva el derecho de subcontratar servicios parciales manteniendo la responsabilidad total frente al cliente.
+      </div>
+      <hr class="obs-pie-linea-inf">
+    </div>
+
+  </div><!-- /post-totales -->
+
+  <!-- ══════════════════════════════════════
+       ⑤ FIRMAS
+  ══════════════════════════════════════ -->
+  <div class="bloque-firmas">
+
+    <!-- Casilla izquierda: empresa / comercial -->
+    <div class="casilla-firma bloque">
+      <span class="tag tag-comercial" title="view/MntComerciales/ → comercial.firma_comercial (imagen base64). Título configurable en view/MntEmpresas/ → empresa.cabecera_firma_presupuesto_empresa">MntComerciales + MntEmpresas</span>
+      <div class="firma-titulo">DEPARTAMENTO COMERCIAL</div>
+      <div class="firma-imagen-placeholder">[ Firma digital del comercial ]</div>
+      <hr class="firma-linea" style="margin-top:0;">
+      <div class="firma-firmante">Carlos Ruiz Fernández — Responsable Comercial</div>
+      <div class="firma-fecha">Fecha: 23/02/2026</div>
+    </div>
+
+    <!-- Casilla derecha: cliente -->
+    <div class="casilla-firma bloque">
+      <span class="tag tag-auto" title="Generado automáticamente. El cliente firma el documento físico o digitalmente fuera del ERP.">Automático</span>
+      <div class="firma-titulo">VISTO BUENO DEL CLIENTE</div>
+      <hr class="firma-linea">
+      <div class="firma-firmante">Firma del Cliente</div>
+      <div class="firma-fecha">Fecha: ___/___/______</div>
+    </div>
+
+  </div><!-- /bloque-firmas -->
+
+  <!-- ══════════════════════════════════════
+       PIE (repetición visual al final de página)
+  ══════════════════════════════════════ -->
+  <div class="bloque" style="background:#fafafa; border-top:1px dashed #eee; margin-top:8mm;">
+    <div class="pie-pagina">
+      <div class="pie-texto">MDR Audio S.L. · CIF: B12345678 · Calle Mayor 10, 28001 Madrid · info@mdraudio.es · www.mdraudio.es · Registro Mercantil de Madrid, Tomo 12345, Folio 123, Hoja M-123456</div>
+      <div class="pie-num">Página 2 de 2</div>
+    </div>
+    <span class="tag tag-empresa" title="view/MntEmpresas/ → empresa.texto_pie_presupuesto_empresa">MntEmpresas</span>
+  </div>
+
+</div><!-- /a4 -->
+
+<!-- ─────────────────────────────────────────
+     NOTA INFORMATIVA
+───────────────────────────────────────── -->
+<div class="nota-info">
+  <strong>📋 Cómo leer este documento:</strong><br>
+  Cada bloque del PDF lleva una <strong>etiqueta de color</strong> en su esquina superior derecha indicando desde qué pantalla del ERP se gestionan esos datos.<br>
+  • <strong>Pasa el ratón</strong> sobre cada etiqueta para ver el campo exacto de la base de datos / vista PHP.<br>
+  • Las etiquetas en <strong>gris "Automático"</strong> indican bloques calculados por PHP sin intervención directa del usuario.<br>
+  • Archivo generado como referencia de trazabilidad para el PDF <code>impresionpresupuesto_m2_pdf_es.php</code>.
+</div>
+
+</body>
+</html>
