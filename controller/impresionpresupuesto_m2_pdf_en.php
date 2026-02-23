@@ -1045,7 +1045,9 @@ switch ($_GET["op"]) {
                                     $pdf->Cell(10, 4, '', 0, 0, 'C');
                                     
                                     $cantidad_comp = $comp['cantidad_kit'] ?? $comp['total_componente_kit'] ?? 1;
-                                    $nombre_comp = $comp['nombre_articulo_componente'] ?? $comp['nombre_articulo'] ?? 'No name';
+                                    $nombre_comp = (isset($comp['name_articulo_componente']) && trim($comp['name_articulo_componente']) !== '')
+                                        ? $comp['name_articulo_componente']
+                                        : ($comp['nombre_articulo_componente'] ?? $comp['nombre_articulo'] ?? 'No name');
                                     
                                     $pdf->Cell($ancho_descripcion, 4, '    • ' . $cantidad_comp . 'x ' . $nombre_comp, 0, 0, 'L');
                                     $pdf->Cell(12, 4, '', 0, 0, 'C');
