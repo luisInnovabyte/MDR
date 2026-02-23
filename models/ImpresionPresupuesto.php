@@ -82,7 +82,9 @@ class ImpresionPresupuesto
                         p.cp_evento_presupuesto,
                         p.provincia_evento_presupuesto,
                         p.observaciones_cabecera_presupuesto,
+                        p.observaciones_cabecera_ingles_presupuesto,
                         p.observaciones_pie_presupuesto,
+                        p.observaciones_pie_ingles_presupuesto,
                         p.destacar_observaciones_pie_presupuesto,
                         p.version_actual_presupuesto,
                         p.descuento_presupuesto,
@@ -1010,6 +1012,199 @@ class ImpresionPresupuesto
                 'error'
             );
             return false;
+        }
+    }
+
+    /**
+     * Obtener líneas del presupuesto para impresión en inglés
+     *
+     * Igual que get_lineas_impresion() pero incluye los campos EN:
+     *   - name_articulo (nombre del artículo en inglés)
+     *   - observaciones_linea_ppto_en (observaciones de línea en inglés)
+     * Si los campos EN están vacíos, el fallback se resuelve en PHP en el controller.
+     *
+     * @param int      $id_presupuesto ID del presupuesto
+     * @param int|null $numero_version Versión concreta o null para la versión actual
+     * @return array|false Array de líneas o false si hay error
+     */
+    public function get_lineas_impresion_en($id_presupuesto, $numero_version = null)
+    {
+        try {
+            $version_sql_condition = is_null($numero_version)
+                ? "(SELECT version_actual_presupuesto FROM presupuesto WHERE id_presupuesto = ?)"
+                : "?";
+
+            $sql = "SELECT
+                        vlpc.id_linea_ppto,
+                        vlpc.fecha_inicio_linea_ppto,
+                        vlpc.fecha_fin_linea_ppto,
+                        vlpc.fecha_montaje_linea_ppto,
+                        vlpc.fecha_desmontaje_linea_ppto,
+                        vlpc.dias_linea,
+                        vlpc.id_ubicacion,
+                        vlpc.nombre_ubicacion,
+                        vlpc.ubicacion_completa_agrupacion,
+                        vlpc.nombre_articulo,
+                        vlpc.codigo_articulo,
+                        vlpc.id_articulo,
+                        vlpc.es_kit_articulo,
+                        vlpc.ocultar_detalle_kit_linea_ppto,
+                        vlpc.cantidad_linea_ppto,
+                        vlpc.precio_unitario_linea_ppto,
+                        vlpc.descuento_linea_ppto,
+                        vlpc.porcentaje_iva_linea_ppto,
+                        vlpc.valor_coeficiente_linea_ppto,
+                        vlpc.base_imponible,
+                        vlpc.importe_iva,
+                        vlpc.total_linea,
+                        vlpc.tipo_linea_ppto,
+                        vlpc.nivel_jerarquia,
+                        vlpc.descripcion_linea_ppto,
+                        vlpc.observaciones_linea_ppto,
+                        COALESCE(NULLIF(TRIM(a.name_articulo), ''), vlpc.nombre_articulo) AS name_articulo_display,
+                        COALESCE(NULLIF(TRIM(lp.observaciones_linea_ppto_en), ''), vlpc.observaciones_linea_ppto) AS observaciones_linea_ppto_en
+                    FROM v_linea_presupuesto_calculada vlpc
+                    LEFT JOIN linea_presupuesto lp ON vlpc.id_linea_ppto = lp.id_linea_ppto
+                    LEFT JOIN articulo a ON vlpc.id_articulo = a.id_articulo
+                    WHERE vlpc.id_presupuesto = ?
+                    AND vlpc.numero_version_presupuesto = $version_sql_condition
+                    AND vlpc.activo_linea_ppto = 1
+                    AND vlpc.mostrar_en_presupuesto = 1
+                    ORDER BY
+                        vlpc.fecha_inicio_linea_ppto ASC,
+                        vlpc.id_ubicacion ASC,
+                        vlpc.nombre_articulo ASC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute(is_null($numero_version)
+                ? [$id_presupuesto, $id_presupuesto]
+                : [$id_presupuesto, $numero_version]);
+
+            $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_impresion_en',
+                "Líneas EN obtenidas para presupuesto ID: $id_presupuesto - Total: " . count($lineas),
+                'info'
+            );
+
+            return $lineas;
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_impresion_en',
+                "Error al obtener líneas EN: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Obtener observaciones de familias y artículos en inglés
+     *
+     * Igual que get_observaciones_presupuesto() pero con campos EN:
+     *   - observations_budget_familia (fallback: observaciones_presupuesto_familia)
+     *   - notes_budget_articulo       (fallback: notas_presupuesto_articulo)
+     *   - name_articulo               (fallback: nombre_articulo)
+     * La condición WHERE incluye tanto el campo EN como el ES para no perder filas.
+     *
+     * @param int      $id_presupuesto ID del presupuesto
+     * @param int|null $numero_version Versión concreta o null para la versión actual
+     * @return array Array de observaciones ordenadas
+     */
+    public function get_observaciones_presupuesto_en($id_presupuesto, $numero_version = null)
+    {
+        try {
+            $pv_version_condition = is_null($numero_version) ? "p.version_actual_presupuesto" : "?";
+            $sql = "
+            -- Observaciones de FAMILIAS (versión EN)
+            SELECT
+                'familia' AS tipo_observacion,
+                f.nombre_familia,
+                NULL AS nombre_articulo,
+                COALESCE(NULLIF(TRIM(f.observations_budget_familia), ''), f.observaciones_presupuesto_familia) AS observacion_en,
+                f.orden_obs_familia AS orden_observacion
+            FROM presupuesto p
+            JOIN presupuesto_version pv ON p.id_presupuesto = pv.id_presupuesto
+                AND pv.numero_version_presupuesto = $pv_version_condition
+            JOIN linea_presupuesto lp ON pv.id_version_presupuesto = lp.id_version_presupuesto
+                AND lp.activo_linea_ppto = 1
+            JOIN articulo a ON lp.id_articulo = a.id_articulo
+                AND a.activo_articulo = 1
+            JOIN familia f ON a.id_familia = f.id_familia
+                AND f.activo_familia = 1
+            WHERE p.id_presupuesto = ?
+              AND p.activo_presupuesto = 1
+              AND p.mostrar_obs_familias_presupuesto = 1
+              AND (
+                  (f.observations_budget_familia IS NOT NULL AND TRIM(f.observations_budget_familia) != '')
+                  OR
+                  (f.observaciones_presupuesto_familia IS NOT NULL AND TRIM(f.observaciones_presupuesto_familia) != '')
+              )
+            GROUP BY f.id_familia, f.nombre_familia, f.observations_budget_familia, f.observaciones_presupuesto_familia, f.orden_obs_familia
+
+            UNION ALL
+
+            -- Observaciones de ARTÍCULOS (versión EN)
+            SELECT
+                'articulo' AS tipo_observacion,
+                NULL AS nombre_familia,
+                COALESCE(NULLIF(TRIM(a.name_articulo), ''), a.nombre_articulo) AS nombre_articulo,
+                COALESCE(NULLIF(TRIM(a.notes_budget_articulo), ''), a.notas_presupuesto_articulo) AS observacion_en,
+                a.orden_obs_articulo AS orden_observacion
+            FROM presupuesto p
+            JOIN presupuesto_version pv ON p.id_presupuesto = pv.id_presupuesto
+                AND pv.numero_version_presupuesto = $pv_version_condition
+            JOIN linea_presupuesto lp ON pv.id_version_presupuesto = lp.id_version_presupuesto
+                AND lp.activo_linea_ppto = 1
+            JOIN articulo a ON lp.id_articulo = a.id_articulo
+                AND a.activo_articulo = 1
+            WHERE p.id_presupuesto = ?
+              AND p.activo_presupuesto = 1
+              AND p.mostrar_obs_articulos_presupuesto = 1
+              AND (
+                  (a.notes_budget_articulo IS NOT NULL AND TRIM(a.notes_budget_articulo) != '')
+                  OR
+                  (a.notas_presupuesto_articulo IS NOT NULL AND TRIM(a.notas_presupuesto_articulo) != '')
+              )
+              AND lp.mostrar_obs_articulo_linea_ppto = 1
+            GROUP BY a.id_articulo, a.name_articulo, a.nombre_articulo, a.notes_budget_articulo, a.notas_presupuesto_articulo, a.orden_obs_articulo
+
+            ORDER BY orden_observacion, tipo_observacion";
+
+            $stmt = $this->conexion->prepare($sql);
+            if (!is_null($numero_version)) {
+                $stmt->execute([$numero_version, $id_presupuesto, $numero_version, $id_presupuesto]);
+            } else {
+                $stmt->execute([$id_presupuesto, $id_presupuesto]);
+            }
+
+            $observaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_observaciones_presupuesto_en',
+                "Observaciones EN obtenidas para presupuesto ID: $id_presupuesto - Total: " . count($observaciones),
+                'info'
+            );
+
+            return $observaciones;
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_observaciones_presupuesto_en',
+                "Error al obtener observaciones EN: " . $e->getMessage(),
+                'error'
+            );
+            return [];
         }
     }
 

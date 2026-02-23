@@ -650,7 +650,8 @@ $(document).ready(function () {
         }
         
         if (idioma === 'ingles') {
-            Swal.fire('Próximamente', 'El presupuesto en inglés estará disponible pronto', 'info');
+            operacion = 'cli_eng';
+            generarImpresion('impresionpresupuesto_m2_pdf_en.php');
             return;
         }
         

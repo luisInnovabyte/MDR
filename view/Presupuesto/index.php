@@ -337,10 +337,9 @@
                             </label>
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="idioma" id="idioma_ingles" value="ingles" disabled>
-                            <label class="form-check-label text-muted" for="idioma_ingles">
+                            <input class="form-check-input" type="radio" name="idioma" id="idioma_ingles" value="ingles">
+                            <label class="form-check-label" for="idioma_ingles">
                                 <strong>English</strong> <span class="ms-1">🇬🇧</span>
-                                <span class="badge bg-secondary ms-1" style="font-size:.62rem;">Próximamente</span>
                             </label>
                         </div>
 
