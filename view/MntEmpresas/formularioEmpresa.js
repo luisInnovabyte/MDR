@@ -176,6 +176,16 @@ $(document).ready(function () {
                                         obsLineaAlineadas === true;
                     $('#obs_linea_alineadas_descripcion_empresa').prop('checked', marcarObsLinea);
 
+                    // Configuración PDF - Permitir descuentos en líneas
+                    var permitirDescuentos = data.permitir_descuentos_lineas_empresa;
+                    // Default TRUE: si es null/undefined se asume que sí permite (backward compatibility)
+                    var marcarPermitirDescuentos = permitirDescuentos === null ||
+                                                   permitirDescuentos === undefined ||
+                                                   permitirDescuentos == 1 ||
+                                                   permitirDescuentos === '1' ||
+                                                   permitirDescuentos === true;
+                    $('#permitir_descuentos_lineas_empresa').prop('checked', marcarPermitirDescuentos);
+
                     // Estado activo
                     $('#activo_empresa_hidden').val(data.activo_empresa);
                     $('#activo_empresa_display').prop('checked', data.activo_empresa == 1);
@@ -324,6 +334,9 @@ $(document).ready(function () {
         // Configuración PDF Presupuesto - Alineación observaciones de línea
         var obs_linea_alineadas_descripcion_empresa = $('#obs_linea_alineadas_descripcion_empresa').is(':checked') ? '1' : '0';
 
+        // Configuración PDF Presupuesto - Permitir descuentos en líneas
+        var permitir_descuentos_lineas_empresa = $('#permitir_descuentos_lineas_empresa').is(':checked') ? '1' : '0';
+
         // Estado
         var activo_empresa;
         if (id_empresa) {
@@ -356,6 +369,7 @@ $(document).ready(function () {
             mostrar_obs_familias_articulos_albaran_empresa,
             mostrar_obs_pie_albaran_empresa,
             obs_linea_alineadas_descripcion_empresa,
+            permitir_descuentos_lineas_empresa,
             activo_empresa
         );
     });
@@ -502,7 +516,8 @@ $(document).ready(function () {
             mostrar_obs_familias_articulos_albaran_empresa: params[47],
             mostrar_obs_pie_albaran_empresa: params[48],
             obs_linea_alineadas_descripcion_empresa: params[49],
-            activo_empresa: params[50]
+            permitir_descuentos_lineas_empresa: params[50],
+            activo_empresa: params[51]
         };
         
         console.log('💾 Datos a guardar:', datosEnvio);

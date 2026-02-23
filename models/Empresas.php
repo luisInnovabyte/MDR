@@ -77,7 +77,8 @@ class Empresas
                         serie_presupuesto_empresa,
                         numero_actual_presupuesto_empresa,
                         dias_validez_presupuesto_empresa,
-                        logotipo_empresa
+                        logotipo_empresa,
+                        permitir_descuentos_lineas_empresa
                     FROM empresa 
                     WHERE empresa_ficticia_principal = TRUE 
                     AND activo_empresa = TRUE";
@@ -260,7 +261,8 @@ class Empresas
         $mostrar_kits_albaran_empresa = 1,
         $mostrar_obs_familias_articulos_albaran_empresa = 1,
         $mostrar_obs_pie_albaran_empresa = 1,
-        $obs_linea_alineadas_descripcion_empresa = 0
+        $obs_linea_alineadas_descripcion_empresa = 0,
+        $permitir_descuentos_lineas_empresa = 1
     ) {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
@@ -272,6 +274,7 @@ class Empresas
             $mostrar_obs_familias_articulos_albaran_empresa = intval($mostrar_obs_familias_articulos_albaran_empresa) ? 1 : 0;
             $mostrar_obs_pie_albaran_empresa = intval($mostrar_obs_pie_albaran_empresa) ? 1 : 0;
             $obs_linea_alineadas_descripcion_empresa = intval($obs_linea_alineadas_descripcion_empresa) ? 1 : 0;
+            $permitir_descuentos_lineas_empresa = intval($permitir_descuentos_lineas_empresa) ? 1 : 0;
 
             $sql = "INSERT INTO empresa (
                 codigo_empresa, nombre_empresa, nombre_comercial_empresa, ficticia_empresa, empresa_ficticia_principal,
@@ -295,6 +298,7 @@ class Empresas
                 mostrar_obs_familias_articulos_albaran_empresa,
                 mostrar_obs_pie_albaran_empresa,
                 obs_linea_alineadas_descripcion_empresa,
+                permitir_descuentos_lineas_empresa,
                 activo_empresa, created_at_empresa, updated_at_empresa
             ) VALUES (
                 ?, ?, ?, ?, ?,
@@ -315,6 +319,7 @@ class Empresas
                 ?,
                 ?,
                 ?, ?, ?,
+                ?,
                 ?,
                 1, NOW(), NOW()
             )";
@@ -371,6 +376,7 @@ class Empresas
             $stmt->bindValue(49, $mostrar_obs_familias_articulos_albaran_empresa, PDO::PARAM_INT);
             $stmt->bindValue(50, $mostrar_obs_pie_albaran_empresa, PDO::PARAM_INT);
             $stmt->bindValue(51, $obs_linea_alineadas_descripcion_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(52, $permitir_descuentos_lineas_empresa, PDO::PARAM_INT);
 
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId();
@@ -449,7 +455,8 @@ class Empresas
         $mostrar_kits_albaran_empresa = 1,
         $mostrar_obs_familias_articulos_albaran_empresa = 1,
         $mostrar_obs_pie_albaran_empresa = 1,
-        $obs_linea_alineadas_descripcion_empresa = 0
+        $obs_linea_alineadas_descripcion_empresa = 0,
+        $permitir_descuentos_lineas_empresa = 1
     ) {
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
@@ -461,6 +468,7 @@ class Empresas
             $mostrar_obs_familias_articulos_albaran_empresa = intval($mostrar_obs_familias_articulos_albaran_empresa) ? 1 : 0;
             $mostrar_obs_pie_albaran_empresa = intval($mostrar_obs_pie_albaran_empresa) ? 1 : 0;
             $obs_linea_alineadas_descripcion_empresa = intval($obs_linea_alineadas_descripcion_empresa) ? 1 : 0;
+            $permitir_descuentos_lineas_empresa = intval($permitir_descuentos_lineas_empresa) ? 1 : 0;
 
             $sql = "UPDATE empresa SET 
                 codigo_empresa = ?, nombre_empresa = ?, nombre_comercial_empresa = ?, ficticia_empresa = ?, empresa_ficticia_principal = ?,
@@ -484,6 +492,7 @@ class Empresas
                 mostrar_obs_familias_articulos_albaran_empresa = ?,
                 mostrar_obs_pie_albaran_empresa = ?,
                 obs_linea_alineadas_descripcion_empresa = ?,
+                permitir_descuentos_lineas_empresa = ?,
                 updated_at_empresa = NOW()
                 WHERE id_empresa = ?";
             
@@ -539,7 +548,8 @@ class Empresas
             $stmt->bindValue(49, $mostrar_obs_familias_articulos_albaran_empresa, PDO::PARAM_INT);
             $stmt->bindValue(50, $mostrar_obs_pie_albaran_empresa, PDO::PARAM_INT);
             $stmt->bindValue(51, $obs_linea_alineadas_descripcion_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(52, $id_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(52, $permitir_descuentos_lineas_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(53, $id_empresa, PDO::PARAM_INT);
 
             $stmt->execute();
 

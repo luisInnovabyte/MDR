@@ -549,6 +549,11 @@ switch ($_GET["op"]) {
             $mostrar_subtotales_fecha = !isset($datos_empresa['mostrar_subtotales_fecha_presupuesto_empresa'])
                 ? true  // Default si no existe el campo
                 : ($datos_empresa['mostrar_subtotales_fecha_presupuesto_empresa'] == 1);
+
+            // Configuración: permitir descuentos en líneas (columna %DescCli)
+            $permitir_descuentos = !isset($datos_empresa['permitir_descuentos_lineas_empresa'])
+                ? true
+                : ($datos_empresa['permitir_descuentos_lineas_empresa'] == 1);
             
             // 4. Validar logo de empresa
             $mostrar_logo = false;
@@ -961,14 +966,25 @@ switch ($_GET["op"]) {
                     
                     // Ajustar ancho de Descripción según columnas visibles (ocultar: +26mm = 13+13)
                     $ancho_descripcion = $ocultar_cols ? 63 : 37;
+                    // Si no se permiten descuentos de cliente, recuperar los mm de columnas ocultas:
+                    // +10mm de %DescCli + 20mm de Importe(€)
+                    if (!$permitir_descuentos) {
+                        $ancho_descripcion += 30;
+                    }
                     $pdf->Cell($ancho_descripcion, 6, 'Descripción', 1, 0, 'C', 1);
                     
                     $pdf->Cell(12, 6, 'Cant.', 1, 0, 'C', 1);
                     $pdf->Cell(15, 6, 'P.Unit.', 1, 0, 'C', 1);
-                    $pdf->Cell(10, 6, '%Dto', 1, 0, 'C', 1);
-                    $pdf->Cell(20, 6, 'Importe(€)', 1, 0, 'C', 1);
-                    $pdf->Cell(8,  6, '%Htl', 1, 0, 'C', 1);
-                    $pdf->Cell(20, 6, 'Imp. Hotel(€)', 1, 1, 'C', 1);
+                    if ($permitir_descuentos) {
+                        $pdf->SetFont('helvetica', 'B', 7);
+                        $pdf->Cell(10, 6, '%D.Cli', 1, 0, 'C', 1);
+                        $pdf->SetFont('helvetica', 'B', 8);
+                    }
+                    if ($permitir_descuentos) {
+                        $pdf->Cell(20, 6, 'Importe(€)', 1, 0, 'C', 1);
+                    }
+                    $pdf->Cell(8,  6, '%Dto', 1, 0, 'C', 1);
+                    $pdf->Cell(20, 6, 'Imp.final(€)', 1, 1, 'C', 1);
                     $pdf->SetDrawColor(0, 0, 0); // Restaurar color negro
                     
                     // Datos de líneas de esta ubicación
@@ -1059,8 +1075,12 @@ switch ($_GET["op"]) {
                         
                         $pdf->Cell(12, $altura_fila, number_format($cantidad, 0), 1, 0, 'C');
                         $pdf->Cell(15, $altura_fila, number_format($precio_unitario, 2, ',', '.'), 1, 0, 'R');
-                        $pdf->Cell(10, $altura_fila, number_format($descuento, 0), 1, 0, 'C');
-                        $pdf->Cell(20, $altura_fila, number_format($base_imponible, 2, ',', '.'), 1, 0, 'R');
+                        if ($permitir_descuentos) {
+                            $pdf->Cell(10, $altura_fila, number_format($descuento, 0), 1, 0, 'C');
+                        }
+                        if ($permitir_descuentos) {
+                            $pdf->Cell(20, $altura_fila, number_format($base_imponible, 2, ',', '.'), 1, 0, 'R');
+                        }
                         
                         // Celdas hotel: %Htl e Imp. Hotel
                         $aplica_dto_hotel = ($linea['permitir_descuentos_articulo'] != 0)
@@ -1222,17 +1242,19 @@ switch ($_GET["op"]) {
             $pdf->Line(145, $pdf->GetY(), 200, $pdf->GetY());
             $pdf->Ln(3);
             
-            // Subtotal bruto (antes de cualquier descuento)
-            $pdf->SetFont('helvetica', '', 9);
-            $pdf->SetFillColor(248, 249, 250);
-            $pdf->SetDrawColor(220, 220, 220);
-            $pdf->Cell(144, 6, '', 0, 0);
-            $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
-            $pdf->SetFont('helvetica', 'B', 9);
-            $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+            // Subtotal bruto (antes de cualquier descuento) — solo si se permiten descuentos
+            if ($permitir_descuentos) {
+                $pdf->SetFont('helvetica', '', 9);
+                $pdf->SetFillColor(248, 249, 250);
+                $pdf->SetDrawColor(220, 220, 220);
+                $pdf->Cell(144, 6, '', 0, 0);
+                $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
+                $pdf->SetFont('helvetica', 'B', 9);
+                $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+            }
             
-            // Descuento de línea (rojo, solo si hay)
-            if ($total_descuentos > 0) {
+            // Descuento de línea (rojo, solo si hay y se permiten descuentos)
+            if ($permitir_descuentos && $total_descuentos > 0) {
                 $pdf->SetFont('helvetica', '', 9);
                 $pdf->SetFillColor(248, 249, 250);
                 $pdf->SetDrawColor(220, 220, 220);
@@ -1244,15 +1266,15 @@ switch ($_GET["op"]) {
                 $pdf->SetTextColor(0, 0, 0);
             }
             
-            // Descuento Hotel (naranja, solo si pct_hotel > 0)
-            if ($pct_hotel > 0 && $total_descuento_hotel > 0) {
+            // Descuento Hotel (naranja, solo si pct_hotel > 0 y se permiten descuentos)
+            if ($permitir_descuentos && $pct_hotel > 0 && $total_descuento_hotel > 0) {
                 $pdf->SetFont('helvetica', '', 9);
                 $pdf->SetFillColor(248, 249, 250);
                 $pdf->SetDrawColor(220, 220, 220);
                 $pdf->Cell(144, 6, '', 0, 0);
                 $label_dto_hotel = ($pct_hotel == intval($pct_hotel))
-                    ? 'Dto. Hotel (' . intval($pct_hotel) . '%):'
-                    : 'Dto. Hotel (' . number_format($pct_hotel, 2, ',', '.') . '%):';
+                    ? 'DtoCliente (' . intval($pct_hotel) . '%):'
+                    : 'DtoCliente (' . number_format($pct_hotel, 2, ',', '.') . '%):';
                 $pdf->Cell(30, 6, $label_dto_hotel, 1, 0, 'R', 1);
                 $pdf->SetFont('helvetica', 'B', 9);
                 $pdf->SetTextColor(230, 126, 34); // Naranja

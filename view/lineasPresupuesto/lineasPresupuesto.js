@@ -16,6 +16,9 @@ let estado_version_actual = null; // Controla si se puede editar
 //       para que esté disponible también en formularioLinea.php
 // clienteExentoIVA ya está declarada globalmente
 
+// Configuración de empresa: default permisivo hasta que cargue la config via AJAX
+window.permitirDescuentosEmpresa = true;
+
 $(document).ready(function () {
     // Obtener ID de versión desde URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -35,6 +38,9 @@ $(document).ready(function () {
 
     // Cargar información de la versión
     cargarInfoVersion();
+
+    // Cargar configuración PDF de la empresa (controla el campo de descuento)
+    cargarConfigEmpresa();
 
     // Inicializar DataTable
     inicializarDataTable();
@@ -186,6 +192,31 @@ function cargarInfoVersion() {
                 title: 'Error',
                 text: 'No se pudo cargar la información de la versión'
             });
+        }
+    });
+}
+
+/**
+ * Carga la configuración PDF de la empresa activa para controlar el campo de descuento
+ */
+function cargarConfigEmpresa() {
+    $.ajax({
+        url: '../../controller/empresas.php?op=get_config_pdf',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response && response.success) {
+                window.permitirDescuentosEmpresa = response.permitir_descuentos_lineas_empresa === 1 ||
+                                                   response.permitir_descuentos_lineas_empresa === '1' ||
+                                                   response.permitir_descuentos_lineas_empresa === true;
+            } else {
+                window.permitirDescuentosEmpresa = true; // Default permisivo
+            }
+            console.log('CONFIG EMPRESA - Permitir descuentos:', window.permitirDescuentosEmpresa);
+        },
+        error: function() {
+            window.permitirDescuentosEmpresa = true; // Default permisivo en caso de error
+            console.warn('No se pudo cargar la config de empresa; descuentos habilitados por defecto');
         }
     });
 }
@@ -830,7 +861,14 @@ function abrirModalNuevaLinea() {
         $('#porcentaje_iva_linea_ppto').val(21);
         console.log('✓ Modal nueva línea: IVA por defecto 21% (Cliente normal)');
     }
-    
+
+    // Si empresa no permite descuentos: bloquear campo (readonly para que el valor se envíe)
+    if (window.permitirDescuentosEmpresa === false) {
+        $('#descuento_linea_ppto').val(0).prop('readonly', true).addClass('bg-light');
+    } else {
+        $('#descuento_linea_ppto').prop('readonly', false).removeClass('bg-light');
+    }
+
     // Mostrar modal
     $('#modalFormularioLinea').modal('show');
 }
@@ -941,7 +979,14 @@ function editarLinea(id_linea_ppto) {
                 $('#cantidad_linea_ppto').val(data.cantidad_linea_ppto || 1);
                 $('#precio_unitario_linea_ppto').val(data.precio_unitario_linea_ppto || 0);
                 $('#descuento_linea_ppto').val(data.descuento_linea_ppto || 0);
-                
+
+                // Si empresa no permite descuentos: forzar a 0 y bloquear campo (readonly para que el valor se envíe)
+                if (window.permitirDescuentosEmpresa === false) {
+                    $('#descuento_linea_ppto').val(0).prop('readonly', true).addClass('bg-light');
+                } else {
+                    $('#descuento_linea_ppto').prop('readonly', false).removeClass('bg-light');
+                }
+
                 // *** PUNTO 17: Cargar IVA según si cliente está exento ***
                 // Campos precio e IVA SIEMPRE readonly
                 $('#precio_unitario_linea_ppto').prop('readonly', true);
@@ -1471,7 +1516,14 @@ function abrirModalNuevaLinea() {
     cargarFechasIniciales();
     cargarArticulosDisponibles();
     cargarUbicacionesCliente();
-    
+
+    // Si empresa no permite descuentos: bloquear campo (readonly para que el valor se envíe)
+    if (window.permitirDescuentosEmpresa === false) {
+        $('#descuento_linea_ppto').val(0).prop('readonly', true).addClass('bg-light');
+    } else {
+        $('#descuento_linea_ppto').prop('readonly', false).removeClass('bg-light');
+    }
+
     // Mostrar modal
     $('#modalFormularioLinea').modal('show');
 }

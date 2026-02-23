@@ -481,7 +481,7 @@ function cargarDatosArticulo(idArticulo, esEdicion = false) {
                 // Hacer campo IVA readonly siempre
                 $('#porcentaje_iva_linea_ppto').prop('readonly', true);
                 
-                // Establecer descuento por defecto y mostrar avisos - SOLO en creación
+                // Establecer descuento por defecto - SOLO en creación
                 if (!esEdicion) {
                     const noFacturar = data.no_facturar_articulo == 1 || data.no_facturar_articulo == '1';
                     const permitirDescuentos = data.permitir_descuentos_articulo == 1 || data.permitir_descuentos_articulo == '1';
@@ -492,6 +492,14 @@ function cargarDatosArticulo(idArticulo, esEdicion = false) {
                     } else if (!permitirDescuentos) {
                         $('#descuento_linea_ppto').val(0);
                     }
+                }
+
+                // Aplicar bloqueo empresa SIEMPRE (creación y edición)
+                // Usar readonly en lugar de disabled para que serializeArray() capture el valor 0
+                if (window.permitirDescuentosEmpresa === false) {
+                    $('#descuento_linea_ppto').val(0).prop('readonly', true).addClass('bg-light');
+                } else {
+                    $('#descuento_linea_ppto').prop('readonly', false).removeClass('bg-light');
                 }
                 
                 // Mostrar avisos (siempre, en creación y edición)

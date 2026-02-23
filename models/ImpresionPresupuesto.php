@@ -234,7 +234,8 @@ class ImpresionPresupuesto
                     mostrar_kits_albaran_empresa,
                     mostrar_obs_familias_articulos_albaran_empresa,
                     mostrar_obs_pie_albaran_empresa,
-                    obs_linea_alineadas_descripcion_empresa
+                    obs_linea_alineadas_descripcion_empresa,
+                    permitir_descuentos_lineas_empresa
                 FROM empresa 
                 WHERE empresa_ficticia_principal = 1 
                 AND activo_empresa = 1
