@@ -530,6 +530,11 @@ switch ($_GET["op"]) {
             $mostrar_subtotales_fecha = !isset($datos_empresa['mostrar_subtotales_fecha_presupuesto_empresa'])
                 ? true
                 : ($datos_empresa['mostrar_subtotales_fecha_presupuesto_empresa'] == 1);
+
+            // Allow discounts on lines (controls %Disc column and footer rows)
+            $permitir_descuentos = !isset($datos_empresa['permitir_descuentos_lineas_empresa'])
+                ? true
+                : ($datos_empresa['permitir_descuentos_lineas_empresa'] == 1);
             
             // 4. Validate company logo
             $mostrar_logo = false;
@@ -876,11 +881,16 @@ switch ($_GET["op"]) {
                     $pdf->Cell(10, 6, 'Coef.', 1, 0, 'C', 1);
                     
                     $ancho_descripcion = $ocultar_cols ? 79 : 49;
+                    if (!$permitir_descuentos) {
+                        $ancho_descripcion += 12;
+                    }
                     $pdf->Cell($ancho_descripcion, 6, 'Description', 1, 0, 'C', 1);
                     
                     $pdf->Cell(12, 6, 'Qty', 1, 0, 'C', 1);
                     $pdf->Cell(15, 6, 'Unit P.', 1, 0, 'C', 1);
-                    $pdf->Cell(12, 6, '%Disc', 1, 0, 'C', 1);
+                    if ($permitir_descuentos) {
+                        $pdf->Cell(12, 6, '%Disc', 1, 0, 'C', 1);
+                    }
                     $pdf->Cell(24, 6, 'Amount(€)', 1, 1, 'C', 1);
                     $pdf->SetDrawColor(0, 0, 0);
                     
@@ -956,7 +966,9 @@ switch ($_GET["op"]) {
                         
                         $pdf->Cell(12, $altura_fila, number_format($cantidad, 0), 1, 0, 'C');
                         $pdf->Cell(15, $altura_fila, number_format($precio_unitario, 2, ',', '.'), 1, 0, 'R');
-                        $pdf->Cell(12, $altura_fila, number_format($descuento, 0), 1, 0, 'C');
+                        if ($permitir_descuentos) {
+                            $pdf->Cell(12, $altura_fila, number_format($descuento, 0), 1, 0, 'C');
+                        }
                         $pdf->Cell(24, $altura_fila, number_format($base_imponible, 2, ',', '.'), 1, 0, 'R');
                         
                         $pdf->SetDrawColor(0, 0, 0);
@@ -1082,17 +1094,19 @@ switch ($_GET["op"]) {
             $pdf->Line(145, $pdf->GetY(), 200, $pdf->GetY());
             $pdf->Ln(3);
             
-            // Subtotal (before discounts)
-            $pdf->SetFont('helvetica', '', 9);
-            $pdf->SetFillColor(248, 249, 250);
-            $pdf->SetDrawColor(220, 220, 220);
-            $pdf->Cell(144, 6, '', 0, 0);
-            $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
-            $pdf->SetFont('helvetica', 'B', 9);
-            $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+            // Subtotal (before discounts) — only if discounts are allowed
+            if ($permitir_descuentos) {
+                $pdf->SetFont('helvetica', '', 9);
+                $pdf->SetFillColor(248, 249, 250);
+                $pdf->SetDrawColor(220, 220, 220);
+                $pdf->Cell(144, 6, '', 0, 0);
+                $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
+                $pdf->SetFont('helvetica', 'B', 9);
+                $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+            }
             
-            // Discount (only if there is one)
-            if ($total_descuentos > 0) {
+            // Discount (only if there is one and discounts are allowed)
+            if ($permitir_descuentos && $total_descuentos > 0) {
                 $pdf->SetFont('helvetica', '', 9);
                 $pdf->SetFillColor(248, 249, 250);
                 $pdf->SetDrawColor(220, 220, 220);

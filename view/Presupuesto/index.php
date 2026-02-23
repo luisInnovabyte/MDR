@@ -312,14 +312,14 @@
                         <div class="form-check mb-1">
                             <input class="form-check-input" type="radio" name="tipo_presupuesto" id="tipo_cliente" value="cliente" checked>
                             <label class="form-check-label" for="tipo_cliente">
-                                <strong>Cliente final</strong>
+                                <strong>Cliente final (Sin descuento)</strong>
                                 <small class="d-block text-muted">Presupuesto detallado con precios y condiciones</small>
                             </label>
                         </div>
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="radio" name="tipo_presupuesto" id="tipo_intermediario" value="intermediario">
                             <label class="form-check-label" for="tipo_intermediario">
-                                <strong>Intermediario (Hotel)</strong>
+                                <strong>Cliente (Con descuento)</strong>
                                 <small class="d-block text-muted">Presupuesto con descuento de intermediario aplicado</small>
                             </label>
                         </div>
