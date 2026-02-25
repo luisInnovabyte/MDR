@@ -268,6 +268,7 @@ switch ($_GET["op"]) {
             
             // Nuevos campos
             $permitir_descuentos = isset($_POST["permitir_descuentos_articulo"]) && $_POST["permitir_descuentos_articulo"] == 1 ? 1 : 0;
+            $precio_editable = !empty($_POST["precio_editable_articulo"]) ? 1 : 0;
             $id_impuesto = !empty($_POST["id_impuesto"]) ? (int)$_POST["id_impuesto"] : null;
 
             // Procesar imagen usando la función procesarImagenArticulo
@@ -321,6 +322,7 @@ switch ($_GET["op"]) {
                     $orden_obs,
                     trim($_POST["observaciones_articulo"] ?? ''),
                     $permitir_descuentos,
+                    $precio_editable,
                     $id_impuesto
                 );
 
@@ -363,6 +365,7 @@ switch ($_GET["op"]) {
                     $orden_obs,
                     trim($_POST["observaciones_articulo"] ?? ''),
                     $permitir_descuentos,
+                    $precio_editable,
                     $id_impuesto
                 );
 

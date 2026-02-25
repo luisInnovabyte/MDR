@@ -125,10 +125,14 @@ class LineaPresupuesto
     public function get_lineaxid($id_linea_ppto)
     {
         try {
-            // Usar VISTA para obtener datos calculados
-            $sql = "SELECT * FROM v_linea_presupuesto_calculada 
-                    WHERE id_linea_ppto = ?";
-            
+            // Usar VISTA para obtener datos calculados.
+            // Se hace JOIN explícito con articulo para garantizar precio_editable_articulo
+            // aunque la vista no haya sido regenerada con ese campo todavía.
+            $sql = "SELECT v.*, art.precio_editable_articulo
+                    FROM v_linea_presupuesto_calculada v
+                    LEFT JOIN articulo art ON v.id_articulo = art.id_articulo
+                    WHERE v.id_linea_ppto = ?";
+
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute([$id_linea_ppto]);
             

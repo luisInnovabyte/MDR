@@ -159,10 +159,10 @@
                                     </label>
                                     <div class="input-group">
                                         <input type="number" class="form-control text-end bg-light" id="precio_unitario_linea_ppto" 
-                                               name="precio_unitario_linea_ppto" min="0" step="0.01" value="0" readonly>
+                                               name="precio_unitario_linea_ppto" step="0.01" value="0" readonly>
                                         <span class="input-group-text">€</span>
                                     </div>
-                                    <small class="text-muted">Desde precio alquiler artículo</small>
+                                    <small class="text-muted" id="precio_hint">Desde precio alquiler artículo</small>
                                 </div>
                                 
                                 <!-- Descuento -->
@@ -463,8 +463,18 @@ function cargarDatosArticulo(idArticulo, esEdicion = false) {
                     const precioArticulo = parseFloat(data.precio_alquiler_articulo || 0).toFixed(2);
                     $('#precio_unitario_linea_ppto').val(precioArticulo);
                 }
-                // Hacer campo precio readonly siempre
-                $('#precio_unitario_linea_ppto').prop('readonly', true);
+                // Hacer campo precio readonly o editable según flag del artículo
+                const precioEditable = data.precio_editable_articulo == 1 || data.precio_editable_articulo == '1';
+                $('#precio_unitario_linea_ppto')
+                    .prop('readonly', !precioEditable)
+                    .toggleClass('bg-light', !precioEditable);
+                if (precioEditable) {
+                    $('#precio_unitario_linea_ppto').removeAttr('min');
+                    $('#precio_hint').html('<i class="bi bi-pencil-fill text-warning me-1"></i><strong>Descuento: introduce el importe en negativo</strong>');
+                } else {
+                    $('#precio_unitario_linea_ppto').attr('min', 0);
+                    $('#precio_hint').text('Desde precio alquiler artículo');
+                }
                 
                 // *** PUNTO 17: Cargar IVA según si cliente está exento ***
                 // Si cliente exento IVA: forzar 0%

@@ -260,6 +260,7 @@ $(document).ready(function () {
                     $('#es_kit_articulo').prop('checked', data.es_kit_articulo == 1);
                     $('#control_total_articulo').prop('checked', data.control_total_articulo == 1);
                     $('#no_facturar_articulo').prop('checked', data.no_facturar_articulo == 1);
+                    $('#precio_editable_articulo').prop('checked', data.precio_editable_articulo == 1);
                     
                     // Configurar imagen actual
                     if (data.imagen_articulo) {
@@ -366,6 +367,7 @@ $(document).ready(function () {
         var control_total_articuloR = $('#control_total_articulo').is(':checked') ? 1 : 0;
         var no_facturar_articuloR = $('#no_facturar_articulo').is(':checked') ? 1 : 0;
         var permitir_descuentos_articuloR = $('#permitir_descuentos_articulo').is(':checked') ? 1 : 0;
+        var precio_editable_articuloR = $('#precio_editable_articulo').is(':checked') ? 1 : 0;
         
         // Obtener impuesto
         var id_impuestoR = $('#id_impuesto').val() || null;
@@ -403,11 +405,12 @@ $(document).ready(function () {
             observaciones_articuloR,
             activo_articuloR,
             permitir_descuentos_articuloR,
+            precio_editable_articuloR,
             id_impuestoR
         );
     });
 
-    function verificarArticuloExistente(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, id_impuesto) {
+    function verificarArticuloExistente(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, precio_editable_articulo, id_impuesto) {
         $.ajax({
             url: "../../controller/articulo.php?op=verificarArticulo",
             type: "GET",
@@ -427,7 +430,7 @@ $(document).ready(function () {
                 if (response.existe) {
                     mostrarErrorArticuloExistente(nombre_articulo);
                 } else {
-                    guardarArticulo(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, id_impuesto);
+                    guardarArticulo(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, precio_editable_articulo, id_impuesto);
                 }
             },
             error: function(xhr, status, error) {
@@ -447,7 +450,7 @@ $(document).ready(function () {
         });
     }
 
-    function guardarArticulo(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, id_impuesto) {
+    function guardarArticulo(id_articulo, codigo_articulo, nombre_articulo, name_articulo, id_familia, id_unidad, precio_alquiler_articulo, coeficiente_articulo, es_kit_articulo, control_total_articulo, no_facturar_articulo, notas_presupuesto_articulo, notes_budget_articulo, orden_obs_articulo, observaciones_articulo, activo_articulo, permitir_descuentos_articulo, precio_editable_articulo, id_impuesto) {
         // Mostrar indicador de carga
         $('#btnSalvarArticulo').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...');
         
@@ -468,6 +471,7 @@ $(document).ready(function () {
         formData.append('control_total_articulo', control_total_articulo);
         formData.append('no_facturar_articulo', no_facturar_articulo);
         formData.append('permitir_descuentos_articulo', permitir_descuentos_articulo);
+        formData.append('precio_editable_articulo', precio_editable_articulo);
         formData.append('id_impuesto', id_impuesto || '');
         formData.append('notas_presupuesto_articulo', notas_presupuesto_articulo);
         formData.append('notes_budget_articulo', notes_budget_articulo);

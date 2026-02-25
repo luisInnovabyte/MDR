@@ -107,14 +107,18 @@ class Articulo
     public function get_articuloxid($id_articulo)
     {
         try {
+            // JOIN explícito con la tabla articulo para garantizar precio_editable_articulo
+            // aunque la vista no haya sido regenerada con ese campo todavía.
             $sql = "SELECT 
                         a.*,
+                        art_base.precio_editable_articulo,
                         ap.peso_articulo_kg AS peso_medio_kg,
                         ap.items_con_peso AS elementos_con_peso,
                         ap.total_items AS total_elementos,
                         ap.metodo_calculo,
                         ap.tiene_datos_peso
                     FROM vista_articulo_completa a
+                    JOIN articulo art_base ON a.id_articulo = art_base.id_articulo
                     LEFT JOIN vista_articulo_peso ap ON a.id_articulo = ap.id_articulo
                     WHERE a.id_articulo = ?";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
@@ -346,6 +350,7 @@ class Articulo
         $orden_obs_articulo = 200,
         $observaciones_articulo = '',
         $permitir_descuentos_articulo = 1,
+        $precio_editable_articulo = 0,
         $id_impuesto = null
     )
     {
@@ -368,11 +373,12 @@ class Articulo
                         orden_obs_articulo, 
                         observaciones_articulo, 
                         permitir_descuentos_articulo,
+                        precio_editable_articulo,
                         id_impuesto,
                         activo_articulo, 
                         created_at_articulo, 
                         updated_at_articulo
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $id_familia, PDO::PARAM_INT);
             $stmt->bindValue(2, $id_unidad, $id_unidad === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
@@ -390,7 +396,8 @@ class Articulo
             $stmt->bindValue(14, $orden_obs_articulo, PDO::PARAM_INT);
             $stmt->bindValue(15, $observaciones_articulo, PDO::PARAM_STR);
             $stmt->bindValue(16, $permitir_descuentos_articulo, PDO::PARAM_INT);
-            $stmt->bindValue(17, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $stmt->bindValue(17, $precio_editable_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(18, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId(); // Se obtiene el ID del ultimo insertado
 
@@ -442,6 +449,7 @@ class Articulo
         $orden_obs_articulo = 200,
         $observaciones_articulo = '',
         $permitir_descuentos_articulo = 1,
+        $precio_editable_articulo = 0,
         $id_impuesto = null
     ){
         try {
@@ -462,6 +470,7 @@ class Articulo
                         orden_obs_articulo = ?, 
                         observaciones_articulo = ?, 
                         permitir_descuentos_articulo = ?,
+                        precio_editable_articulo = ?,
                         id_impuesto = ?,
                         updated_at_articulo = NOW() 
                     WHERE id_articulo = ?";
@@ -482,8 +491,9 @@ class Articulo
             $stmt->bindValue(14, $orden_obs_articulo, PDO::PARAM_INT);
             $stmt->bindValue(15, $observaciones_articulo, PDO::PARAM_STR);
             $stmt->bindValue(16, $permitir_descuentos_articulo, PDO::PARAM_INT);
-            $stmt->bindValue(17, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
-            $stmt->bindValue(18, $id_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(17, $precio_editable_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(18, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $stmt->bindValue(19, $id_articulo, PDO::PARAM_INT);
 
             $stmt->execute();
 
@@ -590,8 +600,11 @@ class Articulo
             $id_familia = $articulo['id_familia'];
             
             // Evaluar según la lógica solicitada
-            if ($coeficiente_articulo == 2) {
-                // Artículo que NO permite coeficientes
+            // Nota: UI envía 0 para "No, sin coeficientes" y 1 para "Sí".
+            // NULL significa "Heredar de familia". El valor 2 es equivalente a 0
+            // por compatibilidad retroactiva.
+            if ($coeficiente_articulo !== null && ($coeficiente_articulo == 0 || $coeficiente_articulo == 2)) {
+                // Artículo que NO permite coeficientes (valor 0 ó 2 en BD)
                 return [
                     'success' => true,
                     'estado_coeficiente' => 2,

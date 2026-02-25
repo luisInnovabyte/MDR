@@ -293,6 +293,12 @@
                                             <span id="descuentos-text">Permitir descuentos</span>
                                         </label>
                                     </div>
+                                    <div class="form-check form-switch mt-2">
+                                        <input class="form-check-input" type="checkbox" name="precio_editable_articulo" id="precio_editable_articulo">
+                                        <label class="form-check-label" for="precio_editable_articulo">
+                                            <span id="precio-editable-text">Precio editable en presupuesto</span>
+                                        </label>
+                                    </div>
                                     <small class="form-text text-muted">Flags especiales para el artículo</small>
                                 </div>
                                 

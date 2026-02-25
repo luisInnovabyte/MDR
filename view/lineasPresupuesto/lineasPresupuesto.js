@@ -988,8 +988,23 @@ function editarLinea(id_linea_ppto) {
                 }
 
                 // *** PUNTO 17: Cargar IVA según si cliente está exento ***
-                // Campos precio e IVA SIEMPRE readonly
-                $('#precio_unitario_linea_ppto').prop('readonly', true);
+                // Campo precio: readonly o editable según flag del artículo
+                const precioEditable = data.precio_editable_articulo == 1 || data.precio_editable_articulo == '1';
+                $('#precio_unitario_linea_ppto')
+                    .prop('readonly', !precioEditable)
+                    .toggleClass('bg-light', !precioEditable);
+                if (precioEditable) {
+                    $('#precio_unitario_linea_ppto').removeAttr('min');
+                    if ($('#precio_hint').length) {
+                        $('#precio_hint').html('<i class="bi bi-pencil-fill text-warning me-1"></i><strong>Descuento: introduce el importe en negativo</strong>');
+                    }
+                } else {
+                    $('#precio_unitario_linea_ppto').attr('min', 0);
+                    if ($('#precio_hint').length) {
+                        $('#precio_hint').text('Desde precio alquiler artículo');
+                    }
+                }
+                // Campo IVA SIEMPRE readonly
                 $('#porcentaje_iva_linea_ppto').prop('readonly', true);
                 
                 if (window.clienteExentoIVA === true) {
@@ -1091,7 +1106,8 @@ function editarLinea(id_linea_ppto) {
                     // Crear objeto data del artículo para mostrar avisos
                     const datosArticulo = {
                         no_facturar_articulo: data.no_facturar_articulo,
-                        permitir_descuentos_articulo: data.permitir_descuentos_articulo
+                        permitir_descuentos_articulo: data.permitir_descuentos_articulo,
+                        precio_editable_articulo: data.precio_editable_articulo
                     };
                     
                     // Llamar solo a la función de mostrar avisos si existe

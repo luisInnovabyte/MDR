@@ -1,0 +1,18 @@
+[
+    {
+        "usuario": "copilot",
+        "pantalla": "db_copilot",
+        "actividad": "estructura",
+        "mensaje": "Estructura de 'articulo' solicitada",
+        "tipo": "info",
+        "fecha_hora": "2026-02-24 20:42:35"
+    },
+    {
+        "usuario": "copilot",
+        "pantalla": "db_copilot",
+        "actividad": "datos",
+        "mensaje": "Datos de 'familia' solicitados (limit=50)",
+        "tipo": "info",
+        "fecha_hora": "2026-02-24 20:47:46"
+    }
+]
