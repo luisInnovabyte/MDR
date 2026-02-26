@@ -51,14 +51,10 @@ class MYPDF_ALBARAN extends TCPDF {
     public function Header() {
         $y_start = 10;
 
-        // ============================================
-        // TÍTULO "ALBARÁN DE CARGA" (JUSTIFICADO A LA DERECHA) - VERDE
-        // ============================================
-
         $this->SetY($y_start);
         $this->SetFont('helvetica', 'B', 16);
         $this->SetTextColor(46, 204, 113); // Color verde
-        $this->Cell(0, 8, 'ALBARAN DE CARGA', 0, 1, 'R'); // Alineado a la derecha
+        $this->Cell(165, 8, 'ALBARAN DE CARGA', 0, 1, 'R'); // Alineado a la derecha (ancho reducido para no solapar QR)
 
         $this->Ln(2); // Pequeño margen después del título
 
@@ -410,6 +406,24 @@ class MYPDF_ALBARAN extends TCPDF {
 
         // NO MOSTRAR OBSERVACIONES DE CABECERA (eliminado completamente)
         
+        // ============================================
+        // QR CODE - Número de presupuesto (esquina superior derecha)
+        // Se dibuja al final para quedar por encima de todos los elementos
+        // ============================================
+        $qr_data = $this->datos_presupuesto['numero_presupuesto'] ?? '';
+        if (!empty($qr_data)) {
+            $qr_style = array(
+                'border' => false,
+                'vpadding' => 0,
+                'hpadding' => 0,
+                'fgcolor' => array(0, 0, 0),
+                'bgcolor' => array(255, 255, 255),
+                'module_width' => 1,
+                'module_height' => 1,
+            );
+            $this->write2DBarcode($qr_data, 'QRCODE,M', 178, 7, 20, 20, $qr_style, 'N');
+        }
+
         // Posicionar cursor para contenido
         $final_y = max($y_final_izquierda, $y_despues_fechas_evento) + 6;
         $this->SetY($final_y);

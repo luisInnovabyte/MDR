@@ -9,6 +9,9 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Calendly -->
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
     <style>
         @keyframes float-diagonal {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
@@ -598,6 +601,23 @@
                             </div>
                         </section>
 
+                        {/* CTA Banner */}
+                        <div className="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 py-10 px-6">
+                            <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div className="text-white text-center md:text-left">
+                                    <p className="text-2xl font-extrabold tracking-tight drop-shadow">🚀 ¿Quieres verlo en acción?</p>
+                                    <p className="text-white/90 text-lg mt-1">Reserva una demo gratuita de 30 minutos y descubre todo lo que AssetTrack puede hacer por tu empresa.</p>
+                                </div>
+                                <button
+                                    onClick={() => Calendly.initPopupWidget({ url: 'https://calendly.com/luiscarlospm/30min' })}
+                                    className="flex-shrink-0 bg-white text-orange-600 font-extrabold text-lg px-10 py-4 rounded-2xl shadow-2xl hover:scale-105 hover:bg-orange-50 transition-all duration-300 flex items-center gap-3 animate-pulse"
+                                >
+                                    <i className="fas fa-calendar-check text-2xl"></i>
+                                    Pedir Demo Gratis
+                                </button>
+                            </div>
+                        </div>
+
                         {/* Main Features Preview */}
                         <section className="container mx-auto px-6 py-16">
                             <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">Funcionalidades Principales</h2>
@@ -730,6 +750,13 @@
                                     >
                                         <i className="fas fa-balance-scale mr-2"></i>
                                         Comparar con Otros ERP
+                                    </button>
+                                    <button 
+                                        onClick={() => Calendly.initPopupWidget({ url: 'https://calendly.com/luiscarlospm/30min' })}
+                                        className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl transition-all hover:scale-105"
+                                    >
+                                        <i className="fas fa-calendar-check mr-2"></i>
+                                        Agendar reunión
                                     </button>
                                 </div>
                             </div>
@@ -1222,11 +1249,18 @@
                                 <div className="flex flex-wrap justify-center gap-10">
                                     {[
                                         {
-                                            src: '/imagenes_land/videos/AssetTrack_0.mp4',
+                                            src: './imagenes_land/videos/AssetTrack_0.mp4',
                                             title: 'AssetTrack en Acción',
                                             tag: 'Presentación',
                                             desc: 'Descubre cómo AssetTrack transforma la gestión de equipos audiovisuales. Controla tu inventario, presupuestos y flota desde una única plataforma intuitiva diseñada para el sector del alquiler audiovisual.',
                                             hashtags: ['#AssetTrack', '#ERP', '#Audiovisual', '#Inventario']
+                                        },
+                                        {
+                                            src: './imagenes_land/videos/AssetTrack_1.mp4',
+                                            title: 'Sistema de versiones',
+                                            tag: 'Presupuestos',
+                                            desc: 'Olvídate de las hojas de cálculo. Descubre cómo AssetTrack reemplaza el Excel con un sistema de versiones de presupuestos claro, trazable y profesional.',
+                                            hashtags: ['#AssetTrack', '#Presupuestos', '#Versiones', '#ERP']
                                         },
                                     ].map((video, index) => (
                                         <div key={index} className="flex flex-col" style={{width: '300px'}}>
@@ -1350,8 +1384,15 @@
                                         Sistema ERP especializado para empresas de alquiler de equipos audiovisuales.
                                     </p>
                                     <div className="flex space-x-4">
-                                        <i className="fab fa-github text-2xl text-gray-400 hover:text-white transition-colors cursor-pointer"></i>
-                                        <i className="fab fa-linkedin text-2xl text-gray-400 hover:text-white transition-colors cursor-pointer"></i>
+                                        <a href="https://www.facebook.com/innovabyte.es/?locale=es_ES" target="_blank" rel="noopener noreferrer">
+                                            <i className="fab fa-facebook text-2xl text-gray-400 hover:text-white transition-colors"></i>
+                                        </a>
+                                        <a href="https://www.instagram.com/innovabyte.es/" target="_blank" rel="noopener noreferrer">
+                                            <i className="fab fa-instagram text-2xl text-gray-400 hover:text-white transition-colors"></i>
+                                        </a>
+                                        <a href="https://www.linkedin.com/company/111663246/" target="_blank" rel="noopener noreferrer">
+                                            <i className="fab fa-linkedin text-2xl text-gray-400 hover:text-white transition-colors"></i>
+                                        </a>
                                     </div>
                                 </div>
                                 <div>
