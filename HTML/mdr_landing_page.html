@@ -1,9 +1,192 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" prefix="og: https://ogp.me/ns#">
 <head>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- META BÁSICAS                                               -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>AssetTrack ERP Manager - Sistema de Gestión de Alquiler Audiovisual</title>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SEO PRINCIPALES                                            -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <meta name="description" content="AssetTrack ERP: sistema integral de gestión para empresas de alquiler de equipos audiovisuales. Controla inventario, presupuestos, flota, garantías y facturación desde una única plataforma. Sin costes recurrentes.">
+    <meta name="keywords" content="ERP alquiler audiovisual, gestión equipos audiovisuales, software alquiler, inventario audiovisual, presupuestos alquiler, trazabilidad NFC, gestión flota, AssetTrack, sistema ERP, software audiovisual España">
+    <meta name="author" content="Innovabyte">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    <meta name="revisit-after" content="7 days">
+    <meta name="rating" content="general">
+    <meta name="language" content="es">
+    <meta name="copyright" content="AssetTrack - Innovabyte 2025">
+    <meta name="generator" content="AssetTrack ERP Manager">
+    <meta name="category" content="Software, ERP, Audiovisual, Alquiler">
+    <meta name="classification" content="Business, Technology, Software">
+    <meta name="coverage" content="Worldwide">
+    <meta name="distribution" content="Global">
+    <meta name="target" content="all">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CANONICAL Y URLS                                           -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <link rel="canonical" href="https://assettrack.innovabyte.es/">
+    <link rel="alternate" hreflang="es" href="https://assettrack.innovabyte.es/">
+    <link rel="alternate" hreflang="x-default" href="https://assettrack.innovabyte.es/">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- OPEN GRAPH (Facebook, LinkedIn, WhatsApp, Telegram...)     -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AssetTrack ERP">
+    <meta property="og:title" content="AssetTrack ERP - Gestión Integral de Alquiler Audiovisual">
+    <meta property="og:description" content="Sistema ERP especializado en alquiler de equipos audiovisuales. Controla inventario con NFC, gestiona presupuestos con versionado, flota de vehículos y garantías. On-premise, sin licencias mensuales.">
+    <meta property="og:url" content="https://assettrack.innovabyte.es/">
+    <meta property="og:image" content="https://assettrack.innovabyte.es/imagenes_land/og-image.png">
+    <meta property="og:image:secure_url" content="https://assettrack.innovabyte.es/imagenes_land/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="AssetTrack ERP - Sistema de Gestión Audiovisual">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:locale:alternate" content="en_US">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- TWITTER CARD                                               -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@AssetTrackERP">
+    <meta name="twitter:creator" content="@InnovabyteEs">
+    <meta name="twitter:title" content="AssetTrack ERP - Gestión Integral de Alquiler Audiovisual">
+    <meta name="twitter:description" content="Sistema ERP especializado en alquiler de equipos audiovisuales. Inventario NFC, presupuestos con versionado, gestión de flota y garantías. On-premise sin costes recurrentes.">
+    <meta name="twitter:image" content="https://assettrack.innovabyte.es/imagenes_land/og-image.png">
+    <meta name="twitter:image:alt" content="AssetTrack ERP - Pantalla principal del sistema">
+    <meta name="twitter:domain" content="assettrack.es">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- GEO LOCALIZACIÓN                                           -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <meta name="geo.region" content="ES">
+    <meta name="geo.country" content="Spain">
+    <meta name="geo.placename" content="España">
+    <meta name="ICBM" content="40.4168, -3.7038">
+    <meta name="DC.title" content="AssetTrack ERP Manager">
+    <meta name="DC.language" content="es">
+    <meta name="DC.description" content="Sistema ERP para gestión de alquiler de equipos audiovisuales">
+    <meta name="DC.subject" content="ERP, Audiovisual, Alquiler, Inventario, Equipos">
+    <meta name="DC.type" content="Software">
+    <meta name="DC.format" content="text/html">
+    <meta name="DC.identifier" content="https://assettrack.es/">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- APPLE / MOBILE                                             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AssetTrack">
+    <meta name="format-detection" content="telephone=yes, date=no, address=no, email=yes">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- TEMA / BRANDING                                            -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <meta name="theme-color" content="#ea580c">
+    <meta name="msapplication-TileColor" content="#ea580c">
+    <meta name="msapplication-navbutton-color" content="#ea580c">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="application-name" content="AssetTrack ERP">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SEGURIDAD Y PRIVACIDAD                                     -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="content-language" content="es">
+    <meta http-equiv="cache-control" content="public, max-age=604800">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SCHEMA.ORG STRUCTURED DATA (JSON-LD)                       -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "AssetTrack ERP Manager",
+        "alternateName": "AssetTrack",
+        "url": "https://assettrack.innovabyte.es",
+        "logo": "https://assettrack.innovabyte.es/imagenes_land/og-image.png",
+        "description": "Sistema ERP integral especializado en la gestión de alquiler de equipos audiovisuales. Incluye módulos de inventario con trazabilidad NFC, presupuestos con versionado, gestión de flota, garantías y facturación.",
+        "applicationCategory": "BusinessApplication",
+        "applicationSubCategory": "ERP",
+        "operatingSystem": "Web",
+        "softwareVersion": "1.0",
+        "releaseNotes": "https://assettrack.innovabyte.es",
+        "screenshot": "https://assettrack.innovabyte.es/imagenes_land/AA_menupral.png",
+        "featureList": [
+            "Gestión de inventario con NFC",
+            "Presupuestos con versionado",
+            "Gestión de flota de vehículos",
+            "Control de garantías",
+            "Facturación",
+            "Gestión de clientes",
+            "Catálogo de artículos",
+            "KITs de equipos predefinidos"
+        ],
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "description": "Solución on-premise sin licencias mensuales"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "Innovabyte",
+            "url": "https://innovabyte.es"
+        },
+        "inLanguage": "es",
+        "isAccessibleForFree": false
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "AssetTrack / Innovabyte",
+        "url": "https://assettrack.innovabyte.es",
+        "logo": "https://assettrack.innovabyte.es/imagenes_land/og-image.png",
+        "description": "Desarrollo de software ERP especializado para empresas de alquiler audiovisual",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "sales",
+            "areaServed": "ES",
+            "availableLanguage": "Spanish"
+        },
+        "sameAs": []
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "AssetTrack ERP Manager - Sistema de Gestión de Alquiler Audiovisual",
+        "description": "Página principal de AssetTrack ERP, sistema integral de gestión para empresas de alquiler de equipos audiovisuales.",
+        "url": "https://assettrack.innovabyte.es",
+        "inLanguage": "es",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "AssetTrack ERP",
+            "url": "https://assettrack.innovabyte.es"
+        },
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://assettrack.innovabyte.es/?s={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -1261,6 +1444,20 @@
                                             tag: 'Presupuestos',
                                             desc: 'Olvídate de las hojas de cálculo. Descubre cómo AssetTrack reemplaza el Excel con un sistema de versiones de presupuestos claro, trazable y profesional.',
                                             hashtags: ['#AssetTrack', '#Presupuestos', '#Versiones', '#ERP']
+                                        },
+                                        {
+                                            src: './imagenes_land/videos/AssetTrack_2.mp4',
+                                            title: 'Trazabilidad total de cambios',
+                                            tag: 'Trazabilidad',
+                                            desc: '¿Cuántas horas pierdes rehaciendo presupuestos porque alguien borró una línea sin querer? AssetTrack registra automáticamente cada modificación: quién la hizo, cuándo y qué cambió. Versionado inteligente sin intervención manual. Cero confusiones. Cero retrabajos.',
+                                            hashtags: ['#AssetTrack', '#Trazabilidad', '#Presupuestos', '#Versionado']
+                                        },
+                                        {
+                                            src: './imagenes_land/videos/AssetTrack_3_kits.mp4',
+                                            title: 'KITs: presupuestos en segundos',
+                                            tag: 'KITs',
+                                            desc: 'Crear un presupuesto completo para un evento corporativo solía llevarte toda una mañana. AssetTrack lo resuelve con KITs: paquetes predefinidos de equipos que se insertan con un clic. ¿Evento corporativo estándar? KIT base. ¿Con streaming? KIT streaming añadido. ¿Iluminación premium? KIT Premium. Cada KIT lleva sus descuentos, coeficientes y configuración ya aplicados. Tú solo personalizas lo que necesites. Ahorro: 60% del tiempo. Ganancia: más presupuestos, más clientes, más rentabilidad.',
+                                            hashtags: ['#AssetTrack', '#KITs', '#Presupuestos', '#Audiovisual', '#ERP']
                                         },
                                     ].map((video, index) => (
                                         <div key={index} className="flex flex-col" style={{width: '300px'}}>

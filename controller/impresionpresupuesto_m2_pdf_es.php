@@ -635,9 +635,23 @@ switch ($_GET["op"]) {
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['lineas'][] = $linea;
                 
                 // Acumular subtotales
-                $base_imponible = floatval($linea['base_imponible']);
-                $total_linea = floatval($linea['total_linea']);
-                $total_iva_linea = $total_linea - $base_imponible;
+                // Cuando $permitir_descuentos=false la vista ya lleva dto aplicado → tarifa pura
+                if ($permitir_descuentos) {
+                    $base_imponible  = floatval($linea['base_imponible']);
+                    $total_linea     = floatval($linea['total_linea']);
+                    $total_iva_linea = $total_linea - $base_imponible;
+                } else {
+                    $coef_ag    = floatval($linea['valor_coeficiente_linea_ppto'] ?? 0);
+                    $cant_ag    = floatval($linea['cantidad_linea_ppto'] ?? 0);
+                    $precio_ag  = floatval($linea['precio_unitario_linea_ppto'] ?? 0);
+                    $dias_ag    = floatval($linea['dias_linea'] ?? 1);
+                    $pct_iva_ag = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
+                    $base_imponible  = ($coef_ag > 0)
+                        ? $cant_ag * $precio_ag * $coef_ag
+                        : $dias_ag * $cant_ag * $precio_ag;
+                    $total_iva_linea = $base_imponible * ($pct_iva_ag / 100);
+                    $total_linea     = $base_imponible + $total_iva_linea;
+                }
                 
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['subtotal_ubicacion'] += $base_imponible;
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_iva_ubicacion'] += $total_iva_linea;
@@ -688,13 +702,33 @@ switch ($_GET["op"]) {
                 }
                 
                 $importe_descuento_linea = $subtotal_linea_sin_desc * ($descuento_pct / 100);
-                
-                $subtotal_sin_descuento += $subtotal_linea_sin_desc;
-                $total_descuentos += $importe_descuento_linea;
-                
-                // Calcular IVA y base imponible
-                $base_imponible = floatval($linea['base_imponible'] ?? 0);
+
                 $porcentaje_iva = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
+
+                // Acumular subtotal y descuentos según configuración de empresa.
+                // IMPORTANTE: cuando $permitir_descuentos=false, la vista SQL ya tiene
+                // descuento_linea_ppto aplicado en base_imponible → recalcular tarifa pura
+                // para que cuerpo del PDF y totales del pie sean coherentes.
+                if ($permitir_descuentos) {
+                    // Con descuentos: base_imponible de la vista (precio tarifa − dto%)
+                    $base_imponible = floatval($linea['base_imponible'] ?? 0);
+                    if ($base_imponible >= 0) {
+                        $subtotal_sin_descuento += $subtotal_linea_sin_desc;
+                        $total_descuentos += $importe_descuento_linea;
+                    } else {
+                        $total_descuentos += abs($base_imponible);
+                    }
+                } else {
+                    // Sin descuentos: tarifa pura (misma fórmula que el rendering loop)
+                    $base_imponible = $aplica_coeficiente
+                        ? $cantidad * $precio_unitario * $coeficiente
+                        : $dias * $cantidad * $precio_unitario;
+                    if ($base_imponible >= 0) {
+                        $subtotal_sin_descuento += $base_imponible;
+                    } else {
+                        $total_descuentos += abs($base_imponible);
+                    }
+                }
                 
                 $subtotal_sin_iva += $base_imponible;
                 
@@ -968,7 +1002,19 @@ switch ($_GET["op"]) {
                         $precio_unitario = floatval($linea['precio_unitario_linea_ppto']);
                         $descuento = floatval($linea['descuento_linea_ppto']);
                         $base_imponible = floatval($linea['base_imponible']);
-                        
+
+                        // Cuando no se permiten descuentos por línea, forzar descuento=0
+                        // y recalcular base imponible como precio tarifa puro (la vista SQL
+                        // ya aplica descuento_linea_ppto, por lo que hay que ignorarlo)
+                        if (!$permitir_descuentos) {
+                            $descuento = 0;
+                            $coef_r = floatval($linea['valor_coeficiente_linea_ppto'] ?? 0);
+                            $dias_r  = floatval($linea['dias_linea'] ?? 1);
+                            $base_imponible = ($coef_r > 0)
+                                ? $cantidad * $precio_unitario * $coef_r
+                                : $dias_r * $cantidad * $precio_unitario;
+                        }
+
                         // Calcular altura dinámica basada en el contenido real
                         // Usar el ancho correcto según si las columnas están ocultas o no
                         $altura_texto_desc = $pdf->getStringHeight($ancho_descripcion - 1, $descripcion);
@@ -997,7 +1043,13 @@ switch ($_GET["op"]) {
                         
                         // Aplicar bordes grises claros a las líneas del presupuesto
                         $pdf->SetDrawColor(200, 200, 200); // Gris claro para bordes
-                        
+
+                        // Color azul si cantidad o importe son negativos
+                        $linea_negativa = ($cantidad < 0 || $base_imponible < 0);
+                        if ($linea_negativa) {
+                            $pdf->SetTextColor(0, 102, 204); // Azul
+                        }
+
                         $pdf->Cell(17, $altura_fila, $fecha_inicio_linea, 1, 0, 'C');
                         $pdf->Cell(17, $altura_fila, $fecha_fin, 1, 0, 'C');
                         
@@ -1034,7 +1086,12 @@ switch ($_GET["op"]) {
                             $pdf->Cell(12, $altura_fila, number_format($descuento, 0), 1, 0, 'C');
                         }
                         $pdf->Cell(24, $altura_fila, number_format($base_imponible, 2, ',', '.'), 1, 0, 'R');
-                        
+
+                        // Restaurar color de texto si se cambió por línea negativa
+                        if ($linea_negativa) {
+                            $pdf->SetTextColor(0, 0, 0);
+                        }
+
                         // Restaurar color de borde por defecto
                         $pdf->SetDrawColor(0, 0, 0);
                         
@@ -1176,9 +1233,8 @@ switch ($_GET["op"]) {
             $pdf->Line(145, $pdf->GetY(), 200, $pdf->GetY());
             $pdf->Ln(3);
             
-            // Subtotal (antes de descuentos) - Solo se muestra si se permiten descuentos
-            // Si no se permiten descuentos, el subtotal coincide con la base imponible y sería redundante
-            if ($permitir_descuentos) {
+            // Subtotal (precio tarifa sin descuentos) - visible cuando hay algún descuento
+            if ($total_descuentos > 0) {
                 $pdf->SetFont('helvetica', '', 9);
                 $pdf->SetFillColor(248, 249, 250); // Fondo gris muy claro
                 $pdf->SetDrawColor(220, 220, 220); // Borde gris suave
@@ -1188,8 +1244,8 @@ switch ($_GET["op"]) {
                 $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
             }
 
-            // Descuento - En rojo con signo negativo (solo si hay descuento y se permiten descuentos)
-            if ($permitir_descuentos && $total_descuentos > 0) {
+            // Descuento total - En rojo con signo negativo (todos los descuentos de línea)
+            if ($total_descuentos > 0) {
                 $pdf->SetFont('helvetica', '', 9);
                 $pdf->SetFillColor(248, 249, 250);
                 $pdf->SetDrawColor(220, 220, 220);

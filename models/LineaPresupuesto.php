@@ -39,6 +39,44 @@ class LineaPresupuesto
     }
 
     // =========================================================
+    // MÉTODO PRIVADO: Verificar si la empresa permite descuentos
+    // =========================================================
+    /**
+     * Consulta la tabla empresa para saber si se permiten descuentos por línea.
+     * Por defecto devuelve true (backward compatibility).
+     *
+     * @return bool
+     */
+    private function get_permitir_descuentos(): bool
+    {
+        try {
+            $sql = "SELECT permitir_descuentos_lineas_empresa
+                    FROM empresa
+                    WHERE activo_empresa = 1
+                    LIMIT 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($row === false || !isset($row['permitir_descuentos_lineas_empresa'])) {
+                return true; // por defecto permitir
+            }
+
+            return (bool) $row['permitir_descuentos_lineas_empresa'];
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                $_SESSION['usuario'] ?? 'system',
+                'LineaPresupuesto',
+                'get_permitir_descuentos',
+                "Error al consultar empresa: " . $e->getMessage(),
+                'warning'
+            );
+            return true; // ante error, no bloquear
+        }
+    }
+
+    // =========================================================
     // MÉTODO 1: Listar líneas de una versión (usando VISTA)
     // =========================================================
     /**
@@ -161,6 +199,10 @@ class LineaPresupuesto
      */
     public function insert_linea($datos)
     {
+        // Si la empresa no permite descuentos por línea, forzar a 0
+        if (!$this->get_permitir_descuentos()) {
+            $datos['descuento_linea_ppto'] = 0.00;
+        }
         try {
             $sql = "INSERT INTO linea_presupuesto (
                 id_version_presupuesto,
@@ -270,6 +312,10 @@ class LineaPresupuesto
      */
     public function update_linea($id_linea_ppto, $datos)
     {
+        // Si la empresa no permite descuentos por línea, forzar a 0
+        if (!$this->get_permitir_descuentos()) {
+            $datos['descuento_linea_ppto'] = 0.00;
+        }
         try {
             $sql = "UPDATE linea_presupuesto SET
                 id_articulo = ?,

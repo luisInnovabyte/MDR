@@ -640,9 +640,23 @@ switch ($_GET["op"]) {
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['lineas'][] = $linea;
                 
                 // Acumular subtotales
-                $base_imponible = floatval($linea['base_imponible']);
-                $total_linea = floatval($linea['total_linea']);
-                $total_iva_linea = $total_linea - $base_imponible;
+                // Cuando $permitir_descuentos=false la vista ya lleva dto aplicado → tarifa pura
+                if ($permitir_descuentos) {
+                    $base_imponible  = floatval($linea['base_imponible']);
+                    $total_linea     = floatval($linea['total_linea']);
+                    $total_iva_linea = $total_linea - $base_imponible;
+                } else {
+                    $coef_ag    = floatval($linea['valor_coeficiente_linea_ppto'] ?? 0);
+                    $cant_ag    = floatval($linea['cantidad_linea_ppto'] ?? 0);
+                    $precio_ag  = floatval($linea['precio_unitario_linea_ppto'] ?? 0);
+                    $dias_ag    = floatval($linea['dias_linea'] ?? 1);
+                    $pct_iva_ag = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
+                    $base_imponible  = ($coef_ag > 0)
+                        ? $cant_ag * $precio_ag * $coef_ag
+                        : $dias_ag * $cant_ag * $precio_ag;
+                    $total_iva_linea = $base_imponible * ($pct_iva_ag / 100);
+                    $total_linea     = $base_imponible + $total_iva_linea;
+                }
                 
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['subtotal_ubicacion'] += $base_imponible;
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_iva_ubicacion'] += $total_iva_linea;
@@ -699,13 +713,29 @@ switch ($_GET["op"]) {
                 }
                 
                 $importe_descuento_linea = $subtotal_linea_sin_desc * ($descuento_pct / 100);
-                
-                $subtotal_sin_descuento += $subtotal_linea_sin_desc;
-                $total_descuentos += $importe_descuento_linea;
-                
-                // Calcular IVA y base imponible
-                $base_imponible = floatval($linea['base_imponible'] ?? 0);
+
                 $porcentaje_iva = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
+
+                // Acumular subtotal y descuentos según configuración de empresa.
+                // IMPORTANTE: cuando $permitir_descuentos=false, la vista SQL ya tiene
+                // descuento_linea_ppto aplicado en base_imponible → recalcular tarifa pura
+                // para que cuerpo del PDF y totales del pie sean coherentes.
+                if ($permitir_descuentos) {
+                    // Con descuentos: base_imponible de la vista (precio tarifa − dto%)
+                    $base_imponible = floatval($linea['base_imponible'] ?? 0);
+                    $subtotal_sin_descuento += $subtotal_linea_sin_desc;
+                    $total_descuentos += $importe_descuento_linea;
+                } else {
+                    // Sin descuentos: tarifa pura (misma fórmula que el rendering loop)
+                    $base_imponible = $aplica_coeficiente
+                        ? $cantidad * $precio_unitario * $coeficiente
+                        : $dias * $cantidad * $precio_unitario;
+                    if ($base_imponible >= 0) {
+                        $subtotal_sin_descuento += $base_imponible;
+                    } else {
+                        $total_descuentos += abs($base_imponible);
+                    }
+                }
                 
                 $subtotal_sin_iva += $base_imponible;
                 
@@ -737,7 +767,19 @@ switch ($_GET["op"]) {
             $total_base_hotel   = 0;
             
             foreach ($lineas as $linea) {
-                $base_h    = floatval($linea['base_imponible'] ?? 0);
+                // Cuando $permitir_descuentos=false, la vista ya aplicó descuento_linea_ppto
+                // → usar tarifa pura para que el descuento hotel se calcule sobre precio real
+                if ($permitir_descuentos) {
+                    $base_h = floatval($linea['base_imponible'] ?? 0);
+                } else {
+                    $coef_h   = floatval($linea['valor_coeficiente_linea_ppto'] ?? 0);
+                    $cant_h   = floatval($linea['cantidad_linea_ppto'] ?? 0);
+                    $precio_h = floatval($linea['precio_unitario_linea_ppto'] ?? 0);
+                    $dias_h   = floatval($linea['dias_linea'] ?? 1);
+                    $base_h   = ($coef_h > 0)
+                        ? $cant_h * $precio_h * $coef_h
+                        : $dias_h * $cant_h * $precio_h;
+                }
                 $pct_iva_h = floatval($linea['porcentaje_iva_linea_ppto'] ?? 0);
                 $aplica_h  = ($linea['permitir_descuentos_articulo'] != 0) && ($linea['permite_descuento_familia'] != 0);
                 $importe_h = ($aplica_h && $pct_hotel > 0) ? ($base_h * (1 - $pct_hotel / 100)) : $base_h;
@@ -1013,6 +1055,21 @@ switch ($_GET["op"]) {
                         $precio_unitario = floatval($linea['precio_unitario_linea_ppto']);
                         $descuento = floatval($linea['descuento_linea_ppto']);
                         $base_imponible = floatval($linea['base_imponible']);
+
+                        // Cuando no se permiten descuentos por línea, forzar descuento=0
+                        // y recalcular base imponible como precio tarifa puro (la vista SQL
+                        // ya aplica descuento_linea_ppto, por lo que hay que ignorarlo)
+                        if (!$permitir_descuentos) {
+                            $descuento = 0;
+                            $coef_r = floatval($linea['valor_coeficiente_linea_ppto'] ?? 0);
+                            $dias_r  = floatval($linea['dias_linea'] ?? 1);
+                            $base_imponible = ($coef_r > 0)
+                                ? $cantidad * $precio_unitario * $coef_r
+                                : $dias_r * $cantidad * $precio_unitario;
+                        }
+
+                        // Color azul si cantidad o precio unitario son negativos
+                        $linea_negativa = ($cantidad < 0 || $precio_unitario < 0);
                         
                         // Calcular altura dinámica basada en el contenido real
                         // Usar el ancho correcto según si las columnas están ocultas o no
@@ -1042,6 +1099,9 @@ switch ($_GET["op"]) {
                         
                         // Aplicar bordes grises claros a las líneas del presupuesto
                         $pdf->SetDrawColor(200, 200, 200); // Gris claro para bordes
+                        if ($linea_negativa) {
+                            $pdf->SetTextColor(0, 102, 204); // Azul para líneas negativas
+                        }
                         
                         $pdf->Cell(15, $altura_fila, $fecha_inicio_linea, 1, 0, 'C');
                         $pdf->Cell(15, $altura_fila, $fecha_fin, 1, 0, 'C');
@@ -1096,7 +1156,12 @@ switch ($_GET["op"]) {
                         }
                         $pdf->Cell(8,  $altura_fila, $label_pct_hotel, 1, 0, 'C');
                         $pdf->Cell(20, $altura_fila, number_format($importe_hotel_linea, 2, ',', '.'), 1, 0, 'R');
-                        
+
+                        // Restaurar color de texto si la línea era negativa
+                        if ($linea_negativa) {
+                            $pdf->SetTextColor(0, 0, 0);
+                        }
+
                         // Restaurar color de borde por defecto
                         $pdf->SetDrawColor(0, 0, 0);
                         
@@ -1117,7 +1182,7 @@ switch ($_GET["op"]) {
                         
                         // Si es excepción, agregar fechas particulares a las observaciones
                         if ($es_excepcion && $ocultar_cols) {
-                            $obs_fechas = 'Mtje: ' . $fecha_montaje . ' - Dsmtje: ' . $fecha_desmontaje;
+                            $obs_fechas = 'Montje: ' . $fecha_montaje . ' - Dsmtje: ' . $fecha_desmontaje;
                             if (!empty($observaciones_a_mostrar)) {
                                 // Si ya hay observaciones, agregar al final con separador
                                 $observaciones_a_mostrar .= ' | ' . $obs_fechas;
@@ -1242,46 +1307,71 @@ switch ($_GET["op"]) {
             $pdf->Line(145, $pdf->GetY(), 200, $pdf->GetY());
             $pdf->Ln(3);
             
-            // Subtotal bruto (antes de cualquier descuento) — solo si se permiten descuentos
             if ($permitir_descuentos) {
-                $pdf->SetFont('helvetica', '', 9);
-                $pdf->SetFillColor(248, 249, 250);
-                $pdf->SetDrawColor(220, 220, 220);
-                $pdf->Cell(144, 6, '', 0, 0);
-                $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
-                $pdf->SetFont('helvetica', 'B', 9);
-                $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+                // === MODO CON DESCUENTOS POR LÍNEA ===
+                // Subtotal bruto (precio tarifa)
+                if ($total_descuento_hotel > 0) {
+                    $pdf->SetFont('helvetica', '', 9);
+                    $pdf->SetFillColor(248, 249, 250);
+                    $pdf->SetDrawColor(220, 220, 220);
+                    $pdf->Cell(144, 6, '', 0, 0);
+                    $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
+                    $pdf->SetFont('helvetica', 'B', 9);
+                    $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+                }
+                // Dto. línea
+                if ($total_descuentos > 0) {
+                    $pdf->SetFont('helvetica', '', 9);
+                    $pdf->SetFillColor(248, 249, 250);
+                    $pdf->SetDrawColor(220, 220, 220);
+                    $pdf->Cell(144, 6, '', 0, 0);
+                    $pdf->Cell(30, 6, 'Dto. línea:', 1, 0, 'R', 1);
+                    $pdf->SetFont('helvetica', 'B', 9);
+                    $pdf->SetTextColor(231, 76, 60);
+                    $pdf->Cell(20, 6, '-' . number_format($total_descuentos, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+                    $pdf->SetTextColor(0, 0, 0);
+                }
+                // DtoCliente (hotel)
+                if ($total_descuento_hotel > 0) {
+                    $pdf->SetFont('helvetica', '', 9);
+                    $pdf->SetFillColor(248, 249, 250);
+                    $pdf->SetDrawColor(220, 220, 220);
+                    $pdf->Cell(144, 6, '', 0, 0);
+                    $label_dto_hotel = ($pct_hotel == intval($pct_hotel))
+                        ? 'DtoCliente (' . intval($pct_hotel) . '%):'
+                        : 'DtoCliente (' . number_format($pct_hotel, 2, ',', '.') . '%):';
+                    $pdf->Cell(30, 6, $label_dto_hotel, 1, 0, 'R', 1);
+                    $pdf->SetFont('helvetica', 'B', 9);
+                    $pdf->SetTextColor(230, 126, 34); // Naranja
+                    $pdf->Cell(20, 6, '-' . number_format($total_descuento_hotel, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+                    $pdf->SetTextColor(0, 0, 0);
+                }
+            } else {
+                // === MODO SIN DESCUENTOS POR LÍNEA ===
+                // Subtotal: suma de importe_h positivos. Descuento: hotel + líneas negativas combinados.
+                $descuento_combinado = $total_descuento_hotel + $total_descuentos;
+                if ($descuento_combinado > 0) {
+                    // Subtotal
+                    $pdf->SetFont('helvetica', '', 9);
+                    $pdf->SetFillColor(248, 249, 250);
+                    $pdf->SetDrawColor(220, 220, 220);
+                    $pdf->Cell(144, 6, '', 0, 0);
+                    $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
+                    $pdf->SetFont('helvetica', 'B', 9);
+                    $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+                    // Descuento combinado
+                    $pdf->SetFont('helvetica', '', 9);
+                    $pdf->SetFillColor(248, 249, 250);
+                    $pdf->SetDrawColor(220, 220, 220);
+                    $pdf->Cell(144, 6, '', 0, 0);
+                    $pdf->Cell(30, 6, 'Descuento:', 1, 0, 'R', 1);
+                    $pdf->SetFont('helvetica', 'B', 9);
+                    $pdf->SetTextColor(230, 126, 34); // Naranja
+                    $pdf->Cell(20, 6, '-' . number_format($descuento_combinado, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+                    $pdf->SetTextColor(0, 0, 0);
+                }
             }
-            
-            // Descuento de línea (rojo, solo si hay y se permiten descuentos)
-            if ($permitir_descuentos && $total_descuentos > 0) {
-                $pdf->SetFont('helvetica', '', 9);
-                $pdf->SetFillColor(248, 249, 250);
-                $pdf->SetDrawColor(220, 220, 220);
-                $pdf->Cell(144, 6, '', 0, 0);
-                $pdf->Cell(30, 6, 'Dto. línea:', 1, 0, 'R', 1);
-                $pdf->SetFont('helvetica', 'B', 9);
-                $pdf->SetTextColor(231, 76, 60);
-                $pdf->Cell(20, 6, '-' . number_format($total_descuentos, 2, ',', '.') . ' €', 1, 1, 'R', 1);
-                $pdf->SetTextColor(0, 0, 0);
-            }
-            
-            // Descuento Hotel (naranja, solo si pct_hotel > 0 y se permiten descuentos)
-            if ($permitir_descuentos && $pct_hotel > 0 && $total_descuento_hotel > 0) {
-                $pdf->SetFont('helvetica', '', 9);
-                $pdf->SetFillColor(248, 249, 250);
-                $pdf->SetDrawColor(220, 220, 220);
-                $pdf->Cell(144, 6, '', 0, 0);
-                $label_dto_hotel = ($pct_hotel == intval($pct_hotel))
-                    ? 'DtoCliente (' . intval($pct_hotel) . '%):'
-                    : 'DtoCliente (' . number_format($pct_hotel, 2, ',', '.') . '%):';
-                $pdf->Cell(30, 6, $label_dto_hotel, 1, 0, 'R', 1);
-                $pdf->SetFont('helvetica', 'B', 9);
-                $pdf->SetTextColor(230, 126, 34); // Naranja
-                $pdf->Cell(20, 6, '-' . number_format($total_descuento_hotel, 2, ',', '.') . ' €', 1, 1, 'R', 1);
-                $pdf->SetTextColor(0, 0, 0);
-            }
-            
+
             // Base Imponible Hotel
             $pdf->SetFont('helvetica', '', 9);
             $pdf->SetFillColor(248, 249, 250);
