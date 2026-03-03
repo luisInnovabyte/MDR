@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Workflow — AssetTrack</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2230;
+    --border: #30363d;
+    --blue: #58a6ff;
+    --blue-dim: #1f3a5f;
+    --green: #3fb950;
+    --green-dim: #1a3a26;
+    --orange: #f0883e;
+    --orange-dim: #3d2410;
+    --red: #f85149;
+    --red-dim: #3d1515;
+    --purple: #bc8cff;
+    --purple-dim: #2d1f4f;
+    --text: #e6edf3;
+    --text-muted: #7d8590;
+    --code-bg: #0d1117;
+    --tag-h: 24px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .header-left .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid #2a4d7f; }
+  .badge-orange { background: var(--orange-dim); color: var(--orange); border: 1px solid #5a3318; }
+  .badge-green { background: var(--green-dim); color: var(--green); border: 1px solid #1e4d2a; }
+  .badge-red { background: var(--red-dim); color: var(--red); border: 1px solid #5a2020; }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); border: 1px solid #4a2e7a; }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+
+  .col-full { grid-column: 1 / -1; }
+  .col-2 { grid-column: span 2; }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .card-header .icon {
+    font-size: 14px;
+    width: 20px;
+    text-align: center;
+  }
+
+  .card-header .title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    flex: 1;
+  }
+
+  .card-body { padding: 12px 14px; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 6px; }
+
+  .step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-blue .step-num { background: var(--blue-dim); color: var(--blue); }
+  .step-green .step-num { background: var(--green-dim); color: var(--green); }
+  .step-orange .step-num { background: var(--orange-dim); color: var(--orange); }
+  .step-purple .step-num { background: var(--purple-dim); color: var(--purple); }
+
+  .step-content { flex: 1; }
+
+  .step-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+
+  .code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 8px;
+    color: var(--text);
+    line-height: 1.6;
+    white-space: pre;
+  }
+
+  .code .cm { color: var(--text-muted); }
+  .code .kw { color: var(--blue); }
+  .code .br { color: var(--orange); }
+  .code .str { color: var(--green); }
+  .code .hi { color: var(--purple); }
+
+  /* ALERT */
+  .alert {
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 11px;
+    line-height: 1.5;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .alert-icon { font-size: 13px; flex-shrink: 0; }
+  .alert-red { background: var(--red-dim); border: 1px solid #5a2020; color: #ffb3b0; }
+  .alert-blue { background: var(--blue-dim); border: 1px solid #2a4d7f; color: #a0c8ff; }
+  .alert-green { background: var(--green-dim); border: 1px solid #1e4d2a; color: #88e09a; }
+
+  /* BRANCH MAP */
+  .branch-map {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .branch-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+  }
+
+  .branch-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 140px;
+  }
+
+  .branch-desc {
+    font-size: 10px;
+    color: var(--text-muted);
+    flex: 1;
+  }
+
+  /* TABLE */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+
+  .ref-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ref-table td {
+    padding: 5px 8px;
+    border-bottom: 1px solid #1e2532;
+    vertical-align: top;
+  }
+
+  .ref-table td:first-child {
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .ref-table td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--blue);
+    background: var(--blue-dim);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 4px 0;
+  }
+
+  .arrow-down {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 16px;
+    padding: 2px 0;
+  }
+
+  .spacer { height: 6px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Git Workflow — AssetTrack (MDR)</h1>
+    <div class="sub">github.com/luisInnovabyte/assettrack · Referencia rápida</div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+    <span class="badge badge-blue">main protegida</span>
+    <span class="badge badge-orange">PR obligatorio</span>
+    <span class="badge badge-green">v1.0 · Marzo 2026</span>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- REGLA FUNDAMENTAL -->
+  <div class="card col-full">
+    <div class="card-body">
+      <div class="alert alert-red">
+        <span class="alert-icon">⛔</span>
+        <span><strong>REGLA FUNDAMENTAL:</strong> Los becarios NUNCA hacen push directo a <code style="font-family:JetBrains Mono,monospace;font-size:11px;background:#5a2020;padding:1px 5px;border-radius:3px">main</code>. Todo cambio requiere un Pull Request aprobado por Luis.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESTRUCTURA DE RAMAS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">🌿</span>
+      <span class="title">Estructura de Ramas</span>
+    </div>
+    <div class="card-body">
+      <div class="branch-map">
+        <div class="branch-row">
+          <span class="branch-name" style="color:var(--red)">main</span>
+          <span class="badge badge-red" style="font-size:9px">BLOQUEADA</span>
+          <span class="branch-desc">Producción — solo Luis via PR</span>
+        </div>
+        <div class="branch-row">
+          <span class="branch-name" style="color:var(--blue)">angel/trabajo</span>
+          <span class="badge badge-blue" style="font-size:9px">BECARIO</span>
+          <span class="branch-desc">Rama permanente de Ángel</span>
+        </div>
+        <div class="branch-row">
+          <span class="branch-name" style="color:var(--blue)">francisco/trabajo</span>
+          <span class="badge badge-blue" style="font-size:9px">BECARIO</span>
+          <span class="branch-desc">Rama permanente de Francisco</span>
+        </div>
+        <div class="branch-row">
+          <span class="branch-name" style="color:var(--text-muted)">tarea-xxx</span>
+          <span class="badge" style="background:#1e1e1e;color:#666;border:1px solid #333;font-size:9px">LOCAL</span>
+          <span class="branch-desc">Temporal, se elimina al terminar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BECARIOS: DÍA A DÍA -->
+  <div class="card col-2">
+    <div class="card-header">
+      <span class="icon">👨‍💻</span>
+      <span class="title">Becarios — Flujo Diario</span>
+      <span class="badge badge-blue">día a día</span>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <!-- Izquierda: inicio y trabajo -->
+        <div class="steps">
+          <div class="step step-blue">
+            <span class="step-num">1</span>
+            <div class="step-content">
+              <div class="step-label">Inicio de jornada — actualizar</div>
+              <div class="code"><span class="kw">git checkout</span> angel/trabajo
+<span class="kw">git pull</span> --rebase origin main</div>
+            </div>
+          </div>
+          <div class="step step-blue">
+            <span class="step-num">2</span>
+            <div class="step-content">
+              <div class="step-label">Crear rama temporal para la tarea</div>
+              <div class="code"><span class="kw">git checkout</span> <span class="br">-b</span> tarea-login</div>
+            </div>
+          </div>
+          <div class="step step-blue">
+            <span class="step-num">3</span>
+            <div class="step-content">
+              <div class="step-label">Trabajar y hacer commits</div>
+              <div class="code"><span class="kw">git add</span> .
+<span class="kw">git commit</span> <span class="br">-m</span> <span class="str">"feat: descripcion"</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Derecha: entrega -->
+        <div class="steps">
+          <div class="step step-green">
+            <span class="step-num">4</span>
+            <div class="step-content">
+              <div class="step-label">Tarea lista — mergear en local</div>
+              <div class="code"><span class="kw">git checkout</span> angel/trabajo
+<span class="kw">git merge</span> tarea-login
+<span class="kw">git branch -d</span> tarea-login</div>
+            </div>
+          </div>
+          <div class="step step-green">
+            <span class="step-num">5</span>
+            <div class="step-content">
+              <div class="step-label">Subir rama a GitHub</div>
+              <div class="code"><span class="kw">git push</span> origin angel/trabajo</div>
+            </div>
+          </div>
+          <div class="step step-green">
+            <span class="step-num">6</span>
+            <div class="step-content">
+              <div class="step-label">Avisar a Luis</div>
+              <div class="alert alert-green" style="padding:6px 8px;margin-top:2px">
+                <span class="alert-icon" style="font-size:11px">💬</span>
+                <span style="font-size:10px">"Tarea completada, rama lista para revisar"</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="alert alert-blue">
+        <span class="alert-icon">🔄</span>
+        <span><strong>Tras aprobación:</strong> <code style="font-family:JetBrains Mono,monospace;font-size:10px;background:#1f3a5f;padding:1px 4px;border-radius:3px">git checkout angel/trabajo</code> → <code style="font-family:JetBrains Mono,monospace;font-size:10px;background:#1f3a5f;padding:1px 4px;border-radius:3px">git pull --rebase origin main</code></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPERVISOR: REVISAR -->
+  <div class="card col-2">
+    <div class="card-header">
+      <span class="icon">🔍</span>
+      <span class="title">Supervisor (Luis) — Revisar y Aprobar</span>
+      <span class="badge badge-orange">PR review</span>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="steps">
+          <div class="step step-orange">
+            <span class="step-num">1</span>
+            <div class="step-content">
+              <div class="step-label">Descargar rama del becario</div>
+              <div class="code"><span class="kw">git fetch</span> origin
+<span class="kw">git checkout</span> angel/trabajo
+<span class="kw">git pull</span> origin angel/trabajo</div>
+            </div>
+          </div>
+          <div class="step step-orange">
+            <span class="step-num">2</span>
+            <div class="step-content">
+              <div class="step-label">Probar en local</div>
+              <div class="alert alert-blue" style="padding:5px 8px;margin-top:2px">
+                <span style="font-size:10px">Verificar funcionalidad manualmente</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step step-orange">
+            <span class="step-num">3</span>
+            <div class="step-content">
+              <div class="step-label">Merge en GitHub</div>
+              <div class="code"><span class="cm">GitHub → Pull Requests</span>
+<span class="cm">→ angel/trabajo</span>
+<span class="cm">→ Merge pull request</span>
+<span class="hi">  [Squash and merge] ✓</span></div>
+            </div>
+          </div>
+          <div class="step step-orange">
+            <span class="step-num">4</span>
+            <div class="step-content">
+              <div class="step-label">Actualizar main local y avisar</div>
+              <div class="code"><span class="kw">git checkout</span> main
+<span class="kw">git pull</span> origin main</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPERVISOR: TRABAJO PROPIO -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">⚡</span>
+      <span class="title">Supervisor — Trabajo Propio</span>
+      <span class="badge badge-purple">acceso directo</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step step-purple">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <div class="step-label">Partir de main</div>
+            <div class="code"><span class="kw">git checkout</span> main
+<span class="kw">git pull</span> origin main
+<span class="kw">git checkout</span> <span class="br">-b</span> mejora-xxx</div>
+          </div>
+        </div>
+        <div class="step step-purple">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <div class="step-label">Mergear y publicar</div>
+            <div class="code"><span class="kw">git checkout</span> main
+<span class="kw">git merge</span> mejora-xxx
+<span class="kw">git branch -d</span> mejora-xxx
+<span class="kw">git push</span> origin main</div>
+          </div>
+        </div>
+        <div class="step step-purple">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <div class="step-label">Propagar a ramas de becarios</div>
+            <div class="code"><span class="kw">git checkout</span> angel/trabajo
+<span class="kw">git merge</span> main
+<span class="kw">git push</span> origin angel/trabajo
+<span class="kw">git checkout</span> francisco/trabajo
+<span class="kw">git merge</span> main
+<span class="kw">git push</span> origin francisco/trabajo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIGURACIÓN INICIAL -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">⚙️</span>
+      <span class="title">Config. Inicial GitHub</span>
+      <span class="badge badge-green">una sola vez</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step step-green">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <div class="step-label">Crear ramas de becarios</div>
+            <div class="code"><span class="kw">git checkout</span> main
+<span class="kw">git checkout</span> <span class="br">-b</span> angel/trabajo
+<span class="kw">git push</span> origin angel/trabajo
+<span class="kw">git checkout</span> <span class="br">-b</span> francisco/trabajo
+<span class="kw">git push</span> origin francisco/trabajo</div>
+          </div>
+        </div>
+        <div class="step step-green">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <div class="step-label">Proteger main</div>
+            <div class="code"><span class="cm">Settings → Branches → Add rule</span>
+<span class="hi">Branch: main</span>
+<span class="str">✓</span> Require pull request
+<span class="str">✓</span> Required approvals: 1</div>
+          </div>
+        </div>
+        <div class="step step-green">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <div class="step-label">Pull Requests</div>
+            <div class="code"><span class="cm">Settings → General → PRs</span>
+<span class="str">✓</span> Allow merge commits
+<span class="str">✓</span> Allow squash merging
+<span class="str">✗</span> Auto-delete branches</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERENCIA RÁPIDA DE COMANDOS -->
+  <div class="card col-2">
+    <div class="card-header">
+      <span class="icon">📋</span>
+      <span class="title">Referencia Rápida de Comandos</span>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
+        <table class="ref-table">
+          <tr><th>Acción</th><th>Comando</th></tr>
+          <tr><td>Actualizar desde main</td><td><code>git pull --rebase origin main</code></td></tr>
+          <tr><td>Crear rama temporal</td><td><code>git checkout -b tarea-xxx</code></td></tr>
+          <tr><td>Guardar cambios</td><td><code>git add . && git commit -m "msg"</code></td></tr>
+          <tr><td>Mergear tarea a rama</td><td><code>git merge tarea-xxx</code></td></tr>
+          <tr><td>Eliminar rama local</td><td><code>git branch -d tarea-xxx</code></td></tr>
+        </table>
+        <table class="ref-table">
+          <tr><th>Acción</th><th>Comando</th></tr>
+          <tr><td>Subir rama</td><td><code>git push origin angel/trabajo</code></td></tr>
+          <tr><td>Descargar cambios</td><td><code>git fetch origin</code></td></tr>
+          <tr><td>Ver estado</td><td><code>git status</code></td></tr>
+          <tr><td>Ver historial</td><td><code>git log --oneline --graph</code></td></tr>
+          <tr><td>Ver ramas</td><td><code>git branch -a</code></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONVENCIONES DE COMMITS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">✍️</span>
+      <span class="title">Convenciones de Commits</span>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--code-bg);border-radius:4px;border:1px solid var(--border)">
+          <span class="badge badge-blue" style="font-size:9px;min-width:60px;text-align:center">feat</span>
+          <span style="font-size:11px;color:var(--text-muted)">Nueva funcionalidad</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--code-bg);border-radius:4px;border:1px solid var(--border)">
+          <span class="badge badge-red" style="font-size:9px;min-width:60px;text-align:center">fix</span>
+          <span style="font-size:11px;color:var(--text-muted)">Corrección de error</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--code-bg);border-radius:4px;border:1px solid var(--border)">
+          <span class="badge badge-purple" style="font-size:9px;min-width:60px;text-align:center">refactor</span>
+          <span style="font-size:11px;color:var(--text-muted)">Refactorización sin cambios funcionales</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--code-bg);border-radius:4px;border:1px solid var(--border)">
+          <span class="badge badge-green" style="font-size:9px;min-width:60px;text-align:center">docs</span>
+          <span style="font-size:11px;color:var(--text-muted)">Cambios en documentación</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--code-bg);border-radius:4px;border:1px solid var(--border)">
+          <span class="badge badge-orange" style="font-size:9px;min-width:60px;text-align:center">style</span>
+          <span style="font-size:11px;color:var(--text-muted)">Formato, estilos CSS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFLICTOS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">⚠️</span>
+      <span class="title">Conflictos — Resolución</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step step-orange">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <div class="step-label">Identificar archivos</div>
+            <div class="code"><span class="kw">git status</span></div>
+          </div>
+        </div>
+        <div class="step step-orange">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <div class="step-label">Editar el archivo y resolver</div>
+            <div class="code"><span class="cm">&lt;&lt;&lt;&lt; HEAD (tu versión)</span>
+<span class="str">código a conservar</span>
+<span class="cm">======= / &gt;&gt;&gt;&gt; origin/main</span></div>
+          </div>
+        </div>
+        <div class="step step-orange">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <div class="step-label">Marcar resuelto y continuar</div>
+            <div class="code"><span class="kw">git add</span> archivo.php
+<span class="kw">git rebase</span> --continue</div>
+          </div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="alert alert-red">
+        <span class="alert-icon">🛑</span>
+        <span style="font-size:10px">Si hay dudas: <code style="font-family:JetBrains Mono,monospace;font-size:10px;background:#5a2020;padding:1px 4px;border-radius:3px">git rebase --abort</code> y consultar con Luis.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
