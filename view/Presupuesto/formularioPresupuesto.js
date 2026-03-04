@@ -585,6 +585,12 @@ $(document).ready(function () {
 
                     // Llenar los campos del formulario
                     $('#id_presupuesto').val(data.id_presupuesto);
+
+                    // Notificar a pagos_presupuesto.js que el ID ya está disponible
+                    // (por si llegase antes que el URLSearchParams fallback)
+                    if (typeof window.onPresupuestoGuardado === 'function') {
+                        window.onPresupuestoGuardado(data.id_presupuesto);
+                    }
                     $('#numero_presupuesto').val(data.numero_presupuesto);
                     $('#fecha_presupuesto').val(data.fecha_presupuesto);
                     $('#fecha_validez_presupuesto').val(data.fecha_validez_presupuesto);

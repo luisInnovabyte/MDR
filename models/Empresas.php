@@ -620,6 +620,136 @@ class Empresas
      *
      * @return array ['observaciones_esp' => '...', 'observaciones_eng' => '...']
      */
+    // ══════════════════════════════════════════════════════════
+    //  MÉTODOS PAGOS / FACTURACIÓN (serie y contadores)
+    // ══════════════════════════════════════════════════════════
+
+    /**
+     * Devuelve todos los datos de series y contadores de una empresa
+     * (presupuesto, factura, factura_proforma, abono).
+     * Usado por los controllers de documentos para mostrar la configuración.
+     *
+     * @param int $id_empresa
+     * @return array|false
+     */
+    public function get_datos_numeracion(int $id_empresa)
+    {
+        try {
+            $sql = "SELECT
+                        id_empresa,
+                        codigo_empresa,
+                        nombre_empresa,
+                        ficticia_empresa,
+                        serie_presupuesto_empresa,
+                        numero_actual_presupuesto_empresa,
+                        serie_factura_empresa,
+                        numero_actual_factura_empresa,
+                        serie_factura_proforma_empresa,
+                        numero_actual_factura_proforma_empresa,
+                        serie_abono_empresa,
+                        numero_actual_abono_empresa
+                    FROM empresa
+                    WHERE id_empresa    = ?
+                      AND activo_empresa = 1";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_empresa, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'Empresas', 'get_datos_numeracion',
+                "Error id_empresa=$id_empresa: " . $e->getMessage(), 'error'
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Devuelve los datos de numeración de TODAS las empresas activas y reales
+     * (no ficticias). Se usa para el selector de empresa al emitir facturas.
+     *
+     * @return array
+     */
+    public function get_empresas_reales_activas(): array
+    {
+        try {
+            $sql = "SELECT
+                        id_empresa,
+                        codigo_empresa,
+                        nombre_empresa,
+                        nif_empresa,
+                        serie_factura_empresa,
+                        numero_actual_factura_empresa,
+                        serie_factura_proforma_empresa,
+                        numero_actual_factura_proforma_empresa,
+                        serie_abono_empresa,
+                        numero_actual_abono_empresa,
+                        logotipo_empresa
+                    FROM empresa
+                    WHERE ficticia_empresa = 0
+                      AND activo_empresa   = 1
+                    ORDER BY nombre_empresa ASC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'Empresas', 'get_empresas_reales_activas',
+                "Error: " . $e->getMessage(), 'error'
+            );
+            return [];
+        }
+    }
+
+    /**
+     * Actualiza la serie y/o el contador de factura proforma de una empresa.
+     * Usado por el panel de administración para ajustar manualmente los contadores.
+     *
+     * @param int    $id_empresa
+     * @param string $serie           Nueva serie (ej. 'FP')
+     * @param int    $numero_actual   El ÚLTIMO número ya emitido (el siguiente será +1)
+     * @return bool
+     */
+    public function update_serie_factura_proforma(int $id_empresa, string $serie, int $numero_actual = 0): bool
+    {
+        try {
+            $sql = "UPDATE empresa
+                    SET    serie_factura_proforma_empresa          = ?,
+                           numero_actual_factura_proforma_empresa  = ?,
+                           updated_at_empresa                      = NOW()
+                    WHERE  id_empresa    = ?
+                      AND  activo_empresa = 1";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $serie,          PDO::PARAM_STR);
+            $stmt->bindValue(2, $numero_actual,  PDO::PARAM_INT);
+            $stmt->bindValue(3, $id_empresa,     PDO::PARAM_INT);
+            $stmt->execute();
+
+            $ok = $stmt->rowCount() > 0;
+            if ($ok) {
+                $this->registro->registrarActividad(
+                    'admin', 'Empresas', 'update_serie_factura_proforma',
+                    "Serie FP actualizada: empresa=$id_empresa serie=$serie num=$numero_actual", 'info'
+                );
+            }
+            return $ok;
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'Empresas', 'update_serie_factura_proforma',
+                "Error id_empresa=$id_empresa: " . $e->getMessage(), 'error'
+            );
+            return false;
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+
     public function get_observaciones_por_defecto()
     {
         try {
