@@ -42,6 +42,7 @@ require_once __DIR__ . "/../config/funciones.php";
 require_once __DIR__ . "/../models/DocumentoPresupuesto.php";
 require_once __DIR__ . "/../models/ImpresionPresupuesto.php";
 require_once __DIR__ . "/../models/Empresas.php";
+require_once __DIR__ . "/../models/PagoPresupuesto.php";
 require_once __DIR__ . "/../vendor/tcpdf/tcpdf.php";
 
 // ══════════════════════════════════════════════════════════════════
@@ -58,6 +59,8 @@ class MYPDF_PROFORMA extends TCPDF
     public $texto_pie_empresa  = '';
     public $mostrar_logo       = false;
     public $path_logo          = '';
+    public $idioma             = 'es';
+    public $y_header_bottom    = 72;
 
     // Azul proforma
     private $cr = 102;
@@ -72,7 +75,7 @@ class MYPDF_PROFORMA extends TCPDF
         $this->SetY($y_start);
         $this->SetFont('helvetica', 'B', 16);
         $this->SetTextColor($this->cr, $this->cg, $this->cb);
-        $this->Cell(0, 8, 'FACTURA PROFORMA', 0, 1, 'R');
+        $this->Cell(0, 8, $this->idioma === 'en' ? 'PROFORMA INVOICE' : 'FACTURA PROFORMA', 0, 1, 'R');
         $this->Ln(2);
         $y_start = $this->GetY(); // ~20mm
 
@@ -159,7 +162,7 @@ class MYPDF_PROFORMA extends TCPDF
         if ($num_ppto) {
             $this->SetXY(9, $y_info + 5);
             $this->SetFont('helvetica', '', 7.5);
-            $this->Cell(93, 3, 'Ref. Presupuesto: ' . $num_ppto, 0, 1, 'L');
+            $this->Cell(93, 3, ($this->idioma === 'en' ? 'Ref. Quotation: ' : 'Ref. Presupuesto: ') . $num_ppto, 0, 1, 'L');
         }
         $this->SetTextColor(0, 0, 0);
 
@@ -182,7 +185,7 @@ class MYPDF_PROFORMA extends TCPDF
         $this->SetXY($col2_x + 2, $box_y + 1.5);
         $this->SetFont('helvetica', 'B', 9);
         $this->SetTextColor(44, 62, 80);
-        $this->Cell($col2_w - 4, 3.5, 'CLIENTE', 0, 1, 'L');
+        $this->Cell($col2_w - 4, 3.5, $this->idioma === 'en' ? 'CUSTOMER' : 'CLIENTE', 0, 1, 'L');
         $this->SetDrawColor(39, 174, 96);
         $this->Line($col2_x + 2, $box_y + 5.5, $col2_x + $col2_w - 2, $box_y + 5.5);
 
@@ -262,6 +265,7 @@ class MYPDF_PROFORMA extends TCPDF
             }
         }
 
+        $this->y_header_bottom = max($y_info + 12, $box_y + $cli_h + 5);
         $this->SetDrawColor(200, 200, 200);
         $this->SetTextColor(0, 0, 0);
         $this->SetLineWidth(0.2);
@@ -308,6 +312,22 @@ switch ($op) {
         $id_pago_ppto    = !empty($_POST['id_pago_ppto'])    ? (int)$_POST['id_pago_ppto'] : null;
         $numero_version  = !empty($_POST['numero_version'])  ? (int)$_POST['numero_version'] : null;
         $observaciones_internas = htmlspecialchars(trim($_POST['motivo_proforma'] ?? ''), ENT_QUOTES, 'UTF-8') ?: null;
+        $tipo_cliente   = in_array($_POST['tipo_cliente'] ?? '', ['cliente_final', 'agencia_descuento'])
+                            ? $_POST['tipo_cliente'] : 'cliente_final';
+        $idioma         = ($_POST['idioma'] ?? 'es') === 'en' ? 'en' : 'es';
+
+        // Fallback importe_anticipo desde pago cuando viene del modal
+        if ($tipo_contenido === 'anticipo' && $importe_anticipo <= 0 && $id_pago_ppto) {
+            $pagoTmp = (new PagoPresupuesto())->get_pagoxid($id_pago_ppto);
+            if ($pagoTmp) {
+                $importe_anticipo = (float)($pagoTmp['importe_pago_ppto'] ?? 0);
+            }
+        }
+
+        // Asegurar datos del pago para comprobaciones posteriores (método de pago real)
+        if (empty($pagoTmp) && $id_pago_ppto) {
+            $pagoTmp = (new PagoPresupuesto())->get_pagoxid($id_pago_ppto);
+        }
 
         if (!$id_presupuesto || !$id_empresa) {
             echo json_encode(['success' => false, 'message' => 'Faltan campos obligatorios (id_presupuesto, id_empresa)'], JSON_UNESCAPED_UNICODE);
@@ -345,6 +365,11 @@ switch ($op) {
                 break;
             }
 
+            // Inyectar método de pago real en datos_ppto para la comprobación de transferencia en PDF
+            if (!empty($pagoTmp['nombre_metodo_pago'])) {
+                $datos_ppto['nombre_metodo_pago_pago'] = $pagoTmp['nombre_metodo_pago'];
+            }
+
             // 4. Calcular totales para registro en BD
             $total_doc = ($tipo_contenido === 'anticipo') ? $importe_anticipo : (float)($datos_ppto['total_con_iva'] ?? 0);
 
@@ -363,6 +388,12 @@ switch ($op) {
             if (!$id_doc) {
                 echo json_encode(['success' => false, 'message' => 'Error al crear el registro de documento'], JSON_UNESCAPED_UNICODE);
                 break;
+            }
+
+            // Vincular documento al pago (actualizar pago_presupuesto.id_documento_ppto)
+            if ($id_pago_ppto) {
+                $pagoModel = new PagoPresupuesto();
+                $pagoModel->update_pago($id_pago_ppto, ['id_documento_ppto' => $id_doc]);
             }
 
             // 6. Obtener registro creado (para leer numero_documento_ppto)
@@ -396,14 +427,8 @@ switch ($op) {
             $desglose_iva  = [];
 
             if ($tipo_contenido === 'anticipo') {
-                // Prorratear IVA según tipo de empresa / simplificación: asumir IVA del presupuesto
-                // Si el presupuesto tiene desglose, usar porcentaje medio; si no, 21%
-                $pct_iva_ref = 21; // default
-                // Intentar obtener porcentaje de la primera línea
-                $lineas_ref = $impresion->get_lineas_impresion($id_presupuesto, $numero_version);
-                if (!empty($lineas_ref)) {
-                    $pct_iva_ref = (float)($lineas_ref[0]['porcentaje_iva_linea_ppto'] ?? 21);
-                }
+                // Usar el IVA seleccionado en el modal (porcentaje_iva POST), fallback 21%
+                $pct_iva_ref = (float)($_POST['porcentaje_iva'] ?? 21);
                 $base_imp       = round($importe_anticipo / (1 + $pct_iva_ref / 100), 2);
                 $cuota_iva      = $importe_anticipo - $base_imp;
                 $subtotal_base  = $base_imp;
@@ -432,20 +457,25 @@ switch ($op) {
                 $datos_ppto, $datos_empresa, $numero_documento,
                 $tipo_contenido, $importe_anticipo,
                 $lineas, $desglose_iva, $subtotal_base, $total_iva, $total_con_iva,
-                $mostrar_logo, $path_logo
+                $mostrar_logo, $path_logo,
+                $idioma, $tipo_cliente
             );
 
             // 12. Guardar a disco
             $dir_guardado = __DIR__ . '/../public/documentos/proformas/';
             if (!is_dir($dir_guardado)) {
-                mkdir($dir_guardado, 0755, true);
+                if (!mkdir($dir_guardado, 0755, true)) {
+                    throw new Exception("No se pudo crear el directorio: $dir_guardado");
+                }
             }
             $nombre_archivo = preg_replace('/[^A-Za-z0-9_\-]/', '_', $numero_documento) . '.pdf';
             $ruta_absoluta  = $dir_guardado . $nombre_archivo;
             $ruta_relativa  = 'public/documentos/proformas/' . $nombre_archivo;
 
             $pdf_string = $pdf->Output($nombre_archivo, 'S'); // 'S' = string
-            file_put_contents($ruta_absoluta, $pdf_string);
+            if (file_put_contents($ruta_absoluta, $pdf_string) === false) {
+                throw new Exception("No se pudo escribir el PDF en: $ruta_absoluta");
+            }
             $tamano = filesize($ruta_absoluta);
 
             // 13. Actualizar ruta PDF en BD
@@ -552,10 +582,44 @@ function _generar_pdf_proforma(
     array $datos_ppto, array $datos_empresa, string $numero_documento,
     string $tipo_contenido, float $importe_anticipo,
     array $lineas, array $desglose_iva, float $subtotal_base, float $total_iva, float $total_con_iva,
-    bool $mostrar_logo, string $path_logo
+    bool $mostrar_logo, string $path_logo,
+    string $idioma = 'es', string $tipo_cliente = 'cliente_final'
 ): MYPDF_PROFORMA {
 
     $fecha_hoy = date('d/m/Y');
+
+    // Textos bilingüe
+    $t = ($idioma === 'en') ? [
+        'desc'        => 'Description',
+        'cant'        => 'Qty.',
+        'punit'       => 'Unit Price €',
+        'dto'         => '% Disc.',
+        'importe'     => 'Amount €',
+        'a_cuenta'    => 'On account of confirmation of quotation ',
+        'base_imp'    => 'Tax Base:',
+        'iva_label'   => 'VAT ',
+        'total'       => 'TOTAL:',
+        'forma_pago'  => 'Payment method: ',
+        'banco'       => 'Bank:',
+        'nota_legal'  => 'This document is a proforma invoice. It has no fiscal value. Valid for customs and banking procedures.',
+        'visto_bueno' => 'CUSTOMER APPROVAL',
+        'fecha'       => 'Date: ',
+    ] : [
+        'desc'        => 'Descripción',
+        'cant'        => 'Cant.',
+        'punit'       => 'P.Unit. €',
+        'dto'         => '% Dto.',
+        'importe'     => 'Importe €',
+        'a_cuenta'    => 'Entrega a cuenta confirmación presupuesto ',
+        'base_imp'    => 'Base imponible:',
+        'iva_label'   => 'IVA ',
+        'total'       => 'TOTAL:',
+        'forma_pago'  => 'Forma de pago: ',
+        'banco'       => 'Banco:',
+        'nota_legal'  => 'Este documento es una factura proforma. No tiene valor fiscal. Válido para trámites aduaneros y bancarios.',
+        'visto_bueno' => 'VISTO BUENO DEL CLIENTE',
+        'fecha'       => 'Fecha: ',
+    ];
 
     // ─── Inicializar PDF ──────────────────────────────────────────
     $pdf = new MYPDF_PROFORMA('P', 'mm', 'A4', true, 'UTF-8', false);
@@ -568,9 +632,10 @@ function _generar_pdf_proforma(
     $pdf->datos_presupuesto = $datos_ppto;
     $pdf->numero_documento  = $numero_documento;
     $pdf->fecha_documento   = $fecha_hoy;
-    $pdf->texto_pie_empresa = $datos_empresa['texto_pie_presupuesto_empresa'] ?? '';
+    $pdf->texto_pie_empresa = $datos_empresa['texto_pie_factura_empresa'] ?? '';
     $pdf->mostrar_logo      = $mostrar_logo;
     $pdf->path_logo         = $path_logo;
+    $pdf->idioma            = $idioma;
 
     $pdf->setPrintHeader(true);
     $pdf->setPrintFooter(true);
@@ -579,8 +644,18 @@ function _generar_pdf_proforma(
     $pdf->SetFooterMargin(15);
     $pdf->SetAutoPageBreak(true, 25);
     $pdf->AddPage();
+    $pdf->SetY($pdf->y_header_bottom);
 
-    // Header/Footer automáticos vía clase MYPDF_PROFORMA
+    // ─── OBSERVACIONES CABECERA ──────────────────────────────────
+    $obs_cab = ($idioma === 'en')
+        ? trim($datos_ppto['observaciones_cabecera_ingles_presupuesto'] ?? '')
+        : trim($datos_ppto['observaciones_cabecera_presupuesto'] ?? '');
+    if (!empty($obs_cab)) {
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->MultiCell(194, 4, $obs_cab, 0, 'L');
+        $pdf->Ln(3);
+    }
 
 // ─── TABLA DE LÍNEAS ─────────────────────────────────────────
     // Anchos: Desc=128, Cant=12, PUnit=18, Dto=12, Importe=24 → total=194mm
@@ -596,18 +671,18 @@ function _generar_pdf_proforma(
     $pdf->SetFillColor(240, 240, 240);
     $pdf->SetDrawColor(200, 200, 200);
     $pdf->SetTextColor(44, 62, 80);
-    $pdf->Cell($w_desc,  $col_h, 'Descripción', 1, 0, 'L', true);
-    $pdf->Cell($w_cant,  $col_h, 'Cant.',        1, 0, 'C', true);
-    $pdf->Cell($w_punit, $col_h, 'P.Unit. €',    1, 0, 'C', true);
-    $pdf->Cell($w_dto,   $col_h, '% Dto.',       1, 0, 'C', true);
-    $pdf->Cell($w_imp,   $col_h, 'Importe €',    1, 1, 'C', true);
+    $pdf->Cell($w_desc,  $col_h, $t['desc'],    1, 0, 'L', true);
+    $pdf->Cell($w_cant,  $col_h, $t['cant'],    1, 0, 'C', true);
+    $pdf->Cell($w_punit, $col_h, $t['punit'],   1, 0, 'C', true);
+    $pdf->Cell($w_dto,   $col_h, $t['dto'],     1, 0, 'C', true);
+    $pdf->Cell($w_imp,   $col_h, $t['importe'], 1, 1, 'C', true);
 
     $pdf->SetFont('helvetica', '', 8);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetFillColor(255, 255, 255);
 
     if ($tipo_contenido === 'anticipo') {
-        $desc_anticipo = 'A cuenta del presupuesto ' . ($datos_ppto['numero_presupuesto'] ?? '');
+        $desc_anticipo = $t['a_cuenta'] . ($datos_ppto['numero_presupuesto'] ?? '');
         $pdf->Cell($w_desc,  $col_h, $desc_anticipo,                                        1, 0, 'L');
         $pdf->Cell($w_cant,  $col_h, '1',                                                   1, 0, 'C');
         $pdf->Cell($w_punit, $col_h, number_format($importe_anticipo, 2, ',', '.'),         1, 0, 'R');
@@ -657,7 +732,7 @@ function _generar_pdf_proforma(
 
     // Base imponible
     $pdf->Cell($w_spacer, 6, '', 0, 0);
-    $pdf->Cell($w_label,  6, 'Base imponible:', 'LTB', 0, 'R', true);
+    $pdf->Cell($w_label,  6, $t['base_imp'], 'LTB', 0, 'R', true);
     $pdf->SetFont('helvetica', 'B', 8.5);
     $pdf->Cell($w_value,  6, number_format($subtotal_base, 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
 
@@ -666,7 +741,7 @@ function _generar_pdf_proforma(
         $pdf->SetFont('helvetica', '', 8);
         $pdf->SetTextColor(52, 73, 94);
         $pdf->Cell($w_spacer, 5, '', 0, 0);
-        $pdf->Cell($w_label,  5, 'IVA ' . $pct . '%:', 0, 0, 'R');
+        $pdf->Cell($w_label,  5, $t['iva_label'] . $pct . '%:', 0, 0, 'R');
         $pdf->Cell($w_value,  5, number_format($v['cuota'], 2, ',', '.') . ' €', 0, 1, 'R');
     }
 
@@ -676,7 +751,7 @@ function _generar_pdf_proforma(
     $pdf->SetDrawColor(80, 100, 200);
     $pdf->SetTextColor(255, 255, 255);
     $pdf->Cell($w_spacer, 8, '', 0, 0);
-    $pdf->Cell($w_label,  8, 'TOTAL:', 1, 0, 'R', true);
+    $pdf->Cell($w_label,  8, $t['total'], 1, 0, 'R', true);
     $pdf->Cell($w_value,  8, number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
 
     $pdf->SetTextColor(0, 0, 0);
@@ -685,17 +760,18 @@ function _generar_pdf_proforma(
     $pdf->Ln(4);
 
     // ─── DATOS BANCARIOS (solo si transferencia + flag activado) ──
-    $nombre_fp        = strtoupper($datos_ppto['nombre_forma_pago'] ?? '');
+    // Preferir el método real del pago (ej. "Transferencia bancaria") sobre la forma de pago del presupuesto
+    $nombre_fp        = strtoupper($datos_ppto['nombre_metodo_pago_pago'] ?? $datos_ppto['nombre_pago'] ?? '');
     $es_transferencia = (strpos($nombre_fp, 'TRANSFERENCIA') !== false || strpos($nombre_fp, 'TRANSFER') !== false);
     $tiene_datos_ban  = !empty($datos_empresa['iban_empresa']) || !empty($datos_empresa['banco_empresa']);
     $mostrar_cuenta   = !empty($datos_empresa['mostrar_cuenta_bancaria_pdf_presupuesto_empresa']);
 
     if ($es_transferencia && $tiene_datos_ban && $mostrar_cuenta) {
-        $texto_fp     = 'Forma de pago: ' . ($datos_ppto['nombre_forma_pago'] ?? '');
+        $texto_fp     = $t['forma_pago'] . ($datos_ppto['nombre_pago'] ?? '');
         $lineas_banco = [];
         $altura_banco = 8;
         if (!empty($datos_empresa['banco_empresa'])) {
-            $lineas_banco[] = ['label' => 'Banco:', 'value' => $datos_empresa['banco_empresa']];
+            $lineas_banco[] = ['label' => $t['banco'], 'value' => $datos_empresa['banco_empresa']];
             $altura_banco += 6;
         }
         if (!empty($datos_empresa['iban_empresa'])) {
@@ -706,14 +782,15 @@ function _generar_pdf_proforma(
             $lineas_banco[] = ['label' => 'SWIFT/BIC:', 'value' => $datos_empresa['swift_empresa']];
             $altura_banco += 6;
         }
+        $pdf->Ln(8);
         $y_banco = $pdf->GetY();
         $pdf->SetFillColor(245, 245, 245);
         $pdf->SetDrawColor(180, 180, 180);
-        $pdf->Rect(8, $y_banco, 194, $altura_banco, 'DF');
+        $pdf->Rect(8, $y_banco, 100, $altura_banco, 'DF');
         $pdf->SetXY(10, $y_banco + 1.5);
         $pdf->SetFont('helvetica', 'B', 7);
         $pdf->SetTextColor(44, 62, 80);
-        $pdf->Cell(190, 3.5, $texto_fp, 0, 1, 'L');
+        $pdf->Cell(93, 3.5, $texto_fp, 0, 1, 'L');
         foreach ($lineas_banco as $lb) {
             $pdf->SetX(10);
             $pdf->SetFont('helvetica', '', 6);
@@ -721,54 +798,17 @@ function _generar_pdf_proforma(
             $pdf->Cell(25, 5.5, $lb['label'], 0, 0, 'R');
             $pdf->SetFont('helvetica', 'B', 7);
             $pdf->SetTextColor(44, 62, 80);
-            $pdf->Cell(165, 5.5, $lb['value'], 0, 1, 'L');
+            $pdf->Cell(66, 5.5, $lb['value'], 0, 1, 'L');
         }
-        $pdf->Ln(3);
+        $pdf->Ln(5);
     }
 
     // ─── NOTA LEGAL PROFORMA ──────────────────────────────────────
     $pdf->SetFont('helvetica', 'I', 7.5);
     $pdf->SetTextColor(130, 130, 130);
-    $pdf->MultiCell(0, 4, 'Este documento es una factura proforma. No tiene valor fiscal. Válido para trámites aduaneros y bancarios.', 0, 'C');
+    $pdf->MultiCell(0, 4, $t['nota_legal'], 0, 'C');
     $pdf->SetTextColor(0, 0, 0);
     $pdf->Ln(5);
-
-    // ─── FIRMA ────────────────────────────────────────────────────
-    $pdf->SetAutoPageBreak(false);
-    $ancho_sig = 90;
-    $sep_sig   = 7;
-    $x_izq     = 8;
-    $x_der     = $x_izq + $ancho_sig + $sep_sig;
-    $y_firmas  = $pdf->GetY();
-
-    // Títulos
-    $cab_firma = !empty($datos_empresa['cabecera_firma_presupuesto_empresa'])
-        ? $datos_empresa['cabecera_firma_presupuesto_empresa']
-        : 'DEPARTAMENTO COMERCIAL';
-    $pdf->SetXY($x_izq, $y_firmas);
-    $pdf->SetFont('helvetica', 'B', 7.5);
-    $pdf->SetTextColor(44, 62, 80);
-    $pdf->Cell($ancho_sig, 4, $cab_firma, 0, 0, 'C');
-    $pdf->SetXY($x_der, $y_firmas);
-    $pdf->Cell($ancho_sig, 4, 'VISTO BUENO DEL CLIENTE', 0, 1, 'C');
-
-    $pdf->Ln(16);
-    $y_linea = $pdf->GetY();
-
-    // Líneas de firma
-    $pdf->SetDrawColor(44, 62, 80);
-    $pdf->SetLineWidth(0.3);
-    $pdf->Line($x_izq, $y_linea, $x_izq + $ancho_sig, $y_linea);
-    $pdf->Line($x_der, $y_linea, $x_der + $ancho_sig, $y_linea);
-    $pdf->Ln(1);
-
-    // Fechas
-    $pdf->SetFont('helvetica', '', 7);
-    $pdf->SetTextColor(100, 100, 100);
-    $pdf->SetXY($x_izq, $pdf->GetY());
-    $pdf->Cell($ancho_sig, 4, 'Fecha: ' . date('d/m/Y'), 0, 0, 'L');
-    $pdf->SetXY($x_der, $pdf->GetY());
-    $pdf->Cell($ancho_sig, 4, 'Fecha: ___/___/______', 0, 1, 'L');
 
     $pdf->SetAutoPageBreak(true, 25);
     $pdf->SetTextColor(0, 0, 0);

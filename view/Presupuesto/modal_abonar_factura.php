@@ -75,12 +75,15 @@
                     </div>
 
                     <!-- Confirmación explícita -->
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="chkConfirmarAbono" required>
-                        <label class="form-check-label fw-bold text-danger" for="chkConfirmarAbono">
-                            Confirmo que quiero generar la factura de abono y anular el pago vinculado.
-                        </label>
-                        <div class="invalid-feedback">Debes confirmar antes de continuar.</div>
+                    <div class="border border-2 border-danger rounded p-3" style="background: rgba(220,53,69,.05);">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="chkConfirmarAbono" required>
+                            <label class="form-check-label fw-bold text-danger" for="chkConfirmarAbono">
+                                <i class="fas fa-exclamation-circle me-1"></i>
+                                Confirmo que quiero generar la factura de abono y anular el pago vinculado.
+                            </label>
+                            <div class="invalid-feedback">Debes confirmar antes de continuar.</div>
+                        </div>
                     </div>
 
                 </div><!-- /.modal-body -->

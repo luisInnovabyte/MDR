@@ -233,6 +233,8 @@ class Empresas
         $serie_presupuesto_empresa,
         $numero_actual_presupuesto_empresa,
         $dias_validez_presupuesto_empresa,
+        $serie_factura_proforma_empresa,
+        $numero_actual_factura_proforma_empresa,
         $serie_factura_empresa,
         $numero_actual_factura_empresa,
         $serie_abono_empresa,
@@ -282,6 +284,7 @@ class Empresas
                 telefono_empresa, movil_empresa, email_empresa, email_facturacion_empresa, web_empresa,
                 iban_empresa, swift_empresa, banco_empresa,
                 serie_presupuesto_empresa, numero_actual_presupuesto_empresa, dias_validez_presupuesto_empresa,
+                serie_factura_proforma_empresa, numero_actual_factura_proforma_empresa,
                 serie_factura_empresa, numero_actual_factura_empresa,
                 serie_abono_empresa, numero_actual_abono_empresa,
                 verifactu_activo_empresa, verifactu_software_empresa, verifactu_version_empresa,
@@ -306,6 +309,7 @@ class Empresas
                 ?, ?, ?, ?, ?,
                 ?, ?, ?,
                 ?, ?, ?,
+                ?, ?,
                 ?, ?,
                 ?, ?,
                 ?, ?, ?,
@@ -347,36 +351,38 @@ class Empresas
             $stmt->bindValue(20, $serie_presupuesto_empresa, PDO::PARAM_STR);
             $stmt->bindValue(21, $numero_actual_presupuesto_empresa, PDO::PARAM_INT);
             $stmt->bindValue(22, $dias_validez_presupuesto_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(23, $serie_factura_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(24, $numero_actual_factura_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(25, $serie_abono_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(26, $numero_actual_abono_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(27, $verifactu_activo_empresa, PDO::PARAM_BOOL);
-            $stmt->bindValue(28, $verifactu_software_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(29, $verifactu_version_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(30, $verifactu_nif_desarrollador_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(31, $verifactu_nombre_desarrollador_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(32, $verifactu_sistema_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(33, $verifactu_url_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(34, $verifactu_certificado_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(35, $logotipo_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(36, $logotipo_pie_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(37, $texto_legal_factura_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(38, $texto_pie_presupuesto_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(39, $texto_pie_factura_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(40, $observaciones_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(41, $modelo_impresion_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(42, $configuracion_pdf_presupuesto_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(43, $observaciones_cabecera_presupuesto_empresa, $observaciones_cabecera_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-            $stmt->bindValue(44, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-            $stmt->bindValue(45, $mostrar_subtotales_fecha_presupuesto_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(46, $cabecera_firma_presupuesto_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(47, $mostrar_cuenta_bancaria_pdf_presupuesto_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(48, $mostrar_kits_albaran_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(49, $mostrar_obs_familias_articulos_albaran_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(50, $mostrar_obs_pie_albaran_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(51, $obs_linea_alineadas_descripcion_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(52, $permitir_descuentos_lineas_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(23, $serie_factura_proforma_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(24, $numero_actual_factura_proforma_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(25, $serie_factura_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(26, $numero_actual_factura_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(27, $serie_abono_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(28, $numero_actual_abono_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(29, $verifactu_activo_empresa, PDO::PARAM_BOOL);
+            $stmt->bindValue(30, $verifactu_software_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(31, $verifactu_version_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(32, $verifactu_nif_desarrollador_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(33, $verifactu_nombre_desarrollador_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(34, $verifactu_sistema_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(35, $verifactu_url_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(36, $verifactu_certificado_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(37, $logotipo_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(38, $logotipo_pie_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(39, $texto_legal_factura_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(40, $texto_pie_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(41, $texto_pie_factura_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(42, $observaciones_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(43, $modelo_impresion_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(44, $configuracion_pdf_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(45, $observaciones_cabecera_presupuesto_empresa, $observaciones_cabecera_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(46, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(47, $mostrar_subtotales_fecha_presupuesto_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(48, $cabecera_firma_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(49, $mostrar_cuenta_bancaria_pdf_presupuesto_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(50, $mostrar_kits_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(51, $mostrar_obs_familias_articulos_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(52, $mostrar_obs_pie_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(53, $obs_linea_alineadas_descripcion_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(54, $permitir_descuentos_lineas_empresa, PDO::PARAM_INT);
 
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId();
@@ -427,6 +433,8 @@ class Empresas
         $serie_presupuesto_empresa,
         $numero_actual_presupuesto_empresa,
         $dias_validez_presupuesto_empresa,
+        $serie_factura_proforma_empresa,
+        $numero_actual_factura_proforma_empresa,
         $serie_factura_empresa,
         $numero_actual_factura_empresa,
         $serie_abono_empresa,
@@ -476,6 +484,7 @@ class Empresas
                 telefono_empresa = ?, movil_empresa = ?, email_empresa = ?, email_facturacion_empresa = ?, web_empresa = ?,
                 iban_empresa = ?, swift_empresa = ?, banco_empresa = ?,
                 serie_presupuesto_empresa = ?, numero_actual_presupuesto_empresa = ?, dias_validez_presupuesto_empresa = ?,
+                serie_factura_proforma_empresa = ?, numero_actual_factura_proforma_empresa = ?,
                 serie_factura_empresa = ?, numero_actual_factura_empresa = ?,
                 serie_abono_empresa = ?, numero_actual_abono_empresa = ?,
                 verifactu_activo_empresa = ?, verifactu_software_empresa = ?, verifactu_version_empresa = ?,
@@ -519,37 +528,39 @@ class Empresas
             $stmt->bindValue(20, $serie_presupuesto_empresa, PDO::PARAM_STR);
             $stmt->bindValue(21, $numero_actual_presupuesto_empresa, PDO::PARAM_INT);
             $stmt->bindValue(22, $dias_validez_presupuesto_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(23, $serie_factura_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(24, $numero_actual_factura_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(25, $serie_abono_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(26, $numero_actual_abono_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(27, $verifactu_activo_empresa, PDO::PARAM_BOOL);
-            $stmt->bindValue(28, $verifactu_software_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(29, $verifactu_version_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(30, $verifactu_nif_desarrollador_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(31, $verifactu_nombre_desarrollador_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(32, $verifactu_sistema_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(33, $verifactu_url_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(34, $verifactu_certificado_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(35, $logotipo_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(36, $logotipo_pie_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(37, $texto_legal_factura_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(38, $texto_pie_presupuesto_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(39, $texto_pie_factura_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(40, $observaciones_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(41, $modelo_impresion_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(42, $configuracion_pdf_presupuesto_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(43, $observaciones_cabecera_presupuesto_empresa, $observaciones_cabecera_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-            $stmt->bindValue(44, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-            $stmt->bindValue(45, $mostrar_subtotales_fecha_presupuesto_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(46, $cabecera_firma_presupuesto_empresa, PDO::PARAM_STR);
-            $stmt->bindValue(47, $mostrar_cuenta_bancaria_pdf_presupuesto_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(48, $mostrar_kits_albaran_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(49, $mostrar_obs_familias_articulos_albaran_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(50, $mostrar_obs_pie_albaran_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(51, $obs_linea_alineadas_descripcion_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(52, $permitir_descuentos_lineas_empresa, PDO::PARAM_INT);
-            $stmt->bindValue(53, $id_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(23, $serie_factura_proforma_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(24, $numero_actual_factura_proforma_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(25, $serie_factura_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(26, $numero_actual_factura_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(27, $serie_abono_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(28, $numero_actual_abono_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(29, $verifactu_activo_empresa, PDO::PARAM_BOOL);
+            $stmt->bindValue(30, $verifactu_software_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(31, $verifactu_version_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(32, $verifactu_nif_desarrollador_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(33, $verifactu_nombre_desarrollador_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(34, $verifactu_sistema_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(35, $verifactu_url_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(36, $verifactu_certificado_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(37, $logotipo_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(38, $logotipo_pie_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(39, $texto_legal_factura_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(40, $texto_pie_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(41, $texto_pie_factura_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(42, $observaciones_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(43, $modelo_impresion_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(44, $configuracion_pdf_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(45, $observaciones_cabecera_presupuesto_empresa, $observaciones_cabecera_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(46, $observaciones_cabecera_ingles_presupuesto_empresa, $observaciones_cabecera_ingles_presupuesto_empresa === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(47, $mostrar_subtotales_fecha_presupuesto_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(48, $cabecera_firma_presupuesto_empresa, PDO::PARAM_STR);
+            $stmt->bindValue(49, $mostrar_cuenta_bancaria_pdf_presupuesto_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(50, $mostrar_kits_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(51, $mostrar_obs_familias_articulos_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(52, $mostrar_obs_pie_albaran_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(53, $obs_linea_alineadas_descripcion_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(54, $permitir_descuentos_lineas_empresa, PDO::PARAM_INT);
+            $stmt->bindValue(55, $id_empresa, PDO::PARAM_INT);
 
             $stmt->execute();
 

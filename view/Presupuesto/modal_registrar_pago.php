@@ -39,7 +39,6 @@
                                 <option value="anticipo">Anticipo</option>
                                 <option value="total">Pago total</option>
                                 <option value="resto">Resto / Liquidación</option>
-                                <option value="devolucion">Devolución</option>
                             </select>
                             <div class="invalid-feedback">Seleccione un tipo de pago.</div>
                         </div>
@@ -100,22 +99,15 @@
 
                     <hr class="my-3">
 
-                    <!-- SECCIÓN: Generar factura automáticamente (solo en nuevos pagos) -->
+                    <!-- SECCIÓN: Generar factura (siempre visible en nuevos pagos) -->
+                    <input type="checkbox" id="chkGenerarFactura" name="generar_factura" value="1" checked class="d-none">
+
                     <div id="seccionGenerarFactura">
 
-                        <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" id="chkGenerarFactura" name="generar_factura" value="1" checked>
-                            <label class="form-check-label fw-bold" for="chkGenerarFactura">
-                                <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>
-                                Generar factura automáticamente al guardar
-                            </label>
-                            <div class="form-text text-muted">Si está marcado, se generará el PDF de la factura correspondiente.</div>
-                        </div>
-
                         <!-- Sub-sección: Empresa facturadora -->
-                        <div id="seccionEmpresaFactura" class="border rounded p-3 bg-light mb-3">
-                            <label for="pago_id_empresa_factura" class="form-label fw-bold">
-                                <i class="fas fa-building me-2 text-secondary"></i>
+                        <div id="seccionEmpresaFactura" class="border-start border-4 border-success rounded-end p-3 bg-success bg-opacity-10 mb-3">
+                            <label for="pago_id_empresa_factura" class="form-label fw-bold text-dark">
+                                <i class="fas fa-building me-2 text-success"></i>
                                 Empresa emisora de la factura <span class="text-danger">*</span>
                             </label>
                             <select class="form-select" id="pago_id_empresa_factura" name="id_empresa_factura">
@@ -132,30 +124,79 @@
                         </div>
 
                         <!-- Sub-sección: Tipo de documento (solo tipo=anticipo) -->
-                        <div id="seccionTipoDocumento" class="border rounded p-3 bg-light d-none">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-file-alt me-2 text-secondary"></i>
+                        <div id="seccionTipoDocumento" class="border-start border-4 border-info rounded-end p-3 bg-info bg-opacity-10 d-none">
+                            <label class="form-label fw-bold mb-3 text-dark">
+                                <i class="fas fa-file-alt me-2 text-info"></i>
                                 Tipo de documento a generar
                             </label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="tipo_documento_generar"
-                                       id="rdoFacturaAnticipo" value="factura_anticipo" checked>
-                                <label class="form-check-label" for="rdoFacturaAnticipo">
-                                    <strong>Factura de anticipo</strong>
-                                    <span class="text-muted small d-block">Documento fiscal oficial de anticipo.</span>
-                                </label>
-                            </div>
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="radio" name="tipo_documento_generar"
-                                       id="rdoFacturaProforma" value="factura_proforma">
-                                <label class="form-check-label" for="rdoFacturaProforma">
-                                    <strong>Factura proforma</strong>
-                                    <span class="text-muted small d-block">Documento previo no fiscal.</span>
-                                </label>
+                            <div class="row g-2 mt-1 ps-1">
+                                <div class="col-12 col-md-6">
+                                    <label class="d-block cursor-pointer" for="rdoFacturaAnticipo">
+                                        <div class="card border-2 p-4 h-100 tipo-doc-card" id="card-rdoFacturaAnticipo" style="border-color:#0d6efd !important; background:#f0f6ff;">
+                                            <div class="d-flex align-items-start gap-3">
+                                                <input class="form-check-input mt-1 flex-shrink-0" type="radio" name="tipo_documento_generar"
+                                                       id="rdoFacturaAnticipo" value="factura_anticipo" checked>
+                                                <div>
+                                                    <div class="fw-bold"><i class="fas fa-file-invoice-dollar text-primary me-1"></i>Factura de anticipo</div>
+                                                    <span class="text-dark small">Documento fiscal oficial de anticipo.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="d-block cursor-pointer" for="rdoFacturaProforma">
+                                        <div class="card border-2 p-4 h-100 tipo-doc-card" id="card-rdoFacturaProforma" style="border-color:#dee2e6 !important;">
+                                            <div class="d-flex align-items-start gap-3">
+                                                <input class="form-check-input mt-1 flex-shrink-0" type="radio" name="tipo_documento_generar"
+                                                       id="rdoFacturaProforma" value="factura_proforma">
+                                                <div>
+                                                    <div class="fw-bold"><i class="fas fa-file-alt text-secondary me-1"></i>Factura proforma</div>
+                                                    <span class="text-dark small">Documento previo, no fiscal.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                             <div id="alertaProformaInfo" class="alert alert-info mt-3 mb-0 py-2 d-none">
                                 <i class="fas fa-info-circle me-2"></i>
                                 La factura proforma <strong>no es un documento fiscal</strong>. En caso de error se vuelve a emitir sin necesidad de abono.
+                            </div>
+
+                            <!-- IVA del anticipo -->
+                            <div class="mt-3 border-top pt-3">
+                                <label class="form-label fw-bold mb-2 text-dark" for="pago_porcentaje_iva">
+                                    <i class="fas fa-percent me-2 text-info"></i>IVA del anticipo
+                                </label>
+                                <select class="form-select form-select-sm w-auto" id="pago_porcentaje_iva" name="porcentaje_iva">
+                                    <option value="4">4%</option>
+                                    <option value="10">10%</option>
+                                    <option value="21" selected>21% (por defecto)</option>
+                                </select>
+                            </div>
+
+                            <!-- tipo_cliente fijo: anticipo siempre sin descuento agencia/hotel -->
+                            <input type="hidden" name="tipo_cliente" value="cliente_final">
+
+                        </div><!-- /#seccionTipoDocumento -->
+
+                        <!-- ── Idioma del documento (siempre visible al generar) ── -->
+                        <div id="seccionIdiomaFactura" class="border-start border-4 border-secondary rounded-end p-3 mt-3" style="background-color: rgba(108,117,125,0.05);">
+                            <label class="form-label fw-bold mb-2 text-dark">
+                                <i class="fas fa-language me-2 text-secondary"></i>Idioma del documento
+                            </label>
+                            <div class="d-flex flex-wrap gap-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="idioma_factura"
+                                           id="idioma_factura_es" value="es" checked>
+                                    <label class="form-check-label text-dark" for="idioma_factura_es">Español</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="idioma_factura"
+                                           id="idioma_factura_en" value="en">
+                                    <label class="form-check-label text-dark" for="idioma_factura_en">English</label>
+                                </div>
                             </div>
                         </div>
 

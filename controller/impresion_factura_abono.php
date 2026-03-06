@@ -42,6 +42,7 @@ require_once __DIR__ . "/../config/funciones.php";
 require_once __DIR__ . "/../models/DocumentoPresupuesto.php";
 require_once __DIR__ . "/../models/ImpresionPresupuesto.php";
 require_once __DIR__ . "/../models/Empresas.php";
+require_once __DIR__ . "/../models/PagoPresupuesto.php";
 require_once __DIR__ . "/../vendor/tcpdf/tcpdf.php";
 
 // ══════════════════════════════════════════════════════════════════
@@ -362,6 +363,21 @@ switch ($op) {
 
             $docModel->actualizar_ruta_pdf($id_doc, $ruta_relativa, $tamano);
 
+            // ── Auto-anular el pago vinculado al documento origen ────────
+            $pago_anulado    = false;
+            $id_pago_anulado = null;
+            $pagoModel = new PagoPresupuesto();
+            $pago_vinculado  = $pagoModel->get_pago_vinculado_documento($id_documento_origen);
+            if ($pago_vinculado && $pago_vinculado['estado_pago_ppto'] !== 'anulado') {
+                $pago_anulado    = $pagoModel->anular_pago_por_abono((int)$pago_vinculado['id_pago_ppto']);
+                $id_pago_anulado = (int)$pago_vinculado['id_pago_ppto'];
+                $registro->registrarActividad(
+                    'admin', 'impresion_factura_abono.php', 'generar',
+                    "Pago ID $id_pago_anulado anulado automáticamente al generar abono $numero_documento",
+                    $pago_anulado ? 'info' : 'warning'
+                );
+            }
+
             $registro->registrarActividad(
                 'admin', 'impresion_factura_abono.php', 'generar',
                 "Abono $numero_documento generado. Abona: $numero_doc_origen. Doc ID: $id_doc", 'info'
@@ -374,6 +390,8 @@ switch ($op) {
                 'id_documento_ppto' => $id_doc,
                 'numero_documento'  => $numero_documento,
                 'url_pdf'           => $ruta_relativa,
+                'pago_anulado'      => $pago_anulado,
+                'id_pago_anulado'   => $id_pago_anulado,
             ], JSON_UNESCAPED_UNICODE);
 
         } catch (Exception $e) {

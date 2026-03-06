@@ -384,7 +384,7 @@ function _opciones_documento(array $row): string
 
     // Ver / descargar PDF (solo si hay ruta)
     if (!empty($row['ruta_pdf_documento_ppto'])) {
-        $html .= '<a href="../public/documentos/' . htmlspecialchars($row['ruta_pdf_documento_ppto']) . '"
+        $html .= '<a href="../../' . htmlspecialchars($row['ruta_pdf_documento_ppto']) . '"
                      target="_blank" class="btn btn-info btn-sm me-1" title="Ver PDF">
                     <i class="fa fa-file-pdf"></i>
                   </a>';

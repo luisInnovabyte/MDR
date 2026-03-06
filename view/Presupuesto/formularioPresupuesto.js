@@ -259,22 +259,44 @@ $(document).ready(function () {
      * @param {string}        color  - color_estado_ppto (hex, p.ej. '#28a745')
      */
     function mostrarBadgeEstado(id, nombre, color) {
-        var badge = $('#badge_estado_ppto');
-        var input = $('#id_estado_ppto');
+        var badge    = $('#badge_estado_ppto');
+        var badgeHdr = $('#badge_estado_header');
+        var input    = $('#id_estado_ppto');
+        var bgColor  = color || '#6c757d';
 
         if (id && nombre) {
-            badge.text(nombre);
-            badge.css({
-                'background-color': color || '#6c757d',
-                'color': '#fff'
-            });
+            badge.text(nombre).css({ 'background-color': bgColor, 'color': '#fff' });
+            badgeHdr.text(nombre).css({ 'background-color': bgColor, 'color': '#fff' });
             input.val(id);
         } else {
             // Fallback: BORRADOR
-            badge.text('BORRADOR');
-            badge.css({ 'background-color': '#0000ff', 'color': '#fff' });
+            badge.text('BORRADOR').css({ 'background-color': '#0000ff', 'color': '#fff' });
+            badgeHdr.text('BORRADOR').css({ 'background-color': '#0000ff', 'color': '#fff' });
             input.val(1);
         }
+    }
+
+    /**
+     * Rellena las bandas de contexto en los panes Documentos y Pagos.
+     * @param {object} data - objeto devuelto por controller mostrar
+     */
+    function actualizarContextoTabs(data) {
+        var numero  = data.numero_presupuesto || '—';
+        var fecha   = data.fecha_presupuesto  || '—';
+        var cliente = data.nombre_completo_cliente ||
+                      ((data.nombre_cliente || '') + (data.apellido_cliente ? ' ' + data.apellido_cliente : '')).trim() || '—';
+        var estado  = data.nombre_estado_ppto || 'BORRADOR';
+        var color   = data.color_estado_ppto  || '#0000ff';
+        var fpago   = data.nombre_forma_pago  || '—';
+
+        ['docs', 'pagos'].forEach(function (pane) {
+            $('#ctx-' + pane + '-numero').text(numero);
+            $('#ctx-' + pane + '-fecha').text(fecha);
+            $('#ctx-' + pane + '-cliente').text(cliente);
+            $('#ctx-' + pane + '-estado').text(estado).css({ 'background-color': color, 'color': '#fff' });
+            $('#ctx-' + pane + '-fpago').text(fpago);
+            $('#ctx-' + pane).removeClass('d-none');
+        });
     }
 
     // Función para cargar formas de pago
@@ -660,7 +682,10 @@ $(document).ready(function () {
                     setTimeout(function() {
                         captureOriginalValues();
                     }, 600);
-                    
+
+                    // Rellenar bandas de contexto en tabs secundarios
+                    actualizarContextoTabs(data);
+
                     // Enfocar el primer campo
                     $('#numero_presupuesto').focus();
                     

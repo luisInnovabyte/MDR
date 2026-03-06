@@ -327,6 +327,17 @@
 
                             <div class="row mb-3">
                                 <div class="col-12 col-md-6">
+                                    <label for="serie_factura_proforma_empresa" class="form-label">Serie Factura Proforma:</label>
+                                    <input type="text" class="form-control" name="serie_factura_proforma_empresa" id="serie_factura_proforma_empresa" maxlength="10" placeholder="FP" value="FP">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="numero_actual_factura_proforma_empresa" class="form-label">Número Actual:</label>
+                                    <input type="number" class="form-control" name="numero_actual_factura_proforma_empresa" id="numero_actual_factura_proforma_empresa" value="0" min="0">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6">
                                     <label for="serie_factura_empresa" class="form-label">Serie Factura:</label>
                                     <input type="text" class="form-control" name="serie_factura_empresa" id="serie_factura_empresa" maxlength="10" placeholder="FAC" value="F">
                                 </div>

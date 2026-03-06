@@ -203,6 +203,48 @@ class PagoPresupuesto
     }
 
     /**
+     * Devuelve la empresa bloqueada basándose en los propios pagos.
+     * Si total_pagado <= 0 → false (empresa libre).
+     * Si total_pagado > 0  → empresa del primer pago activo no-anulado con id_empresa_pago IS NOT NULL.
+     *
+     * @param int $id_presupuesto
+     * @return array|false  Fila de empresa o false
+     */
+    public function obtener_empresa_bloqueada_por_pagos(int $id_presupuesto)
+    {
+        // Si no hay saldo pagado, la empresa está libre
+        if ($this->get_total_pagado($id_presupuesto) <= 0) {
+            return false;
+        }
+
+        try {
+            $sql = "SELECT e.*
+                    FROM   pago_presupuesto pp
+                    JOIN   empresa e ON pp.id_empresa_pago = e.id_empresa
+                    WHERE  pp.id_presupuesto   = ?
+                      AND  pp.id_empresa_pago  IS NOT NULL
+                      AND  pp.activo_pago_ppto = 1
+                      AND  pp.estado_pago_ppto != 'anulado'
+                      AND  e.ficticia_empresa  = 0
+                    ORDER  BY pp.created_at_pago_ppto ASC
+                    LIMIT  1";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row ?: false;
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'PagoPresupuesto', 'obtener_empresa_bloqueada_por_pagos',
+                "Error id_presupuesto=$id_presupuesto: " . $e->getMessage(), 'error'
+            );
+            return false;
+        }
+    }
+
+    /**
      * Calcula el saldo pendiente de cobro.
      * = total_con_iva (vista) - total_pagado
      *
@@ -359,6 +401,7 @@ class PagoPresupuesto
             $sql = "INSERT INTO pago_presupuesto (
                         id_presupuesto,
                         id_documento_ppto,
+                        id_empresa_pago,
                         tipo_pago_ppto,
                         importe_pago_ppto,
                         porcentaje_pago_ppto,
@@ -368,20 +411,21 @@ class PagoPresupuesto
                         fecha_valor_pago_ppto,
                         estado_pago_ppto,
                         observaciones_pago_ppto
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1,  $datos['id_presupuesto'],    PDO::PARAM_INT);
             $stmt->bindValue(2,  $datos['id_documento_ppto']  ?? null,  !empty($datos['id_documento_ppto'])  ? PDO::PARAM_INT : PDO::PARAM_NULL);
-            $stmt->bindValue(3,  $datos['tipo_pago_ppto'],    PDO::PARAM_STR);
-            $stmt->bindValue(4,  $datos['importe_pago_ppto'], PDO::PARAM_STR);
-            $stmt->bindValue(5,  $porcentaje,                 PDO::PARAM_STR);
-            $stmt->bindValue(6,  $datos['id_metodo_pago'],    PDO::PARAM_INT);
-            $stmt->bindValue(7,  $datos['referencia_pago_ppto']   ?? null, !empty($datos['referencia_pago_ppto'])   ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt->bindValue(8,  $datos['fecha_pago_ppto'],   PDO::PARAM_STR);
-            $stmt->bindValue(9,  $datos['fecha_valor_pago_ppto']  ?? null, !empty($datos['fecha_valor_pago_ppto'])  ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt->bindValue(10, $datos['estado_pago_ppto']   ?? 'recibido', PDO::PARAM_STR);
-            $stmt->bindValue(11, $datos['observaciones_pago_ppto'] ?? null, !empty($datos['observaciones_pago_ppto']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
+            $stmt->bindValue(3,  $datos['id_empresa_pago']    ?? null,  !empty($datos['id_empresa_pago'])    ? PDO::PARAM_INT : PDO::PARAM_NULL);
+            $stmt->bindValue(4,  $datos['tipo_pago_ppto'],    PDO::PARAM_STR);
+            $stmt->bindValue(5,  $datos['importe_pago_ppto'], PDO::PARAM_STR);
+            $stmt->bindValue(6,  $porcentaje,                 PDO::PARAM_STR);
+            $stmt->bindValue(7,  $datos['id_metodo_pago'],    PDO::PARAM_INT);
+            $stmt->bindValue(8,  $datos['referencia_pago_ppto']   ?? null, !empty($datos['referencia_pago_ppto'])   ? PDO::PARAM_STR : PDO::PARAM_NULL);
+            $stmt->bindValue(9,  $datos['fecha_pago_ppto'],   PDO::PARAM_STR);
+            $stmt->bindValue(10, $datos['fecha_valor_pago_ppto']  ?? null, !empty($datos['fecha_valor_pago_ppto'])  ? PDO::PARAM_STR : PDO::PARAM_NULL);
+            $stmt->bindValue(11, $datos['estado_pago_ppto']   ?? 'recibido', PDO::PARAM_STR);
+            $stmt->bindValue(12, $datos['observaciones_pago_ppto'] ?? null, !empty($datos['observaciones_pago_ppto']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->execute();
 
             $id = (int)$this->conexion->lastInsertId();
@@ -425,6 +469,7 @@ class PagoPresupuesto
 
             $map = [
                 'id_documento_ppto'       => PDO::PARAM_INT,
+                'id_empresa_pago'         => PDO::PARAM_INT,
                 'tipo_pago_ppto'          => PDO::PARAM_STR,
                 'importe_pago_ppto'       => PDO::PARAM_STR,
                 'porcentaje_pago_ppto'    => PDO::PARAM_STR,

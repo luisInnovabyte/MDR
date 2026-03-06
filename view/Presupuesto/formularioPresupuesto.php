@@ -80,11 +80,16 @@
         
         <div class="br-pagetitle">
             <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <h4 class="mb-0 me-2" id="page-title">Nuevo Presupuesto</h4>
-                    <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaFormulario" title="Ayuda sobre el formulario">
+                <div class="d-flex align-items-center gap-2">
+                    <h4 class="mb-0" id="page-title">Nuevo Presupuesto</h4>
+                    <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modalAyudaFormulario" title="Ayuda sobre el formulario">
                         <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
                     </button>
+                    <span id="badge_estado_header"
+                          class="badge fs-6 px-3 py-2"
+                          style="background-color:#0000ff; color:#fff; letter-spacing:.03em;">
+                        BORRADOR
+                    </span>
                 </div>
                 
                 <!-- Botón de regreso -->
@@ -609,6 +614,17 @@
                     <!-- ===== TAB 2: DOCUMENTOS ===== -->
                     <div class="tab-pane fade p-4" id="pane-documentos" role="tabpanel">
 
+                        <!-- Contexto del presupuesto -->
+                        <div class="d-none border-start border-4 border-primary bg-white shadow-sm rounded-end px-3 py-2 mb-3" id="ctx-docs">
+                            <div class="d-flex flex-wrap align-items-center gap-3" style="font-size:.85rem;">
+                                <span class="text-muted"><i class="fas fa-hashtag me-1 text-primary"></i>Nº&nbsp;<strong id="ctx-docs-numero" class="text-dark">—</strong></span>
+                                <span class="text-muted"><i class="fas fa-calendar-alt me-1 text-primary"></i><strong id="ctx-docs-fecha" class="text-dark">—</strong></span>
+                                <span class="text-muted"><i class="fas fa-user me-1 text-primary"></i><strong id="ctx-docs-cliente" class="text-dark">—</strong></span>
+                                <span id="ctx-docs-estado" class="badge px-2 py-1">—</span>
+                                <span class="text-muted"><i class="fas fa-credit-card me-1 text-primary"></i><strong id="ctx-docs-fpago" class="text-dark">—</strong></span>
+                            </div>
+                        </div>
+
                         <!-- Cabecera con acciones -->
                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                             <div>
@@ -640,6 +656,17 @@
 
                     <!-- ===== TAB 3: PAGOS ===== -->
                     <div class="tab-pane fade p-4" id="pane-pagos" role="tabpanel">
+
+                        <!-- Contexto del presupuesto -->
+                        <div class="d-none border-start border-4 border-success bg-white shadow-sm rounded-end px-3 py-2 mb-3" id="ctx-pagos">
+                            <div class="d-flex flex-wrap align-items-center gap-3" style="font-size:.85rem;">
+                                <span class="text-muted"><i class="fas fa-hashtag me-1 text-success"></i>Nº&nbsp;<strong id="ctx-pagos-numero" class="text-dark">—</strong></span>
+                                <span class="text-muted"><i class="fas fa-calendar-alt me-1 text-success"></i><strong id="ctx-pagos-fecha" class="text-dark">—</strong></span>
+                                <span class="text-muted"><i class="fas fa-user me-1 text-success"></i><strong id="ctx-pagos-cliente" class="text-dark">—</strong></span>
+                                <span id="ctx-pagos-estado" class="badge px-2 py-1">—</span>
+                                <span class="text-muted"><i class="fas fa-credit-card me-1 text-success"></i><strong id="ctx-pagos-fpago" class="text-dark">—</strong></span>
+                            </div>
+                        </div>
 
                         <!-- Métricas financieras -->
                         <div class="row g-3 mb-4" id="resumen-financiero">
@@ -815,7 +842,21 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+        .cursor-pointer { cursor: pointer; }
     </style>
+    <script>
+        /* Toggle visual tarjetas tipo-documento */
+        $(document).on('change', 'input[name="tipo_documento_generar"]', function () {
+            $('input[name="tipo_documento_generar"]').each(function () {
+                var $card = $('#card-' + this.id);
+                if (this.checked) {
+                    $card.css({ 'border-color': '#0d6efd', 'background': '#f0f6ff' });
+                } else {
+                    $card.css({ 'border-color': '#dee2e6', 'background': '' });
+                }
+            });
+        });
+    </script>
     
     <script type="text/javascript" src="formularioPresupuesto.js"></script>
 

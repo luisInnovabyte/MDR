@@ -25,6 +25,7 @@ $(document).ready(function () {
     // aunque el AJAX de cargarDatosPresupuesto aún no haya terminado)
     if (idPresupuesto) {
         habilitarTabsSecundarios();
+        cargarContadoresTabs(idPresupuesto);
     }
 
     // Lazy-init de DataTables al mostrar cada tab
@@ -60,11 +61,6 @@ $(document).ready(function () {
     // Cambio de tipo de pago → mostrar/ocultar sección tipo documento
     $('#pago_tipo_pago_ppto').on('change', function () {
         actualizarSeccionesPagoModal();
-    });
-
-    // Cambio de checkbox "generar factura"
-    $('#chkGenerarFactura').on('change', function () {
-        actualizarSeccionesFacturaModal();
     });
 
     // Cambio de empresa → verificar si está bloqueada
@@ -120,6 +116,21 @@ function habilitarTabsSecundarios() {
         .prop('disabled', false)
         .removeClass('disabled')
         .attr('aria-disabled', 'false');
+}
+
+function cargarContadoresTabs(idPresupuesto) {
+    $.post('../../controller/documento_presupuesto.php?op=listar', { id_presupuesto: idPresupuesto })
+        .done(function (res) {
+            if (res && res.recordsTotal !== undefined) {
+                $('#badge-documentos').text(res.recordsTotal);
+            }
+        });
+    $.post('../../controller/pago_presupuesto.php?op=listar', { id_presupuesto: idPresupuesto })
+        .done(function (res) {
+            if (res && res.recordsTotal !== undefined) {
+                $('#badge-pagos').text(res.recordsTotal);
+            }
+        });
 }
 
 /**
@@ -215,6 +226,7 @@ function initTabDocumentos() {
         drawCallback: function () {
             // Activar tooltips en botones de opciones
             $('[data-bs-toggle="tooltip"]').tooltip();
+            $('#badge-documentos').text(this.api().rows().count());
         }
     });
 }
@@ -310,8 +322,9 @@ function repetirProforma(idDocumento) {
                     confirmButtonText: 'Ver PDF',
                     cancelButtonText: 'Cerrar'
                 }).then(function (r) {
-                    if (r.isConfirmed && response.ruta_pdf) {
-                        window.open('../../' + response.ruta_pdf, '_blank');
+                    const pdfUrl = response.url_pdf || response.ruta_pdf;
+                    if (r.isConfirmed && pdfUrl) {
+                        window.open('../../' + pdfUrl, '_blank');
                     }
                     recargarDocumentos();
                 });
@@ -440,8 +453,9 @@ function confirmarGenerarProforma() {
                 confirmButtonText: 'Ver PDF',
                 cancelButtonText: 'Cerrar'
             }).then(function (r) {
-                if (r.isConfirmed && response.ruta_pdf) {
-                    window.open('../../' + response.ruta_pdf, '_blank');
+                const pdfUrl = response.url_pdf || response.ruta_pdf;
+                if (r.isConfirmed && pdfUrl) {
+                    window.open('../../' + pdfUrl, '_blank');
                 }
                 recargarDocumentos();
             });
@@ -481,23 +495,31 @@ function initTabPagos() {
     if (!idPresupuesto) return;
 
     // Verificar si el presupuesto permite pagos (debe estar Aprobado)
+    const $btnRegistrar = $('#pane-pagos button[onclick*="abrirModalRegistrarPago"]');
+
+    function bloquearPagos(estado) {
+        $btnRegistrar.prop('disabled', true)
+                     .attr('title', 'El presupuesto debe estar Aprobado para registrar pagos');
+        if (!$('#aviso-pagos-bloqueados').length) {
+            $('#pane-pagos .d-flex.flex-wrap').first().before(
+                '<div id="aviso-pagos-bloqueados" class="alert alert-warning d-flex align-items-center gap-2 mb-3">' +
+                '<i class="fas fa-lock me-2"></i>' +
+                '<span>No se pueden registrar pagos. El presupuesto está en estado <strong>' + estado + '</strong>. Debe estar <strong>Aprobado</strong>.</span>' +
+                '</div>'
+            );
+        }
+    }
+
     $.post('../../controller/pago_presupuesto.php?op=verificar_estado_pagable',
            { id_presupuesto: idPresupuesto })
         .done(function (res) {
             if (!res.pagable) {
-                const estado = res.estado || 'no aprobado';
-                $('#pane-pagos button[onclick*="abrirModalRegistrarPago"]')
-                    .prop('disabled', true)
-                    .attr('title', 'El presupuesto debe estar Aprobado para registrar pagos');
-                if (!$('#aviso-pagos-bloqueados').length) {
-                    $('#pane-pagos .d-flex.flex-wrap').before(
-                        '<div id="aviso-pagos-bloqueados" class="alert alert-warning d-flex align-items-center gap-2 mb-3">' +
-                        '<i class="fas fa-lock me-1"></i>' +
-                        '<span>No se pueden registrar pagos. El presupuesto está en estado <strong>' + estado + '</strong>. Debe estar <strong>Aprobado</strong>.</span>' +
-                        '</div>'
-                    );
-                }
+                bloquearPagos(res.estado || 'no aprobado');
             }
+        })
+        .fail(function () {
+            // Fail-safe: si el endpoint falla, bloquear igualmente
+            bloquearPagos('desconocido');
         });
 
     tblPagos = $('#tblPagos').DataTable({
@@ -587,6 +609,7 @@ function initTabPagos() {
         pageLength: 10,
         drawCallback: function () {
             $('[data-bs-toggle="tooltip"]').tooltip();
+            $('#badge-pagos').text(this.api().rows().count());
         }
     });
 }
@@ -637,6 +660,8 @@ function abrirModalRegistrarPago(idPago) {
     $('#alertaSinEmpresasDisponibles').addClass('d-none');
     $('#alertaProformaInfo').addClass('d-none');
     $('#seccionTipoDocumento').addClass('d-none');
+    $('#pago_porcentaje_iva').val('21');
+    $('input[name="idioma_factura"][value="es"]').prop('checked', true);
 
     $('#pago_id_presupuesto').val(idPresupuesto);
     $('#pago_id_pago_ppto').val('');
@@ -677,11 +702,10 @@ function abrirModalRegistrarPago(idPago) {
         $('#tituloModalPago').text('Registrar Pago');
         $('#seccionGenerarFactura').removeClass('d-none');
         $('#alertaModoEdicion').addClass('d-none');
-        $('#chkGenerarFactura').prop('checked', true);
-
         cargarMetodosPago(null);
         cargarEmpresasFacturacion();
-        actualizarSeccionesPagoModal();
+        // Disparar change para que actualizarSeccionesPagoModal evalúe el estado real del selector
+        $('#pago_tipo_pago_ppto').trigger('change');
         actualizarSeccionesFacturaModal();
 
         const modal = new bootstrap.Modal(document.getElementById('modalRegistrarPago'));
@@ -715,7 +739,7 @@ function cargarMetodosPago(idSeleccionado) {
 }
 
 function cargarEmpresasFacturacion() {
-    const $select = $('#pago_id_empresa_factura').empty().append('<option value="">— Seleccionar empresa —</option>');
+    const $select = $('#pago_id_empresa_factura').empty().prop('disabled', false).append('<option value="">— Seleccionar empresa —</option>');
     $('#alertaEmpresaBloqueada').addClass('d-none');
     $('#alertaSinEmpresasDisponibles').addClass('d-none');
 
@@ -730,6 +754,9 @@ function cargarEmpresasFacturacion() {
                 return;
             }
 
+            // Si ya hay un anticipo previo, el controller devuelve empresa_bloqueada_id
+            const idBloqueada = response.empresa_bloqueada_id ? parseInt(response.empresa_bloqueada_id) : null;
+
             let algunaDisponible = false;
             lista.forEach(function (emp) {
                 const bloqueada = emp.bloqueada == 1;
@@ -737,15 +764,22 @@ function cargarEmpresasFacturacion() {
                 $select.append($('<option>', {
                     value: emp.id_empresa,
                     text: label,
-                    'data-bloqueada': bloqueada ? 1 : 0,
-                    disabled: bloqueada
+                    'data-bloqueada': bloqueada ? 1 : 0
                 }));
                 if (!bloqueada) algunaDisponible = true;
             });
 
-            if (!algunaDisponible) {
+            if (idBloqueada) {
+                // Segundo anticipo: pre-seleccionar y bloquear el select
+                $select.val(idBloqueada).prop('disabled', true);
+                $('#alertaEmpresaBloqueada').removeClass('d-none');
+            } else if (!algunaDisponible) {
                 $('#alertaSinEmpresasDisponibles').removeClass('d-none');
             }
+        })
+        .fail(function () {
+            $('#alertaSinEmpresasDisponibles').removeClass('d-none');
+            console.error('cargarEmpresasFacturacion: error de comunicación con el servidor');
         });
 }
 
@@ -759,7 +793,7 @@ function verificarEmpresaSeleccionada() {
 
 function actualizarSeccionesPagoModal() {
     const tipo = $('#pago_tipo_pago_ppto').val();
-    const generaFactura = $('#chkGenerarFactura').is(':checked');
+    const generaFactura = true;
     const esAnticipo = tipo === 'anticipo';
 
     // Sección tipo documento: solo si es anticipo Y genera factura
@@ -770,10 +804,23 @@ function actualizarSeccionesPagoModal() {
         $('#rdoFacturaAnticipo').prop('checked', true);
         $('#alertaProformaInfo').addClass('d-none');
     }
+
+    // Para "Resto" y "Pago Total": rellenar automáticamente el importe con el saldo pendiente (solo en alta, no en edición)
+    const esEdicion = !!$('#pago_id_pago_ppto').val();
+    if ((tipo === 'resto' || tipo === 'total') && !esEdicion) {
+        $.post('../../controller/pago_presupuesto.php?op=verificar_pago_completo', {
+            id_presupuesto: obtenerIdPresupuesto()
+        }).done(function (data) {
+            if (data.success && data.saldo_pendiente > 0) {
+                $('#pago_importe_pago_ppto').val(parseFloat(data.saldo_pendiente).toFixed(2));
+                calcularPorcentajePago();
+            }
+        });
+    }
 }
 
 function actualizarSeccionesFacturaModal() {
-    const generaFactura = $('#chkGenerarFactura').is(':checked');
+    const generaFactura = true;
     $('#seccionEmpresaFactura').toggleClass('d-none', !generaFactura);
     if (!generaFactura) {
         $('#seccionTipoDocumento').addClass('d-none');
@@ -807,27 +854,27 @@ function calcularPorcentajePago() {
 function guardarPago() {
     const idPresupuesto   = obtenerIdPresupuesto();
     const idPago          = $('#pago_id_pago_ppto').val();
-    const generaFactura   = $('#chkGenerarFactura').is(':checked') && !idPago;
+    const generaFactura   = !idPago;
     const idEmpresa       = $('#pago_id_empresa_factura').val();
     const tipoDocumento   = $('input[name="tipo_documento_generar"]:checked').val() || 'factura_anticipo';
     const tipoPago        = $('#pago_tipo_pago_ppto').val();
+    const tipoCliente     = 'cliente_final'; // anticipo siempre sin descuento agencia/hotel
+    const idiomaFactura   = $('input[name="idioma_factura"]:checked').val() || 'es';
+    const importePago     = parseFloat($('#pago_importe_pago_ppto').val()) || 0;
 
     // Validar empresa si va a generar factura
+    // Nota: si la empresa está "bloqueada" (fijada por pagos previos) es correcto usarla — NO bloquear el guardado
     if (generaFactura && !idPago) {
-        const bloqueada = $('#pago_id_empresa_factura').find(':selected').data('bloqueada');
         if (!idEmpresa) {
             Swal.fire('Empresa requerida', 'Debes seleccionar la empresa emisora de la factura.', 'warning');
-            return;
-        }
-        if (bloqueada == 1) {
-            Swal.fire('Empresa bloqueada', 'La empresa seleccionada ya tiene una factura activa para este presupuesto.', 'warning');
             return;
         }
     }
 
     const $btn = $('#btnGuardarPago').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Guardando...');
 
-    const formData = $('#frmRegistrarPago').serialize();
+    // Serializar y añadir id_empresa explícitamente (el <select disabled> no se incluye en .serialize())
+    const formData = $('#frmRegistrarPago').serialize() + '&id_empresa=' + encodeURIComponent(idEmpresa || '');
 
     $.post('../../controller/pago_presupuesto.php?op=guardaryeditar', formData)
         .done(function (response) {
@@ -841,7 +888,7 @@ function guardarPago() {
 
             // Si hay que generar factura
             if (generaFactura && idEmpresa) {
-                generarFacturaPago(idPagoNuevo, idPresupuesto, idEmpresa, tipoPago, tipoDocumento, function () {
+                generarFacturaPago(idPagoNuevo, idPresupuesto, idEmpresa, tipoPago, tipoDocumento, tipoCliente, idiomaFactura, importePago, function () {
                     $btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Guardar Pago');
                     bootstrap.Modal.getInstance(document.getElementById('modalRegistrarPago')).hide();
                     recargarDocumentos();
@@ -864,19 +911,29 @@ function guardarPago() {
 /**
  * Genera la factura correspondiente según el tipo de pago.
  */
-function generarFacturaPago(idPago, idPresupuesto, idEmpresa, tipoPago, tipoDocumento, callback) {
+function generarFacturaPago(idPago, idPresupuesto, idEmpresa, tipoPago, tipoDocumento, tipoCliente, idioma, importe, callback) {
 
     let urlController = '';
-    const postData = { id_presupuesto: idPresupuesto, id_empresa: idEmpresa, id_pago_ppto: idPago };
+    const postData = {
+        id_presupuesto:   idPresupuesto,
+        id_empresa:       idEmpresa,
+        id_pago_ppto:     idPago,
+        tipo_cliente:     tipoCliente   || 'cliente_final',
+        idioma:           idioma        || 'es',
+        importe_total:    importe       || 0,
+        importe_anticipo: importe       || 0,
+        porcentaje_iva:   parseInt($('#pago_porcentaje_iva').val()) || 21,
+    };
 
     if (tipoPago === 'anticipo' && tipoDocumento === 'factura_proforma') {
         urlController = '../../controller/impresion_factura_proforma.php?op=generar';
+        postData.tipo_contenido = 'anticipo';
     } else if (tipoPago === 'anticipo') {
         urlController = '../../controller/impresion_factura_anticipo.php?op=generar';
     } else {
-        // total, resto → factura final (proforma por ahora)
-        urlController = '../../controller/impresion_factura_proforma.php?op=generar';
-        postData.tipo_documento = 'factura_final';
+        // total, resto → factura final (controller dedicado)
+        urlController = '../../controller/impresion_factura_final.php?op=generar';
+        postData.tipo_contenido = 'total';
     }
 
     $.post(urlController, postData)
@@ -890,8 +947,9 @@ function generarFacturaPago(idPago, idPresupuesto, idEmpresa, tipoPago, tipoDocu
                     confirmButtonText: 'Ver PDF',
                     cancelButtonText: 'Cerrar'
                 }).then(function (r) {
-                    if (r.isConfirmed && response.ruta_pdf) {
-                        window.open('../../' + response.ruta_pdf, '_blank');
+                    const pdfUrl = response.url_pdf || response.ruta_pdf;
+                    if (r.isConfirmed && pdfUrl) {
+                        window.open('../../' + pdfUrl, '_blank');
                     }
                     if (typeof callback === 'function') callback();
                 });
@@ -1032,8 +1090,9 @@ function procesarAbono() {
                     confirmButtonText: 'Ver PDF',
                     cancelButtonText: 'Cerrar'
                 }).then(function (r) {
-                    if (r.isConfirmed && response.ruta_pdf) {
-                        window.open('../../' + response.ruta_pdf, '_blank');
+                    const pdfUrl = response.url_pdf || response.ruta_pdf;
+                    if (r.isConfirmed && pdfUrl) {
+                        window.open('../../' + pdfUrl, '_blank');
                     }
                     recargarDocumentos();
                     recargarPagos();

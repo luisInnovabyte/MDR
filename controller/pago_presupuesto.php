@@ -39,7 +39,8 @@ switch ($op) {
                 'id_pago_ppto'            => $row['id_pago_ppto'],
                 'id_presupuesto'          => $row['id_presupuesto'],
                 'id_documento_ppto'       => $row['id_documento_ppto'],
-                'numero_documento_ppto'   => $row['numero_documento_ppto'] ?? null,
+                'numero_documento_ppto'   => $row['numero_documento_vinculado'] ?? null,
+                'ruta_pdf_vinculado'      => $row['ruta_pdf_vinculado'] ?? null,
                 'tipo_pago_ppto'          => $row['tipo_pago_ppto'],
                 'importe_pago_ppto'       => $row['importe_pago_ppto'],
                 'porcentaje_pago_ppto'    => $row['porcentaje_pago_ppto'],
@@ -110,7 +111,7 @@ switch ($op) {
         }
 
         // Validar que el tipo es válido
-        $tipos_validos = ['anticipo', 'total', 'resto', 'devolucion'];
+        $tipos_validos = ['anticipo', 'total', 'resto'];
         if (!in_array($tipo, $tipos_validos)) {
             echo json_encode(['success' => false, 'message' => 'Tipo de pago no válido'], JSON_UNESCAPED_UNICODE);
             break;
@@ -125,16 +126,20 @@ switch ($op) {
         // Solo se pueden registrar pagos NUEVOS en presupuestos aprobados
         if (empty($id_pago_ppto)) {
             try {
-                $stmtEstado = $conexion->prepare(
-                    "SELECT estado_general_presupuesto FROM presupuesto WHERE id_presupuesto = ?"
+                $pdo        = (new Conexion())->getConexion();
+                $stmtEstado = $pdo->prepare(
+                    "SELECT ep.codigo_estado_ppto, ep.nombre_estado_ppto
+                     FROM presupuesto p
+                     JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+                     WHERE p.id_presupuesto = ?"
                 );
                 $stmtEstado->execute([$id_presupuesto]);
                 $rowEstado = $stmtEstado->fetch(PDO::FETCH_ASSOC);
-                if (!$rowEstado || $rowEstado['estado_general_presupuesto'] !== 'aprobado') {
+                if (!$rowEstado || $rowEstado['codigo_estado_ppto'] !== 'APROB') {
                     echo json_encode([
                         'success' => false,
                         'message' => 'Solo se pueden registrar pagos en presupuestos aprobados.',
-                        'estado'  => $rowEstado['estado_general_presupuesto'] ?? null,
+                        'estado'  => $rowEstado['nombre_estado_ppto'] ?? null,
                     ], JSON_UNESCAPED_UNICODE);
                     break;
                 }
@@ -142,10 +147,58 @@ switch ($op) {
                 echo json_encode(['success' => false, 'message' => 'Error al verificar el estado del presupuesto'], JSON_UNESCAPED_UNICODE);
                 break;
             }
+
+            // ── Validaciones de negocio (solo inserts nuevos) ────────────
+            try {
+                $pdoVal = (new Conexion())->getConexion();
+
+                // V1: Ningún cobro puede registrarse si el saldo pendiente es 0,
+                //     ni superar el saldo pendiente (aplica a anticipo, total y resto)
+                $saldoActual = $pago->get_saldo_pendiente($id_presupuesto);
+                if ($saldoActual <= 0) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'El presupuesto ya está completamente pagado (saldo pendiente: 0,00 €). No se pueden registrar más cobros. Para rectificar un cobro, emita un abono desde el tab Documentos.',
+                    ], JSON_UNESCAPED_UNICODE);
+                    break;
+                }
+                if ($importe > round($saldoActual + 0.01, 2)) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'El importe (' . number_format($importe, 2, ',', '.') . ' €) supera el saldo pendiente (' . number_format($saldoActual, 2, ',', '.') . ' €).',
+                    ], JSON_UNESCAPED_UNICODE);
+                    break;
+                }
+
+                // V2: Un Resto requiere anticipos previos activos
+                if ($tipo === 'resto') {
+                    $stmtAntic = $pdoVal->prepare(
+                        "SELECT COUNT(*) FROM pago_presupuesto
+                         WHERE id_presupuesto   = ?
+                           AND tipo_pago_ppto   = 'anticipo'
+                           AND estado_pago_ppto != 'anulado'
+                           AND activo_pago_ppto = 1"
+                    );
+                    $stmtAntic->execute([$id_presupuesto]);
+                    if ((int)$stmtAntic->fetchColumn() === 0) {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'No se puede registrar un Resto sin anticipos previos. Usa "Pago Total" si es el primer cobro.',
+                        ], JSON_UNESCAPED_UNICODE);
+                        break;
+                    }
+                }
+
+            } catch (Exception $eVal) {
+                $registro->registrarActividad('admin', 'pago_presupuesto.php', 'guardaryeditar',
+                    "Error en validaciones de negocio: " . $eVal->getMessage(), 'warning');
+                // No bloqueamos la operación por un error en las validaciones extra
+            }
         }
 
         // Campos opcionales
         $id_documento   = !empty($_POST['id_documento_ppto'])       ? (int)$_POST['id_documento_ppto']   : null;
+        $id_empresa_pago = !empty($_POST['id_empresa'])             ? (int)$_POST['id_empresa']           : null;
         $referencia     = !empty($_POST['referencia_pago_ppto'])     ? htmlspecialchars(trim($_POST['referencia_pago_ppto']), ENT_QUOTES, 'UTF-8')     : null;
         $fecha_valor    = !empty($_POST['fecha_valor_pago_ppto'])    ? trim($_POST['fecha_valor_pago_ppto'])    : null;
         $estado         = !empty($_POST['estado_pago_ppto'])         ? trim($_POST['estado_pago_ppto'])         : 'recibido';
@@ -164,6 +217,7 @@ switch ($op) {
             'fecha_pago_ppto'         => $fecha,
             'id_metodo_pago'          => $id_metodo,
             'id_documento_ppto'       => $id_documento,
+            'id_empresa_pago'         => $id_empresa_pago,
             'referencia_pago_ppto'    => $referencia,
             'fecha_valor_pago_ppto'   => $fecha_valor,
             'estado_pago_ppto'        => $estado,
@@ -290,14 +344,18 @@ switch ($op) {
             echo json_encode(['pagable' => false, 'estado' => null], JSON_UNESCAPED_UNICODE);
             break;
         }
-        $stmtPagable = $conexion->prepare(
-            "SELECT estado_general_presupuesto FROM presupuesto WHERE id_presupuesto = ?"
+        $pdo = (new Conexion())->getConexion();
+        $stmtPagable = $pdo->prepare(
+            "SELECT ep.codigo_estado_ppto, ep.nombre_estado_ppto
+             FROM presupuesto p
+             JOIN estado_presupuesto ep ON p.id_estado_ppto = ep.id_estado_ppto
+             WHERE p.id_presupuesto = ?"
         );
         $stmtPagable->execute([$id_presupuesto]);
         $rowPagable = $stmtPagable->fetch(PDO::FETCH_ASSOC);
         echo json_encode([
-            'pagable' => ($rowPagable && $rowPagable['estado_general_presupuesto'] === 'aprobado'),
-            'estado'  => $rowPagable['estado_general_presupuesto'] ?? null,
+            'pagable' => ($rowPagable && $rowPagable['codigo_estado_ppto'] === 'APROB'),
+            'estado'  => $rowPagable['nombre_estado_ppto'] ?? null,
         ], JSON_UNESCAPED_UNICODE);
         break;
 
@@ -356,7 +414,7 @@ switch ($op) {
         // Si se pasa id_presupuesto, indicar cuál está bloqueada
         $empresa_bloqueada_id = null;
         if ($id_presupuesto) {
-            $bloqueada = (new DocumentoPresupuesto())->obtener_empresa_bloqueada_presupuesto($id_presupuesto);
+            $bloqueada = $pago->obtener_empresa_bloqueada_por_pagos($id_presupuesto);
             if ($bloqueada) {
                 $empresa_bloqueada_id = (int)$bloqueada['id_empresa'];
             }
@@ -425,6 +483,15 @@ function _opciones_pago(array $row): string
     $estado = $row['estado_pago_ppto'];
     $activo = $row['activo_pago_ppto'];
     $html   = '';
+
+    // Ver factura asociada (si el pago tiene documento vinculado con PDF)
+    if (!empty($row['ruta_pdf_vinculado'])) {
+        $ruta = htmlspecialchars($row['ruta_pdf_vinculado']);
+        $html .= '<a href="../../' . $ruta . '" target="_blank"
+                     class="btn btn-info btn-sm me-1" title="Ver factura">
+                    <i class="fa fa-file-pdf"></i>
+                  </a>';
+    }
 
     // Editar (solo si no está anulado)
     if ($estado !== 'anulado' && $activo) {

@@ -518,6 +518,9 @@ class DocumentoPresupuesto
             }
 
             // Insertar registro
+            $fecha_emision = $datos['fecha_emision'] ?? date('Y-m-d');
+            $total_doc     = $datos['total_documento_ppto'] ?? $datos['importe_documento_ppto'] ?? null;
+
             $sql = "INSERT INTO documento_presupuesto (
                         id_presupuesto,
                         id_version_presupuesto,
@@ -537,7 +540,7 @@ class DocumentoPresupuesto
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1,  $datos['id_presupuesto'],         PDO::PARAM_INT);
-            $stmt->bindValue(2,  $datos['id_version_presupuesto'], PDO::PARAM_INT);
+            $stmt->bindValue(2,  $datos['id_version_presupuesto'] ?? null, PDO::PARAM_INT);
             $stmt->bindValue(3,  $datos['id_empresa'],             PDO::PARAM_INT);
             $stmt->bindValue(4,  (int)($datos['seleccion_manual_empresa_documento_ppto'] ?? 0), PDO::PARAM_INT);
             $stmt->bindValue(5,  $tipo,                            PDO::PARAM_STR);
@@ -546,8 +549,8 @@ class DocumentoPresupuesto
             $stmt->bindValue(8,  $datos['motivo_abono_documento_ppto'] ?? null, !empty($datos['motivo_abono_documento_ppto']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->bindValue(9,  $datos['subtotal_documento_ppto'] ?? null, isset($datos['subtotal_documento_ppto'])  ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->bindValue(10, $datos['total_iva_documento_ppto'] ?? null, isset($datos['total_iva_documento_ppto']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt->bindValue(11, $datos['total_documento_ppto']    ?? null, isset($datos['total_documento_ppto'])     ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt->bindValue(12, $datos['fecha_emision'],          PDO::PARAM_STR);
+            $stmt->bindValue(11, $total_doc,                       isset($total_doc) ? PDO::PARAM_STR : PDO::PARAM_NULL);
+            $stmt->bindValue(12, $fecha_emision,                   PDO::PARAM_STR);
             $stmt->bindValue(13, $datos['observaciones_documento_ppto'] ?? null, !empty($datos['observaciones_documento_ppto']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->execute();
 
