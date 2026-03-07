@@ -257,7 +257,7 @@ switch ($op) {
 
             // Verificar si ya existe abono para este documento
             $resultado_verif = $docModel->verificar_puede_abonar($id_documento_origen);
-            if (!$resultado_verif['puede_abonar']) {
+            if (!$resultado_verif['puede']) {
                 echo json_encode(['success' => false, 'message' => $resultado_verif['motivo'] ?? 'Este documento ya ha sido abonado'], JSON_UNESCAPED_UNICODE);
                 break;
             }
@@ -304,13 +304,14 @@ switch ($op) {
 
             // Crear registro documento
             $datos_insert = [
-                'id_presupuesto'              => $id_presupuesto,
-                'tipo_documento_ppto'         => 'factura_rectificativa',
-                'id_empresa'                  => $id_empresa,
-                'id_documento_origen'         => $id_documento_origen,
-                'numero_version'              => $numero_version,
+                'id_presupuesto'               => $id_presupuesto,
+                'tipo_documento_ppto'          => 'factura_rectificativa',
+                'id_empresa'                   => $id_empresa,
+                'id_documento_origen'          => $id_documento_origen,
+                'numero_version'               => $numero_version,
+                'motivo_abono_documento_ppto'  => $motivo_abono,
                 'observaciones_documento_ppto' => $motivo_abono,
-                'importe_documento_ppto'      => $importe_abono,
+                'importe_documento_ppto'       => $importe_abono,
             ];
 
             $id_doc = $docModel->insert_documento($datos_insert);
