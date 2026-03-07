@@ -176,11 +176,12 @@ function initTabDocumentos() {
                 title: 'Tipo',
                 render: function (data) {
                     const map = {
-                        'factura_proforma':  '<span class="badge bg-primary">Proforma</span>',
-                        'factura_anticipo':  '<span class="badge bg-success">Anticipo</span>',
-                        'factura_final':     '<span class="badge bg-dark">Final</span>',
-                        'factura_abono':     '<span class="badge bg-warning text-dark">Abono</span>',
-                        'parte_trabajo':     '<span class="badge bg-info text-dark">Parte Trabajo</span>'
+                        'presupuesto':           '<span class="badge bg-secondary">Presupuesto</span>',
+                        'factura_proforma':      '<span class="badge bg-primary">Proforma</span>',
+                        'factura_anticipo':      '<span class="badge bg-success">Anticipo</span>',
+                        'factura_final':         '<span class="badge bg-dark">Final</span>',
+                        'factura_rectificativa': '<span class="badge bg-warning text-dark">Abono</span>',
+                        'parte_trabajo':         '<span class="badge bg-info text-dark">Parte Trabajo</span>'
                     };
                     return map[data] || '<span class="badge bg-secondary">' + data + '</span>';
                 }
