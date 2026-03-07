@@ -639,6 +639,7 @@ function _generar_pdf_final(
     $pdf->SetTextColor(255, 255, 255);
     $pdf->Cell($w_spacer, 10, '', 0, 0);
     $pdf->Cell($w_label,  10, $t['total'], 1, 0, 'R', true);
+    $pdf->SetFont('helvetica', 'B', 8);
     $pdf->Cell($w_value,  10, number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
 
     // Bloque informativo de anticipos previos (si existe)

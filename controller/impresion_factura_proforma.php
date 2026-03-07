@@ -745,56 +745,13 @@ function _generar_pdf_proforma(
     $pdf->SetTextColor(255, 255, 255);
     $pdf->Cell($w_spacer, 10, '', 0, 0);
     $pdf->Cell($w_label,  10, $t['total'], 1, 0, 'R', true);
+    $pdf->SetFont('helvetica', 'B', 8);
     $pdf->Cell($w_value,  10, number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
 
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetDrawColor(0, 0, 0);
     $pdf->SetLineWidth(0.2);
     $pdf->Ln(4);
-
-    // ─── DATOS BANCARIOS (solo si transferencia + flag activado) ──
-    // Preferir el método real del pago (ej. "Transferencia bancaria") sobre la forma de pago del presupuesto
-    $nombre_fp        = strtoupper($datos_ppto['nombre_metodo_pago_pago'] ?? $datos_ppto['nombre_pago'] ?? '');
-    $es_transferencia = (strpos($nombre_fp, 'TRANSFERENCIA') !== false || strpos($nombre_fp, 'TRANSFER') !== false);
-    $tiene_datos_ban  = !empty($datos_empresa['iban_empresa']) || !empty($datos_empresa['banco_empresa']);
-    $mostrar_cuenta   = !empty($datos_empresa['mostrar_cuenta_bancaria_pdf_presupuesto_empresa']);
-
-    if ($es_transferencia && $tiene_datos_ban && $mostrar_cuenta) {
-        $texto_fp     = $t['forma_pago'] . ($datos_ppto['nombre_pago'] ?? '');
-        $lineas_banco = [];
-        $altura_banco = 8;
-        if (!empty($datos_empresa['banco_empresa'])) {
-            $lineas_banco[] = ['label' => $t['banco'], 'value' => $datos_empresa['banco_empresa']];
-            $altura_banco += 6;
-        }
-        if (!empty($datos_empresa['iban_empresa'])) {
-            $lineas_banco[] = ['label' => 'IBAN:', 'value' => $datos_empresa['iban_empresa']];
-            $altura_banco += 6;
-        }
-        if (!empty($datos_empresa['swift_empresa'])) {
-            $lineas_banco[] = ['label' => 'SWIFT/BIC:', 'value' => $datos_empresa['swift_empresa']];
-            $altura_banco += 6;
-        }
-        $pdf->Ln(8);
-        $y_banco = $pdf->GetY();
-        $pdf->SetFillColor(245, 245, 245);
-        $pdf->SetDrawColor(180, 180, 180);
-        $pdf->Rect(8, $y_banco, 100, $altura_banco, 'DF');
-        $pdf->SetXY(10, $y_banco + 1.5);
-        $pdf->SetFont('helvetica', 'B', 7);
-        $pdf->SetTextColor(44, 62, 80);
-        $pdf->Cell(93, 3.5, $texto_fp, 0, 1, 'L');
-        foreach ($lineas_banco as $lb) {
-            $pdf->SetX(10);
-            $pdf->SetFont('helvetica', '', 6);
-            $pdf->SetTextColor(80, 80, 80);
-            $pdf->Cell(25, 5.5, $lb['label'], 0, 0, 'R');
-            $pdf->SetFont('helvetica', 'B', 7);
-            $pdf->SetTextColor(44, 62, 80);
-            $pdf->Cell(66, 5.5, $lb['value'], 0, 1, 'L');
-        }
-        $pdf->Ln(5);
-    }
 
     // ─── NOTA LEGAL PROFORMA ──────────────────────────────────────
     $pdf->SetFont('helvetica', 'I', 7.5);

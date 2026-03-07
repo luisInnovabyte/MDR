@@ -1,3 +1,5 @@
+﻿
+
 <?php
 /**
  * impresion_factura_abono.php
@@ -619,51 +621,19 @@ function _generar_pdf_abono(
         $pdf->Cell($w_value,  5, '-' . number_format($v['cuota'], 2, ',', '.') . ' €', 0, 1, 'R');
     }
 
-    // TOTAL A DEVOLVER (fondo rojo)
+    // TOTAL (fondo rojo)
     $pdf->SetFont('helvetica', 'B', 9);
     $pdf->SetFillColor(192, 57, 43);
     $pdf->SetDrawColor(160, 40, 30);
     $pdf->SetTextColor(255, 255, 255);
     $pdf->Cell($w_spacer, 10, '', 0, 0);
-    $pdf->Cell($w_label,  10, 'TOTAL A DEVOLVER:', 1, 0, 'R', true);
+    $pdf->Cell($w_label,  10, 'TOTAL:', 1, 0, 'R', true);
+    $pdf->SetFont('helvetica', 'B', 8);
     $pdf->Cell($w_value,  10, '-' . number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetDrawColor(200, 200, 200);
     $pdf->SetLineWidth(0.2);
     $pdf->Ln(4);
-
-    // ── Datos bancarios ───────────────────────────────────────────────
-    $mostrar_banco = !empty($datos_empresa['mostrar_cuenta_bancaria_pdf_presupuesto_empresa'])
-        && $datos_empresa['mostrar_cuenta_bancaria_pdf_presupuesto_empresa'] == 1;
-
-    if ($mostrar_banco && (
-        !empty($datos_empresa['iban_empresa']) ||
-        !empty($datos_empresa['swift_empresa']) ||
-        !empty($datos_empresa['banco_empresa'])
-    )) {
-        $pdf->Ln(5);
-        $pdf->SetFillColor(248, 249, 250);
-        $pdf->SetDrawColor(220, 220, 220);
-        $pdf->SetLineWidth(0.3);
-        $pdf->SetFont('helvetica', 'B', 8);
-        $pdf->SetTextColor(44, 62, 80);
-        $pdf->Cell(194, 5, 'DATOS BANCARIOS PARA DEVOLUCIÓN', 'LTR', 1, 'C', true);
-        $pdf->SetFont('helvetica', '', 8);
-        $pdf->SetTextColor(70, 70, 70);
-        if (!empty($datos_empresa['banco_empresa'])) {
-            $pdf->Cell(194, 4.5, 'Banco: ' . $datos_empresa['banco_empresa'], 'LR', 1, 'L', true);
-        }
-        if (!empty($datos_empresa['iban_empresa'])) {
-            $pdf->Cell(194, 4.5, 'IBAN: ' . $datos_empresa['iban_empresa'], 'LR', 1, 'L', true);
-        }
-        if (!empty($datos_empresa['swift_empresa'])) {
-            $pdf->Cell(194, 4.5, 'SWIFT/BIC: ' . $datos_empresa['swift_empresa'], 'LBR', 1, 'L', true);
-        } else {
-            $pdf->Cell(194, 0, '', 'B', 1, 'L');
-        }
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->SetDrawColor(170, 170, 170);
-    }
 
     $pdf->SetAutoPageBreak(true, 25);
     $pdf->SetTextColor(0, 0, 0);
