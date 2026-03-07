@@ -398,13 +398,5 @@ function _opciones_documento(array $row): string
                   </button>';
     }
 
-    // Botón desactivar
-    if ($row['activo_documento_ppto']) {
-        $html .= '<button class="btn btn-danger btn-sm" onclick="desactivarDocumento(' . $id . ')"
-                          title="Desactivar">
-                    <i class="fa fa-trash"></i>
-                  </button>';
-    }
-
     return $html;
 }
