@@ -633,14 +633,7 @@
                                 </h5>
                                 <p class="text-muted small mb-0">Facturas proforma, anticipos, facturas finales y abonos emitidos para este presupuesto.</p>
                             </div>
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary" id="btnGenerarProforma" onclick="abrirModalGenerarProforma()">
-                                    <i class="fas fa-file-invoice-dollar me-1"></i>Generar Proforma
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary" id="btnImprimirParteTrabajo" onclick="imprimirParteTrabajo()">
-                                    <i class="fas fa-clipboard-list me-1"></i>Parte de trabajo
-                                </button>
-                            </div>
+
                         </div>
 
                         <!-- Tabla documentos -->
