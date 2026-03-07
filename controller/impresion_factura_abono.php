@@ -46,7 +46,8 @@ require_once __DIR__ . "/../models/PagoPresupuesto.php";
 require_once __DIR__ . "/../vendor/tcpdf/tcpdf.php";
 
 // ══════════════════════════════════════════════════════════════════
-// CLASE PDF — Factura de Abono (rojo #C0392B)
+// CLASE PDF — Factura de Abono — mismo estilo visual que anticipo
+// Color rojo (192,57,43) · Título: FACTURA DE ABONO
 // ══════════════════════════════════════════════════════════════════
 class MYPDF_ABONO extends TCPDF
 {
@@ -58,31 +59,12 @@ class MYPDF_ABONO extends TCPDF
     public $texto_pie_empresa = '';
     public $mostrar_logo      = false;
     public $path_logo         = '';
+    public $y_header_bottom   = 78;
 
     // RGB rojo
     private $cr = 192;
     private $cg = 57;
     private $cb = 43;
-
-    public function setDatosHeader(
-        array  $datos_empresa,
-        array  $datos_presupuesto,
-        string $numero,
-        string $fecha,
-        string $origen,
-        string $pie,
-        bool   $logo,
-        string $path
-    ): void {
-        $this->datos_empresa     = $datos_empresa;
-        $this->datos_presupuesto = $datos_presupuesto;
-        $this->numero_documento  = $numero;
-        $this->fecha_documento   = $fecha;
-        $this->numero_doc_origen = $origen;
-        $this->texto_pie_empresa = $pie;
-        $this->mostrar_logo      = $logo;
-        $this->path_logo         = $path;
-    }
 
     public function Header(): void
     {
@@ -90,119 +72,214 @@ class MYPDF_ABONO extends TCPDF
         $e  = $this->datos_empresa;
         $p  = $this->datos_presupuesto;
 
-        // ── Título doc (arriba derecha) ───────────────────────────────
         $y_start = 10;
+
+        // ── TÍTULO (arriba derecha, rojo) ─────────────────────────────
         $this->SetY($y_start);
         $this->SetFont('helvetica', 'B', 16);
         $this->SetTextColor($cr, $cg, $cb);
-        $this->Cell(194, 7, 'FACTURA DE ABONO', 0, 1, 'R');
-        $y_start = $this->GetY(); // ~20
+        $this->Cell(0, 8, 'FACTURA DE ABONO', 0, 1, 'R');
+        $this->Ln(2);
+        $y_start = $this->GetY();
 
-        // ── Logo ──────────────────────────────────────────────────────
-        if ($this->mostrar_logo && file_exists($this->path_logo)) {
-            $this->Image($this->path_logo, 8, $y_start, 35, 0, '', '', '', false, 300);
+        // ── LOGO ──────────────────────────────────────────────────────
+        if ($this->mostrar_logo && !empty($this->path_logo) && file_exists($this->path_logo)) {
+            $this->Image($this->path_logo, 8, $y_start, 35, 0, '', '', '', false, 300, '', false, false, 0);
+            $logo_height = 18;
+        } else {
+            $logo_height = 0;
         }
 
-        // ── Empresa (columna izqda) ───────────────────────────────────
-        $this->SetXY(46, $y_start);
+        $y_empresa = $y_start + $logo_height + 1;
+        $this->SetY($y_empresa);
+        $this->SetX(8);
+
+        // ── EMPRESA (columna izqda) ───────────────────────────────────
         $this->SetFont('helvetica', 'B', 9);
         $this->SetTextColor(44, 62, 80);
-        $nombre_com = $e['nombre_comercial_empresa'] ?? ($e['nombre_empresa'] ?? '');
-        $this->Cell(57, 4, $nombre_com, 0, 0, 'L');
+        $this->Cell(95, 3.5, $e['nombre_comercial_empresa'] ?? ($e['nombre_empresa'] ?? ''), 0, 1, 'L');
 
-        $dir_lines = [];
-        if (!empty($e['nif_empresa']))              $dir_lines[] = 'NIF: ' . $e['nif_empresa'];
-        if (!empty($e['direccion_fiscal_empresa'])) $dir_lines[] = $e['direccion_fiscal_empresa'];
-        $cp_pob = trim(($e['cp_fiscal_empresa'] ?? '') . ' ' . ($e['poblacion_fiscal_empresa'] ?? ''));
-        if ($cp_pob)                                 $dir_lines[] = $cp_pob;
-        if (!empty($e['telefono_empresa']))          $dir_lines[] = 'Tel: ' . $e['telefono_empresa'];
-        if (!empty($e['email_empresa']))             $dir_lines[] = $e['email_empresa'];
-
-        $y_emp = $y_start + 5;
-        $this->SetFont('helvetica', '', 7.5);
-        $this->SetTextColor(70, 70, 70);
-        foreach ($dir_lines as $dl) {
-            $this->SetXY(46, $y_emp);
-            $this->Cell(57, 3.5, $dl, 0, 0, 'L');
-            $y_emp += 3.5;
+        // CIF en rojo
+        $nif_emp = $e['nif_empresa'] ?? '';
+        if ($nif_emp && substr($nif_emp, -4) !== '0000') {
+            $this->SetX(8);
+            $this->SetFont('helvetica', 'B', 8);
+            $this->SetTextColor(231, 76, 60);
+            $this->Cell(95, 2.5, 'CIF: ' . $nif_emp, 0, 1, 'L');
         }
 
-        // ── Caja info (rojo fill · 3 líneas · alto 14) ───────────────
-        $y_info = $y_start;
-        $this->SetXY(108, $y_info);
+        $this->SetFont('helvetica', '', 7.5);
+        $this->SetTextColor(52, 73, 94);
+        if (!empty($e['direccion_fiscal_empresa'])) {
+            $this->SetX(8);
+            $this->Cell(95, 3, $e['direccion_fiscal_empresa'], 0, 1, 'L');
+        }
+        $cp_pob_prov = trim(
+            ($e['cp_fiscal_empresa'] ?? '') . ' ' .
+            ($e['poblacion_fiscal_empresa'] ?? '') .
+            (!empty($e['provincia_fiscal_empresa']) ? ' (' . $e['provincia_fiscal_empresa'] . ')' : '')
+        );
+        if ($cp_pob_prov) {
+            $this->SetX(8);
+            $this->Cell(95, 3, $cp_pob_prov, 0, 1, 'L');
+        }
+        $tel_str = '';
+        if (!empty($e['telefono_empresa'])) {
+            $tel_str = 'Tel: ' . $e['telefono_empresa'];
+        }
+        if (!empty($e['movil_empresa'])) {
+            $tel_str .= ($tel_str ? ' | ' : '') . $e['movil_empresa'];
+        }
+        if ($tel_str) {
+            $this->SetX(8);
+            $this->Cell(95, 2.5, $tel_str, 0, 1, 'L');
+        }
+        if (!empty($e['email_empresa'])) {
+            $this->SetX(8);
+            $this->Cell(95, 2.5, $e['email_empresa'], 0, 1, 'L');
+        }
+        if (!empty($e['web_empresa'])) {
+            $this->SetX(8);
+            $this->Cell(95, 2.5, $e['web_empresa'], 0, 1, 'L');
+        }
+
+        // ── CAJA INFO izquierda (rojo fill, 3 líneas) ─────────────────
+        $y_info = $this->GetY() + 1;
         $this->SetFillColor($cr, $cg, $cb);
         $this->SetTextColor(255, 255, 255);
-        $this->Cell(95, 14, '', 0, 0, 'L', true);
-
+        $this->SetFont('helvetica', 'B', 8.5);
+        $this->SetXY(8, $y_info);
+        $this->Cell(95, 15, '', 0, 0, 'L', true);
         // Línea 1: Nº | Fecha
-        $num_fecha = 'Nº: ' . $this->numero_documento . '  |  F: ' . $this->fecha_documento;
-        $this->SetFont('helvetica', 'B', 8);
-        $this->SetXY(110, $y_info + 1);
-        $this->Cell(91, 4, $num_fecha, 0, 0, 'L');
-
-        // Línea 2: ABONA LA FACTURA
-        $this->SetXY(110, $y_info + 6);
+        $this->SetXY(9, $y_info + 1);
+        $this->Cell(93, 3, 'Nº: ' . $this->numero_documento . '  |  F: ' . $this->fecha_documento, 0, 1, 'L');
+        // Línea 2: Ref. presupuesto
+        $num_ppto = $p['numero_presupuesto'] ?? '';
+        if ($num_ppto) {
+            $this->SetXY(9, $y_info + 5);
+            $this->SetFont('helvetica', '', 7.5);
+            $this->Cell(93, 3, 'Ref. Presupuesto: ' . $num_ppto, 0, 1, 'L');
+        }
+        // Línea 3: ABONA LA FACTURA
+        $this->SetXY(9, $y_info + 10);
         $this->SetFont('helvetica', '', 7.5);
-        $this->Cell(91, 4, 'ABONA LA FACTURA: ' . $this->numero_doc_origen, 0, 0, 'L');
+        $this->Cell(93, 3, 'ABONA LA FACTURA: ' . $this->numero_doc_origen, 0, 1, 'L');
+        $this->SetTextColor(0, 0, 0);
 
-        // ── Caja cliente (borde rojo) ─────────────────────────────────
-        $y_cli    = $y_start + 16;
-        $alt_cli  = !empty($p['nif_cliente']) ? 36 : 26;
+        // ── CAJA CLIENTE derecha (borde rojo, fondo gris claro) ───────
+        $col2_x = 108;
+        $col2_w = 94;
+        $box_y  = $y_start;
+        $cli_h  = 26;
+        if (!empty($p['nombre_contacto_cliente'])) {
+            $cli_h += 16;
+        }
+
+        $this->SetFillColor(248, 249, 250);
         $this->SetDrawColor($cr, $cg, $cb);
         $this->SetLineWidth(0.5);
-        $this->Rect(8, $y_cli, 94, $alt_cli, 'D');
+        $this->Rect($col2_x, $box_y, $col2_w, $cli_h, 'DF');
         $this->SetLineWidth(0.2);
 
-        $this->SetXY(10, $y_cli + 1.5);
-        $this->SetFont('helvetica', 'B', 7.5);
-        $this->SetTextColor(100, 100, 100);
-        $this->Cell(90, 3.5, 'CLIENTE', 0, 0, 'L');
+        $this->SetXY($col2_x + 2, $box_y + 1.5);
+        $this->SetFont('helvetica', 'B', 9);
+        $this->SetTextColor(44, 62, 80);
+        $this->Cell($col2_w - 4, 3.5, 'CLIENTE', 0, 1, 'L');
+        $this->SetDrawColor($cr, $cg, $cb);
+        $this->Line($col2_x + 2, $box_y + 5.5, $col2_x + $col2_w - 2, $box_y + 5.5);
 
-        $this->SetXY(10, $y_cli + 6);
+        $nombre_cli = trim(($p['nombre_cliente'] ?? '') . ' ' . ($p['apellido_cliente'] ?? ''));
+        $this->SetXY($col2_x + 2, $box_y + 6.5);
         $this->SetFont('helvetica', 'B', 8.5);
         $this->SetTextColor(44, 62, 80);
-        $nombre_cli = trim(($p['nombre_cliente'] ?? '') . ' ' . ($p['apellido_cliente'] ?? ''));
-        $this->Cell(90, 4, $nombre_cli, 0, 0, 'L');
+        $this->Cell($col2_w - 4, 3.5, $nombre_cli, 0, 1, 'L');
 
+        $y_cd = $box_y + 11;
         $this->SetFont('helvetica', '', 7.5);
         $this->SetTextColor(70, 70, 70);
-        $y_off = $y_cli + 11;
-        if (!empty($p['nif_cliente'])) {
-            $this->SetXY(10, $y_off);
-            $this->Cell(90, 3.5, 'NIF/CIF: ' . $p['nif_cliente'], 0, 0, 'L');
-            $y_off += 3.5;
+        $nif_cli = $p['nif_cliente'] ?? '';
+        if ($nif_cli) {
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->SetFont('helvetica', '', 7.5);
+            $this->Cell(14, 3.5, 'NIF/CIF:', 0, 0, 'L');
+            $this->SetFont('helvetica', 'B', 7.5);
+            $this->Cell($col2_w - 18, 3.5, $nif_cli, 0, 1, 'L');
+            $y_cd += 4;
         }
-        $dir_c = trim(($p['direccion_cliente'] ?? '') . ', ' . ($p['cp_cliente'] ?? '') . ' ' . ($p['poblacion_cliente'] ?? ''));
-        if ($dir_c !== ', ') {
-            $this->SetXY(10, $y_off);
-            $this->Cell(90, 3.5, $dir_c, 0, 0, 'L');
-            $y_off += 3.5;
+        $this->SetFont('helvetica', '', 7.5);
+        $dir_cli = trim(
+            ($p['direccion_cliente'] ?? '') . ' ' .
+            ($p['cp_cliente'] ?? '') . ' ' .
+            ($p['poblacion_cliente'] ?? '')
+        );
+        if ($dir_cli) {
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell($col2_w - 4, 3.5, $dir_cli, 0, 1, 'L');
+            $y_cd += 4;
+        }
+        if (!empty($p['email_cliente'])) {
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell($col2_w - 4, 3.5, $p['email_cliente'], 0, 1, 'L');
+            $y_cd += 4;
         }
         if (!empty($p['telefono_cliente'])) {
-            $this->SetXY(10, $y_off);
-            $this->Cell(90, 3.5, 'Tel: ' . $p['telefono_cliente'], 0, 0, 'L');
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell($col2_w - 4, 3.5, $p['telefono_cliente'], 0, 1, 'L');
+        }
+        if (!empty($p['nombre_contacto_cliente'])) {
+            $y_cd += 5;
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->SetFont('helvetica', 'B', 8);
+            $this->SetTextColor($cr, $cg, $cb);
+            $this->Cell($col2_w - 4, 3, 'A la atención de:', 0, 1, 'L');
+            $y_cd += 3.5;
+            $nombre_cont = trim(
+                ($p['nombre_contacto_cliente'] ?? '') . ' ' .
+                ($p['apellidos_contacto_cliente'] ?? '')
+            );
+            $this->SetFont('helvetica', '', 7.5);
+            $this->SetTextColor(52, 73, 94);
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell(15, 2.5, 'Nombre:', 0, 0, 'L');
+            $this->SetFont('helvetica', 'B', 7.5);
+            $this->Cell($col2_w - 19, 2.5, $nombre_cont, 0, 1, 'L');
+            $y_cd += 3;
+            if (!empty($p['telefono_contacto_cliente'])) {
+                $this->SetFont('helvetica', '', 7.5);
+                $this->SetXY($col2_x + 2, $y_cd);
+                $this->Cell(15, 2.5, 'Telefono:', 0, 0, 'L');
+                $this->Cell($col2_w - 19, 2.5, $p['telefono_contacto_cliente'], 0, 1, 'L');
+                $y_cd += 3;
+            }
+            if (!empty($p['email_contacto_cliente'])) {
+                $this->SetFont('helvetica', '', 7.5);
+                $this->SetXY($col2_x + 2, $y_cd);
+                $this->Cell(15, 2.5, 'Email:', 0, 0, 'L');
+                $this->Cell($col2_w - 19, 2.5, $p['email_contacto_cliente'], 0, 1, 'L');
+            }
         }
 
-        // ── Reset ─────────────────────────────────────────────────────
+        $this->y_header_bottom = max($y_info + 17, $box_y + $cli_h + 5);
+        $this->SetDrawColor(200, 200, 200);
         $this->SetTextColor(0, 0, 0);
-        $this->SetDrawColor(170, 170, 170);
+        $this->SetLineWidth(0.2);
     }
 
     public function Footer(): void
     {
-        $this->SetY(-15);
-        $this->SetDrawColor(170, 170, 170);
+        $this->SetY(-20);
+        $this->SetDrawColor(44, 62, 80);
+        $this->SetLineWidth(0.3);
         $this->Line(8, $this->GetY(), 202, $this->GetY());
-        $this->Ln(1);
         if (!empty($this->texto_pie_empresa)) {
-            $this->SetFont('helvetica', 'I', 6.5);
-            $this->SetTextColor(130, 130, 130);
-            $this->MultiCell(194, 3.5, $this->texto_pie_empresa, 0, 'C');
+            $this->SetFont('helvetica', '', 7);
+            $this->SetTextColor(100, 100, 100);
+            $this->MultiCell(0, 4, $this->texto_pie_empresa, 0, 'C');
         }
-        $this->SetFont('helvetica', 'I', 7);
-        $this->SetTextColor(150, 150, 150);
-        $this->SetXY(8, -8);
-        $this->Cell(194, 4, 'Pág. ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(), 0, 0, 'R');
+        $this->SetY(-10);
+        $this->SetFont('helvetica', 'I', 8);
+        $this->SetTextColor(100, 100, 100);
+        $this->Cell(0, 5, 'Página ' . $this->getAliasNumPage() . ' de ' . $this->getAliasNbPages(), 0, 0, 'C');
         $this->SetTextColor(0, 0, 0);
     }
 }
@@ -294,14 +371,14 @@ switch ($op) {
                 'cuota' => $total_iva,
             ];
 
-            // Línea sintética para el PDF (describe qué documento se rectifica)
+            // Línea para el PDF — misma descripción que la factura original
             $lineas = [[
-                'descripcion_linea_ppto'       => 'Rectificación de ' . $numero_doc_origen,
-                'cantidad_linea_ppto'          => 1,
-                'precio_unitario_linea_ppto'   => $subtotal_base,
-                'descuento_linea_ppto'         => 0,
-                'base_imponible'               => $subtotal_base,
-                'porcentaje_iva_linea_ppto'    => $pct_inferido,
+                'descripcion_linea_ppto'     => 'Entrega a cuenta confirmación presupuesto ' . ($datos_ppto['numero_presupuesto'] ?? ''),
+                'cantidad_linea_ppto'        => -1,
+                'precio_unitario_linea_ppto' => $subtotal_base,
+                'descuento_linea_ppto'       => 0,
+                'base_imponible'             => $subtotal_base,
+                'porcentaje_iva_linea_ppto'  => $pct_inferido,
             ]];
 
             // Crear registro documento
@@ -460,118 +537,100 @@ function _generar_pdf_abono(
     $pdf->SetCreator('MDR ERP');
     $pdf->SetAuthor($datos_empresa['nombre_comercial_empresa'] ?? ($datos_empresa['nombre_empresa'] ?? 'MDR'));
     $pdf->SetTitle('Factura de Abono ' . $numero_documento);
-    $pdf->SetMargins(8, 72, 8);
-    $pdf->SetAutoPageBreak(true, 20);
 
-    $pie = $datos_empresa['texto_pie_presupuesto_empresa'] ?? '';
-    $pdf->setDatosHeader(
-        $datos_empresa,
-        $datos_ppto,
-        $numero_documento,
-        $fecha_hoy,
-        $numero_doc_origen,
-        $pie,
-        $mostrar_logo,
-        $path_logo
-    );
+    $pdf->datos_empresa     = $datos_empresa;
+    $pdf->datos_presupuesto = $datos_ppto;
+    $pdf->numero_documento  = $numero_documento;
+    $pdf->fecha_documento   = $fecha_hoy;
+    $pdf->numero_doc_origen = $numero_doc_origen;
+    $pdf->texto_pie_empresa = $datos_empresa['texto_pie_factura_empresa'] ?? '';
+    $pdf->mostrar_logo      = $mostrar_logo;
+    $pdf->path_logo         = $path_logo;
 
+    $pdf->setPrintHeader(true);
+    $pdf->setPrintFooter(true);
+    $pdf->SetMargins(8, 78, 8);
+    $pdf->SetHeaderMargin(5);
+    $pdf->SetFooterMargin(15);
+    $pdf->SetAutoPageBreak(true, 25);
     $pdf->AddPage();
+    $pdf->SetY($pdf->y_header_bottom);
 
-    // ── Caja motivo abono (amarillo) ──────────────────────────────────
-    if ($motivo_abono) {
-        $pdf->SetFillColor(255, 243, 205);
-        $pdf->SetDrawColor(255, 193, 7);
-        $pdf->SetLineWidth(0.5);
-        $pdf->SetFont('helvetica', 'B', 7.5);
-        $pdf->SetTextColor(44, 62, 80);
-        $pdf->Cell(194, 5, 'MOTIVO DEL ABONO:', 'LTR', 1, 'L', true);
-        $pdf->SetFont('helvetica', '', 8);
-        $pdf->MultiCell(194, 5, $motivo_abono, 'LBR', 'L', true);
-        $pdf->Ln(4);
-        $pdf->SetDrawColor(200, 200, 200);
-        $pdf->SetLineWidth(0.2);
-    }
+    // ── TABLA (una sola línea) ────────────────────────────────────────
+    // Anchos: Desc=140, Cant=12, PUnit=18, Importe=24 → total=194mm
+    $w_desc  = 140;
+    $w_cant  = 12;
+    $w_punit = 18;
+    $w_imp   = 24;
+    $col_h   = 6;
 
-    // ── Tabla de líneas ───────────────────────────────────────────────
-    // Cabecera: Desc(128) + Cant(12) + PUnit(18) + %Dto(12) + Importe(24) = 194
     $pdf->SetFont('helvetica', 'B', 8);
-    $pdf->SetFillColor(255, 235, 235);
+    $pdf->SetFillColor(240, 240, 240);
     $pdf->SetDrawColor(200, 200, 200);
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->Cell(128, 6, 'Descripción',  1, 0, 'L', true);
-    $pdf->Cell( 12, 6, 'Cant.',        1, 0, 'C', true);
-    $pdf->Cell( 18, 6, 'P.Unit. €',    1, 0, 'C', true);
-    $pdf->Cell( 12, 6, '%Dto',         1, 0, 'C', true);
-    $pdf->Cell( 24, 6, 'Importe €',    1, 1, 'C', true);
+    $pdf->SetTextColor(44, 62, 80);
+    $pdf->Cell($w_desc,  $col_h, 'Descripción', 1, 0, 'L', true);
+    $pdf->Cell($w_cant,  $col_h, 'Cant.',        1, 0, 'C', true);
+    $pdf->Cell($w_punit, $col_h, 'P.Unit. €',    1, 0, 'C', true);
+    $pdf->Cell($w_imp,   $col_h, 'Importe €',    1, 1, 'C', true);
 
     $pdf->SetFont('helvetica', '', 8);
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetFillColor(255, 255, 255);
 
     foreach ($lineas as $l) {
-        $desc        = $l['descripcion_linea_ppto'] ?? '';
-        $cant        = floatval($l['cantidad_linea_ppto']      ?? 0);
-        $precio      = floatval($l['precio_unitario_linea_ppto'] ?? 0);
-        $dto         = floatval($l['descuento_linea_ppto']     ?? 0);
-        $base        = -abs(floatval($l['base_imponible']       ?? 0));
+        $desc   = $l['descripcion_linea_ppto']     ?? '';
+        $cant   = floatval($l['cantidad_linea_ppto']        ?? 0);
+        $precio = floatval($l['precio_unitario_linea_ppto'] ?? 0);
+        $base   = -abs(floatval($l['base_imponible']         ?? 0));
 
-        $altura_desc = max(6, $pdf->getStringHeight(127, $desc));
-        $x0 = $pdf->GetX();
-        $y0 = $pdf->GetY();
-
-        // Comprueba salto de página manual
-        if ($y0 + $altura_desc > $pdf->getPageHeight() - 25) {
-            $pdf->AddPage();
-            $y0 = $pdf->GetY();
-            $x0 = $pdf->GetX();
-        }
-
-        // Descripción (MultiCell)
-        $pdf->SetXY($x0, $y0);
-        $pdf->Rect($x0, $y0, 128, $altura_desc, 'D');
-        $pdf->SetXY($x0 + 1, $y0 + 0.5);
-        $pdf->MultiCell(126, 5, $desc, 0, 'L');
-
-        // Columnas numéricas en rojo
-        $pdf->SetXY($x0 + 128, $y0);
+        $pdf->Cell($w_desc,  $col_h, $desc,                                        1, 0, 'L');
         $pdf->SetTextColor(192, 57, 43);
-        $pdf->Cell( 12, $altura_desc, number_format($cant, 0),               1, 0, 'C');
-        $pdf->Cell( 18, $altura_desc, number_format($precio, 2, ',', '.'),   1, 0, 'R');
-        $pdf->Cell( 12, $altura_desc, ($dto > 0 ? number_format($dto, 0).'%' : '-'), 1, 0, 'C');
-        $pdf->Cell( 24, $altura_desc, number_format($base,  2, ',', '.') . ' €', 1, 1, 'R');
+        $pdf->Cell($w_cant,  $col_h, number_format($cant, 0),                      1, 0, 'C');
+        $pdf->Cell($w_punit, $col_h, number_format($precio, 2, ',', '.'),          1, 0, 'R');
+        $pdf->Cell($w_imp,   $col_h, number_format($base, 2, ',', '.') . ' €',    1, 1, 'R');
         $pdf->SetTextColor(0, 0, 0);
     }
 
-    // ── Totales ───────────────────────────────────────────────────────
+    // ── TOTALES ───────────────────────────────────────────────────────
+    $w_spacer = 144;
+    $w_label  = 30;
+    $w_value  = 20;
+
     $pdf->Ln(3);
     $pdf->SetFont('helvetica', '', 8.5);
     $pdf->SetFillColor(248, 249, 250);
+    $pdf->SetDrawColor(220, 220, 220);
+    $pdf->SetTextColor(44, 62, 80);
 
     // Base imponible
-    $pdf->Cell(144, 6, '', 0, 0);
-    $pdf->Cell( 30, 6, 'Base imponible:', 1, 0, 'R', true);
+    $pdf->Cell($w_spacer, 6, '', 0, 0);
+    $pdf->Cell($w_label,  6, 'Base imponible:', 'LTB', 0, 'R', true);
     $pdf->SetFont('helvetica', 'B', 8.5);
     $pdf->SetTextColor(192, 57, 43);
-    $pdf->Cell( 20, 6, '-' . number_format($subtotal_base, 2, ',', '.') . ' €', 1, 1, 'R', true);
-    $pdf->SetTextColor(0, 0, 0);
+    $pdf->Cell($w_value,  6, '-' . number_format($subtotal_base, 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
 
     // Por tramo de IVA
     foreach ($desglose_iva as $pct => $v) {
-        $pdf->SetFont('helvetica', '', 8.5);
-        $pdf->Cell(144, 5, '', 0, 0);
-        $pdf->Cell( 30, 5, "IVA {$pct}%:",  1, 0, 'R', true);
-        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(52, 73, 94);
+        $pdf->Cell($w_spacer, 5, '', 0, 0);
+        $pdf->Cell($w_label,  5, "IVA {$pct}%:", 0, 0, 'R');
         $pdf->SetTextColor(192, 57, 43);
-        $pdf->Cell( 20, 5, '-' . number_format($v['cuota'], 2, ',', '.') . ' €', 1, 1, 'R', true);
-        $pdf->SetTextColor(0, 0, 0);
+        $pdf->Cell($w_value,  5, '-' . number_format($v['cuota'], 2, ',', '.') . ' €', 0, 1, 'R');
     }
 
     // TOTAL A DEVOLVER (fondo rojo)
     $pdf->SetFont('helvetica', 'B', 11);
     $pdf->SetFillColor(192, 57, 43);
+    $pdf->SetDrawColor(160, 40, 30);
     $pdf->SetTextColor(255, 255, 255);
-    $pdf->Cell(144, 8, '', 0, 0);
-    $pdf->Cell( 30, 8, 'TOTAL A DEVOLVER:',  1, 0, 'R', true);
-    $pdf->Cell( 20, 8, '-' . number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
+    $pdf->Cell($w_spacer, 8, '', 0, 0);
+    $pdf->Cell($w_label,  8, 'TOTAL A DEVOLVER:', 1, 0, 'R', true);
+    $pdf->Cell($w_value,  8, '-' . number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
     $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetDrawColor(200, 200, 200);
+    $pdf->SetLineWidth(0.2);
+    $pdf->Ln(4);
 
     // ── Datos bancarios ───────────────────────────────────────────────
     $mostrar_banco = !empty($datos_empresa['mostrar_cuenta_bancaria_pdf_presupuesto_empresa'])
@@ -606,35 +665,9 @@ function _generar_pdf_abono(
         $pdf->SetDrawColor(170, 170, 170);
     }
 
-    // ── Bloque de firmas ──────────────────────────────────────────────
-    $pdf->Ln(10);
-    $y_firma = $pdf->GetY();
-
-    $pdf->SetFont('helvetica', '', 8);
-    $pdf->SetTextColor(80, 80, 80);
-    $cabecera_firma = $datos_empresa['cabecera_firma_presupuesto_empresa'] ?? 'DEPARTAMENTO COMERCIAL';
-
-    // Columna izquierda: empresa
-    $pdf->SetXY(8, $y_firma);
-    $pdf->Cell(88, 4, $cabecera_firma, 'T', 0, 'C');
-    $pdf->SetFont('helvetica', '', 7);
-    $pdf->SetXY(8, $y_firma + 5);
-    $pdf->Cell(88, 3.5, 'Nombre y firma:', 0, 0, 'L');
-    $pdf->SetXY(8, $y_firma + 22);
-    $pdf->Cell(88, 3.5, 'Fecha: ___/___/______', 0, 0, 'L');
-
-    // Columna derecha: cliente
-    $pdf->SetFont('helvetica', '', 8);
-    $pdf->SetTextColor(80, 80, 80);
-    $pdf->SetXY(108, $y_firma);
-    $pdf->Cell(94, 4, 'VISTO BUENO DEL CLIENTE', 'T', 0, 'C');
-    $pdf->SetFont('helvetica', '', 7);
-    $pdf->SetXY(108, $y_firma + 5);
-    $pdf->Cell(94, 3.5, 'Nombre y firma:', 0, 0, 'L');
-    $pdf->SetXY(108, $y_firma + 22);
-    $pdf->Cell(94, 3.5, 'Fecha: ___/___/______', 0, 0, 'L');
-
+    $pdf->SetAutoPageBreak(true, 25);
     $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetLineWidth(0.2);
 
     return $pdf;
 }
