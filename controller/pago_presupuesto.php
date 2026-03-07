@@ -201,7 +201,7 @@ switch ($op) {
         $id_empresa_pago = !empty($_POST['id_empresa'])             ? (int)$_POST['id_empresa']           : null;
         $referencia     = !empty($_POST['referencia_pago_ppto'])     ? htmlspecialchars(trim($_POST['referencia_pago_ppto']), ENT_QUOTES, 'UTF-8')     : null;
         $fecha_valor    = !empty($_POST['fecha_valor_pago_ppto'])    ? trim($_POST['fecha_valor_pago_ppto'])    : null;
-        $estado         = !empty($_POST['estado_pago_ppto'])         ? trim($_POST['estado_pago_ppto'])         : 'recibido';
+        $estado         = !empty($_POST['estado_pago_ppto'])         ? trim($_POST['estado_pago_ppto'])         : 'pendiente';
         $observaciones  = !empty($_POST['observaciones_pago_ppto'])  ? htmlspecialchars(trim($_POST['observaciones_pago_ppto']), ENT_QUOTES, 'UTF-8')  : null;
 
         // Validar estado

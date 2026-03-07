@@ -96,6 +96,9 @@ $(document).ready(function () {
     window.anularPago          = anularPago;
     window.conciliarPago       = conciliarPago;
 
+    // Carga inicial del catálogo de IVA para el modal de pagos
+    cargarOpcionesIVA();
+
 });
 
 /* ============================================================
@@ -567,13 +570,22 @@ function initTabPagos() {
                 title: 'Referencia',
                 render: function (data) { return data || '<span class="text-muted">—</span>'; }
             },
-            { data: 'fecha_pago_ppto', title: 'Fecha' },
+            {
+                data: 'fecha_pago_ppto',
+                title: 'Fecha',
+                render: function (data) {
+                    if (!data) return '—';
+                    const p = data.split('-');
+                    return p[2] + '/' + p[1] + '/' + p[0];
+                }
+            },
             {
                 data: 'estado_pago_ppto',
                 title: 'Estado',
                 render: function (data) {
                     const map = {
                         'pendiente':   '<span class="badge bg-warning text-dark">Pendiente</span>',
+                        'recibido':    '<span class="badge bg-info text-dark">Recibido</span>',
                         'conciliado':  '<span class="badge bg-success">Conciliado</span>',
                         'anulado':     '<span class="badge bg-danger">Anulado</span>'
                     };
@@ -660,7 +672,9 @@ function abrirModalRegistrarPago(idPago) {
     $('#alertaSinEmpresasDisponibles').addClass('d-none');
     $('#alertaProformaInfo').addClass('d-none');
     $('#seccionTipoDocumento').addClass('d-none');
-    $('#pago_porcentaje_iva').val('21');
+    // Seleccionar la tasa más alta disponible (IVA general)
+    const maxIVA = Math.max.apply(null, $('#pago_porcentaje_iva option').map(function () { return parseFloat(this.value) || 0; }).get());
+    $('#pago_porcentaje_iva').val(maxIVA > 0 ? maxIVA : 21);
     $('input[name="idioma_factura"][value="es"]').prop('checked', true);
 
     $('#pago_id_presupuesto').val(idPresupuesto);
@@ -780,6 +794,35 @@ function cargarEmpresasFacturacion() {
         .fail(function () {
             $('#alertaSinEmpresasDisponibles').removeClass('d-none');
             console.error('cargarEmpresasFacturacion: error de comunicación con el servidor');
+        });
+}
+
+function cargarOpcionesIVA() {
+    const $select = $('#pago_porcentaje_iva').empty();
+
+    $.post('../../controller/impuesto.php?op=listarDisponibles')
+        .done(function (response) {
+            const lista = response.data || [];
+            lista.forEach(function (imp) {
+                const tasa = parseFloat(imp.tasa_impuesto);
+                $select.append($('<option>', {
+                    value: tasa,
+                    text:  imp.tipo_impuesto + ' — ' + tasa + '%'
+                }));
+            });
+            // Seleccionar la tasa más alta como valor por defecto (IVA general)
+            const tasas = lista.map(function (i) { return parseFloat(i.tasa_impuesto) || 0; });
+            const maxTasa = tasas.length > 0 ? Math.max.apply(null, tasas) : 21;
+            $select.val(maxTasa > 0 ? maxTasa : ($select.find('option:first').val() || 21));
+        })
+        .fail(function () {
+            // Fallback estático si el endpoint no responde
+            $select.append(
+                '<option value="4">IVA_SUPERREDUCIDO — 4%</option>' +
+                '<option value="10">IVA_REDUCIDO — 10%</option>' +
+                '<option value="21" selected>IVA — 21%</option>'
+            );
+            console.error('cargarOpcionesIVA: no se pudieron cargar los tipos de IVA desde la BD');
         });
 }
 
@@ -922,7 +965,7 @@ function generarFacturaPago(idPago, idPresupuesto, idEmpresa, tipoPago, tipoDocu
         idioma:           idioma        || 'es',
         importe_total:    importe       || 0,
         importe_anticipo: importe       || 0,
-        porcentaje_iva:   parseInt($('#pago_porcentaje_iva').val()) || 21,
+        porcentaje_iva:   parseFloat($('#pago_porcentaje_iva').val()) || 21,
     };
 
     if (tipoPago === 'anticipo' && tipoDocumento === 'factura_proforma') {
