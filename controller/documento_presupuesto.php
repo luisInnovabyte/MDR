@@ -390,13 +390,5 @@ function _opciones_documento(array $row): string
                   </a>';
     }
 
-    // Botón repetir proforma (solo factura_proforma activa)
-    if ($tipo === 'factura_proforma' && $row['activo_documento_ppto']) {
-        $html .= '<button class="btn btn-secondary btn-sm me-1" onclick="repetirProforma(' . $id . ')"
-                          title="Repetir proforma">
-                    <i class="fa fa-redo"></i>
-                  </button>';
-    }
-
     return $html;
 }
