@@ -59,6 +59,7 @@ class MYPDF_ABONO extends TCPDF
     public $fecha_documento   = '';
     public $numero_doc_origen   = '';
     public $fecha_doc_origen    = '';
+    public $es_proforma         = false;
     public $texto_pie_empresa   = '';
     public $mostrar_logo      = false;
     public $path_logo         = '';
@@ -81,7 +82,8 @@ class MYPDF_ABONO extends TCPDF
         $this->SetY($y_start);
         $this->SetFont('helvetica', 'B', 16);
         $this->SetTextColor($cr, $cg, $cb);
-        $this->Cell(0, 8, 'FACTURA DE ABONO', 0, 1, 'R');
+        $titulo = $this->es_proforma ? 'FACTURA PROFORMA DE ABONO' : 'FACTURA DE ABONO';
+        $this->Cell(0, 8, $titulo, 0, 1, 'R');
         $this->Ln(2);
         $y_start = $this->GetY();
 
@@ -429,6 +431,9 @@ switch ($op) {
             // Actualizar importes en BD (negativos)
             $docModel->actualizar_importes($id_doc, -abs($subtotal_base), -abs($total_iva), $importe_abono);
 
+            // Detectar si el documento origen es una proforma
+            $es_proforma = ($doc_origen['tipo_documento_ppto'] ?? '') === 'factura_proforma';
+
             // Formatear fecha del documento origen
             $fecha_doc_origen_raw = $doc_origen['fecha_emision_documento_ppto'] ?? '';
             $fecha_doc_origen = '';
@@ -444,7 +449,7 @@ switch ($op) {
                 $datos_ppto, $datos_empresa, $numero_documento,
                 $numero_doc_origen, $motivo_abono, $fecha_doc_origen,
                 $lineas, $desglose_iva, $subtotal_base, $total_iva, $total_con_iva,
-                $mostrar_logo, $path_logo
+                $mostrar_logo, $path_logo, $es_proforma
             );
 
             // Guardar a disco
@@ -546,7 +551,7 @@ function _generar_pdf_abono(
     array $datos_ppto, array $datos_empresa, string $numero_documento,
     string $numero_doc_origen, string $motivo_abono, string $fecha_doc_origen,
     array $lineas, array $desglose_iva, float $subtotal_base, float $total_iva, float $total_con_iva,
-    bool $mostrar_logo, string $path_logo
+    bool $mostrar_logo, string $path_logo, bool $es_proforma = false
 ): MYPDF_ABONO {
 
     $fecha_hoy = date('d/m/Y');
@@ -563,6 +568,7 @@ function _generar_pdf_abono(
     $pdf->fecha_documento   = $fecha_hoy;
     $pdf->numero_doc_origen = $numero_doc_origen;
     $pdf->fecha_doc_origen   = $fecha_doc_origen;
+    $pdf->es_proforma        = $es_proforma;
     $pdf->texto_pie_empresa  = $datos_empresa['texto_pie_factura_empresa'] ?? '';
     $pdf->mostrar_logo      = $mostrar_logo;
     $pdf->path_logo         = $path_logo;
