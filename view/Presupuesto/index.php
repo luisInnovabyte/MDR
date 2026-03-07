@@ -200,7 +200,6 @@
                             <th class="d-none" rowspan="2">Id</th>
                             <th colspan="8" class="text-center">EVENTO</th>
                             <th colspan="2" class="text-center">PRESUPUESTO</th>
-                            <th rowspan="2">Activo</th>
                             <th rowspan="2">Acciones</th>
                         </tr>
                         <tr>
@@ -248,13 +247,6 @@
                                     <option value="Aprobado">Aprobado</option>
                                     <option value="Rechazado">Rechazado</option>
                                     <option value="Cancelado">Cancelado</option>
-                                </select>
-                            </th>
-                            <th>
-                                <select class="form-control form-control-sm" title="Filtrar por estado">
-                                    <option value="">Todos los estados</option>
-                                    <option value="1">Activo</option>
-                                    <option value="0">Inactivo</option>
                                 </select>
                             </th>
                             <th></th>

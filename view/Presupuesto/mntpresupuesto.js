@@ -64,8 +64,7 @@ $(document).ready(function () {
             { name: 'estado_evento_presupuesto', data: 'estado_evento_presupuesto', className: "text-center align-middle" }, // Columna 8: ESTADO EVENTO
             { name: 'dias_validez_restantes', data: 'dias_validez_restantes', className: "text-center align-middle" }, // Columna 9: DÍAS VALIDEZ
             { name: 'nombre_estado_ppto', data: 'nombre_estado_ppto', className: "text-center align-middle" }, // Columna 10: ESTADO
-            { name: 'activo_presupuesto', data: 'activo_presupuesto', className: "text-center align-middle" }, // Columna 11: ACTIVO
-            { name: 'acciones', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 13: ACCIONES (dropdown)
+            { name: 'acciones', data: null, defaultContent: '', className: "text-center align-middle" }  // Columna 11: ACCIONES (dropdown)
         ],
         columnDefs: [
             // Columna 0: id_presupuesto
@@ -166,26 +165,11 @@ $(document).ready(function () {
             },
             // Columna 10: nombre_estado_ppto
             { targets: "nombre_estado_ppto:name", width: '8%', searchable: true, orderable: true, className: "text-center" },
-            // Columna 11: activo_presupuesto
-            {
-                targets: "activo_presupuesto:name", width: '5%', orderable: true, searchable: true, className: "text-center",
-                render: function (data, type, row) {
-                    if (type === "display") {
-                        return row.activo_presupuesto == 1 ? '<i class="bi bi-check-circle text-success fa-2x"></i>' : '<i class="bi bi-x-circle text-danger fa-2x"></i>';
-                    }
-                    return row.activo_presupuesto;
-                }
-            },
-            // Columna 13: ACCIONES — Dropdown Bootstrap con todas las acciones
+            // Columna 11: ACCIONES — Dropdown Bootstrap con todas las acciones
             {
                 targets: "acciones:name", width: '5%', searchable: false, orderable: false, className: "text-center align-middle",
                 render: function (data, type, row) {
                     var tieneVersion = row.id_version_actual ? '' : ' disabled';
-                    var labelActivar = row.activo_presupuesto == 1
-                        ? '<i class="fa-solid fa-trash me-1"></i>Desactivar'
-                        : '<i class="bi bi-hand-thumbs-up-fill me-1"></i>Activar';
-                    var claseActivar = row.activo_presupuesto == 1 ? 'desacPresupuesto' : 'activarPresupuesto';
-                    var colorActivar = row.activo_presupuesto == 1 ? 'text-danger' : 'text-success';
                     return `<div class="dropdown">
                         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bolt"></i>
@@ -200,8 +184,6 @@ $(document).ready(function () {
                             <li><a class="dropdown-item cambiarEstadoPpto" href="#" data-id_presupuesto="${row.id_presupuesto}" data-id_estado_actual="${row.id_estado_ppto}"><i class="fas fa-exchange-alt me-2 text-primary"></i>Cambiar estado</a></li>
                             <li><a class="dropdown-item imprimirPresupuesto" href="#" data-id_presupuesto="${row.id_presupuesto}" data-id_empresa="${row.id_empresa}" data-codigo_estado="${row.codigo_estado_ppto}" data-numero_presupuesto="${row.numero_presupuesto}" data-nombre_cliente="${row.nombre_cliente}"><i class="fas fa-print me-2 text-success"></i>Imprimir (opciones)</a></li>
                             <li><a class="dropdown-item pdfRapido" href="#" data-id_presupuesto="${row.id_presupuesto}"><i class="fas fa-bolt me-2 text-success"></i>PDF rápido</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item ${claseActivar}" href="#" data-id_presupuesto="${row.id_presupuesto}"><span class="${colorActivar}">${labelActivar}</span></a></li>
                         </ul>
                     </div>`;
                 }
@@ -484,7 +466,6 @@ $(document).ready(function () {
                                 <i class="bi bi-info-circle me-2"></i>Control
                             </h6>
                             <div class="mb-3">
-                                <p class="mb-1"><strong><i class="bi bi-toggle-on me-1"></i>Activo:</strong> ${d.activo_presupuesto == 1 ? '<span class="badge bg-success">Sí</span>' : '<span class="badge bg-danger">No</span>'}</p>
                                 <p class="mb-1"><strong><i class="bi bi-calendar-plus me-1"></i>Creado:</strong> ${d.created_at_presupuesto ? formatoFechaEuropeo(d.created_at_presupuesto) : val(null)}</p>
                                 <p class="mb-1"><strong><i class="bi bi-calendar-event me-1"></i>Actualizado:</strong> ${d.updated_at_presupuesto ? formatoFechaEuropeo(d.updated_at_presupuesto) : val(null)}</p>
                             </div>
@@ -538,18 +519,6 @@ $(document).ready(function () {
     /************************************/
     //     EVENTOS DE BOTONES          //
     /************************************/
-
-    // Desactivar presupuesto
-    $(document).on('click', '.desacPresupuesto', function () {
-        var id_presupuesto = $(this).data('id_presupuesto');
-        desacPresupuesto(id_presupuesto);
-    });
-
-    // Activar presupuesto
-    $(document).on('click', '.activarPresupuesto', function () {
-        var id_presupuesto = $(this).data('id_presupuesto');
-        activarPresupuesto(id_presupuesto);
-    });
 
     // Editar presupuesto
     $(document).on('click', '.editarPresupuesto', function () {
@@ -898,78 +867,6 @@ $(document).ready(function () {
     /************************************/
     //     FUNCIONES                   //
     /************************************/
-
-    function desacPresupuesto(id_presupuesto) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "Se desactivará el presupuesto",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, desactivar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '../../controller/presupuesto.php?op=desactivar',
-                    type: 'POST',
-                    data: { id_presupuesto: id_presupuesto },
-                    dataType: 'json',
-                    success: function (response) {
-                        console.log('Respuesta desactivar:', response);
-                        if (response.success) {
-                            Swal.fire('Desactivado!', response.message || 'El presupuesto ha sido desactivado.', 'success');
-                            table_e.ajax.reload();
-                        } else {
-                            Swal.fire('Error!', response.message || 'No se pudo desactivar el presupuesto.', 'error');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error en desactivar:', error);
-                        console.error('Response:', xhr.responseText);
-                        Swal.fire('Error!', 'No se pudo desactivar el presupuesto. Error: ' + error, 'error');
-                    }
-                });
-            }
-        });
-    }
-
-    function activarPresupuesto(id_presupuesto) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "Se activará el presupuesto",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, activar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '../../controller/presupuesto.php?op=activar',
-                    type: 'POST',
-                    data: { id_presupuesto: id_presupuesto },
-                    dataType: 'json',
-                    success: function (response) {
-                        console.log('Respuesta activar:', response);
-                        if (response.success) {
-                            Swal.fire('Activado!', response.message || 'El presupuesto ha sido activado.', 'success');
-                            table_e.ajax.reload();
-                        } else {
-                            Swal.fire('Error!', response.message || 'No se pudo activar el presupuesto.', 'error');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error en activar:', error);
-                        console.error('Response:', xhr.responseText);
-                        Swal.fire('Error!', 'No se pudo activar el presupuesto. Error: ' + error, 'error');
-                    }
-                });
-            }
-        });
-    }
 
 }); // Fin document.ready
 

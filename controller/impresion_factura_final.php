@@ -1,0 +1,699 @@
+<?php
+/**
+ * impresion_factura_final.php
+ *
+ * Genera FACTURA FINAL (pago total o liquidación/resto).
+ * Tipo DB: factura_final
+ * SP tipo: factura (misma serie F que factura_anticipo)
+ * Título PDF: "FACTURA"
+ * Color: azul marino (41, 128, 185)
+ * Contenido: detalle completo de líneas del presupuesto
+ *            + bloque informativo de anticipos previos (si los hay)
+ *
+ * op=generar (POST)
+ *   - id_presupuesto    (requerido)
+ *   - id_empresa        (requerido — empresa real emisora)
+ *   - id_pago_ppto      (requerido — pago origen)
+ *   - tipo_contenido    (requerido — 'total' siempre para esta factura)
+ *   - idioma            (opcional — es|en, default es)
+ *   - tipo_cliente      (opcional — cliente_final|agencia_descuento)
+ *   - numero_version    (opcional)
+ *
+ * op=descargar (GET/POST)
+ *   - id_documento_ppto (requerido)
+ *
+ * Devuelve JSON: { success, id_documento_ppto, numero_documento, url_pdf }
+ * El PDF se guarda en public/documentos/facturas/
+ */
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+while (ob_get_level()) {
+    ob_end_clean();
+}
+ob_start();
+
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
+require_once __DIR__ . "/../config/conexion.php";
+require_once __DIR__ . "/../config/funciones.php";
+require_once __DIR__ . "/../models/DocumentoPresupuesto.php";
+require_once __DIR__ . "/../models/ImpresionPresupuesto.php";
+require_once __DIR__ . "/../models/Empresas.php";
+require_once __DIR__ . "/../models/PagoPresupuesto.php";
+require_once __DIR__ . "/../vendor/tcpdf/tcpdf.php";
+
+// ══════════════════════════════════════════════════════════════════
+// CLASE PDF — Factura Final
+// Color azul marino (41, 128, 185) · Título: FACTURA
+// ══════════════════════════════════════════════════════════════════
+
+class MYPDF_FINAL extends TCPDF
+{
+    public $datos_empresa      = [];
+    public $datos_presupuesto  = [];
+    public $numero_documento   = '';
+    public $fecha_documento    = '';
+    public $texto_pie_empresa  = '';
+    public $mostrar_logo       = false;
+    public $path_logo          = '';
+    public $idioma             = 'es';
+
+    // Azul marino
+    private $cr = 41;
+    private $cg = 128;
+    private $cb = 185;
+
+    public function Header()
+    {
+        $y_start = 10;
+
+        // TÍTULO
+        $this->SetY($y_start);
+        $this->SetFont('helvetica', 'B', 16);
+        $this->SetTextColor($this->cr, $this->cg, $this->cb);
+        $this->Cell(0, 8, $this->idioma === 'en' ? 'INVOICE' : 'FACTURA', 0, 1, 'R');
+        $this->Ln(2);
+        $y_start = $this->GetY();
+
+        // LOGO
+        if ($this->mostrar_logo && !empty($this->path_logo) && file_exists($this->path_logo)) {
+            $this->Image($this->path_logo, 8, $y_start, 35, 0, '', '', '', false, 300, '', false, false, 0);
+            $logo_height = 18;
+        } else {
+            $logo_height = 0;
+        }
+
+        $y_empresa = $y_start + $logo_height + 1;
+        $this->SetY($y_empresa);
+        $this->SetX(8);
+
+        // Nombre comercial
+        $this->SetFont('helvetica', 'B', 9);
+        $this->SetTextColor(44, 62, 80);
+        $this->Cell(95, 3.5, $this->datos_empresa['nombre_comercial_empresa'] ?? ($this->datos_empresa['nombre_empresa'] ?? ''), 0, 1, 'L');
+
+        // CIF en rojo
+        $nif_emp = $this->datos_empresa['nif_empresa'] ?? '';
+        if ($nif_emp && substr($nif_emp, -4) !== '0000') {
+            $this->SetX(8);
+            $this->SetFont('helvetica', 'B', 8);
+            $this->SetTextColor(231, 76, 60);
+            $this->Cell(95, 2.5, 'CIF: ' . $nif_emp, 0, 1, 'L');
+        }
+
+        $this->SetFont('helvetica', '', 7.5);
+        $this->SetTextColor(52, 73, 94);
+
+        if (!empty($this->datos_empresa['direccion_fiscal_empresa'])) {
+            $this->SetX(8);
+            $this->Cell(95, 3, $this->datos_empresa['direccion_fiscal_empresa'], 0, 1, 'L');
+        }
+        $cp_pob_prov = trim(
+            ($this->datos_empresa['cp_fiscal_empresa'] ?? '') . ' ' .
+            ($this->datos_empresa['poblacion_fiscal_empresa'] ?? '') .
+            (!empty($this->datos_empresa['provincia_fiscal_empresa'])
+                ? ' (' . $this->datos_empresa['provincia_fiscal_empresa'] . ')' : '')
+        );
+        if ($cp_pob_prov) {
+            $this->SetX(8);
+            $this->Cell(95, 3, $cp_pob_prov, 0, 1, 'L');
+        }
+        $tel_str = '';
+        if (!empty($this->datos_empresa['telefono_empresa'])) {
+            $tel_str = 'Tel: ' . $this->datos_empresa['telefono_empresa'];
+        }
+        if (!empty($this->datos_empresa['movil_empresa'])) {
+            $tel_str .= ($tel_str ? ' | ' : '') . $this->datos_empresa['movil_empresa'];
+        }
+        if ($tel_str) {
+            $this->SetX(8);
+            $this->Cell(95, 2.5, $tel_str, 0, 1, 'L');
+        }
+        if (!empty($this->datos_empresa['email_empresa'])) {
+            $this->SetX(8);
+            $this->Cell(95, 2.5, $this->datos_empresa['email_empresa'], 0, 1, 'L');
+        }
+        if (!empty($this->datos_empresa['web_empresa'])) {
+            $this->SetX(8);
+            $this->Cell(95, 2.5, $this->datos_empresa['web_empresa'], 0, 1, 'L');
+        }
+
+        // CAJA INFO (azul marino)
+        $y_info = $this->GetY() + 1;
+        $this->SetFillColor($this->cr, $this->cg, $this->cb);
+        $this->SetTextColor(255, 255, 255);
+        $this->SetFont('helvetica', 'B', 8.5);
+        $this->SetXY(8, $y_info);
+        $this->Cell(95, 16, '', 0, 0, 'L', true);
+        $this->SetXY(9, $y_info + 2);
+        $this->Cell(93, 4, 'Nº: ' . $this->numero_documento . '  |  F: ' . $this->fecha_documento, 0, 1, 'L');
+        $num_ppto = $this->datos_presupuesto['numero_presupuesto'] ?? '';
+        if ($num_ppto) {
+            $this->SetXY(9, $y_info + 9);
+            $this->SetFont('helvetica', '', 7.5);
+            $this->Cell(93, 4, ($this->idioma === 'en' ? 'Ref. Quotation: ' : 'Ref. Presupuesto: ') . $num_ppto, 0, 1, 'L');
+        }
+        $this->SetTextColor(0, 0, 0);
+
+        // BOX CLIENTE (borde azul marino)
+        $col2_x = 108;
+        $col2_w = 94;
+        $box_y  = $y_start;
+        $cli_h  = 26;
+        if (!empty($this->datos_presupuesto['nombre_contacto_cliente'])) {
+            $cli_h += 10;
+        }
+
+        $this->SetFillColor(248, 249, 250);
+        $this->SetDrawColor($this->cr, $this->cg, $this->cb);
+        $this->SetLineWidth(0.5);
+        $this->Rect($col2_x, $box_y, $col2_w, $cli_h, 'DF');
+        $this->SetLineWidth(0.2);
+
+        $this->SetXY($col2_x + 2, $box_y + 1.5);
+        $this->SetFont('helvetica', 'B', 9);
+        $this->SetTextColor(44, 62, 80);
+        $this->Cell($col2_w - 4, 3.5, $this->idioma === 'en' ? 'CUSTOMER' : 'CLIENTE', 0, 1, 'L');
+        $this->SetDrawColor($this->cr, $this->cg, $this->cb);
+        $this->Line($col2_x + 2, $box_y + 5.5, $col2_x + $col2_w - 2, $box_y + 5.5);
+
+        $nombre_cli = trim(
+            ($this->datos_presupuesto['nombre_cliente'] ?? '') . ' ' .
+            ($this->datos_presupuesto['apellido_cliente'] ?? '')
+        );
+        $this->SetXY($col2_x + 2, $box_y + 6.5);
+        $this->SetFont('helvetica', 'B', 8.5);
+        $this->SetTextColor(44, 62, 80);
+        $this->Cell($col2_w - 4, 3.5, $nombre_cli, 0, 1, 'L');
+
+        $y_cd = $box_y + 11;
+        $this->SetFont('helvetica', '', 7.5);
+        $this->SetTextColor(70, 70, 70);
+
+        $nif_cli = $this->datos_presupuesto['nif_cliente'] ?? '';
+        if ($nif_cli) {
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->SetFont('helvetica', '', 7.5);
+            $this->Cell(14, 3.5, 'NIF/CIF:', 0, 0, 'L');
+            $this->SetFont('helvetica', 'B', 7.5);
+            $this->Cell($col2_w - 18, 3.5, $nif_cli, 0, 1, 'L');
+            $y_cd += 4;
+        }
+        $this->SetFont('helvetica', '', 7.5);
+        $dir_cli = trim(
+            ($this->datos_presupuesto['direccion_cliente'] ?? '') . ' ' .
+            ($this->datos_presupuesto['cp_cliente'] ?? '') . ' ' .
+            ($this->datos_presupuesto['poblacion_cliente'] ?? '')
+        );
+        if ($dir_cli) {
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell($col2_w - 4, 3.5, $dir_cli, 0, 1, 'L');
+            $y_cd += 4;
+        }
+        if (!empty($this->datos_presupuesto['email_cliente'])) {
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell($col2_w - 4, 3.5, $this->datos_presupuesto['email_cliente'], 0, 1, 'L');
+            $y_cd += 4;
+        }
+        if (!empty($this->datos_presupuesto['telefono_cliente'])) {
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell($col2_w - 4, 3.5, $this->datos_presupuesto['telefono_cliente'], 0, 1, 'L');
+        }
+        if (!empty($this->datos_presupuesto['nombre_contacto_cliente'])) {
+            $y_cd += 5;
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->SetFont('helvetica', 'B', 7);
+            $this->SetTextColor($this->cr, $this->cg, $this->cb);
+            $this->Cell($col2_w - 4, 3, 'A la atención de:', 0, 1, 'L');
+            $y_cd += 3.5;
+            $nombre_cont = trim(
+                ($this->datos_presupuesto['nombre_contacto_cliente'] ?? '') . ' ' .
+                ($this->datos_presupuesto['apellidos_contacto_cliente'] ?? '')
+            );
+            $this->SetXY($col2_x + 2, $y_cd);
+            $this->SetFont('helvetica', 'B', 7.5);
+            $this->SetTextColor(44, 62, 80);
+            $this->Cell($col2_w - 4, 3.5, $nombre_cont, 0, 1, 'L');
+        }
+
+        $this->SetDrawColor(200, 200, 200);
+        $this->SetTextColor(0, 0, 0);
+        $this->SetLineWidth(0.2);
+    }
+
+    public function Footer()
+    {
+        $this->SetY(-20);
+        $this->SetDrawColor(44, 62, 80);
+        $this->SetLineWidth(0.3);
+        $this->Line(8, $this->GetY(), 202, $this->GetY());
+        if (!empty($this->texto_pie_empresa)) {
+            $this->SetFont('helvetica', '', 7);
+            $this->SetTextColor(100, 100, 100);
+            $this->MultiCell(0, 4, $this->texto_pie_empresa, 0, 'C');
+        }
+        $this->SetY(-10);
+        $this->SetFont('helvetica', 'I', 8);
+        $this->SetTextColor(100, 100, 100);
+        $this->Cell(0, 5, 'Página ' . $this->getAliasNumPage() . ' de ' . $this->getAliasNbPages(), 0, 0, 'C');
+        $this->SetTextColor(0, 0, 0);
+    }
+}
+
+header('Content-Type: application/json; charset=utf-8');
+
+$registro  = new RegistroActividad();
+$docModel  = new DocumentoPresupuesto();
+$impresion = new ImpresionPresupuesto();
+$empModel  = new Empresas();
+
+$op = $_GET['op'] ?? '';
+
+switch ($op) {
+
+    // ══════════════════════════════════════════════════════════════
+    // GENERAR
+    // ══════════════════════════════════════════════════════════════
+    case "generar":
+        $id_presupuesto  = (int)($_POST['id_presupuesto']  ?? 0);
+        $id_empresa      = (int)($_POST['id_empresa']      ?? 0);
+        $id_pago_ppto    = (int)($_POST['id_pago_ppto']    ?? 0);
+        $numero_version  = !empty($_POST['numero_version']) ? (int)$_POST['numero_version'] : null;
+        $tipo_cliente    = in_array($_POST['tipo_cliente'] ?? '', ['cliente_final', 'agencia_descuento'])
+                            ? $_POST['tipo_cliente'] : 'cliente_final';
+        $idioma          = ($_POST['idioma'] ?? 'es') === 'en' ? 'en' : 'es';
+        $observaciones_internas = !empty($_POST['observaciones']) ? htmlspecialchars(trim($_POST['observaciones']), ENT_QUOTES, 'UTF-8') : null;
+
+        if (!$id_presupuesto || !$id_empresa) {
+            echo json_encode(['success' => false, 'message' => 'Faltan campos obligatorios (id_presupuesto, id_empresa)'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        try {
+            // 1. Validar empresa real
+            if (!$docModel->verificar_empresa_real($id_empresa)) {
+                echo json_encode(['success' => false, 'message' => 'La empresa seleccionada no es una empresa real válida'], JSON_UNESCAPED_UNICODE);
+                break;
+            }
+
+            // 2. Obtener datos presupuesto
+            $datos_ppto = $impresion->get_datos_cabecera($id_presupuesto, $numero_version);
+            if (!$datos_ppto) {
+                echo json_encode(['success' => false, 'message' => "No se encontraron datos del presupuesto ID: $id_presupuesto"], JSON_UNESCAPED_UNICODE);
+                break;
+            }
+
+            // 3. Obtener datos empresa emisora (real)
+            $datos_empresa = $empModel->get_empresaxid($id_empresa);
+            if (!$datos_empresa) {
+                echo json_encode(['success' => false, 'message' => "No se encontraron datos de la empresa ID: $id_empresa"], JSON_UNESCAPED_UNICODE);
+                break;
+            }
+
+            // 4. Obtener líneas del presupuesto
+            $lineas = $impresion->get_lineas_impresion($id_presupuesto, $numero_version);
+
+            // 5. Calcular totales
+            $subtotal_base = 0;
+            $total_iva     = 0;
+            $desglose_iva  = [];
+
+            foreach ($lineas as $l) {
+                $base  = (float)($l['base_imponible'] ?? 0);
+                $pct   = (float)($l['porcentaje_iva_linea_ppto'] ?? 0);
+                $cuota = $base * ($pct / 100);
+                $subtotal_base += $base;
+                $total_iva     += $cuota;
+                if (!isset($desglose_iva[$pct])) $desglose_iva[$pct] = ['base' => 0, 'cuota' => 0];
+                $desglose_iva[$pct]['base']  += $base;
+                $desglose_iva[$pct]['cuota'] += $cuota;
+            }
+            ksort($desglose_iva);
+            $total_con_iva = round($subtotal_base + $total_iva, 2);
+
+            // 6. Obtener anticipos previos activos (para mostrar en PDF)
+            $pagoModel = new PagoPresupuesto();
+            $pagos_previos = $pagoModel->get_pagos_presupuesto($id_presupuesto);
+            $total_anticipos = 0;
+            foreach ($pagos_previos as $p) {
+                if ($p['tipo_pago_ppto'] === 'anticipo' && $p['estado_pago_ppto'] !== 'anulado') {
+                    $total_anticipos += (float)($p['importe_pago_ppto'] ?? 0);
+                }
+            }
+            $total_anticipos = round($total_anticipos, 2);
+
+            // 7. Crear registro documento_presupuesto (SP asigna número de la serie F)
+            $datos_insert = [
+                'id_presupuesto'               => $id_presupuesto,
+                'tipo_documento_ppto'          => 'factura_final',
+                'id_empresa'                   => $id_empresa,
+                'id_pago_ppto'                 => $id_pago_ppto ?: null,
+                'numero_version'               => $numero_version,
+                'observaciones_documento_ppto' => $observaciones_internas,
+                'importe_documento_ppto'       => $total_con_iva,
+            ];
+
+            $id_doc = $docModel->insert_documento($datos_insert);
+            if (!$id_doc) {
+                echo json_encode(['success' => false, 'message' => 'Error al crear el registro de documento factura final'], JSON_UNESCAPED_UNICODE);
+                break;
+            }
+
+            // Vincular documento al pago
+            if ($id_pago_ppto) {
+                $pagoModel->update_pago($id_pago_ppto, ['id_documento_ppto' => $id_doc]);
+            }
+
+            // 8. Obtener registro creado (número asignado por SP)
+            $doc = $docModel->get_documentoxid($id_doc);
+            $numero_documento = $doc['numero_documento_ppto'] ?? "F-{$id_doc}";
+
+            // 9. Logo empresa
+            $mostrar_logo = false;
+            $path_logo    = '';
+            if (!empty($datos_empresa['logotipo_empresa'])) {
+                $logo_name = ltrim($datos_empresa['logotipo_empresa'], '/');
+                if (strpos($logo_name, 'public/') === 0) {
+                    $logo_name = substr($logo_name, 7);
+                }
+                $path_logo_abs = __DIR__ . '/../public/' . $logo_name;
+                if (file_exists($path_logo_abs)) {
+                    $mostrar_logo = true;
+                    $path_logo    = realpath($path_logo_abs);
+                }
+            }
+
+            // 10. Actualizar importes en BD
+            $docModel->actualizar_importes($id_doc, $subtotal_base, $total_iva, $total_con_iva);
+
+            // 11. Generar PDF
+            $pdf = _generar_pdf_final(
+                $datos_ppto, $datos_empresa, $numero_documento,
+                $lineas, $desglose_iva, $subtotal_base, $total_iva, $total_con_iva,
+                $total_anticipos,
+                $mostrar_logo, $path_logo,
+                $idioma, $tipo_cliente
+            );
+
+            // 12. Guardar a disco
+            $dir_guardado = __DIR__ . '/../public/documentos/facturas/';
+            if (!is_dir($dir_guardado)) {
+                mkdir($dir_guardado, 0755, true);
+            }
+            $nombre_archivo = preg_replace('/[^A-Za-z0-9_\-]/', '_', $numero_documento) . '.pdf';
+            $ruta_absoluta  = $dir_guardado . $nombre_archivo;
+            $ruta_relativa  = 'public/documentos/facturas/' . $nombre_archivo;
+
+            $pdf_string = $pdf->Output($nombre_archivo, 'S');
+            file_put_contents($ruta_absoluta, $pdf_string);
+            $tamano = filesize($ruta_absoluta);
+
+            $docModel->actualizar_ruta_pdf($id_doc, $ruta_relativa, $tamano);
+
+            $registro->registrarActividad(
+                'admin', 'impresion_factura_final.php', 'generar',
+                "Factura final $numero_documento generada. Presupuesto ID: $id_presupuesto. Doc ID: $id_doc", 'info'
+            );
+
+            ob_end_clean();
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'success'           => true,
+                'id_documento_ppto' => $id_doc,
+                'numero_documento'  => $numero_documento,
+                'url_pdf'           => $ruta_relativa,
+            ], JSON_UNESCAPED_UNICODE);
+
+        } catch (Exception $e) {
+            $registro->registrarActividad(
+                'admin', 'impresion_factura_final.php', 'generar',
+                "Error: " . $e->getMessage(), 'error'
+            );
+            ob_end_clean();
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['success' => false, 'message' => 'Error al generar la factura final: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // ══════════════════════════════════════════════════════════════
+    // DESCARGAR
+    // ══════════════════════════════════════════════════════════════
+    case "descargar":
+        $id_doc = (int)($_POST['id_documento_ppto'] ?? $_GET['id_documento_ppto'] ?? 0);
+        if (!$id_doc) {
+            echo json_encode(['success' => false, 'message' => 'Falta id_documento_ppto'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $doc = $docModel->get_documentoxid($id_doc);
+        if (!$doc || empty($doc['ruta_pdf_documento_ppto'])) {
+            echo json_encode(['success' => false, 'message' => 'Documento no encontrado o sin PDF'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $ruta_abs = __DIR__ . '/../' . $doc['ruta_pdf_documento_ppto'];
+        if (!file_exists($ruta_abs)) {
+            echo json_encode(['success' => false, 'message' => 'Archivo PDF no encontrado en disco'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        ob_end_clean();
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="' . basename($ruta_abs) . '"');
+        header('Content-Length: ' . filesize($ruta_abs));
+        readfile($ruta_abs);
+        exit;
+
+    default:
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => "Operación '$op' no reconocida"], JSON_UNESCAPED_UNICODE);
+        break;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FUNCIÓN: Generar PDF Factura Final
+// ══════════════════════════════════════════════════════════════════
+function _generar_pdf_final(
+    array  $datos_ppto,
+    array  $datos_empresa,
+    string $numero_documento,
+    array  $lineas,
+    array  $desglose_iva,
+    float  $subtotal_base,
+    float  $total_iva,
+    float  $total_con_iva,
+    float  $total_anticipos,
+    bool   $mostrar_logo,
+    string $path_logo,
+    string $idioma       = 'es',
+    string $tipo_cliente = 'cliente_final'
+): MYPDF_FINAL {
+
+    $fecha_hoy = date('d/m/Y');
+
+    // Textos bilingüe
+    $t = ($idioma === 'en') ? [
+        'desc'       => 'Description',
+        'cant'       => 'Qty.',
+        'punit'      => 'Unit Price €',
+        'importe'    => 'Amount €',
+        'base_imp'   => 'Tax Base:',
+        'iva_label'  => 'VAT ',
+        'total'      => 'TOTAL:',
+        'anticipos'  => '(-) Prior Advance Payments:',
+        'saldo'      => 'BALANCE DUE:',
+        'forma_pago' => 'Payment method: ',
+        'banco'      => 'Bank:',
+    ] : [
+        'desc'       => 'Descripción',
+        'cant'       => 'Cant.',
+        'punit'      => 'P.Unit. €',
+        'importe'    => 'Importe €',
+        'base_imp'   => 'Base imponible:',
+        'iva_label'  => 'IVA ',
+        'total'      => 'TOTAL:',
+        'anticipos'  => '(-) Anticipos previos:',
+        'saldo'      => 'SALDO A PAGAR:',
+        'forma_pago' => 'Forma de pago: ',
+        'banco'      => 'Banco:',
+    ];
+
+    // Azul marino para el total
+    $cr = 41; $cg = 128; $cb = 185;
+
+    // ─── Inicializar PDF ──────────────────────────────────────────
+    $pdf = new MYPDF_FINAL('P', 'mm', 'A4', true, 'UTF-8', false);
+    $pdf->SetCreator('MDR ERP');
+    $pdf->SetAuthor($datos_empresa['nombre_comercial_empresa'] ?? ($datos_empresa['nombre_empresa'] ?? 'MDR'));
+    $pdf->SetTitle('Factura ' . $numero_documento);
+
+    $pdf->datos_empresa     = $datos_empresa;
+    $pdf->datos_presupuesto = $datos_ppto;
+    $pdf->numero_documento  = $numero_documento;
+    $pdf->fecha_documento   = $fecha_hoy;
+    $pdf->texto_pie_empresa = $datos_empresa['texto_pie_presupuesto_empresa'] ?? '';
+    $pdf->mostrar_logo      = $mostrar_logo;
+    $pdf->path_logo         = $path_logo;
+    $pdf->idioma            = $idioma;
+
+    $pdf->setPrintHeader(true);
+    $pdf->setPrintFooter(true);
+    $pdf->SetMargins(8, 82, 8);
+    $pdf->SetHeaderMargin(5);
+    $pdf->SetFooterMargin(15);
+    $pdf->SetAutoPageBreak(true, 25);
+    $pdf->AddPage();
+
+    // ─── TABLA DE LÍNEAS ─────────────────────────────────────────
+    $w_desc  = 140;
+    $w_cant  = 12;
+    $w_punit = 18;
+    $w_imp   = 24;
+    $col_h   = 6;
+
+    // Cabecera
+    $pdf->SetFont('helvetica', 'B', 8);
+    $pdf->SetFillColor(240, 240, 240);
+    $pdf->SetDrawColor(200, 200, 200);
+    $pdf->SetTextColor(44, 62, 80);
+    $pdf->Cell($w_desc,  $col_h, $t['desc'],    1, 0, 'L', true);
+    $pdf->Cell($w_cant,  $col_h, $t['cant'],    1, 0, 'C', true);
+    $pdf->Cell($w_punit, $col_h, $t['punit'],   1, 0, 'C', true);
+    $pdf->Cell($w_imp,   $col_h, $t['importe'], 1, 1, 'C', true);
+
+    $pdf->SetFont('helvetica', '', 8);
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetFillColor(255, 255, 255);
+
+    foreach ($lineas as $l) {
+        $desc   = $l['descripcion_linea_ppto']      ?? '';
+        $cant   = floatval($l['cantidad_linea_ppto']        ?? 0);
+        $precio = floatval($l['precio_unitario_linea_ppto'] ?? 0);
+        $base   = floatval($l['base_imponible']             ?? 0);
+        $altura = max($col_h, $pdf->getStringHeight($w_desc - 2, $desc));
+
+        $x0 = $pdf->GetX();
+        $y0 = $pdf->GetY();
+        $pdf->SetDrawColor(200, 200, 200);
+        $pdf->Rect($x0, $y0, $w_desc, $altura, 'D');
+        $pdf->SetXY($x0 + 1, $y0 + 0.5);
+        $pdf->MultiCell($w_desc - 2, 4.5, $desc, 0, 'L');
+
+        $pdf->SetXY($x0 + $w_desc, $y0);
+        $pdf->Cell($w_cant,  $altura, number_format($cant,   0, ',', '.'), 1, 0, 'C');
+        $pdf->Cell($w_punit, $altura, number_format($precio, 2, ',', '.'), 1, 0, 'R');
+        $pdf->Cell($w_imp,   $altura, number_format($base,   2, ',', '.'), 1, 1, 'R');
+    }
+
+    // ─── TOTALES ──────────────────────────────────────────────────
+    $w_spacer = 144;
+    $w_label  = 30;
+    $w_value  = 20;
+
+    $pdf->Ln(3);
+    $pdf->SetFont('helvetica', '', 8.5);
+    $pdf->SetFillColor(248, 249, 250);
+    $pdf->SetDrawColor(220, 220, 220);
+    $pdf->SetTextColor(44, 62, 80);
+
+    // Base imponible
+    $pdf->Cell($w_spacer, 6, '', 0, 0);
+    $pdf->Cell($w_label,  6, $t['base_imp'], 'LTB', 0, 'R', true);
+    $pdf->SetFont('helvetica', 'B', 8.5);
+    $pdf->Cell($w_value,  6, number_format($subtotal_base, 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
+
+    // Desglose IVA
+    foreach ($desglose_iva as $pct => $v) {
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(52, 73, 94);
+        $pdf->Cell($w_spacer, 5, '', 0, 0);
+        $pdf->Cell($w_label,  5, $t['iva_label'] . $pct . '%:', 0, 0, 'R');
+        $pdf->Cell($w_value,  5, number_format($v['cuota'], 2, ',', '.') . ' €', 0, 1, 'R');
+    }
+
+    // TOTAL (fondo azul marino)
+    $pdf->SetFont('helvetica', 'B', 11);
+    $pdf->SetFillColor($cr, $cg, $cb);
+    $pdf->SetDrawColor($cr - 5, $cg - 10, $cb - 10);
+    $pdf->SetTextColor(255, 255, 255);
+    $pdf->Cell($w_spacer, 8, '', 0, 0);
+    $pdf->Cell($w_label,  8, $t['total'], 1, 0, 'R', true);
+    $pdf->Cell($w_value,  8, number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
+
+    // Bloque informativo de anticipos previos (si existe)
+    if ($total_anticipos > 0) {
+        $saldo_tras_factura = round($total_con_iva - $total_anticipos, 2);
+
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetFillColor(234, 242, 248);
+        $pdf->SetDrawColor(174, 214, 241);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->Ln(2);
+        $pdf->Cell($w_spacer, 5, '', 0, 0);
+        $pdf->Cell($w_label,  5, $t['anticipos'], 'LTB', 0, 'R', true);
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(192, 57, 43);
+        $pdf->Cell($w_value,  5, '-' . number_format($total_anticipos, 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
+
+        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->SetFillColor($cr, $cg, $cb);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->Cell($w_spacer, 7, '', 0, 0);
+        $pdf->Cell($w_label,  7, $t['saldo'], 1, 0, 'R', true);
+        $pdf->Cell($w_value,  7, number_format(max(0, $saldo_tras_factura), 2, ',', '.') . ' €', 1, 1, 'R', true);
+    }
+
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetDrawColor(0, 0, 0);
+    $pdf->SetLineWidth(0.2);
+    $pdf->Ln(4);
+
+    // ─── DATOS BANCARIOS (solo si transferencia + flag activado) ──
+    $nombre_fp        = strtoupper($datos_ppto['nombre_forma_pago'] ?? '');
+    $es_transferencia = (strpos($nombre_fp, 'TRANSFERENCIA') !== false || strpos($nombre_fp, 'TRANSFER') !== false);
+    $tiene_datos_ban  = !empty($datos_empresa['iban_empresa']) || !empty($datos_empresa['banco_empresa']);
+    $mostrar_cuenta   = !empty($datos_empresa['mostrar_cuenta_bancaria_pdf_presupuesto_empresa']);
+
+    if ($es_transferencia && $tiene_datos_ban && $mostrar_cuenta) {
+        $texto_fp     = $t['forma_pago'] . ($datos_ppto['nombre_forma_pago'] ?? '');
+        $lineas_banco = [];
+        $altura_banco = 8;
+        if (!empty($datos_empresa['banco_empresa'])) {
+            $lineas_banco[] = ['label' => $t['banco'], 'value' => $datos_empresa['banco_empresa']];
+            $altura_banco += 6;
+        }
+        if (!empty($datos_empresa['iban_empresa'])) {
+            $lineas_banco[] = ['label' => 'IBAN:', 'value' => $datos_empresa['iban_empresa']];
+            $altura_banco += 6;
+        }
+        if (!empty($datos_empresa['swift_empresa'])) {
+            $lineas_banco[] = ['label' => 'SWIFT/BIC:', 'value' => $datos_empresa['swift_empresa']];
+            $altura_banco += 6;
+        }
+        $y_banco = $pdf->GetY();
+        $pdf->SetFillColor(245, 245, 245);
+        $pdf->SetDrawColor(180, 180, 180);
+        $pdf->Rect(8, $y_banco, 194, $altura_banco, 'DF');
+        $pdf->SetXY(10, $y_banco + 1.5);
+        $pdf->SetFont('helvetica', 'B', 7);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->Cell(190, 3.5, $texto_fp, 0, 1, 'L');
+        foreach ($lineas_banco as $lb) {
+            $pdf->SetX(10);
+            $pdf->SetFont('helvetica', '', 6);
+            $pdf->SetTextColor(80, 80, 80);
+            $pdf->Cell(25, 5.5, $lb['label'], 0, 0, 'R');
+            $pdf->SetFont('helvetica', 'B', 7);
+            $pdf->SetTextColor(44, 62, 80);
+            $pdf->Cell(165, 5.5, $lb['value'], 0, 1, 'L');
+        }
+        $pdf->Ln(3);
+    }
+
+    return $pdf;
+}

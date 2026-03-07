@@ -80,11 +80,16 @@
         
         <div class="br-pagetitle">
             <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <h4 class="mb-0 me-2" id="page-title">Nuevo Presupuesto</h4>
-                    <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaFormulario" title="Ayuda sobre el formulario">
+                <div class="d-flex align-items-center gap-2">
+                    <h4 class="mb-0" id="page-title">Nuevo Presupuesto</h4>
+                    <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modalAyudaFormulario" title="Ayuda sobre el formulario">
                         <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
                     </button>
+                    <span id="badge_estado_header"
+                          class="badge fs-6 px-3 py-2"
+                          style="background-color:#0000ff; color:#fff; letter-spacing:.03em;">
+                        BORRADOR
+                    </span>
                 </div>
                 
                 <!-- Botón de regreso -->
@@ -98,6 +103,89 @@
         <div class="br-pagebody">
             <div class="br-section-wrapper">
                 
+                <!-- Tabs de navegación del Presupuesto -->
+                <style>
+                    #presupuestoTabs .nav-link {
+                        font-weight: 600;
+                        font-size: 0.92rem;
+                        padding: 0.65rem 1.2rem;
+                        color: #6c757d;
+                        border-bottom: 3px solid transparent;
+                        transition: color .15s, border-color .15s;
+                    }
+                    #presupuestoTabs .nav-link:not(.disabled):hover {
+                        color: #5a6acf;
+                        border-bottom-color: #c5c9f0;
+                    }
+                    #presupuestoTabs .nav-link.active {
+                        color: #5a6acf;
+                        border-bottom: 3px solid #5a6acf;
+                        background: transparent;
+                    }
+                    #presupuestoTabs .tab-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 20px;
+                        height: 20px;
+                        font-size: 0.72rem;
+                        border-radius: 50%;
+                        background: #e9ecef;
+                        color: #6c757d;
+                        margin-left: 6px;
+                        font-weight: 700;
+                        transition: background .15s;
+                    }
+                    #presupuestoTabs .nav-link.active .tab-badge {
+                        background: #5a6acf;
+                        color: #fff;
+                    }
+                    #presupuestoTabs .nav-link.disabled {
+                        opacity: 0.45;
+                        cursor: not-allowed;
+                    }
+                    #presupuestoTabContent {
+                        background: #fff;
+                    }
+                    .pago-card-metric {
+                        border-radius: 12px;
+                        padding: 1.1rem 1rem 0.9rem;
+                        transition: transform .15s, box-shadow .15s;
+                    }
+                    .pago-card-metric:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.1) !important; }
+                    .pago-card-metric .metric-icon {
+                        width: 42px; height: 42px;
+                        border-radius: 10px;
+                        display: flex; align-items: center; justify-content: center;
+                        font-size: 1.2rem;
+                    }
+                    .pago-card-metric .metric-label { font-size: 0.75rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+                    .pago-card-metric .metric-value { font-size: 1.55rem; font-weight: 700; line-height: 1.2; }
+                </style>
+                <ul class="nav nav-tabs mb-0 border-bottom" id="presupuestoTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-datos-btn" data-bs-toggle="tab" data-bs-target="#pane-datos" type="button" role="tab">
+                            <i class="fas fa-file-alt me-1"></i> Datos del presupuesto
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link disabled" id="tab-documentos-btn" data-bs-toggle="tab" data-bs-target="#pane-documentos" type="button" role="tab" disabled>
+                            <i class="fas fa-file-invoice me-1"></i> Documentos
+                            <span class="tab-badge" id="badge-documentos">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link disabled" id="tab-pagos-btn" data-bs-toggle="tab" data-bs-target="#pane-pagos" type="button" role="tab" disabled>
+                            <i class="fas fa-euro-sign me-1"></i> Pagos
+                            <span class="tab-badge" id="badge-pagos">0</span>
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content border border-top-0" id="presupuestoTabContent">
+
+                    <!-- ===== TAB 1: DATOS ===== -->
+                    <div class="tab-pane fade show active p-3" id="pane-datos" role="tabpanel" aria-labelledby="tab-datos-btn">
+
                 <!-- Formulario de Presupuesto -->
                 <form id="formPresupuesto">
                     <!-- Campo oculto para ID del presupuesto -->
@@ -521,6 +609,138 @@
 
                 </form>
 
+                    </div><!-- /#pane-datos -->
+
+                    <!-- ===== TAB 2: DOCUMENTOS ===== -->
+                    <div class="tab-pane fade p-4" id="pane-documentos" role="tabpanel">
+
+                        <!-- Contexto del presupuesto -->
+                        <div class="d-none border-start border-4 border-primary bg-white shadow-sm rounded-end px-3 py-2 mb-3" id="ctx-docs">
+                            <div class="d-flex flex-wrap align-items-center gap-3" style="font-size:.85rem;">
+                                <span class="text-muted"><i class="fas fa-hashtag me-1 text-primary"></i>Nº&nbsp;<strong id="ctx-docs-numero" class="text-dark">—</strong></span>
+                                <span class="text-muted"><i class="fas fa-calendar-alt me-1 text-primary"></i><strong id="ctx-docs-fecha" class="text-dark">—</strong></span>
+                                <span class="text-muted"><i class="fas fa-user me-1 text-primary"></i><strong id="ctx-docs-cliente" class="text-dark">—</strong></span>
+                                <span id="ctx-docs-estado" class="badge px-2 py-1">—</span>
+                                <span class="text-muted"><i class="fas fa-credit-card me-1 text-primary"></i><strong id="ctx-docs-fpago" class="text-dark">—</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Cabecera con acciones -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <div>
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="fas fa-file-invoice text-primary me-2"></i>Documentos de facturación
+                                </h5>
+                                <p class="text-muted small mb-0">Facturas proforma, anticipos, facturas finales y abonos emitidos para este presupuesto.</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-primary" id="btnGenerarProforma" onclick="abrirModalGenerarProforma()">
+                                    <i class="fas fa-file-invoice-dollar me-1"></i>Generar Proforma
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="btnImprimirParteTrabajo" onclick="imprimirParteTrabajo()">
+                                    <i class="fas fa-clipboard-list me-1"></i>Parte de trabajo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tabla documentos -->
+                        <div class="table-responsive">
+                            <table id="tblDocumentos"
+                                   class="table table-hover align-middle w-100"
+                                   style="font-size:.875rem;"></table>
+                        </div>
+
+                        <!-- Estado vacío (oculto; lo gestiona la DataTable) -->
+
+                    </div><!-- /#pane-documentos -->
+
+                    <!-- ===== TAB 3: PAGOS ===== -->
+                    <div class="tab-pane fade p-4" id="pane-pagos" role="tabpanel">
+
+                        <!-- Contexto del presupuesto -->
+                        <div class="d-none border-start border-4 border-success bg-white shadow-sm rounded-end px-3 py-2 mb-3" id="ctx-pagos">
+                            <div class="d-flex flex-wrap align-items-center gap-3" style="font-size:.85rem;">
+                                <span class="text-muted"><i class="fas fa-hashtag me-1 text-success"></i>Nº&nbsp;<strong id="ctx-pagos-numero" class="text-dark">—</strong></span>
+                                <span class="text-muted"><i class="fas fa-calendar-alt me-1 text-success"></i><strong id="ctx-pagos-fecha" class="text-dark">—</strong></span>
+                                <span class="text-muted"><i class="fas fa-user me-1 text-success"></i><strong id="ctx-pagos-cliente" class="text-dark">—</strong></span>
+                                <span id="ctx-pagos-estado" class="badge px-2 py-1">—</span>
+                                <span class="text-muted"><i class="fas fa-credit-card me-1 text-success"></i><strong id="ctx-pagos-fpago" class="text-dark">—</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Métricas financieras -->
+                        <div class="row g-3 mb-4" id="resumen-financiero">
+
+                            <div class="col-12 col-xl-4">
+                                <div class="pago-card-metric shadow-sm border bg-white d-flex align-items-center gap-3 h-100">
+                                    <div class="metric-icon bg-primary bg-opacity-10 text-primary">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="metric-label text-muted">Total presupuesto</div>
+                                        <div class="metric-value text-dark" id="rf-total">—</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-xl-4">
+                                <div class="pago-card-metric shadow-sm border bg-white d-flex align-items-center gap-3 h-100">
+                                    <div class="metric-icon bg-success bg-opacity-10 text-success">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="metric-label text-muted">Total pagado</div>
+                                        <div class="metric-value text-success" id="rf-pagado">—</div>
+                                        <div class="d-flex align-items-center gap-2 mt-1">
+                                            <div class="progress flex-grow-1" style="height:5px;">
+                                                <div class="progress-bar bg-success" id="rf-barra"
+                                                     role="progressbar" style="width:0%"
+                                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <small class="text-muted fw-semibold" id="rf-porcentaje" style="white-space:nowrap">0%</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-xl-4">
+                                <div class="pago-card-metric shadow-sm border bg-white d-flex align-items-center gap-3 h-100">
+                                    <div class="metric-icon bg-warning bg-opacity-10 text-warning">
+                                        <i class="fas fa-hourglass-half"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="metric-label text-muted">Saldo pendiente</div>
+                                        <div class="metric-value" id="rf-pendiente" style="color:#e67e22">—</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- /.row métricas -->
+
+                        <!-- Cabecera tabla pagos -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <div>
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="fas fa-money-bill-wave text-success me-2"></i>Registro de pagos
+                                </h5>
+                                <p class="text-muted small mb-0">Anticipos, pagos totales, restos y devoluciones registrados.</p>
+                            </div>
+                            <button type="button" class="btn btn-success" onclick="abrirModalRegistrarPago()">
+                                <i class="fas fa-plus me-1"></i>Registrar pago
+                            </button>
+                        </div>
+
+                        <!-- Tabla pagos -->
+                        <div class="table-responsive">
+                            <table id="tblPagos"
+                                   class="table table-hover align-middle w-100"
+                                   style="font-size:.875rem;"></table>
+                        </div>
+
+                    </div><!-- /#pane-pagos -->
+
+                </div><!-- /#presupuestoTabContent -->
+
             </div><!-- br-section-wrapper -->
         </div><!-- br-pagebody -->
 
@@ -622,9 +842,57 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+        .cursor-pointer { cursor: pointer; }
     </style>
+    <script>
+        /* Toggle visual tarjetas tipo-documento */
+        $(document).on('change', 'input[name="tipo_documento_generar"]', function () {
+            $('input[name="tipo_documento_generar"]').each(function () {
+                var $card = $('#card-' + this.id);
+                if (this.checked) {
+                    $card.css({ 'border-color': '#0d6efd', 'background': '#f0f6ff' });
+                } else {
+                    $card.css({ 'border-color': '#dee2e6', 'background': '' });
+                }
+            });
+        });
+    </script>
     
     <script type="text/javascript" src="formularioPresupuesto.js"></script>
+
+    <!-- Modales: Pagos y Documentos -->
+    <?php include_once('modal_registrar_pago.php'); ?>
+    <?php include_once('modal_abonar_factura.php'); ?>
+
+    <!-- Modal: Seleccionar empresa para Proforma -->
+    <div class="modal fade" id="modalGenerarProforma" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i>Generar Factura Proforma</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">Seleccione la empresa que emite la proforma. Si la empresa ya tiene una factura activa para este presupuesto no podrá volver a emitirla.</p>
+                    <div class="mb-3">
+                        <label for="selectEmpresaProforma" class="form-label fw-bold">Empresa emisora <span class="text-danger">*</span></label>
+                        <select class="form-select" id="selectEmpresaProforma"></select>
+                    </div>
+                    <div id="alertaEmpresaBloqueadaProforma" class="alert alert-warning d-none">
+                        <i class="fas fa-lock me-2"></i>Esta empresa ya tiene una factura activa para este presupuesto.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmarProforma" onclick="confirmarGenerarProforma()">
+                        <i class="fas fa-file-invoice-dollar me-1"></i>Generar Proforma
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="pagos_presupuesto.js"></script>
 
     <!-- Botones flotantes para navegación -->
     <!-- Botón para ir al inicio del formulario -->
