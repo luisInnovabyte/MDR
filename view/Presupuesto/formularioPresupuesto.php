@@ -715,6 +715,7 @@
                             <div>
                                 <h5 class="mb-0 fw-bold">
                                     <i class="fas fa-money-bill-wave text-success me-2"></i>Registro de pagos
+                                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle ms-2 p-0" style="width:22px;height:22px;font-size:.75rem;line-height:1" data-bs-toggle="modal" data-bs-target="#modalAyudaPagos" title="Ayuda sobre pagos"><i class="fas fa-question"></i></button>
                                 </h5>
                                 <p class="text-muted small mb-0">Anticipos, pagos totales, restos y devoluciones registrados.</p>
                             </div>
@@ -929,6 +930,119 @@
             });
         });
     </script>
+
+<!-- ===== MODAL AYUDA PAGOS ===== -->
+<div class="modal fade" id="modalAyudaPagos" tabindex="-1" aria-labelledby="modalAyudaPagosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold" id="modalAyudaPagosLabel">
+                    <i class="fas fa-circle-question text-secondary me-2"></i>Ayuda — Registro de pagos
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- TIPOS DE PAGO -->
+                <h6 class="fw-bold border-bottom pb-2 mb-3"><i class="fas fa-tags me-2 text-primary"></i>Tipos de pago</h6>
+                <table class="table table-sm table-bordered align-middle mb-4">
+                    <thead class="table-light">
+                        <tr><th style="width:160px">Tipo</th><th>Descripción</th><th>Genera</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-info text-dark">Anticipo</span></td>
+                            <td>Pago parcial previo al evento o entrega del servicio.</td>
+                            <td><span class="badge bg-success">Factura Anticipo</span> o <span class="badge bg-primary">Factura Proforma</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-success">Pago total</span></td>
+                            <td>Pago íntegro del importe del presupuesto en un único cobro.</td>
+                            <td><span class="badge bg-dark">Factura Final</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-primary">Resto</span></td>
+                            <td>Pago del saldo pendiente tras haber registrado uno o más anticipos.</td>
+                            <td><span class="badge bg-dark">Factura Final</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-danger">Devolución</span></td>
+                            <td>Devolución de importe al cliente. Se registra como movimiento negativo.</td>
+                            <td>Sin documento</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- ESTADOS DE PAGO -->
+                <h6 class="fw-bold border-bottom pb-2 mb-3"><i class="fas fa-circle-half-stroke me-2 text-warning"></i>Estados de pago</h6>
+                <table class="table table-sm table-bordered align-middle mb-4">
+                    <thead class="table-light">
+                        <tr><th style="width:160px">Estado</th><th>Significado</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-warning text-dark">Pendiente</span></td>
+                            <td>Pago registrado pero el importe aún no ha sido recibido.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-info text-dark">Recibido</span></td>
+                            <td>Importe recibido del cliente, pendiente de verificación contable.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-success">Conciliado</span></td>
+                            <td>Pago verificado y cerrado contablemente. No admite cambios.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-danger">Anulado</span></td>
+                            <td>Pago cancelado. Si tenía factura asociada, se habrá emitido una <strong>Factura Abono</strong> rectificativa.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- QUÉ OCURRE AL ABONAR -->
+                <h6 class="fw-bold border-bottom pb-2 mb-3"><i class="fas fa-rotate-left me-2 text-danger"></i>¿Qué ocurre al abonar una factura?</h6>
+                <p class="text-muted small mb-3">Abonar anula económicamente una factura emitida generando una <strong>Factura Abono</strong> (factura rectificativa) con importe negativo. El proceso es irreversible.</p>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card border-success h-100">
+                            <div class="card-header bg-success text-white py-2">
+                                <i class="fas fa-file-invoice me-1"></i> Factura Anticipo o Factura Final
+                            </div>
+                            <div class="card-body small">
+                                <ol class="mb-0 ps-3">
+                                    <li>Se genera una <strong>Factura Abono</strong> con el importe original en negativo.</li>
+                                    <li>El pago vinculado pasa a estado <span class="badge bg-danger">Anulado</span>.</li>
+                                    <li>Ambos documentos (original + abono) quedan visibles en la solapa <em>Documentos</em>.</li>
+                                    <li>El saldo pendiente del presupuesto se recalcula automáticamente.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-primary h-100">
+                            <div class="card-header bg-primary text-white py-2">
+                                <i class="fas fa-file-contract me-1"></i> Factura Proforma
+                            </div>
+                            <div class="card-body small">
+                                <ol class="mb-0 ps-3">
+                                    <li>El flujo es idéntico al de una factura real.</li>
+                                    <li>Se genera igualmente la <strong>Factura Abono</strong> rectificativa.</li>
+                                    <li>El pago vinculado pasa a estado <span class="badge bg-danger">Anulado</span>.</li>
+                                    <li>La proforma original queda en el historial de documentos como referencia.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ===== /MODAL AYUDA PAGOS ===== -->
 
 </body>
 
