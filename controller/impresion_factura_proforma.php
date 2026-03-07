@@ -593,7 +593,6 @@ function _generar_pdf_proforma(
         'desc'        => 'Description',
         'cant'        => 'Qty.',
         'punit'       => 'Unit Price €',
-        'dto'         => '% Disc.',
         'importe'     => 'Amount €',
         'a_cuenta'    => 'On account of confirmation of quotation ',
         'base_imp'    => 'Tax Base:',
@@ -608,7 +607,6 @@ function _generar_pdf_proforma(
         'desc'        => 'Descripción',
         'cant'        => 'Cant.',
         'punit'       => 'P.Unit. €',
-        'dto'         => '% Dto.',
         'importe'     => 'Importe €',
         'a_cuenta'    => 'Entrega a cuenta confirmación presupuesto ',
         'base_imp'    => 'Base imponible:',
@@ -659,10 +657,9 @@ function _generar_pdf_proforma(
 
 // ─── TABLA DE LÍNEAS ─────────────────────────────────────────
     // Anchos: Desc=128, Cant=12, PUnit=18, Dto=12, Importe=24 → total=194mm
-    $w_desc  = 128;
+    $w_desc  = 140;
     $w_cant  = 12;
     $w_punit = 18;
-    $w_dto   = 12;
     $w_imp   = 24;
     $col_h   = 6;
 
@@ -674,7 +671,6 @@ function _generar_pdf_proforma(
     $pdf->Cell($w_desc,  $col_h, $t['desc'],    1, 0, 'L', true);
     $pdf->Cell($w_cant,  $col_h, $t['cant'],    1, 0, 'C', true);
     $pdf->Cell($w_punit, $col_h, $t['punit'],   1, 0, 'C', true);
-    $pdf->Cell($w_dto,   $col_h, $t['dto'],     1, 0, 'C', true);
     $pdf->Cell($w_imp,   $col_h, $t['importe'], 1, 1, 'C', true);
 
     $pdf->SetFont('helvetica', '', 8);
@@ -686,14 +682,12 @@ function _generar_pdf_proforma(
         $pdf->Cell($w_desc,  $col_h, $desc_anticipo,                                        1, 0, 'L');
         $pdf->Cell($w_cant,  $col_h, '1',                                                   1, 0, 'C');
         $pdf->Cell($w_punit, $col_h, number_format($importe_anticipo, 2, ',', '.'),         1, 0, 'R');
-        $pdf->Cell($w_dto,   $col_h, '',                                                    1, 0, 'C');
         $pdf->Cell($w_imp,   $col_h, number_format($importe_anticipo, 2, ',', '.'),         1, 1, 'R');
     } else {
         foreach ($lineas as $l) {
             $desc   = $l['descripcion_linea_ppto']       ?? '';
             $cant   = floatval($l['cantidad_linea_ppto']         ?? 0);
             $precio = floatval($l['precio_unitario_linea_ppto']  ?? 0);
-            $dto    = floatval($l['descuento_linea_ppto']        ?? 0);
             $base   = floatval($l['base_imponible']              ?? 0);
             $altura = max($col_h, $pdf->getStringHeight($w_desc - 2, $desc));
 
@@ -707,14 +701,7 @@ function _generar_pdf_proforma(
             $pdf->SetXY($x0 + $w_desc, $y0);
             $pdf->Cell($w_cant,  $altura, number_format($cant, 0, ',', '.'),         1, 0, 'C');
             $pdf->Cell($w_punit, $altura, number_format($precio, 2, ',', '.'),       1, 0, 'R');
-            if ($dto > 0) {
-                $pdf->SetTextColor(231, 76, 60);
-                $pdf->Cell($w_dto, $altura, number_format($dto, 0) . '%',            1, 0, 'C');
-                $pdf->SetTextColor(0, 0, 0);
-            } else {
-                $pdf->Cell($w_dto, $altura, '',                                      1, 0, 'C');
-            }
-            $pdf->Cell($w_imp, $altura, number_format($base, 2, ',', '.'),           1, 1, 'R');
+            $pdf->Cell($w_imp,   $altura, number_format($base, 2, ',', '.'),         1, 1, 'R');
         }
     }
 

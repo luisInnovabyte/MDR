@@ -484,7 +484,6 @@ function _generar_pdf_anticipo(
         'desc'        => 'Description',
         'cant'        => 'Qty.',
         'punit'       => 'Unit Price €',
-        'dto'         => '% Disc.',
         'importe'     => 'Amount €',
         'a_cuenta'    => 'On account of confirmation of quotation ',
         'base_imp'    => 'Tax Base:',
@@ -498,7 +497,6 @@ function _generar_pdf_anticipo(
         'desc'        => 'Descripción',
         'cant'        => 'Cant.',
         'punit'       => 'P.Unit. €',
-        'dto'         => '% Dto.',
         'importe'     => 'Importe €',
         'a_cuenta'    => 'Entrega a cuenta confirmación presupuesto ',
         'base_imp'    => 'Base imponible:',
@@ -547,10 +545,9 @@ function _generar_pdf_anticipo(
 
     // ─── TABLA (una sola línea) ───────────────────────────────────
     // Anchos: Desc=128, Cant=12, PUnit=18, IVA%=12, Importe=24 → total=194mm
-    $w_desc  = 128;
+    $w_desc  = 140;
     $w_cant  = 12;
     $w_punit = 18;
-    $w_dto   = 12;
     $w_imp   = 24;
     $col_h   = 6;
 
@@ -561,7 +558,6 @@ function _generar_pdf_anticipo(
     $pdf->Cell($w_desc,  $col_h, $t['desc'],    1, 0, 'L', true);
     $pdf->Cell($w_cant,  $col_h, $t['cant'],    1, 0, 'C', true);
     $pdf->Cell($w_punit, $col_h, $t['punit'],   1, 0, 'C', true);
-    $pdf->Cell($w_dto,   $col_h, $t['dto'],     1, 0, 'C', true);
     $pdf->Cell($w_imp,   $col_h, $t['importe'], 1, 1, 'C', true);
 
     $pdf->SetFont('helvetica', '', 8);
@@ -571,7 +567,6 @@ function _generar_pdf_anticipo(
     $pdf->Cell($w_desc,  $col_h, $desc_linea,                                   1, 0, 'L');
     $pdf->Cell($w_cant,  $col_h, '1',                                           1, 0, 'C');
     $pdf->Cell($w_punit, $col_h, number_format($base_imp, 2, ',', '.'),         1, 0, 'R');
-    $pdf->Cell($w_dto,   $col_h, '',                                            1, 0, 'C');
     $pdf->Cell($w_imp,   $col_h, number_format($base_imp, 2, ',', '.'),         1, 1, 'R');
 
     // ─── TOTALES ──────────────────────────────────────────────────
