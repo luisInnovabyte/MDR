@@ -192,7 +192,16 @@ function initTabDocumentos() {
                 render: function (data) { return formatMoneda(data); },
                 className: 'text-end'
             },
-            { data: 'fecha_emision_documento_ppto', title: 'Fecha emisión' },
+            {
+                data: 'fecha_emision_documento_ppto',
+                title: 'Fecha emisión',
+                render: function (data) {
+                    if (!data) return '';
+                    var parts = data.split('-');
+                    if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+                    return data;
+                }
+            },
             {
                 data: 'activo_documento_ppto',
                 title: 'Estado',
@@ -261,8 +270,8 @@ function abonarFactura(idDocumento) {
             // Verificar si puede abonarse
             $.post('../../controller/documento_presupuesto.php?op=verificar_puede_abonar', { id_documento_ppto: idDocumento })
                 .done(function (res) {
-                    if (!res.puede_abonar) {
-                        Swal.fire('No se puede abonar', res.mensaje || 'Este documento no admite abono.', 'warning');
+                    if (!res.puede) {
+                        Swal.fire('No se puede abonar', res.motivo || 'Este documento no admite abono.', 'warning');
                         return;
                     }
 
