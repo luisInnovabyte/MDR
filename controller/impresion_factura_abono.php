@@ -575,6 +575,7 @@ function _generar_pdf_abono(
     $pdf->SetAutoPageBreak(true, 25);
     $pdf->AddPage();
     $pdf->SetY($pdf->y_header_bottom);
+    $pdf->Ln(8); // Espacio entre cabecera y cuerpo
 
     // ── TABLA (una sola línea) ────────────────────────────────────────
     // Anchos: Desc=140, Cant=12, PUnit=18, Importe=24 → total=194mm
