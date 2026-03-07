@@ -620,13 +620,13 @@ function _generar_pdf_abono(
     }
 
     // TOTAL A DEVOLVER (fondo rojo)
-    $pdf->SetFont('helvetica', 'B', 11);
+    $pdf->SetFont('helvetica', 'B', 9);
     $pdf->SetFillColor(192, 57, 43);
     $pdf->SetDrawColor(160, 40, 30);
     $pdf->SetTextColor(255, 255, 255);
-    $pdf->Cell($w_spacer, 8, '', 0, 0);
-    $pdf->Cell($w_label,  8, 'TOTAL A DEVOLVER:', 1, 0, 'R', true);
-    $pdf->Cell($w_value,  8, '-' . number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
+    $pdf->Cell($w_spacer, 10, '', 0, 0);
+    $pdf->Cell($w_label,  10, 'TOTAL A DEVOLVER:', 1, 0, 'R', true);
+    $pdf->Cell($w_value,  10, '-' . number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetDrawColor(200, 200, 200);
     $pdf->SetLineWidth(0.2);

@@ -165,7 +165,7 @@ class MYPDF_ANTICIPO extends TCPDF
         $box_y  = $y_start;
         $cli_h  = 26;
         if (!empty($this->datos_presupuesto['nombre_contacto_cliente'])) {
-            $cli_h += 10;
+            $cli_h += 16;
         }
 
         $this->SetFillColor(248, 249, 250);
@@ -226,7 +226,7 @@ class MYPDF_ANTICIPO extends TCPDF
         if (!empty($this->datos_presupuesto['nombre_contacto_cliente'])) {
             $y_cd += 5;
             $this->SetXY($col2_x + 2, $y_cd);
-            $this->SetFont('helvetica', 'B', 7);
+            $this->SetFont('helvetica', 'B', 8);
             $this->SetTextColor($this->cr, $this->cg, $this->cb);
             $this->Cell($col2_w - 4, 3, 'A la atención de:', 0, 1, 'L');
             $y_cd += 3.5;
@@ -234,10 +234,26 @@ class MYPDF_ANTICIPO extends TCPDF
                 ($this->datos_presupuesto['nombre_contacto_cliente'] ?? '') . ' ' .
                 ($this->datos_presupuesto['apellidos_contacto_cliente'] ?? '')
             );
+            $this->SetFont('helvetica', '', 7.5);
+            $this->SetTextColor(52, 73, 94);
             $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell(15, 2.5, 'Nombre:', 0, 0, 'L');
             $this->SetFont('helvetica', 'B', 7.5);
-            $this->SetTextColor(44, 62, 80);
-            $this->Cell($col2_w - 4, 3.5, $nombre_cont, 0, 1, 'L');
+            $this->Cell($col2_w - 19, 2.5, $nombre_cont, 0, 1, 'L');
+            $y_cd += 3;
+            if (!empty($this->datos_presupuesto['telefono_contacto_cliente'])) {
+                $this->SetFont('helvetica', '', 7.5);
+                $this->SetXY($col2_x + 2, $y_cd);
+                $this->Cell(15, 2.5, 'Telefono:', 0, 0, 'L');
+                $this->Cell($col2_w - 19, 2.5, $this->datos_presupuesto['telefono_contacto_cliente'], 0, 1, 'L');
+                $y_cd += 3;
+            }
+            if (!empty($this->datos_presupuesto['email_contacto_cliente'])) {
+                $this->SetFont('helvetica', '', 7.5);
+                $this->SetXY($col2_x + 2, $y_cd);
+                $this->Cell(15, 2.5, 'Email:', 0, 0, 'L');
+                $this->Cell($col2_w - 19, 2.5, $this->datos_presupuesto['email_contacto_cliente'], 0, 1, 'L');
+            }
         }
 
         $this->y_header_bottom = max($y_info + 12, $box_y + $cli_h + 5);
@@ -594,13 +610,13 @@ function _generar_pdf_anticipo(
     }
 
     // TOTAL verde
-    $pdf->SetFont('helvetica', 'B', 11);
+    $pdf->SetFont('helvetica', 'B', 9);
     $pdf->SetFillColor(39, 174, 96);
     $pdf->SetDrawColor(30, 140, 70);
     $pdf->SetTextColor(255, 255, 255);
-    $pdf->Cell($w_spacer, 8, '', 0, 0);
-    $pdf->Cell($w_label,  8, $t['total'], 1, 0, 'R', true);
-    $pdf->Cell($w_value,  8, number_format($importe_total, 2, ',', '.') . ' €', 1, 1, 'R', true);
+    $pdf->Cell($w_spacer, 10, '', 0, 0);
+    $pdf->Cell($w_label,  10, $t['total'], 1, 0, 'R', true);
+    $pdf->Cell($w_value,  10, number_format($importe_total, 2, ',', '.') . ' €', 1, 1, 'R', true);
 
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetDrawColor(0, 0, 0);

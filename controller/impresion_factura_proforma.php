@@ -172,7 +172,7 @@ class MYPDF_PROFORMA extends TCPDF
         $box_y      = $y_start;
         $cli_h      = 26;
         if (!empty($this->datos_presupuesto['nombre_contacto_cliente'])) {
-            $cli_h += 10;
+            $cli_h += 16;
         }
 
         $this->SetFillColor(248, 249, 250);
@@ -241,7 +241,7 @@ class MYPDF_PROFORMA extends TCPDF
         if (!empty($this->datos_presupuesto['nombre_contacto_cliente'])) {
             $y_cd += 1;
             $this->SetXY($col2_x + 2, $y_cd);
-            $this->SetFont('helvetica', 'B', 7);
+            $this->SetFont('helvetica', 'B', 8);
             $this->SetTextColor(39, 174, 96);
             $this->Cell($col2_w - 4, 3, 'A la atención de:', 0, 1, 'L');
             $y_cd += 3.5;
@@ -249,19 +249,25 @@ class MYPDF_PROFORMA extends TCPDF
                 ($this->datos_presupuesto['nombre_contacto_cliente'] ?? '') . ' ' .
                 ($this->datos_presupuesto['apellidos_contacto_cliente'] ?? '')
             );
+            $this->SetFont('helvetica', '', 7.5);
+            $this->SetTextColor(52, 73, 94);
             $this->SetXY($col2_x + 2, $y_cd);
+            $this->Cell(15, 2.5, 'Nombre:', 0, 0, 'L');
             $this->SetFont('helvetica', 'B', 7.5);
-            $this->SetTextColor(44, 62, 80);
-            $this->Cell($col2_w - 4, 3.5, $nombre_cont, 0, 1, 'L');
-            $y_cd += 4;
-            $tel_cont   = $this->datos_presupuesto['telefono_contacto_cliente'] ?? '';
-            $email_cont = $this->datos_presupuesto['email_contacto_cliente']    ?? '';
-            if ($tel_cont || $email_cont) {
-                $cont_str = ($tel_cont ?: '') . ($tel_cont && $email_cont ? ' | ' : '') . ($email_cont ?: '');
+            $this->Cell($col2_w - 19, 2.5, $nombre_cont, 0, 1, 'L');
+            $y_cd += 3;
+            if (!empty($this->datos_presupuesto['telefono_contacto_cliente'])) {
+                $this->SetFont('helvetica', '', 7.5);
                 $this->SetXY($col2_x + 2, $y_cd);
-                $this->SetFont('helvetica', '', 7);
-                $this->SetTextColor(70, 70, 70);
-                $this->Cell($col2_w - 4, 3.5, $cont_str, 0, 1, 'L');
+                $this->Cell(15, 2.5, 'Telefono:', 0, 0, 'L');
+                $this->Cell($col2_w - 19, 2.5, $this->datos_presupuesto['telefono_contacto_cliente'], 0, 1, 'L');
+                $y_cd += 3;
+            }
+            if (!empty($this->datos_presupuesto['email_contacto_cliente'])) {
+                $this->SetFont('helvetica', '', 7.5);
+                $this->SetXY($col2_x + 2, $y_cd);
+                $this->Cell(15, 2.5, 'Email:', 0, 0, 'L');
+                $this->Cell($col2_w - 19, 2.5, $this->datos_presupuesto['email_contacto_cliente'], 0, 1, 'L');
             }
         }
 
@@ -681,8 +687,8 @@ function _generar_pdf_proforma(
         $desc_anticipo = $t['a_cuenta'] . ($datos_ppto['numero_presupuesto'] ?? '');
         $pdf->Cell($w_desc,  $col_h, $desc_anticipo,                                        1, 0, 'L');
         $pdf->Cell($w_cant,  $col_h, '1',                                                   1, 0, 'C');
-        $pdf->Cell($w_punit, $col_h, number_format($importe_anticipo, 2, ',', '.'),         1, 0, 'R');
-        $pdf->Cell($w_imp,   $col_h, number_format($importe_anticipo, 2, ',', '.'),         1, 1, 'R');
+        $pdf->Cell($w_punit, $col_h, number_format($subtotal_base, 2, ',', '.'),            1, 0, 'R');
+        $pdf->Cell($w_imp,   $col_h, number_format($subtotal_base, 2, ',', '.'),            1, 1, 'R');
     } else {
         foreach ($lineas as $l) {
             $desc   = $l['descripcion_linea_ppto']       ?? '';
@@ -733,13 +739,13 @@ function _generar_pdf_proforma(
     }
 
     // TOTAL (fondo azul)
-    $pdf->SetFont('helvetica', 'B', 11);
+    $pdf->SetFont('helvetica', 'B', 9);
     $pdf->SetFillColor(102, 126, 234);
     $pdf->SetDrawColor(80, 100, 200);
     $pdf->SetTextColor(255, 255, 255);
-    $pdf->Cell($w_spacer, 8, '', 0, 0);
-    $pdf->Cell($w_label,  8, $t['total'], 1, 0, 'R', true);
-    $pdf->Cell($w_value,  8, number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
+    $pdf->Cell($w_spacer, 10, '', 0, 0);
+    $pdf->Cell($w_label,  10, $t['total'], 1, 0, 'R', true);
+    $pdf->Cell($w_value,  10, number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', true);
 
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetDrawColor(0, 0, 0);
