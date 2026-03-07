@@ -1007,7 +1007,14 @@ function generarFacturaPago(idPago, idPresupuesto, idEmpresa, tipoPago, tipoDocu
 
 /* ---- Acciones sobre pagos ---- */
 
-function anularPago(idPago) {
+function anularPago(idPago, idDocumento) {
+    // Si el pago tiene documento adjunto → obligatorio emitir abono
+    if (idDocumento) {
+        abonarFactura(idDocumento);
+        return;
+    }
+
+    // Sin documento → anulación simple
     Swal.fire({
         title: '¿Anular pago?',
         html: 'El pago quedará marcado como <strong>anulado</strong>.',

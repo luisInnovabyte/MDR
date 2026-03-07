@@ -486,7 +486,8 @@ function _opciones_pago(array $row): string
 
     // Anular (solo si activo y no anulado)
     if ($activo && $estado !== 'anulado') {
-        $html .= '<button class="btn btn-danger btn-sm" onclick="anularPago(' . $id . ')"
+        $id_doc = intval($row['id_documento_ppto'] ?? 0);
+        $html .= '<button class="btn btn-danger btn-sm" onclick="anularPago(' . $id . ',' . $id_doc . ')"
                           title="Anular pago">
                     <i class="fa fa-ban"></i>
                   </button>';

@@ -308,10 +308,10 @@ class DocumentoPresupuesto
                 return ['puede' => false, 'motivo' => 'El documento está inactivo'];
             }
 
-            if (!in_array($doc['tipo_documento_ppto'], ['factura_anticipo', 'factura_final'])) {
+            if (!in_array($doc['tipo_documento_ppto'], ['factura_anticipo', 'factura_final', 'factura_proforma'])) {
                 return [
                     'puede'  => false,
-                    'motivo' => 'Solo se pueden abonar facturas de anticipo o finales'
+                    'motivo' => 'Solo se pueden abonar facturas de anticipo, finales o proforma'
                 ];
             }
 
