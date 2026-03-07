@@ -276,31 +276,33 @@ switch ($op) {
                 break;
             }
 
-            // Obtener líneas del presupuesto para calcular importes del abono
-            $lineas = $impresion->get_lineas_impresion($id_presupuesto, $numero_version);
+            // Usar EXACTAMENTE los importes del documento origen (no recalcular desde líneas)
+            $subtotal_base = (float)($doc_origen['subtotal_documento_ppto'] ?? 0);
+            $total_iva     = (float)($doc_origen['total_iva_documento_ppto'] ?? 0);
+            $total_con_iva = (float)($doc_origen['total_documento_ppto']     ?? 0);
+            $importe_abono = -abs($total_con_iva);
 
-            // Calcular totales (los mismos que el documento origen, invertidos)
-            $importe_origen = (float)($doc_origen['importe_documento_ppto'] ?? 0);
-            $subtotal_base  = 0;
-            $total_iva      = 0;
-            $desglose_iva   = [];
-
-            foreach ($lineas as $l) {
-                $base  = (float)($l['base_imponible'] ?? 0);
-                $pct   = (float)($l['porcentaje_iva_linea_ppto'] ?? 0);
-                $cuota = $base * ($pct / 100);
-                $subtotal_base += $base;
-                $total_iva     += $cuota;
-                if (!isset($desglose_iva[$pct])) $desglose_iva[$pct] = ['base' => 0, 'cuota' => 0];
-                $desglose_iva[$pct]['base']  += $base;
-                $desglose_iva[$pct]['cuota'] += $cuota;
+            // Inferir desglose IVA a partir de los totales del documento origen
+            $desglose_iva = [];
+            if ($subtotal_base > 0) {
+                $pct_inferido = (int)round(($total_iva / $subtotal_base) * 100);
+            } else {
+                $pct_inferido = 21; // fallback
             }
-            ksort($desglose_iva);
+            $desglose_iva[$pct_inferido] = [
+                'base'  => $subtotal_base,
+                'cuota' => $total_iva,
+            ];
 
-            $total_con_iva = round($subtotal_base + $total_iva, 2);
-
-            // Importe negativo para el abono
-            $importe_abono = -abs($importe_origen ?: $total_con_iva);
+            // Línea sintética para el PDF (describe qué documento se rectifica)
+            $lineas = [[
+                'descripcion_linea_ppto'       => 'Rectificación de ' . $numero_doc_origen,
+                'cantidad_linea_ppto'          => 1,
+                'precio_unitario_linea_ppto'   => $subtotal_base,
+                'descuento_linea_ppto'         => 0,
+                'base_imponible'               => $subtotal_base,
+                'porcentaje_iva_linea_ppto'    => $pct_inferido,
+            ]];
 
             // Crear registro documento
             $datos_insert = [
