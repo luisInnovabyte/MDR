@@ -390,14 +390,6 @@ function _opciones_documento(array $row): string
                   </a>';
     }
 
-    // Botón abonar (solo facturas_anticipo y factura_final activas)
-    if (in_array($tipo, ['factura_anticipo', 'factura_final']) && $row['activo_documento_ppto']) {
-        $html .= '<button class="btn btn-warning btn-sm me-1" onclick="abonarDocumento(' . $id . ')"
-                          title="Emitir abono">
-                    <i class="fa fa-rotate-left"></i>
-                  </button>';
-    }
-
     // Botón repetir proforma (solo factura_proforma activa)
     if ($tipo === 'factura_proforma' && $row['activo_documento_ppto']) {
         $html .= '<button class="btn btn-secondary btn-sm me-1" onclick="repetirProforma(' . $id . ')"
