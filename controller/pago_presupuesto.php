@@ -68,23 +68,6 @@ switch ($op) {
     // MOSTRAR — obtener pago por ID
     // POST: id_pago_ppto
     // ══════════════════════════════════════════════════════════
-    case "mostrar":
-        $id_pago_ppto = (int)($_POST['id_pago_ppto'] ?? 0);
-
-        if (!$id_pago_ppto) {
-            echo json_encode(['success' => false, 'message' => 'Falta id_pago_ppto'], JSON_UNESCAPED_UNICODE);
-            break;
-        }
-
-        $datos = $pago->get_pagoxid($id_pago_ppto);
-
-        if ($datos) {
-            echo json_encode($datos, JSON_UNESCAPED_UNICODE);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Pago no encontrado'], JSON_UNESCAPED_UNICODE);
-        }
-        break;
-
     // ══════════════════════════════════════════════════════════
     // GUARDARYEDITAR — registrar nuevo pago o actualizar existente
     //
@@ -491,14 +474,6 @@ function _opciones_pago(array $row): string
                      class="btn btn-info btn-sm me-1" title="Ver factura">
                     <i class="fa fa-file-pdf"></i>
                   </a>';
-    }
-
-    // Editar (solo si no está anulado)
-    if ($estado !== 'anulado' && $activo) {
-        $html .= '<button class="btn btn-warning btn-sm me-1" onclick="mostrarPago(' . $id . ')"
-                          title="Editar">
-                    <i class="fa fa-edit"></i>
-                  </button>';
     }
 
     // Conciliar (si está pendiente o recibido — no anulado ni ya conciliado)

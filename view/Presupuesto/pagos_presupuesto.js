@@ -91,8 +91,6 @@ $(document).ready(function () {
     window.abonarDocumento     = abonarFactura;             // ← alias: controller genera abonarDocumento(id)
     window.repetirProforma     = repetirProforma;
     window.desactivarDocumento = desactivarDocumento;
-    window.editarPago          = editarPago;
-    window.mostrarPago         = function(id) { abrirModalRegistrarPago(id); }; // ← alias: controller genera mostrarPago(id)
     window.anularPago          = anularPago;
     window.conciliarPago       = conciliarPago;
 
