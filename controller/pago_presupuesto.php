@@ -501,8 +501,8 @@ function _opciones_pago(array $row): string
                   </button>';
     }
 
-    // Conciliar (solo si está en estado recibido)
-    if ($estado === 'recibido' && $activo) {
+    // Conciliar (si está pendiente o recibido — no anulado ni ya conciliado)
+    if (in_array($estado, ['pendiente', 'recibido']) && $activo) {
         $html .= '<button class="btn btn-success btn-sm me-1" onclick="conciliarPago(' . $id . ')"
                           title="Marcar como conciliado">
                     <i class="fa fa-check-double"></i>
