@@ -357,6 +357,17 @@
                                     <input type="number" class="form-control" name="numero_actual_abono_empresa" id="numero_actual_abono_empresa" value="0" min="0">
                                 </div>
                             </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="serie_abono_factura_proforma_empresa" class="form-label">Serie Abono Proforma:</label>
+                                    <input type="text" class="form-control" name="serie_abono_factura_proforma_empresa" id="serie_abono_factura_proforma_empresa" maxlength="10" placeholder="RP" value="RP">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="numero_actual_abono_factura_proforma_empresa" class="form-label">Número Actual:</label>
+                                    <input type="number" class="form-control" name="numero_actual_abono_factura_proforma_empresa" id="numero_actual_abono_factura_proforma_empresa" value="0" min="0">
+                                </div>
+                            </div>
                         </div>
                     </div>
 

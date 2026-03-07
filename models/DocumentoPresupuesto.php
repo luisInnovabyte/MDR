@@ -467,6 +467,27 @@ class DocumentoPresupuesto
         $tipo = $datos['tipo_documento_ppto'];
         $tipo_sp = self::SP_TIPO_MAP[$tipo] ?? null;
 
+        // Si es una rectificativa de una factura proforma → usar contador independiente
+        if ($tipo === 'factura_rectificativa' && !empty($datos['id_documento_origen'])) {
+            try {
+                $stmt_orig = $this->conexion->prepare(
+                    "SELECT tipo_documento_ppto FROM documento_presupuesto WHERE id_documento_ppto = ?"
+                );
+                $stmt_orig->bindValue(1, $datos['id_documento_origen'], PDO::PARAM_INT);
+                $stmt_orig->execute();
+                $orig = $stmt_orig->fetch(PDO::FETCH_ASSOC);
+                if ($orig && $orig['tipo_documento_ppto'] === 'factura_proforma') {
+                    $tipo_sp = 'abono_proforma';
+                }
+            } catch (PDOException $e) {
+                // Si falla la consulta, usar el tipo por defecto ('abono')
+                $this->registro->registrarActividad(
+                    'admin', 'DocumentoPresupuesto', 'insert_documento',
+                    "No se pudo determinar tipo doc origen: " . $e->getMessage(), 'warning'
+                );
+            }
+        }
+
         try {
             $this->conexion->beginTransaction();
 

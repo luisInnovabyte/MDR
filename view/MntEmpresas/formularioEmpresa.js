@@ -89,6 +89,8 @@ $(document).ready(function () {
                     $('#numero_actual_factura_empresa').val(data.numero_actual_factura_empresa);
                     $('#serie_abono_empresa').val(data.serie_abono_empresa);
                     $('#numero_actual_abono_empresa').val(data.numero_actual_abono_empresa);
+                    $('#serie_abono_factura_proforma_empresa').val(data.serie_abono_factura_proforma_empresa);
+                    $('#numero_actual_abono_factura_proforma_empresa').val(data.numero_actual_abono_factura_proforma_empresa);
 
                     // VeriFactu
                     $('#verifactu_activo_empresa').prop('checked', data.verifactu_activo_empresa == 1);
@@ -297,6 +299,8 @@ $(document).ready(function () {
         var numero_actual_factura_empresa = $('#numero_actual_factura_empresa').val().trim();
         var serie_abono_empresa = $('#serie_abono_empresa').val().trim();
         var numero_actual_abono_empresa = $('#numero_actual_abono_empresa').val().trim();
+        var serie_abono_factura_proforma_empresa = $('#serie_abono_factura_proforma_empresa').val().trim();
+        var numero_actual_abono_factura_proforma_empresa = $('#numero_actual_abono_factura_proforma_empresa').val().trim();
         
         // VeriFactu
         var verifactu_activo_empresa = $('#verifactu_activo_empresa').is(':checked') ? '1' : '0';
@@ -360,6 +364,7 @@ $(document).ready(function () {
             serie_factura_proforma_empresa, numero_actual_factura_proforma_empresa,
             serie_factura_empresa, numero_actual_factura_empresa,
             serie_abono_empresa, numero_actual_abono_empresa,
+            serie_abono_factura_proforma_empresa, numero_actual_abono_factura_proforma_empresa,
             verifactu_activo_empresa, verifactu_sistema_empresa, verifactu_nif_empresa,
             verifactu_nombre_empresa, verifactu_nombre_comercial_empresa,
             verifactu_id_software_empresa, verifactu_nombre_software_empresa,
@@ -500,31 +505,33 @@ $(document).ready(function () {
             numero_actual_factura_empresa: params[26],
             serie_abono_empresa: params[27],
             numero_actual_abono_empresa: params[28],
-            verifactu_activo_empresa: params[29],
-            verifactu_sistema_empresa: params[30],
-            verifactu_nif_empresa: params[31],
-            verifactu_nombre_empresa: params[32],
-            verifactu_nombre_comercial_empresa: params[33],
-            verifactu_id_software_empresa: params[34],
-            verifactu_nombre_software_empresa: params[35],
-            verifactu_version_software_empresa: params[36],
-            verifactu_numero_instalacion_empresa: params[37],
-            logotipo_empresa: params[38],
-            logotipo_pie_empresa: params[39],
-            texto_legal_factura_empresa: params[40],
-            texto_pie_presupuesto_empresa: params[41],
-            texto_pie_factura_empresa: params[42],
-            observaciones_cabecera_presupuesto_empresa: params[43],
-            observaciones_cabecera_ingles_presupuesto_empresa: params[44],
-            mostrar_subtotales_fecha_presupuesto_empresa: params[45],
-            cabecera_firma_presupuesto_empresa: params[46],
-            mostrar_cuenta_bancaria_pdf_presupuesto_empresa: params[47],
-            mostrar_kits_albaran_empresa: params[48],
-            mostrar_obs_familias_articulos_albaran_empresa: params[49],
-            mostrar_obs_pie_albaran_empresa: params[50],
-            obs_linea_alineadas_descripcion_empresa: params[51],
-            permitir_descuentos_lineas_empresa: params[52],
-            activo_empresa: params[53]
+            serie_abono_factura_proforma_empresa: params[29],
+            numero_actual_abono_factura_proforma_empresa: params[30],
+            verifactu_activo_empresa: params[31],
+            verifactu_sistema_empresa: params[32],
+            verifactu_nif_empresa: params[33],
+            verifactu_nombre_empresa: params[34],
+            verifactu_nombre_comercial_empresa: params[35],
+            verifactu_id_software_empresa: params[36],
+            verifactu_nombre_software_empresa: params[37],
+            verifactu_version_software_empresa: params[38],
+            verifactu_numero_instalacion_empresa: params[39],
+            logotipo_empresa: params[40],
+            logotipo_pie_empresa: params[41],
+            texto_legal_factura_empresa: params[42],
+            texto_pie_presupuesto_empresa: params[43],
+            texto_pie_factura_empresa: params[44],
+            observaciones_cabecera_presupuesto_empresa: params[45],
+            observaciones_cabecera_ingles_presupuesto_empresa: params[46],
+            mostrar_subtotales_fecha_presupuesto_empresa: params[47],
+            cabecera_firma_presupuesto_empresa: params[48],
+            mostrar_cuenta_bancaria_pdf_presupuesto_empresa: params[49],
+            mostrar_kits_albaran_empresa: params[50],
+            mostrar_obs_familias_articulos_albaran_empresa: params[51],
+            mostrar_obs_pie_albaran_empresa: params[52],
+            obs_linea_alineadas_descripcion_empresa: params[53],
+            permitir_descuentos_lineas_empresa: params[54],
+            activo_empresa: params[55]
         };
         
         console.log('💾 Datos a guardar:', datosEnvio);
