@@ -430,7 +430,7 @@ switch ($op) {
             $docModel->actualizar_importes($id_doc, -abs($subtotal_base), -abs($total_iva), $importe_abono);
 
             // Formatear fecha del documento origen
-            $fecha_doc_origen_raw = $doc_origen['fecha_documento_ppto'] ?? '';
+            $fecha_doc_origen_raw = $doc_origen['fecha_emision_documento_ppto'] ?? '';
             $fecha_doc_origen = '';
             if ($fecha_doc_origen_raw) {
                 $parts = explode('-', $fecha_doc_origen_raw);
