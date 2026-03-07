@@ -16,7 +16,7 @@ DELIMITER $$
 
 CREATE PROCEDURE `sp_obtener_siguiente_numero` (
     IN  `p_codigo_empresa`  VARCHAR(20),
-    IN  `p_tipo_documento`  ENUM('presupuesto','factura','abono','factura_proforma'),
+    IN  `p_tipo_documento`  VARCHAR(30),
     OUT `p_numero_completo` VARCHAR(50)
 )
 BEGIN
@@ -30,7 +30,8 @@ BEGIN
         SELECT serie_presupuesto_empresa, numero_actual_presupuesto_empresa + 1
         INTO   v_serie, v_numero_actual
         FROM   empresa
-        WHERE  codigo_empresa = p_codigo_empresa AND activo_empresa = TRUE;
+        WHERE  codigo_empresa = p_codigo_empresa COLLATE utf8mb4_general_ci
+          AND  activo_empresa = TRUE;
         -- Formato: P-0001/2026
         SET p_numero_completo = CONCAT(v_serie, '-', LPAD(v_numero_actual, 4, '0'), '/', v_anio);
 
@@ -38,7 +39,8 @@ BEGIN
         SELECT serie_factura_empresa, numero_actual_factura_empresa + 1
         INTO   v_serie, v_numero_actual
         FROM   empresa
-        WHERE  codigo_empresa = p_codigo_empresa AND activo_empresa = TRUE;
+        WHERE  codigo_empresa = p_codigo_empresa COLLATE utf8mb4_general_ci
+          AND  activo_empresa = TRUE;
         -- Formato: FE-0003/2026
         SET p_numero_completo = CONCAT(v_serie, '-', LPAD(v_numero_actual, 4, '0'), '/', v_anio);
 
@@ -46,7 +48,8 @@ BEGIN
         SELECT serie_abono_empresa, numero_actual_abono_empresa + 1
         INTO   v_serie, v_numero_actual
         FROM   empresa
-        WHERE  codigo_empresa = p_codigo_empresa AND activo_empresa = TRUE;
+        WHERE  codigo_empresa = p_codigo_empresa COLLATE utf8mb4_general_ci
+          AND  activo_empresa = TRUE;
         -- Formato: R-0001/2026
         SET p_numero_completo = CONCAT(v_serie, '-', LPAD(v_numero_actual, 4, '0'), '/', v_anio);
 
@@ -54,7 +57,8 @@ BEGIN
         SELECT serie_factura_proforma_empresa, numero_actual_factura_proforma_empresa + 1
         INTO   v_serie, v_numero_actual
         FROM   empresa
-        WHERE  codigo_empresa = p_codigo_empresa AND activo_empresa = TRUE;
+        WHERE  codigo_empresa = p_codigo_empresa COLLATE utf8mb4_general_ci
+          AND  activo_empresa = TRUE;
         -- Formato: FP-0001/2026
         SET p_numero_completo = CONCAT(v_serie, '-', LPAD(v_numero_actual, 4, '0'), '/', v_anio);
 
@@ -72,7 +76,7 @@ DELIMITER $$
 
 CREATE PROCEDURE `sp_actualizar_contador_empresa` (
     IN `p_id_empresa`     INT UNSIGNED,
-    IN `p_tipo_documento` ENUM('presupuesto','factura','abono','factura_proforma')
+    IN `p_tipo_documento` VARCHAR(30)
 )
 BEGIN
     IF p_tipo_documento = 'presupuesto' THEN
