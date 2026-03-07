@@ -57,8 +57,9 @@ class MYPDF_ABONO extends TCPDF
     public $datos_presupuesto = [];
     public $numero_documento  = '';
     public $fecha_documento   = '';
-    public $numero_doc_origen = '';
-    public $texto_pie_empresa = '';
+    public $numero_doc_origen   = '';
+    public $fecha_doc_origen    = '';
+    public $texto_pie_empresa   = '';
     public $mostrar_logo      = false;
     public $path_logo         = '';
     public $y_header_bottom   = 78;
@@ -151,7 +152,7 @@ class MYPDF_ABONO extends TCPDF
         $this->SetTextColor(255, 255, 255);
         $this->SetFont('helvetica', 'B', 8.5);
         $this->SetXY(8, $y_info);
-        $this->Cell(95, 15, '', 0, 0, 'L', true);
+        $this->Cell(95, 20, '', 0, 0, 'L', true);
         // Línea 1: Nº | Fecha
         $this->SetXY(9, $y_info + 1);
         $this->Cell(93, 3, 'Nº: ' . $this->numero_documento . '  |  F: ' . $this->fecha_documento, 0, 1, 'L');
@@ -166,6 +167,12 @@ class MYPDF_ABONO extends TCPDF
         $this->SetXY(9, $y_info + 10);
         $this->SetFont('helvetica', '', 7.5);
         $this->Cell(93, 3, 'ABONA LA FACTURA: ' . $this->numero_doc_origen, 0, 1, 'L');
+        // Línea 4: Fecha factura original
+        if (!empty($this->fecha_doc_origen)) {
+            $this->SetXY(9, $y_info + 14);
+            $this->SetFont('helvetica', '', 7.5);
+            $this->Cell(93, 3, 'Fecha fac. original: ' . $this->fecha_doc_origen, 0, 1, 'L');
+        }
         $this->SetTextColor(0, 0, 0);
 
         // ── CAJA CLIENTE derecha (borde rojo, fondo gris claro) ───────
@@ -422,10 +429,20 @@ switch ($op) {
             // Actualizar importes en BD (negativos)
             $docModel->actualizar_importes($id_doc, -abs($subtotal_base), -abs($total_iva), $importe_abono);
 
+            // Formatear fecha del documento origen
+            $fecha_doc_origen_raw = $doc_origen['fecha_documento_ppto'] ?? '';
+            $fecha_doc_origen = '';
+            if ($fecha_doc_origen_raw) {
+                $parts = explode('-', $fecha_doc_origen_raw);
+                $fecha_doc_origen = count($parts) === 3
+                    ? $parts[2] . '/' . $parts[1] . '/' . $parts[0]
+                    : $fecha_doc_origen_raw;
+            }
+
             // Generar PDF
             $pdf = _generar_pdf_abono(
                 $datos_ppto, $datos_empresa, $numero_documento,
-                $numero_doc_origen, $motivo_abono,
+                $numero_doc_origen, $motivo_abono, $fecha_doc_origen,
                 $lineas, $desglose_iva, $subtotal_base, $total_iva, $total_con_iva,
                 $mostrar_logo, $path_logo
             );
@@ -527,7 +544,7 @@ switch ($op) {
 // ══════════════════════════════════════════════════════════════════
 function _generar_pdf_abono(
     array $datos_ppto, array $datos_empresa, string $numero_documento,
-    string $numero_doc_origen, string $motivo_abono,
+    string $numero_doc_origen, string $motivo_abono, string $fecha_doc_origen,
     array $lineas, array $desglose_iva, float $subtotal_base, float $total_iva, float $total_con_iva,
     bool $mostrar_logo, string $path_logo
 ): MYPDF_ABONO {
@@ -545,7 +562,8 @@ function _generar_pdf_abono(
     $pdf->numero_documento  = $numero_documento;
     $pdf->fecha_documento   = $fecha_hoy;
     $pdf->numero_doc_origen = $numero_doc_origen;
-    $pdf->texto_pie_empresa = $datos_empresa['texto_pie_factura_empresa'] ?? '';
+    $pdf->fecha_doc_origen   = $fecha_doc_origen;
+    $pdf->texto_pie_empresa  = $datos_empresa['texto_pie_factura_empresa'] ?? '';
     $pdf->mostrar_logo      = $mostrar_logo;
     $pdf->path_logo         = $path_logo;
 
@@ -638,6 +656,21 @@ function _generar_pdf_abono(
     $pdf->SetAutoPageBreak(true, 25);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetLineWidth(0.2);
+
+    // ── MOTIVO DEL ABONO ─────────────────────────────────────────────
+    if (!empty($motivo_abono)) {
+        $pdf->Ln(2);
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->Cell(0, 5, 'Motivo del abono:', 0, 1, 'L');
+        $pdf->Ln(1);
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetFillColor(255, 245, 245);
+        $pdf->SetDrawColor(192, 57, 43);
+        $pdf->MultiCell(0, 5, $motivo_abono, 1, 'L', true);
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetDrawColor(200, 200, 200);
+    }
 
     return $pdf;
 }
