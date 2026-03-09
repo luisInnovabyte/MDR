@@ -1211,33 +1211,6 @@ function _generar_pdf_factura_final(
         $pdf->SetLineWidth(0.2);
     }
 
-    // =====================================================================
-    // ANTICIPOS PREVIOS (proformas — informativos, sin validez legal)
-    // =====================================================================
-    if ($total_anticipos > 0) {
-        $saldo_tras = round($total_con_iva - $anticipos_reales - $total_anticipos, 2);
-
-        $pdf->SetFont('helvetica', '', 8);
-        $pdf->SetFillColor(234, 242, 248);
-        $pdf->SetDrawColor(174, 214, 241);
-        $pdf->SetTextColor(44, 62, 80);
-        $pdf->Ln(2);
-        $pdf->Cell(144, 5, '', 0, 0);
-        $pdf->Cell(30, 5, '(-) Anticipos previos:', 'LTB', 0, 'R', true);
-        $pdf->SetFont('helvetica', 'B', 8);
-        $pdf->SetTextColor(192, 57, 43);
-        $pdf->Cell(20, 5, '-' . number_format($total_anticipos, 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
-
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->SetFillColor(102, 126, 234);
-        $pdf->SetTextColor(255, 255, 255);
-        $pdf->Cell(144, 7, '', 0, 0);
-        $pdf->Cell(30, 7, 'SALDO A PAGAR:', 1, 0, 'R', true);
-        $pdf->Cell(20, 7, number_format(max(0, $saldo_tras), 2, ',', '.') . ' €', 1, 1, 'R', true);
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->SetDrawColor(0, 0, 0);
-    }
-
     $pdf->SetLineWidth(0.2);
     $pdf->Ln(4);
 
@@ -1346,6 +1319,31 @@ function _generar_pdf_factura_final(
             }
             $pdf->SetY($y0 + $altura_bloque + 1.5);
         }
+    }
+
+    // =====================================================================
+    // ANTICIPOS PREVIOS — SALDO FINAL (debajo de forma de pago)
+    // Solo anticipos con factura_proforma o sin documento (informativos)
+    // =====================================================================
+    if ($total_anticipos > 0) {
+        $saldo_final = round($total_con_iva - $anticipos_reales - $total_anticipos, 2);
+
+        $pdf->Ln(5);
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->Write(5, 'Anticipos previos: ');
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->SetTextColor(192, 57, 43);
+        $pdf->Write(5, '-' . number_format($total_anticipos, 2, ',', '.') . ' €');
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->Write(5, ', saldo a pagar: ');
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->SetTextColor(39, 174, 96);
+        $pdf->Write(5, number_format(max(0, $saldo_final), 2, ',', '.') . ' €');
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->Ln();
     }
 
     return $pdf;
