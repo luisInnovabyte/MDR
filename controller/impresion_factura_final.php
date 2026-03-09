@@ -589,16 +589,35 @@ switch ($op) {
             }
             $total_con_iva = round($subtotal_sin_iva + $total_iva, 2);
 
-            // 6. Obtener anticipos previos activos (para mostrar en PDF)
+            // 6. Obtener anticipos previos activos, separando proforma vs factura real
+            //    - anticipos con factura_anticipo (real) → ya tienen validez legal propia;
+            //      se deducen del total de ESTA factura.
+            //    - anticipos con factura_proforma (o sin doc) → no tienen validez legal;
+            //      se muestran como "anticipos previos" en el PDF pero el total de la
+            //      factura final los absorbe.
             $pagoModel = new PagoPresupuesto();
             $pagos_previos = $pagoModel->get_pagos_presupuesto($id_presupuesto);
-            $total_anticipos = 0;
+            $anticipos_proforma  = 0.0;  // anticipos sin validez legal → se muestran en PDF
+            $anticipos_reales    = 0.0;  // anticipos con factura_anticipo legal → se descuentan del total
             foreach ($pagos_previos as $p) {
                 if ($p['tipo_pago_ppto'] === 'anticipo' && $p['estado_pago_ppto'] !== 'anulado') {
-                    $total_anticipos += (float)($p['importe_pago_ppto'] ?? 0);
+                    $tipo_doc_vinculado = $p['tipo_documento_vinculado'] ?? null;
+                    if ($tipo_doc_vinculado === 'factura_anticipo') {
+                        $anticipos_reales += (float)($p['importe_pago_ppto'] ?? 0);
+                    } else {
+                        // factura_proforma, sin documento, etc. → no tienen validez legal
+                        $anticipos_proforma += (float)($p['importe_pago_ppto'] ?? 0);
+                    }
                 }
             }
-            $total_anticipos = round($total_anticipos, 2);
+            $anticipos_proforma = round($anticipos_proforma, 2);
+            $anticipos_reales   = round($anticipos_reales, 2);
+
+            // Los "anticipos previos" en el bloque informativo del PDF son solo los de proforma
+            $total_anticipos = $anticipos_proforma;
+
+            // El total fiscal de ESTA factura = total presupuesto − anticipos ya facturados legalmente
+            $total_factura_final = round($total_con_iva - $anticipos_reales, 2);
 
             // 7. Crear registro documento_presupuesto (SP asigna número de la serie F)
             $datos_insert = [
@@ -608,7 +627,8 @@ switch ($op) {
                 'id_pago_ppto'                 => $id_pago_ppto ?: null,
                 'numero_version'               => $numero_version,
                 'observaciones_documento_ppto' => $observaciones_internas,
-                'importe_documento_ppto'       => $total_con_iva,
+                // El importe almacenado es el total fiscal de ESTA factura (excluye anticipos reales)
+                'importe_documento_ppto'       => $total_factura_final,
             ];
 
             $id_doc = $docModel->insert_documento($datos_insert);
@@ -642,7 +662,9 @@ switch ($op) {
             }
 
             // 10. Actualizar importes en BD
-            $docModel->actualizar_importes($id_doc, $subtotal_sin_iva, $total_iva, $total_con_iva);
+            // subtotal_sin_iva y total_iva son los de las líneas completas del presupuesto;
+            // total_factura_final descuenta los anticipos con factura real ya emitida.
+            $docModel->actualizar_importes($id_doc, $subtotal_sin_iva, $total_iva, $total_factura_final);
 
             // 11. Generar PDF
             $pdf = _generar_pdf_factura_final(
@@ -652,6 +674,7 @@ switch ($op) {
                 $subtotal_sin_iva, $subtotal_sin_descuento, $total_descuentos,
                 $total_iva, $total_con_iva,
                 $total_anticipos,
+                $anticipos_reales,
                 $mostrar_logo, $path_logo,
                 $mostrar_subtotales_fecha, $permitir_descuentos,
                 $idioma, $tipo_cliente
@@ -747,6 +770,7 @@ function _generar_pdf_factura_final(
     float  $total_iva,
     float  $total_con_iva,
     float  $total_anticipos,
+    float  $anticipos_reales,
     bool   $mostrar_logo,
     string $path_logo,
     bool   $mostrar_subtotales_fecha,
@@ -1143,7 +1167,7 @@ function _generar_pdf_factura_final(
 
     $pdf->Ln(2);
 
-    // TOTAL (fondo azul)
+    // TOTAL (fondo azul) — muestra el total bruto del presupuesto en todas las líneas
     $pdf->SetFont('helvetica', 'B', 11);
     $pdf->SetFillColor(102, 126, 234);
     $pdf->SetTextColor(255, 255, 255);
@@ -1157,10 +1181,41 @@ function _generar_pdf_factura_final(
     $pdf->SetLineWidth(0.2);
 
     // =====================================================================
-    // ANTICIPOS PREVIOS (exclusivo de facturas)
+    // DEDUCCIÓN POR FACTURAS DE ANTICIPO YA EMITIDAS (factura_anticipo legal)
+    // =====================================================================
+    if ($anticipos_reales > 0) {
+        $total_esta_factura = round($total_con_iva - $anticipos_reales, 2);
+
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetFillColor(240, 247, 255);
+        $pdf->SetDrawColor(190, 215, 240);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->Ln(1);
+        $pdf->Cell(144, 5, '', 0, 0);
+        $pdf->Cell(30, 5, '(-) Facturas anticipo emitidas:', 'LTB', 0, 'R', true);
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(192, 57, 43);
+        $pdf->Cell(20, 5, '-' . number_format($anticipos_reales, 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
+
+        // TOTAL ESTA FACTURA (azul, pero más pequeño que el TOTAL bruto)
+        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->SetFillColor(102, 126, 234);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetDrawColor(80, 100, 200);
+        $pdf->SetLineWidth(0.4);
+        $pdf->Cell(144, 7, '', 0, 0);
+        $pdf->Cell(20, 7, 'TOTAL FACTURA:', 1, 0, 'R', 1);
+        $pdf->Cell(30, 7, number_format($total_esta_factura, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetDrawColor(0, 0, 0);
+        $pdf->SetLineWidth(0.2);
+    }
+
+    // =====================================================================
+    // ANTICIPOS PREVIOS (proformas — informativos, sin validez legal)
     // =====================================================================
     if ($total_anticipos > 0) {
-        $saldo_tras = round($total_con_iva - $total_anticipos, 2);
+        $saldo_tras = round($total_con_iva - $anticipos_reales - $total_anticipos, 2);
 
         $pdf->SetFont('helvetica', '', 8);
         $pdf->SetFillColor(234, 242, 248);
@@ -1292,104 +1347,6 @@ function _generar_pdf_factura_final(
             $pdf->SetY($y0 + $altura_bloque + 1.5);
         }
     }
-
-    // =====================================================================
-    // CASILLAS DE FIRMA
-    // =====================================================================
-    $pdf->Ln(10);
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->SetDrawColor(0, 0, 0);
-    $pdf->SetLineWidth(0.2);
-
-    $altura_firmas    = 45;
-    $espacio_disp     = $pdf->getPageHeight() - $pdf->GetY() - $pdf->getBreakMargin();
-    if ($espacio_disp < $altura_firmas) {
-        $pdf->AddPage();
-    }
-
-    $pdf->SetAutoPageBreak(false);
-
-    $ancho_casilla  = 90;
-    $separacion     = 7;
-    $x_izq          = 8;
-    $x_der          = $x_izq + $ancho_casilla + $separacion;
-    $y_firmas       = $pdf->GetY();
-
-    // ── FIRMA EMPRESA (izquierda) ──────────────────────────────────
-    $pdf->SetXY($x_izq, $y_firmas);
-    $cabecera_firma = !empty($datos_empresa['cabecera_firma_presupuesto_empresa'])
-        ? strtoupper($datos_empresa['cabecera_firma_presupuesto_empresa'])
-        : 'DEPARTAMENTO COMERCIAL';
-    $pdf->SetFont('helvetica', 'B', 9);
-    $pdf->Cell($ancho_casilla, 5, $cabecera_firma, 0, 1, 'C');
-    $pdf->SetX($x_izq);
-
-    // Firma digital del comercial
-    $firma_comercial = null;
-    $nombre_firmante = null;
-    if (isset($_SESSION['id_usuario']) && !empty($_SESSION['id_usuario'])) {
-        try {
-            $datos_comercial = $comModel->get_comercial_by_usuario($_SESSION['id_usuario']);
-            if ($datos_comercial) {
-                $firma_comercial = $datos_comercial['firma_comercial'] ?? null;
-                $nombre_raw      = trim(($datos_comercial['nombre'] ?? '') . ' ' . ($datos_comercial['apellidos'] ?? ''));
-                $nombre_firmante = !empty($nombre_raw) ? $nombre_raw : null;
-            }
-        } catch (Exception $e) {
-            error_log("Error firma comercial en factura: " . $e->getMessage());
-        }
-    }
-
-    if (!empty($firma_comercial) && preg_match('/^data:image\/(png|jpg|jpeg);base64,/', $firma_comercial)) {
-        $pdf->Ln(2);
-        $x_firma = $x_izq + 15;
-        $y_firma = $pdf->GetY();
-        try {
-            $img_b64  = preg_replace('/^data:image\/(png|jpg|jpeg);base64,/', '', $firma_comercial);
-            $img_dec  = base64_decode($img_b64);
-            $pdf->Image('@' . $img_dec, $x_firma, $y_firma, 60, 14, 'PNG', '', '', false, 300, '', false, false, 0, false, false, true);
-            $pdf->SetY($y_firma + 15);
-        } catch (Exception $e) {
-            error_log("Error al renderizar firma PDF factura: " . $e->getMessage());
-            $pdf->Ln(18);
-        }
-    } else {
-        $pdf->Ln(18);
-    }
-
-    $y_linea_izq = $pdf->GetY();
-    $pdf->Line($x_izq + 10, $y_linea_izq, $x_izq + $ancho_casilla - 10, $y_linea_izq);
-    $pdf->SetXY($x_izq, $y_linea_izq + 2);
-
-    if (!empty($nombre_firmante)) {
-        $pdf->SetFont('helvetica', 'I', 7);
-        $pdf->Cell($ancho_casilla, 4, $nombre_firmante, 0, 1, 'C');
-    } else {
-        $pdf->Ln(2);
-    }
-    $pdf->SetXY($x_izq, $pdf->GetY());
-    $pdf->SetFont('helvetica', '', 7);
-    $pdf->Cell($ancho_casilla, 4, 'Fecha: ' . $fecha_hoy, 0, 1, 'C');
-
-    // ── FIRMA CLIENTE (derecha) ────────────────────────────────────
-    $pdf->SetXY($x_der, $y_firmas);
-    $pdf->SetFont('helvetica', 'B', 9);
-    $pdf->Cell($ancho_casilla, 5, 'VISTO BUENO DEL CLIENTE', 0, 1, 'C');
-    $pdf->SetX($x_der);
-    $pdf->Ln(18);
-
-    $y_linea_der = $pdf->GetY();
-    $pdf->Line($x_der + 10, $y_linea_der, $x_der + $ancho_casilla - 10, $y_linea_der);
-    $pdf->SetXY($x_der, $y_linea_der + 2);
-    $pdf->SetFont('helvetica', '', 8);
-    $pdf->Cell($ancho_casilla, 4, 'Firma del Cliente', 0, 1, 'C');
-    $pdf->SetX($x_der);
-    $pdf->Ln(2);
-    $pdf->SetXY($x_der, $pdf->GetY());
-    $pdf->SetFont('helvetica', '', 7);
-    $pdf->Cell($ancho_casilla, 4, 'Fecha: ___/___/______', 0, 1, 'C');
-
-    $pdf->SetAutoPageBreak(true, 25);
 
     return $pdf;
 }
