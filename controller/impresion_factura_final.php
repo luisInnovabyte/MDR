@@ -511,9 +511,17 @@ switch ($op) {
                     ];
                 }
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['lineas'][] = $linea;
-                // Siempre usar base_imponible de BD: ya tiene descuento aplicado.
-                // $permitir_descuentos solo controla si se muestra la columna de descuento, no el cálculo.
-                $base_ag = floatval($linea['base_imponible'] ?? 0);
+                if ($permitir_descuentos) {
+                    $base_ag = floatval($linea['base_imponible'] ?? 0);
+                } else {
+                    $coef_ag   = floatval($linea['valor_coeficiente_linea_ppto'] ?? 0);
+                    $cant_ag   = floatval($linea['cantidad_linea_ppto'] ?? 0);
+                    $precio_ag = floatval($linea['precio_unitario_linea_ppto'] ?? 0);
+                    $dias_ag   = floatval($linea['dias_linea'] ?? 1);
+                    $base_ag   = ($coef_ag > 0)
+                        ? $cant_ag * $precio_ag * $coef_ag
+                        : $dias_ag * $cant_ag * $precio_ag;
+                }
                 $iva_ag = $base_ag * (floatval($linea['porcentaje_iva_linea_ppto'] ?? 0) / 100);
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['subtotal_ubicacion']  += $base_ag;
                 $lineas_agrupadas[$fecha_inicio]['ubicaciones'][$id_ubicacion]['total_iva_ubicacion'] += $iva_ag;
@@ -545,16 +553,23 @@ switch ($op) {
                 }
                 $importe_dto = $subtotal_linea_sin_desc * ($descuento_pct / 100);
 
-                // Siempre usar base_imponible de BD: ya tiene descuento aplicado.
-                // $permitir_descuentos solo controla si se muestra la columna de descuento, no el cálculo.
-                $base_imponible = floatval($linea['base_imponible'] ?? 0);
-                if ($base_imponible >= 0) {
-                    $subtotal_sin_descuento += $subtotal_linea_sin_desc;
-                    if ($permitir_descuentos) {
-                        $total_descuentos += $importe_dto;
+                if ($permitir_descuentos) {
+                    $base_imponible = floatval($linea['base_imponible'] ?? 0);
+                    if ($base_imponible >= 0) {
+                        $subtotal_sin_descuento += $subtotal_linea_sin_desc;
+                        $total_descuentos       += $importe_dto;
+                    } else {
+                        $total_descuentos += abs($base_imponible);
                     }
                 } else {
-                    $total_descuentos += abs($base_imponible);
+                    $base_imponible = $aplica_coef
+                        ? $cantidad * $precio_unitario * $coeficiente
+                        : $dias * $cantidad * $precio_unitario;
+                    if ($base_imponible >= 0) {
+                        $subtotal_sin_descuento += $base_imponible;
+                    } else {
+                        $total_descuentos += abs($base_imponible);
+                    }
                 }
 
                 $subtotal_sin_iva += $base_imponible;
