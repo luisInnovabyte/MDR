@@ -1135,7 +1135,7 @@ function _generar_pdf_factura_final(
     // =====================================================================
     $pdf->Ln(5);
     $pdf->SetDrawColor(200, 200, 200);
-    $pdf->Line(145, $pdf->GetY(), 200, $pdf->GetY());
+    $pdf->Line(131, $pdf->GetY(), 202, $pdf->GetY());
     $pdf->Ln(3);
 
     // Subtotal sin descuento (solo si hay descuentos)
@@ -1143,8 +1143,8 @@ function _generar_pdf_factura_final(
         $pdf->SetFont('helvetica', '', 9);
         $pdf->SetFillColor(248, 249, 250);
         $pdf->SetDrawColor(220, 220, 220);
-        $pdf->Cell(144, 6, '', 0, 0);
-        $pdf->Cell(30, 6, 'Subtotal:', 1, 0, 'R', 1);
+        $pdf->Cell(130, 6, '', 0, 0);
+        $pdf->Cell(44, 6, 'Subtotal:', 1, 0, 'R', 1);
         $pdf->SetFont('helvetica', 'B', 9);
         $pdf->Cell(20, 6, number_format($subtotal_sin_descuento, 2, ',', '.') . ' €', 1, 1, 'R', 1);
     }
@@ -1154,8 +1154,8 @@ function _generar_pdf_factura_final(
         $pdf->SetFont('helvetica', '', 9);
         $pdf->SetFillColor(248, 249, 250);
         $pdf->SetDrawColor(220, 220, 220);
-        $pdf->Cell(144, 6, '', 0, 0);
-        $pdf->Cell(30, 6, 'Descuento:', 1, 0, 'R', 1);
+        $pdf->Cell(130, 6, '', 0, 0);
+        $pdf->Cell(44, 6, 'Descuento:', 1, 0, 'R', 1);
         $pdf->SetFont('helvetica', 'B', 9);
         $pdf->SetTextColor(231, 76, 60);
         $pdf->Cell(20, 6, '-' . number_format($total_descuentos, 2, ',', '.') . ' €', 1, 1, 'R', 1);
@@ -1167,8 +1167,8 @@ function _generar_pdf_factura_final(
     $pdf->SetFont('helvetica', '', 9);
     $pdf->SetFillColor(248, 249, 250);
     $pdf->SetDrawColor(220, 220, 220);
-    $pdf->Cell(144, 6, '', 0, 0);
-    $pdf->Cell(30, 6, $tiene_anticipos_reales ? 'Base Imponible Total:' : 'Base Imponible:', 1, 0, 'R', 1);
+    $pdf->Cell(130, 6, '', 0, 0);
+    $pdf->Cell(44, 6, $tiene_anticipos_reales ? 'Base Imponible Total:' : 'Base Imponible:', 1, 0, 'R', 1);
     $pdf->SetFont('helvetica', 'B', 9);
     $pdf->Cell(20, 6, number_format($subtotal_bruto_pdf, 2, ',', '.') . ' €', 1, 1, 'R', 1);
 
@@ -1179,8 +1179,8 @@ function _generar_pdf_factura_final(
             $pdf->SetFillColor(240, 247, 255);
             $pdf->SetDrawColor(190, 215, 240);
             $pdf->SetTextColor(44, 62, 80);
-            $pdf->Cell(144, 5, '', 0, 0);
-            $pdf->Cell(30, 5, '(-) Base anticipo ' . $ant['numero'] . ':', 'LTB', 0, 'R', true);
+            $pdf->Cell(130, 5, '', 0, 0);
+            $pdf->Cell(44, 5, '(-) Base anticipo ' . $ant['numero'] . ':', 'LTB', 0, 'R', true);
             $pdf->SetFont('helvetica', 'B', 8);
             $pdf->SetTextColor(192, 57, 43);
             $pdf->Cell(20, 5, '-' . number_format($ant['base'], 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
@@ -1190,8 +1190,8 @@ function _generar_pdf_factura_final(
         $pdf->SetFont('helvetica', '', 9);
         $pdf->SetFillColor(248, 249, 250);
         $pdf->SetDrawColor(220, 220, 220);
-        $pdf->Cell(144, 6, '', 0, 0);
-        $pdf->Cell(30, 6, 'Base Imponible Factura:', 1, 0, 'R', 1);
+        $pdf->Cell(130, 6, '', 0, 0);
+        $pdf->Cell(44, 6, 'Base Imponible Factura:', 1, 0, 'R', 1);
         $pdf->SetFont('helvetica', 'B', 9);
         $pdf->Cell(20, 6, number_format($subtotal_sin_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
     }
@@ -1199,14 +1199,14 @@ function _generar_pdf_factura_final(
     // Desglose IVA (si hay más de un tipo)
     if (count($desglose_iva) > 1) {
         $pdf->SetFont('helvetica', '', 8);
-        $pdf->Cell(144, 5, '', 0, 0);
-        $pdf->Cell(30, 5, 'Desglose de IVA:', 0, 1, 'R');
+        $pdf->Cell(130, 5, '', 0, 0);
+        $pdf->Cell(44, 5, 'Desglose de IVA:', 0, 1, 'R');
         foreach ($desglose_iva as $pct => $vals) {
-            $pdf->Cell(144, 4, '', 0, 0);
-            $pdf->Cell(30, 4, "Base IVA {$pct}%:", 0, 0, 'R');
+            $pdf->Cell(130, 4, '', 0, 0);
+            $pdf->Cell(44, 4, "Base IVA {$pct}%:", 0, 0, 'R');
             $pdf->Cell(20, 4, number_format($vals['base'], 2, ',', '.') . ' €', 0, 1, 'R');
-            $pdf->Cell(144, 4, '', 0, 0);
-            $pdf->Cell(30, 4, "IVA {$pct}%:", 0, 0, 'R');
+            $pdf->Cell(130, 4, '', 0, 0);
+            $pdf->Cell(44, 4, "IVA {$pct}%:", 0, 0, 'R');
             $pdf->Cell(20, 4, number_format($vals['cuota'], 2, ',', '.') . ' €', 0, 1, 'R');
         }
     }
@@ -1215,12 +1215,12 @@ function _generar_pdf_factura_final(
     $pdf->SetFont('helvetica', '', 9);
     $pdf->SetFillColor(248, 249, 250);
     $pdf->SetDrawColor(220, 220, 220);
-    $pdf->Cell(144, 6, '', 0, 0);
+    $pdf->Cell(130, 6, '', 0, 0);
     if (count($desglose_iva) == 1) {
         $pct_unico = key($desglose_iva);
-        $pdf->Cell(30, 6, "Total IVA ({$pct_unico}%):", 1, 0, 'R', 1);
+        $pdf->Cell(44, 6, "Total IVA ({$pct_unico}%):", 1, 0, 'R', 1);
     } else {
-        $pdf->Cell(30, 6, 'Total IVA:', 1, 0, 'R', 1);
+        $pdf->Cell(44, 6, 'Total IVA:', 1, 0, 'R', 1);
     }
     $pdf->SetFont('helvetica', 'B', 9);
     $pdf->Cell(20, 6, number_format($total_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
@@ -1233,8 +1233,8 @@ function _generar_pdf_factura_final(
     $pdf->SetTextColor(255, 255, 255);
     $pdf->SetDrawColor(80, 100, 200);
     $pdf->SetLineWidth(0.5);
-    $pdf->Cell(144, 8, '', 0, 0);
-    $pdf->Cell(20, 8, $tiene_anticipos_reales ? 'TOTAL FACTURA:' : 'TOTAL:', 1, 0, 'R', 1);
+    $pdf->Cell(130, 8, '', 0, 0);
+    $pdf->Cell(34, 8, $tiene_anticipos_reales ? 'TOTAL FACTURA:' : 'TOTAL:', 1, 0, 'R', 1);
     $pdf->Cell(30, 8, number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetDrawColor(0, 0, 0);
