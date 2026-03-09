@@ -329,12 +329,16 @@ class PagoPresupuesto
     {
         try {
             // Calcula el total con la misma lógica condicional que el PDF:
-            //  - Si empresa.permitir_descuentos_lineas_empresa = 1 → usa base_imponible de la vista (con dto)
+            //  - Si empresa_ficticia_principal.permitir_descuentos_lineas_empresa = 1
+            //    → usa base_imponible de la vista (con dto aplicado)
             //  - Si = 0 → recalcula tarifa pura sin aplicar descuento_linea_ppto
-            // Filtra activo=1 y mostrar=1, igual que el PDF.
+            // IMPORTANTE: el PDF siempre usa la empresa ficticia principal
+            // (get_empresa_datos → WHERE empresa_ficticia_principal=1), ignorando
+            // presupuesto.id_empresa. Este query replica exactamente ese comportamiento.
             $sql = "SELECT
                         ROUND(SUM(CASE
-                            WHEN e.permitir_descuentos_lineas_empresa = 1
+                            WHEN e.permitir_descuentos_lineas_empresa IS NULL
+                              OR e.permitir_descuentos_lineas_empresa = 1
                             THEN vlpc.base_imponible
                             ELSE CASE
                                 WHEN vlpc.aplicar_coeficiente_linea_ppto = 1
@@ -344,7 +348,8 @@ class PagoPresupuesto
                             END
                         END), 2) AS total_base,
                         ROUND(SUM(CASE
-                            WHEN e.permitir_descuentos_lineas_empresa = 1
+                            WHEN e.permitir_descuentos_lineas_empresa IS NULL
+                              OR e.permitir_descuentos_lineas_empresa = 1
                             THEN vlpc.importe_iva
                             ELSE (CASE
                                 WHEN vlpc.aplicar_coeficiente_linea_ppto = 1
@@ -357,8 +362,10 @@ class PagoPresupuesto
                     JOIN presupuesto p
                          ON p.id_presupuesto             = vlpc.id_presupuesto
                         AND p.version_actual_presupuesto = vlpc.numero_version_presupuesto
-                    JOIN empresa e ON e.id_empresa = p.id_empresa
-                    WHERE p.id_presupuesto      = ?
+                    LEFT JOIN empresa e
+                         ON e.empresa_ficticia_principal = 1
+                        AND e.activo_empresa             = 1
+                    WHERE p.id_presupuesto         = ?
                       AND vlpc.activo_linea_ppto    = 1
                       AND vlpc.mostrar_en_presupuesto = 1";
 
