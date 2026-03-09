@@ -1243,21 +1243,9 @@ function _generar_pdf_factura_final(
         $pdf->SetTextColor(52, 73, 94);
         $pdf->Cell(40, 5, 'FORMA DE PAGO:', 0, 0, 'L');
 
-        $frase_pago = [];
-        if (!empty($datos_ppto['nombre_metodo_pago'])) {
-            $frase_pago[] = $datos_ppto['nombre_metodo_pago'];
-        }
-        if (!empty($datos_ppto['porcentaje_anticipo_pago'])) {
-            $texto_anticipo = 'Anticipo del ' . $datos_ppto['porcentaje_anticipo_pago'] . '%';
-            if (isset($datos_ppto['dias_anticipo_pago'])) {
-                $dias = intval($datos_ppto['dias_anticipo_pago']);
-                if ($dias < 0)      $texto_anticipo .= ' (' . abs($dias) . ' dias antes del inicio)';
-                elseif ($dias > 0)  $texto_anticipo .= ' (' . $dias . ' dias despues del inicio)';
-                else                $texto_anticipo .= ' (el dia de inicio)';
-            }
-            $frase_pago[] = $texto_anticipo;
-        }
-        $texto_fp = implode('; ', $frase_pago) . '.';
+        // En la factura final solo mostramos el método de pago; el bloque de anticipo
+        // ya no aplica (el anticipo fue cobrado previamente).
+        $texto_fp = trim($datos_ppto['nombre_metodo_pago'] ?? $datos_ppto['nombre_pago'] ?? '') . '.';
         $pdf->SetFont('helvetica', '', 8);
         $pdf->SetTextColor(70, 70, 70);
         $pdf->MultiCell(160, 4, $texto_fp, 0, 'L');
