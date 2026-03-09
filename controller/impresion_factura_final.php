@@ -589,35 +589,68 @@ switch ($op) {
             }
             $total_con_iva = round($subtotal_sin_iva + $total_iva, 2);
 
-            // 6. Obtener anticipos previos activos, separando proforma vs factura real
-            //    - anticipos con factura_anticipo (real) → ya tienen validez legal propia;
-            //      se deducen del total de ESTA factura.
-            //    - anticipos con factura_proforma (o sin doc) → no tienen validez legal;
-            //      se muestran como "anticipos previos" en el PDF pero el total de la
-            //      factura final los absorbe.
+            // 6. Obtener anticipos previos activos, separando proforma vs factura_anticipo real.
+            //
+            //    CASO A — factura_anticipo (real, con validez legal):
+            //      Se descuenta la BASE IMPONIBLE (sin IVA) del desglose para evitar doble
+            //      declaración de IVA. Puede haber N anticipos reales; se acumulan todos.
+            //
+            //    CASO B — factura_proforma / sin documento (sin validez legal):
+            //      No afectan al desglose fiscal. Se muestran al pie del PDF como información
+            //      junto con el saldo pendiente. Puede haber N de estos también.
             $pagoModel = new PagoPresupuesto();
             $pagos_previos = $pagoModel->get_pagos_presupuesto($id_presupuesto);
-            $anticipos_proforma  = 0.0;  // anticipos sin validez legal → se muestran en PDF
-            $anticipos_reales    = 0.0;  // anticipos con factura_anticipo legal → se descuentan del total
+
+            $anticipos_proforma       = 0.0;  // importe con IVA — solo informativo
+            $base_anticipos_reales    = 0.0;  // suma de bases SIN IVA de todas las factura_anticipo
+            $anticipos_reales_detalle = [];   // [{numero, base}] — una entrada por factura_anticipo
+
             foreach ($pagos_previos as $p) {
                 if ($p['tipo_pago_ppto'] === 'anticipo' && $p['estado_pago_ppto'] !== 'anulado') {
-                    $tipo_doc_vinculado = $p['tipo_documento_vinculado'] ?? null;
-                    if ($tipo_doc_vinculado === 'factura_anticipo') {
-                        $anticipos_reales += (float)($p['importe_pago_ppto'] ?? 0);
+                    if (($p['tipo_documento_vinculado'] ?? null) === 'factura_anticipo') {
+                        $base_doc               = (float)($p['subtotal_documento_vinculado'] ?? 0);
+                        $base_anticipos_reales += $base_doc;
+                        $num_doc = $p['numero_documento_vinculado'] ?? null;
+                        if ($num_doc) {
+                            $anticipos_reales_detalle[] = ['numero' => $num_doc, 'base' => $base_doc];
+                        }
                     } else {
-                        // factura_proforma, sin documento, etc. → no tienen validez legal
+                        // factura_proforma, sin documento, etc. — sin validez fiscal
                         $anticipos_proforma += (float)($p['importe_pago_ppto'] ?? 0);
                     }
                 }
             }
-            $anticipos_proforma = round($anticipos_proforma, 2);
-            $anticipos_reales   = round($anticipos_reales, 2);
+            $anticipos_proforma    = round($anticipos_proforma, 2);
+            $base_anticipos_reales = round($base_anticipos_reales, 2);
 
-            // Los "anticipos previos" en el bloque informativo del PDF son solo los de proforma
+            // Guardar base bruta ANTES de descontar anticipos (para mostrar en PDF)
+            $subtotal_sin_iva_bruto = $subtotal_sin_iva;
+
+            // Reducir el desglose IVA proporcionalmente a la base de los anticipos reales.
+            // Regla: cada tramo de IVA se reduce en la proporción que su base representa
+            // sobre la base bruta total → IVA se declara solo sobre la base neta resultante.
+            if ($base_anticipos_reales > 0 && $subtotal_sin_iva_bruto > 0) {
+                foreach ($desglose_iva as $pct => &$datos) {
+                    $proporcion    = ($subtotal_sin_iva_bruto > 0)
+                                     ? $datos['base'] / $subtotal_sin_iva_bruto
+                                     : 0;
+                    $reduccion     = round($base_anticipos_reales * $proporcion, 2);
+                    $datos['base'] = round($datos['base'] - $reduccion, 2);
+                    $datos['cuota']= round($datos['base'] * ($pct / 100), 2);
+                }
+                unset($datos);
+                $subtotal_sin_iva = round($subtotal_sin_iva - $base_anticipos_reales, 2);
+                $total_iva = 0.0;
+                foreach ($desglose_iva as $d) { $total_iva += $d['cuota']; }
+                $total_iva     = round($total_iva, 2);
+                $total_con_iva = round($subtotal_sin_iva + $total_iva, 2);
+            }
+
+            // Anticipos proforma → bloque informativo al pie del PDF
             $total_anticipos = $anticipos_proforma;
 
-            // El total fiscal de ESTA factura = total presupuesto − anticipos ya facturados legalmente
-            $total_factura_final = round($total_con_iva - $anticipos_reales, 2);
+            // $total_con_iva ya contiene el importe neto correcto (base neta + IVA neto)
+            $total_factura_final = $total_con_iva;
 
             // 7. Crear registro documento_presupuesto (SP asigna número de la serie F)
             $datos_insert = [
@@ -662,8 +695,8 @@ switch ($op) {
             }
 
             // 10. Actualizar importes en BD
-            // subtotal_sin_iva y total_iva son los de las líneas completas del presupuesto;
-            // total_factura_final descuenta los anticipos con factura real ya emitida.
+            // subtotal_sin_iva, total_iva y total_factura_final son los NETOS
+            // (bases de anticipos reales ya descontadas → no se declara IVA duplicado)
             $docModel->actualizar_importes($id_doc, $subtotal_sin_iva, $total_iva, $total_factura_final);
 
             // 11. Generar PDF
@@ -674,7 +707,8 @@ switch ($op) {
                 $subtotal_sin_iva, $subtotal_sin_descuento, $total_descuentos,
                 $total_iva, $total_con_iva,
                 $total_anticipos,
-                $anticipos_reales,
+                $subtotal_sin_iva_bruto,
+                $anticipos_reales_detalle,
                 $mostrar_logo, $path_logo,
                 $mostrar_subtotales_fecha, $permitir_descuentos,
                 $idioma, $tipo_cliente
@@ -770,7 +804,8 @@ function _generar_pdf_factura_final(
     float  $total_iva,
     float  $total_con_iva,
     float  $total_anticipos,
-    float  $anticipos_reales,
+    float  $subtotal_bruto_pdf,        // base bruta total antes de descontar anticipos reales
+    array  $anticipos_reales_detalle,  // [{numero, base}] una entrada por cada factura_anticipo
     bool   $mostrar_logo,
     string $path_logo,
     bool   $mostrar_subtotales_fecha,
@@ -1128,13 +1163,38 @@ function _generar_pdf_factura_final(
     }
 
     // Base imponible
+    $tiene_anticipos_reales = !empty($anticipos_reales_detalle);
     $pdf->SetFont('helvetica', '', 9);
     $pdf->SetFillColor(248, 249, 250);
     $pdf->SetDrawColor(220, 220, 220);
     $pdf->Cell(144, 6, '', 0, 0);
-    $pdf->Cell(30, 6, 'Base Imponible:', 1, 0, 'R', 1);
+    $pdf->Cell(30, 6, $tiene_anticipos_reales ? 'Base Imponible Total:' : 'Base Imponible:', 1, 0, 'R', 1);
     $pdf->SetFont('helvetica', 'B', 9);
-    $pdf->Cell(20, 6, number_format($subtotal_sin_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+    $pdf->Cell(20, 6, number_format($subtotal_bruto_pdf, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+
+    // Deducción de base por cada factura_anticipo real (sin IVA — evita doble declaración)
+    if ($tiene_anticipos_reales) {
+        foreach ($anticipos_reales_detalle as $ant) {
+            $pdf->SetFont('helvetica', '', 8);
+            $pdf->SetFillColor(240, 247, 255);
+            $pdf->SetDrawColor(190, 215, 240);
+            $pdf->SetTextColor(44, 62, 80);
+            $pdf->Cell(144, 5, '', 0, 0);
+            $pdf->Cell(30, 5, '(-) Base anticipo ' . $ant['numero'] . ':', 'LTB', 0, 'R', true);
+            $pdf->SetFont('helvetica', 'B', 8);
+            $pdf->SetTextColor(192, 57, 43);
+            $pdf->Cell(20, 5, '-' . number_format($ant['base'], 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
+            $pdf->SetTextColor(0, 0, 0);
+        }
+        // Base imponible neta de esta factura
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->SetFillColor(248, 249, 250);
+        $pdf->SetDrawColor(220, 220, 220);
+        $pdf->Cell(144, 6, '', 0, 0);
+        $pdf->Cell(30, 6, 'Base Imponible Factura:', 1, 0, 'R', 1);
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->Cell(20, 6, number_format($subtotal_sin_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+    }
 
     // Desglose IVA (si hay más de un tipo)
     if (count($desglose_iva) > 1) {
@@ -1167,49 +1227,18 @@ function _generar_pdf_factura_final(
 
     $pdf->Ln(2);
 
-    // TOTAL (fondo azul) — muestra el total bruto del presupuesto en todas las líneas
+    // TOTAL — $total_con_iva ya es el importe fiscal neto (base neta + IVA neto)
     $pdf->SetFont('helvetica', 'B', 11);
     $pdf->SetFillColor(102, 126, 234);
     $pdf->SetTextColor(255, 255, 255);
     $pdf->SetDrawColor(80, 100, 200);
     $pdf->SetLineWidth(0.5);
     $pdf->Cell(144, 8, '', 0, 0);
-    $pdf->Cell(20, 8, 'TOTAL:', 1, 0, 'R', 1);
+    $pdf->Cell(20, 8, $tiene_anticipos_reales ? 'TOTAL FACTURA:' : 'TOTAL:', 1, 0, 'R', 1);
     $pdf->Cell(30, 8, number_format($total_con_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetDrawColor(0, 0, 0);
     $pdf->SetLineWidth(0.2);
-
-    // =====================================================================
-    // DEDUCCIÓN POR FACTURAS DE ANTICIPO YA EMITIDAS (factura_anticipo legal)
-    // =====================================================================
-    if ($anticipos_reales > 0) {
-        $total_esta_factura = round($total_con_iva - $anticipos_reales, 2);
-
-        $pdf->SetFont('helvetica', '', 8);
-        $pdf->SetFillColor(240, 247, 255);
-        $pdf->SetDrawColor(190, 215, 240);
-        $pdf->SetTextColor(44, 62, 80);
-        $pdf->Ln(1);
-        $pdf->Cell(144, 5, '', 0, 0);
-        $pdf->Cell(30, 5, '(-) Facturas anticipo emitidas:', 'LTB', 0, 'R', true);
-        $pdf->SetFont('helvetica', 'B', 8);
-        $pdf->SetTextColor(192, 57, 43);
-        $pdf->Cell(20, 5, '-' . number_format($anticipos_reales, 2, ',', '.') . ' €', 'RTB', 1, 'R', true);
-
-        // TOTAL ESTA FACTURA (azul, pero más pequeño que el TOTAL bruto)
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->SetFillColor(102, 126, 234);
-        $pdf->SetTextColor(255, 255, 255);
-        $pdf->SetDrawColor(80, 100, 200);
-        $pdf->SetLineWidth(0.4);
-        $pdf->Cell(144, 7, '', 0, 0);
-        $pdf->Cell(20, 7, 'TOTAL FACTURA:', 1, 0, 'R', 1);
-        $pdf->Cell(30, 7, number_format($total_esta_factura, 2, ',', '.') . ' €', 1, 1, 'R', 1);
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->SetDrawColor(0, 0, 0);
-        $pdf->SetLineWidth(0.2);
-    }
 
     $pdf->SetLineWidth(0.2);
     $pdf->Ln(4);
@@ -1314,7 +1343,9 @@ function _generar_pdf_factura_final(
     // Solo anticipos con factura_proforma o sin documento (informativos)
     // =====================================================================
     if ($total_anticipos > 0) {
-        $saldo_final = round($total_con_iva - $anticipos_reales - $total_anticipos, 2);
+        // $total_con_iva ya es el neto (bases de anticipos reales descontadas)
+        // Solo restamos los anticipos proforma para obtener el saldo pendiente real
+        $saldo_final = round($total_con_iva - $total_anticipos, 2);
 
         $pdf->Ln(5);
         $pdf->SetFont('helvetica', '', 9);

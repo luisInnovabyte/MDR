@@ -116,10 +116,12 @@ SELECT
     IFNULL(c.nombre_facturacion_cliente, c.nombre_cliente) AS nombre_completo_cliente,
 
     -- Documento vinculado (factura asociada al pago)
-    dp.tipo_documento_ppto   AS tipo_documento_vinculado,
-    dp.numero_documento_ppto AS numero_documento_vinculado,
-    dp.total_documento_ppto  AS total_documento_vinculado,
-    dp.ruta_pdf_documento_ppto AS ruta_pdf_vinculado,
+    dp.tipo_documento_ppto        AS tipo_documento_vinculado,
+    dp.numero_documento_ppto      AS numero_documento_vinculado,
+    dp.subtotal_documento_ppto    AS subtotal_documento_vinculado,
+    dp.total_iva_documento_ppto   AS iva_cuota_documento_vinculado,
+    dp.total_documento_ppto       AS total_documento_vinculado,
+    dp.ruta_pdf_documento_ppto    AS ruta_pdf_vinculado,
 
     -- Método de pago
     mp.codigo_metodo_pago,
