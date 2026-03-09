@@ -253,32 +253,10 @@ class PagoPresupuesto
      */
     public function get_saldo_pendiente(int $id_presupuesto): float
     {
-        try {
-            // Obtener total del presupuesto (versión actual) desde la vista
-            $sql_total = "SELECT vt.total_con_iva
-                          FROM   presupuesto p
-                          JOIN   v_presupuesto_totales vt
-                                 ON vt.id_presupuesto            = p.id_presupuesto
-                                AND vt.numero_version_presupuesto = p.version_actual_presupuesto
-                          WHERE  p.id_presupuesto = ?";
-
-            $stmt_t = $this->conexion->prepare($sql_total);
-            $stmt_t->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
-            $stmt_t->execute();
-            $row_t = $stmt_t->fetch(PDO::FETCH_ASSOC);
-            $total_presupuesto = (float)($row_t['total_con_iva'] ?? 0);
-
-            $total_pagado = $this->get_total_pagado($id_presupuesto);
-
-            return round($total_presupuesto - $total_pagado, 2);
-
-        } catch (PDOException $e) {
-            $this->registro->registrarActividad(
-                'admin', 'PagoPresupuesto', 'get_saldo_pendiente',
-                "Error id_presupuesto=$id_presupuesto: " . $e->getMessage(), 'error'
-            );
-            return 0.0;
-        }
+        // Delega en get_resumen_financiero para garantizar la misma lógica
+        // de cálculo (empresa_ficticia_principal, permitir_descuentos, etc.)
+        // que el PDF y la interfaz.
+        return $this->get_resumen_financiero($id_presupuesto)['saldo_pendiente'];
     }
 
     /**
@@ -290,33 +268,15 @@ class PagoPresupuesto
      */
     public function calcular_porcentaje_pago(int $id_presupuesto, float $importe): float
     {
-        try {
-            $sql = "SELECT vt.total_con_iva
-                    FROM   presupuesto p
-                    JOIN   v_presupuesto_totales vt
-                           ON vt.id_presupuesto            = p.id_presupuesto
-                          AND vt.numero_version_presupuesto = p.version_actual_presupuesto
-                    WHERE  p.id_presupuesto = ?";
+        // Delega en get_resumen_financiero para usar el mismo total que el PDF.
+        $resumen = $this->get_resumen_financiero($id_presupuesto);
+        $total   = $resumen['total_presupuesto'];
 
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $total = (float)($row['total_con_iva'] ?? 0);
-
-            if ($total <= 0) {
-                return 0.0;
-            }
-
-            return round(($importe / $total) * 100, 4);
-
-        } catch (PDOException $e) {
-            $this->registro->registrarActividad(
-                'admin', 'PagoPresupuesto', 'calcular_porcentaje_pago',
-                "Error id_presupuesto=$id_presupuesto: " . $e->getMessage(), 'error'
-            );
+        if ($total <= 0) {
             return 0.0;
         }
+
+        return round(($importe / $total) * 100, 4);
     }
 
     /**
