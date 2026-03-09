@@ -328,18 +328,45 @@ class PagoPresupuesto
     public function get_resumen_financiero(int $id_presupuesto): array
     {
         try {
-            $sql = "SELECT vt.total_con_iva
-                    FROM   presupuesto p
-                    JOIN   v_presupuesto_totales vt
-                           ON vt.id_presupuesto            = p.id_presupuesto
-                          AND vt.numero_version_presupuesto = p.version_actual_presupuesto
-                    WHERE  p.id_presupuesto = ?";
+            // Calcula el total con la misma lógica condicional que el PDF:
+            //  - Si empresa.permitir_descuentos_lineas_empresa = 1 → usa base_imponible de la vista (con dto)
+            //  - Si = 0 → recalcula tarifa pura sin aplicar descuento_linea_ppto
+            // Filtra activo=1 y mostrar=1, igual que el PDF.
+            $sql = "SELECT
+                        ROUND(SUM(CASE
+                            WHEN e.permitir_descuentos_lineas_empresa = 1
+                            THEN vlpc.base_imponible
+                            ELSE CASE
+                                WHEN vlpc.aplicar_coeficiente_linea_ppto = 1
+                                     AND vlpc.valor_coeficiente_linea_ppto > 0
+                                THEN vlpc.cantidad_linea_ppto * vlpc.precio_unitario_linea_ppto * vlpc.valor_coeficiente_linea_ppto
+                                ELSE vlpc.dias_linea * vlpc.cantidad_linea_ppto * vlpc.precio_unitario_linea_ppto
+                            END
+                        END), 2) AS total_base,
+                        ROUND(SUM(CASE
+                            WHEN e.permitir_descuentos_lineas_empresa = 1
+                            THEN vlpc.importe_iva
+                            ELSE (CASE
+                                WHEN vlpc.aplicar_coeficiente_linea_ppto = 1
+                                     AND vlpc.valor_coeficiente_linea_ppto > 0
+                                THEN vlpc.cantidad_linea_ppto * vlpc.precio_unitario_linea_ppto * vlpc.valor_coeficiente_linea_ppto
+                                ELSE vlpc.dias_linea * vlpc.cantidad_linea_ppto * vlpc.precio_unitario_linea_ppto
+                            END) * (vlpc.porcentaje_iva_linea_ppto / 100)
+                        END), 2) AS total_iva
+                    FROM v_linea_presupuesto_calculada vlpc
+                    JOIN presupuesto p
+                         ON p.id_presupuesto             = vlpc.id_presupuesto
+                        AND p.version_actual_presupuesto = vlpc.numero_version_presupuesto
+                    JOIN empresa e ON e.id_empresa = p.id_empresa
+                    WHERE p.id_presupuesto      = ?
+                      AND vlpc.activo_linea_ppto    = 1
+                      AND vlpc.mostrar_en_presupuesto = 1";
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $total_presupuesto = (float)($row['total_con_iva'] ?? 0);
+            $total_presupuesto = round((float)($row['total_base'] ?? 0) + (float)($row['total_iva'] ?? 0), 2);
 
             $total_pagado   = $this->get_total_pagado($id_presupuesto);
             $saldo_pendiente = round($total_presupuesto - $total_pagado, 2);
