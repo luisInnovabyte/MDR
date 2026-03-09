@@ -1228,7 +1228,7 @@ function _generar_pdf_factura_final(
     $pdf->Ln(2);
 
     // TOTAL — $total_con_iva ya es el importe fiscal neto (base neta + IVA neto)
-    $pdf->SetFont('helvetica', 'B', 11);
+    $pdf->SetFont('helvetica', 'B', 10);
     $pdf->SetFillColor(102, 126, 234);
     $pdf->SetTextColor(255, 255, 255);
     $pdf->SetDrawColor(80, 100, 200);
