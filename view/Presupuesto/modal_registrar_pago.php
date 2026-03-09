@@ -170,9 +170,7 @@
                                     <i class="fas fa-percent me-2 text-info"></i>IVA del anticipo
                                 </label>
                                 <select class="form-select form-select-sm w-auto" id="pago_porcentaje_iva" name="porcentaje_iva">
-                                    <option value="4">4%</option>
-                                    <option value="10">10%</option>
-                                    <option value="21" selected>21% (por defecto)</option>
+                                    <!-- Poblado dinámicamente por cargarOpcionesIVA() desde controller/impuesto.php -->
                                 </select>
                             </div>
 

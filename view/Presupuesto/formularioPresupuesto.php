@@ -1019,10 +1019,6 @@
                             <td><i class="fas fa-eye text-primary me-1"></i> <strong>Ver PDF</strong></td>
                             <td>Abre el PDF del documento en una nueva pestaña.</td>
                         </tr>
-                        <tr>
-                            <td><i class="fas fa-rotate-left text-warning me-1"></i> <strong>Abonar</strong></td>
-                            <td>Genera una <span class="badge bg-warning text-dark">Factura Abono</span> rectificativa y anula el pago vinculado. <strong>Irreversible.</strong></td>
-                        </tr>
                     </tbody>
                 </table>
 

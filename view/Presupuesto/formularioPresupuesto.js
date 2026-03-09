@@ -282,12 +282,15 @@ $(document).ready(function () {
      */
     function actualizarContextoTabs(data) {
         var numero  = data.numero_presupuesto || '—';
-        var fecha   = data.fecha_presupuesto  || '—';
+        var fechaRaw = data.fecha_presupuesto || '';
+        var fecha   = fechaRaw
+            ? fechaRaw.split('-').reverse().join('/')
+            : '—';
         var cliente = data.nombre_completo_cliente ||
                       ((data.nombre_cliente || '') + (data.apellido_cliente ? ' ' + data.apellido_cliente : '')).trim() || '—';
         var estado  = data.nombre_estado_ppto || 'BORRADOR';
         var color   = data.color_estado_ppto  || '#0000ff';
-        var fpago   = data.nombre_forma_pago  || '—';
+        var fpago   = data.nombre_pago        || '—';
 
         ['docs', 'pagos'].forEach(function (pane) {
             $('#ctx-' + pane + '-numero').text(numero);
