@@ -641,6 +641,7 @@ function actualizarResumenFinanciero() {
             if (!data) return;
             $('#rf-total').text(formatMoneda(data.total_presupuesto));
             $('#rf-pagado').text(formatMoneda(data.total_pagado));
+            $('#rf-conciliado').text(formatMoneda(data.total_conciliado ?? 0));
             $('#rf-pendiente').text(formatMoneda(data.saldo_pendiente));
 
             const pct = parseFloat(data.porcentaje_pagado) || 0;

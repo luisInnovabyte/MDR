@@ -203,6 +203,43 @@ class PagoPresupuesto
     }
 
     /**
+     * Suma los importes de pagos conciliados (estado = 'conciliado').
+     * Las devoluciones se restan.
+     *
+     * @param int $id_presupuesto
+     * @return float
+     */
+    public function get_total_conciliado(int $id_presupuesto): float
+    {
+        try {
+            $sql = "SELECT SUM(
+                        CASE
+                            WHEN tipo_pago_ppto = 'devolucion'
+                            THEN -importe_pago_ppto
+                            ELSE  importe_pago_ppto
+                        END
+                    ) AS total_conciliado
+                    FROM   pago_presupuesto
+                    WHERE  id_presupuesto   = ?
+                      AND  activo_pago_ppto = 1
+                      AND  estado_pago_ppto = 'conciliado'";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (float)($row['total_conciliado'] ?? 0);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'PagoPresupuesto', 'get_total_conciliado',
+                "Error id_presupuesto=$id_presupuesto: " . $e->getMessage(), 'error'
+            );
+            return 0.0;
+        }
+    }
+
+    /**
      * Devuelve la empresa bloqueada basándose en los propios pagos.
      * Si total_pagado <= 0 → false (empresa libre).
      * Si total_pagado > 0  → empresa del primer pago activo no-anulado con id_empresa_pago IS NOT NULL.
@@ -335,8 +372,9 @@ class PagoPresupuesto
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $total_presupuesto = round((float)($row['total_base'] ?? 0) + (float)($row['total_iva'] ?? 0), 2);
 
-            $total_pagado   = $this->get_total_pagado($id_presupuesto);
-            $saldo_pendiente = round($total_presupuesto - $total_pagado, 2);
+            $total_pagado      = $this->get_total_pagado($id_presupuesto);
+            $total_conciliado  = $this->get_total_conciliado($id_presupuesto);
+            $saldo_pendiente   = round($total_presupuesto - $total_pagado, 2);
             $porcentaje_pagado = $total_presupuesto > 0
                 ? round(($total_pagado / $total_presupuesto) * 100, 2)
                 : 0.0;
@@ -344,6 +382,7 @@ class PagoPresupuesto
             return [
                 'total_presupuesto' => $total_presupuesto,
                 'total_pagado'      => $total_pagado,
+                'total_conciliado'  => $total_conciliado,
                 'saldo_pendiente'   => $saldo_pendiente,
                 'porcentaje_pagado' => $porcentaje_pagado,
             ];
@@ -356,6 +395,7 @@ class PagoPresupuesto
             return [
                 'total_presupuesto' => 0.0,
                 'total_pagado'      => 0.0,
+                'total_conciliado'  => 0.0,
                 'saldo_pendiente'   => 0.0,
                 'porcentaje_pagado' => 0.0,
             ];

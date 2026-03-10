@@ -665,7 +665,7 @@
                         <!-- Métricas financieras -->
                         <div class="row g-3 mb-4" id="resumen-financiero">
 
-                            <div class="col-12 col-xl-4">
+                            <div class="col-12 col-xl-3">
                                 <div class="pago-card-metric shadow-sm border bg-white d-flex align-items-center gap-3 h-100">
                                     <div class="metric-icon bg-primary bg-opacity-10 text-primary">
                                         <i class="fas fa-file-invoice-dollar"></i>
@@ -677,13 +677,13 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-xl-4">
+                            <div class="col-12 col-xl-3">
                                 <div class="pago-card-metric shadow-sm border bg-white d-flex align-items-center gap-3 h-100">
                                     <div class="metric-icon bg-success bg-opacity-10 text-success">
-                                        <i class="fas fa-check-circle"></i>
+                                        <i class="fas fa-file-invoice"></i>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <div class="metric-label text-muted">Total pagado</div>
+                                        <div class="metric-label text-muted">Total facturado</div>
                                         <div class="metric-value text-success" id="rf-pagado">—</div>
                                         <div class="d-flex align-items-center gap-2 mt-1">
                                             <div class="progress flex-grow-1" style="height:5px;">
@@ -697,7 +697,20 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-xl-4">
+                            <div class="col-12 col-xl-3">
+                                <div class="pago-card-metric shadow-sm border bg-white d-flex align-items-center gap-3 h-100">
+                                    <div class="metric-icon bg-info bg-opacity-10 text-info">
+                                        <i class="fas fa-coins"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="metric-label text-muted">Total pagado</div>
+                                        <div class="metric-value text-info" id="rf-conciliado">—</div>
+                                        <div class="mt-1"><small class="text-muted">Pagos conciliados</small></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-xl-3">
                                 <div class="pago-card-metric shadow-sm border bg-white d-flex align-items-center gap-3 h-100">
                                     <div class="metric-icon bg-warning bg-opacity-10 text-warning">
                                         <i class="fas fa-hourglass-half"></i>
