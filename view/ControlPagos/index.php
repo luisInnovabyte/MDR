@@ -236,13 +236,13 @@ session_start();
                         </div>
                         <div class="col-4">
                             <div class="border rounded p-2 text-center">
-                                <div class="small text-muted">Total pagado</div>
+                                <div class="small text-muted">Total facturado</div>
                                 <div class="fw-bold text-success" id="detalleTotalPagadoVal">—</div>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="border rounded p-2 text-center">
-                                <div class="small text-muted">Saldo pendiente</div>
+                                <div class="small text-muted">Pdte. facturar</div>
                                 <div class="fw-bold text-danger" id="detalleSaldoPendienteVal">—</div>
                             </div>
                         </div>
