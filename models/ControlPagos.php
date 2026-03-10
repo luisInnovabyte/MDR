@@ -68,11 +68,14 @@ class ControlPagos
             $params = [];
 
             // Filtro: solo presupuestos con saldo pendiente > 0
-            if (!empty($filtros['solo_pendientes'])) {
-                $sql .= " AND saldo_pendiente > 0";
-            }
-
-            // Filtro: fecha inicio evento desde
+// Filtro: solo con saldo pendiente de facturar (Aprobado − Facturado > 0)
+        if (!empty($filtros['solo_pdte_facturar'])) {
+            $sql .= " AND ROUND(saldo_pendiente, 2) > 0";
+        }
+        // Filtro: solo con saldo pendiente de cobrar (Facturado − Pagado > 0)
+        if (!empty($filtros['solo_pdte_cobrar'])) {
+            $sql .= " AND ROUND(total_pagado - total_conciliado, 2) > 0";
+        }
             if (!empty($filtros['fecha_evento_desde'])) {
                 $sql .= " AND (fecha_inicio_evento_presupuesto >= ? OR fecha_inicio_evento_presupuesto IS NULL)";
                 $params[] = $filtros['fecha_evento_desde'];

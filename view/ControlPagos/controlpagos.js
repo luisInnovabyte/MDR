@@ -25,6 +25,11 @@ function formatEuro(valor) {
 $(document).ready(function () {
     inicializarTabla();
     cargarKPIs();
+
+    // Auto-aplicar filtros al cambiar cualquier switch
+    $('#chkSoloPdteFacturar, #chkSoloPdteCobrar').on('change', function () {
+        aplicarFiltros();
+    });
 });
 
 // ─── Inicializar DataTable principal ─────────────────────────────────────────
@@ -214,7 +219,8 @@ function verDetallePagos(idPresupuesto, numeroPppto) {
 // ─── Aplicar filtros ──────────────────────────────────────────────────────────
 function aplicarFiltros() {
     filtrosActivos = {
-        solo_pendientes    : $('#chkSoloPendientes').is(':checked') ? '1' : '0',
+        solo_pdte_facturar : $('#chkSoloPdteFacturar').is(':checked') ? '1' : '0',
+        solo_pdte_cobrar   : $('#chkSoloPdteCobrar').is(':checked') ? '1' : '0',
         fecha_evento_desde : $('#filtroFechaDesde').val() || '',
         fecha_evento_hasta : $('#filtroFechaHasta').val() || '',
     };
@@ -224,7 +230,8 @@ function aplicarFiltros() {
 
 // ─── Limpiar filtros ──────────────────────────────────────────────────────────
 function limpiarFiltros() {
-    $('#chkSoloPendientes').prop('checked', false);
+    $('#chkSoloPdteFacturar').prop('checked', false);
+    $('#chkSoloPdteCobrar').prop('checked', false);
     $('#filtroFechaDesde').val('');
     $('#filtroFechaHasta').val('');
     filtrosActivos = {};

@@ -156,8 +156,12 @@ session_start();
                 <!-- ========================================== -->
                 <div id="barraFiltros" class="mb-3 d-flex flex-wrap align-items-end gap-3">
                     <div class="form-check form-switch align-self-center mb-0">
-                        <input class="form-check-input" type="checkbox" id="chkSoloPendientes">
-                        <label class="form-check-label" for="chkSoloPendientes">Solo pendientes</label>
+                        <input class="form-check-input" type="checkbox" id="chkSoloPdteFacturar">
+                        <label class="form-check-label" for="chkSoloPdteFacturar">Solo pdtes. de Facturar</label>
+                    </div>
+                    <div class="form-check form-switch align-self-center mb-0">
+                        <input class="form-check-input" type="checkbox" id="chkSoloPdteCobrar">
+                        <label class="form-check-label" for="chkSoloPdteCobrar">Solo pdtes. de Cobrar</label>
                     </div>
                     <div>
                         <label class="form-label mb-1 small">Evento desde</label>
