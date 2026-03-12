@@ -243,7 +243,12 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
-                📊 CONSULTAS
+                � ALMÉN
+            </li>
+            <li class="sub-item"><a href="../Picking/index.php" class="sub-link" target="_blank">Picking / Salida de Almacén</a></li>
+
+            <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
+                �📊 CONSULTAS
             </li>
             <li class="sub-item"><a href="../MntElementos_consulta/index.php" class="sub-link">Consulta de Elementos</a></li>
             <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantías</a></li>
