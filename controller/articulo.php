@@ -157,6 +157,7 @@ switch ($_GET["op"]) {
                 "orden_obs_articulo" => $row["orden_obs_articulo"] ?? 200,
                 "observaciones_articulo" => $row["observaciones_articulo"] ?? '',
                 "permitir_descuentos_articulo" => $row["permitir_descuentos_articulo"] ?? 1,
+                "mostrar_parte_trabajo_articulo" => $row["mostrar_parte_trabajo_articulo"] ?? 1,
                 "id_impuesto" => $row["id_impuesto"] ?? null,
                 "jerarquia_completa" => $row["jerarquia_completa"] ?? '',
                 "configuracion_completa" => $row["configuracion_completa"] ?? 0,
@@ -217,6 +218,7 @@ switch ($_GET["op"]) {
                 "orden_obs_articulo" => $row["orden_obs_articulo"] ?? 200,
                 "observaciones_articulo" => $row["observaciones_articulo"] ?? '',
                 "permitir_descuentos_articulo" => $row["permitir_descuentos_articulo"] ?? 1,
+                "mostrar_parte_trabajo_articulo" => $row["mostrar_parte_trabajo_articulo"] ?? 1,
                 "id_impuesto" => $row["id_impuesto"] ?? null,
                 "jerarquia_completa" => $row["jerarquia_completa"] ?? '',
                 "configuracion_completa" => $row["configuracion_completa"] ?? 0,
@@ -269,6 +271,7 @@ switch ($_GET["op"]) {
             // Nuevos campos
             $permitir_descuentos = isset($_POST["permitir_descuentos_articulo"]) && $_POST["permitir_descuentos_articulo"] == 1 ? 1 : 0;
             $precio_editable = !empty($_POST["precio_editable_articulo"]) ? 1 : 0;
+            $mostrar_parte_trabajo = isset($_POST["mostrar_parte_trabajo_articulo"]) && $_POST["mostrar_parte_trabajo_articulo"] == 1 ? 1 : 0;
             $id_impuesto = !empty($_POST["id_impuesto"]) ? (int)$_POST["id_impuesto"] : null;
 
             // Procesar imagen usando la función procesarImagenArticulo
@@ -323,6 +326,7 @@ switch ($_GET["op"]) {
                     trim($_POST["observaciones_articulo"] ?? ''),
                     $permitir_descuentos,
                     $precio_editable,
+                    $mostrar_parte_trabajo,
                     $id_impuesto
                 );
 
@@ -366,6 +370,7 @@ switch ($_GET["op"]) {
                     trim($_POST["observaciones_articulo"] ?? ''),
                     $permitir_descuentos,
                     $precio_editable,
+                    $mostrar_parte_trabajo,
                     $id_impuesto
                 );
 

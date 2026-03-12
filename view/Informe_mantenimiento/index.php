@@ -82,6 +82,9 @@
             <div class="d-flex align-items-center">
                 <i class="fas fa-tools me-3 text-primary" style="font-size: 2rem;"></i>
                 <h4 class="mb-0 me-2">Calendario de Próximos Mantenimientos</h4>
+                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaMantenimiento" title="Ayuda" style="font-size:1.3rem; color:#6c757d; line-height:1;">
+                    <i class="fas fa-question-circle"></i>
+                </button>
             </div>
             <br>
         </div><!-- br-pagetitle -->
@@ -168,6 +171,82 @@
         </footer>
     </div><!-- br-mainpanel -->
     <!-- ########## END: MAIN PANEL ########## -->
+
+    <!-- *********************************** -->
+    <!-- MODAL AYUDA                        -->
+    <!-- *********************************** -->
+    <div class="modal fade" id="modalAyudaMantenimiento" tabindex="-1" aria-labelledby="modalAyudaMantenimientoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalAyudaMantenimientoLabel">
+                        <i class="fas fa-question-circle me-2"></i>¿Cómo funciona el Calendario de Mantenimientos?
+                    </h5>
+                    <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <p class="text-muted">
+                        Este calendario muestra cuándo toca revisar o mantener cada equipo del almacén.
+                        De un vistazo puedes saber qué equipos están al día, cuáles tienen el mantenimiento próximo
+                        y cuáles llevan un retraso en su revisión.
+                    </p>
+
+                    <h6 class="text-primary border-bottom pb-2 mt-4">
+                        <i class="fas fa-palette me-2"></i>¿Qué significan los colores?
+                    </h6>
+                    <div class="row mt-3">
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <span class="badge bg-info d-block py-2 mb-1" style="font-size:.95rem;">Día actual</span>
+                            <small class="text-muted">Hoy en el calendario</small>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <span class="badge bg-success d-block py-2 mb-1" style="font-size:.95rem;">Al día</span>
+                            <small class="text-muted">El mantenimiento está en vigor</small>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <span class="badge bg-warning text-dark d-block py-2 mb-1" style="font-size:.95rem;">Próximo</span>
+                            <small class="text-muted">La revisión se acerca</small>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <span class="badge bg-danger d-block py-2 mb-1" style="font-size:.95rem;">Atrasado</span>
+                            <small class="text-muted">La revisión está pendiente</small>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary border-bottom pb-2 mt-4">
+                        <i class="fas fa-mouse-pointer me-2"></i>¿Cómo navego por el calendario?
+                    </h6>
+                    <ul class="mt-2" style="line-height:2;">
+                        <li>Usa las flechas <strong>&#8249; &#8250;</strong> de la cabecera para ir al mes anterior o siguiente.</li>
+                        <li>El botón <strong>Hoy</strong> te lleva directamente al mes actual.</li>
+                        <li>Haz clic sobre cualquier día marcado para ver el <strong>detalle</strong> de los equipos con mantenimiento ese día.</li>
+                        <li>El botón <strong>Exportar PDF</strong> genera un documento con la vista del mes que estás viendo.</li>
+                    </ul>
+
+                    <h6 class="text-primary border-bottom pb-2 mt-4">
+                        <i class="fas fa-info-circle me-2"></i>¿De dónde vienen los datos?
+                    </h6>
+                    <p class="text-muted">
+                        Cada equipo del almacén tiene registrada su <strong>fecha de próxima revisión</strong>.
+                        El calendario la consulta automáticamente y la coloca en el día correspondiente,
+                        coloréándola según si aún está al día, se acerca o ya está atrasada.
+                    </p>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- *********************************** -->
+    <!-- FIN MODAL AYUDA                    -->
+    <!-- *********************************** -->
 
     <!-- *********************************** -->
     <!-- MODAL DETALLE DE ELEMENTO          -->

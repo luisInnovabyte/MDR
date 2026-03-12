@@ -82,6 +82,9 @@
             <div class="d-flex align-items-center">
                 <i class="fas fa-calendar-check me-3 text-primary" style="font-size: 2rem;"></i>
                 <h4 class="mb-0 me-2">Calendario de Vigencias de Garantías</h4>
+                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaVigencia" title="Ayuda" style="font-size:1.3rem; color:#6c757d; line-height:1;">
+                    <i class="fas fa-question-circle"></i>
+                </button>
             </div>
             <br>
         </div><!-- br-pagetitle -->
@@ -168,6 +171,81 @@
         </footer>
     </div><!-- br-mainpanel -->
     <!-- ########## END: MAIN PANEL ########## -->
+
+    <!-- *********************************** -->
+    <!-- MODAL AYUDA                        -->
+    <!-- *********************************** -->
+    <div class="modal fade" id="modalAyudaVigencia" tabindex="-1" aria-labelledby="modalAyudaVigenciaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalAyudaVigenciaLabel">
+                        <i class="fas fa-question-circle me-2"></i>¿Cómo funciona el Calendario de Vigencias?
+                    </h5>
+                    <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <p class="text-muted">
+                        Este calendario muestra el estado de las <strong>garantías de los equipos</strong> del almacén.
+                        De un vistazo puedes saber qué equipos tienen la garantía en vigor, cuáles están a punto de vencer y cuáles ya han caducado.
+                    </p>
+
+                    <h6 class="text-primary border-bottom pb-2 mt-4">
+                        <i class="fas fa-palette me-2"></i>¿Qué significan los colores?
+                    </h6>
+                    <div class="row mt-3">
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <span class="badge bg-info d-block py-2 mb-1" style="font-size:.95rem;">Día actual</span>
+                            <small class="text-muted">Hoy en el calendario</small>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <span class="badge bg-success d-block py-2 mb-1" style="font-size:.95rem;">Vigente</span>
+                            <small class="text-muted">La garantía está en vigor</small>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <span class="badge bg-warning text-dark d-block py-2 mb-1" style="font-size:.95rem;">Por vencer</span>
+                            <small class="text-muted">La garantía vence pronto</small>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <span class="badge bg-danger d-block py-2 mb-1" style="font-size:.95rem;">Vencida</span>
+                            <small class="text-muted">La garantía ha caducado</small>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary border-bottom pb-2 mt-4">
+                        <i class="fas fa-mouse-pointer me-2"></i>¿Cómo navego por el calendario?
+                    </h6>
+                    <ul class="mt-2" style="line-height:2;">
+                        <li>Usa las flechas <strong>&#8249; &#8250;</strong> de la cabecera para ir al mes anterior o siguiente.</li>
+                        <li>El botón <strong>Hoy</strong> te lleva directamente al mes actual.</li>
+                        <li>Haz clic sobre cualquier día que tenga equipos marcados para ver el <strong>detalle</strong> de cada uno.</li>
+                        <li>El botón <strong>Exportar PDF</strong> genera un documento con la vista del mes que estás viendo.</li>
+                    </ul>
+
+                    <h6 class="text-primary border-bottom pb-2 mt-4">
+                        <i class="fas fa-info-circle me-2"></i>¿De dónde vienen los datos?
+                    </h6>
+                    <p class="text-muted">
+                        Cada equipo del almacén tiene registrada su <strong>fecha de fin de garantía</strong>.
+                        El calendario la consulta automáticamente y la coloca en el día correspondiente,
+                        coloreándola según si aún está en vigor o no.
+                    </p>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- *********************************** -->
+    <!-- FIN MODAL AYUDA                    -->
+    <!-- *********************************** -->
 
     <!-- *********************************** -->
     <!-- MODAL DETALLE DE ELEMENTO          -->

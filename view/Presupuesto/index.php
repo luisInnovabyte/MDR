@@ -367,6 +367,10 @@
                             title="Solo disponible para presupuestos con versión aprobada">
                         <i class="fas fa-truck me-1"></i>Albarán de carga
                     </button>
+                    <button type="button" class="btn btn-outline-info btn-sm" id="btnAlbaranResumido"
+                            title="Resumen agrupado por artículo — solo disponible para presupuestos con versión aprobada">
+                        <i class="fas fa-boxes me-1"></i>Albarán Resumido
+                    </button>
                     <button type="button" class="btn btn-primary btn-sm" id="btnImprimirPresupuesto">
                         <i class="fas fa-file-pdf me-1"></i>Generar PDF
                     </button>

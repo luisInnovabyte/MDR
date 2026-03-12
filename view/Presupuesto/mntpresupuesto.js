@@ -730,6 +730,56 @@ $(document).ready(function () {
         });
     });
 
+    // Event handler para el botón "Albarán Resumido"
+    $(document).on('click', '#btnAlbaranResumido', function() {
+        console.log('Generando Albarán Resumido');
+
+        var id_presupuesto = $('#impresion_id_presupuesto').val();
+        var codigo_estado  = $('#impresion_codigo_estado').val();
+
+        if (codigo_estado !== 'APROB') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Versión no aprobada',
+                html: 'El <strong>albarán resumido</strong> solo puede generarse para presupuestos con una versión <strong>aprobada</strong>.<br><br>Aprueba una versión antes de generar este documento.',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#1a73e8'
+            });
+            return;
+        }
+
+        if (!id_presupuesto) {
+            Swal.fire('Error', 'No se ha seleccionado ningún presupuesto', 'error');
+            return;
+        }
+
+        var form = $('<form>', {
+            'method': 'POST',
+            'action': '../../controller/impresionpartetrabajo_m2_pdf_es.php?op=albaran_carga_resumido',
+            'target': '_blank'
+        });
+
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': 'id_presupuesto',
+            'value': id_presupuesto
+        }));
+
+        $('body').append(form);
+        form.submit();
+        form.remove();
+
+        $('#modalImpresionPresupuesto').modal('hide');
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Generando Albarán Resumido',
+            text: 'Se abrirá el documento en una nueva ventana',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+
     // ============================================
     // COPIAR PRESUPUESTO
     // ============================================

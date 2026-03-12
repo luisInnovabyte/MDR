@@ -405,13 +405,19 @@ class ImpresionPresupuesto
      * @param int $id_presupuesto ID del presupuesto
      * @return array|false Array de líneas o false si hay error
      */
-    public function get_lineas_impresion($id_presupuesto, $numero_version = null)
+    public function get_lineas_impresion($id_presupuesto, $numero_version = null, $filter_parte_trabajo = false)
     {
         try {
             // Condición de versión: si se proporciona, usar esa; si no, subquery a la actual
             $version_sql_condition = is_null($numero_version)
                 ? "(SELECT version_actual_presupuesto FROM presupuesto WHERE id_presupuesto = ?)"
                 : "?";
+            $join_parte_trabajo = $filter_parte_trabajo
+                ? "\n                    LEFT JOIN articulo art_pt ON vlpc.id_articulo = art_pt.id_articulo"
+                : '';
+            $where_parte_trabajo = $filter_parte_trabajo
+                ? "\n                    AND (art_pt.mostrar_parte_trabajo_articulo = 1 OR vlpc.id_articulo IS NULL)"
+                : '';
             $sql = "SELECT 
                         vlpc.id_linea_ppto,
                         vlpc.fecha_inicio_linea_ppto,
@@ -439,11 +445,11 @@ class ImpresionPresupuesto
                         vlpc.nivel_jerarquia,
                         vlpc.descripcion_linea_ppto,
                         vlpc.observaciones_linea_ppto
-                    FROM v_linea_presupuesto_calculada vlpc
+                    FROM v_linea_presupuesto_calculada vlpc$join_parte_trabajo
                     WHERE vlpc.id_presupuesto = ?
                     AND vlpc.numero_version_presupuesto = $version_sql_condition
                     AND vlpc.activo_linea_ppto = 1
-                    AND vlpc.mostrar_en_presupuesto = 1
+                    AND vlpc.mostrar_en_presupuesto = 1$where_parte_trabajo
                     ORDER BY 
                         vlpc.fecha_inicio_linea_ppto ASC,
                         vlpc.id_ubicacion ASC,
@@ -1238,6 +1244,72 @@ class ImpresionPresupuesto
                 'error'
             );
             return null;
+        }
+    }
+
+    /**
+     * Obtener líneas resumidas agrupadas por artículo (suma de cantidades).
+     * Para el Albarán de Carga Resumido: sin fechas ni ubicación.
+     * Solo líneas de nivel 0 (el kit en sí, no sus componentes).
+     *
+     * @param int $id_presupuesto
+     * @param int $numero_version
+     * @return array|false
+     */
+    public function get_lineas_resumidas_por_articulo($id_presupuesto, $numero_version)
+    {
+        try {
+            $sql = "SELECT
+                        vlpc.id_articulo,
+                        vlpc.nombre_articulo,
+                        vlpc.es_kit_articulo,
+                        COALESCE(f.id_familia, 0)                 AS id_familia,
+                        COALESCE(f.nombre_familia, 'Sin asignar') AS nombre_familia,
+                        SUM(vlpc.cantidad_linea_ppto)             AS cantidad_total
+                    FROM v_linea_presupuesto_calculada vlpc
+                    LEFT JOIN articulo a ON vlpc.id_articulo = a.id_articulo
+                    LEFT JOIN familia  f ON a.id_familia    = f.id_familia
+                    WHERE vlpc.id_presupuesto = ?
+                      AND vlpc.numero_version_presupuesto = ?
+                      AND vlpc.activo_linea_ppto = 1
+                      AND vlpc.mostrar_en_presupuesto = 1
+                      AND vlpc.tipo_linea_ppto = 'articulo'
+                      AND (vlpc.nivel_jerarquia = 0 OR vlpc.nivel_jerarquia IS NULL)
+                      AND (a.mostrar_parte_trabajo_articulo = 1 OR vlpc.id_articulo IS NULL)
+                    GROUP BY
+                        vlpc.id_articulo,
+                        vlpc.nombre_articulo,
+                        vlpc.es_kit_articulo,
+                        f.id_familia,
+                        f.nombre_familia
+                    ORDER BY
+                        COALESCE(f.nombre_familia, 'Sin asignar') ASC,
+                        vlpc.nombre_articulo ASC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([$id_presupuesto, $numero_version]);
+
+            $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_resumidas_por_articulo',
+                "Líneas resumidas obtenidas para presupuesto ID: $id_presupuesto - Total: " . count($lineas),
+                'info'
+            );
+
+            return $lineas;
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'ImpresionPresupuesto',
+                'get_lineas_resumidas_por_articulo',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+            return false;
         }
     }
 }

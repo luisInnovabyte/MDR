@@ -82,6 +82,9 @@
             <div class="d-flex align-items-center">
                 <i class="fas fa-tools me-3 text-primary" style="font-size: 2rem;"></i>
                 <h4 class="mb-0 me-2">Calendario de Presupuestos</h4>
+                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaPpto" title="Ayuda" style="font-size:1.3rem; color:#6c757d; line-height:1;">
+                    <i class="fas fa-question-circle"></i>
+                </button>
             </div>
             <br>
         </div><!-- br-pagetitle -->
@@ -163,6 +166,86 @@
         </footer>
     </div><!-- br-mainpanel -->
     <!-- ########## END: MAIN PANEL ########## -->
+<!-- MODAL AYUDA -->
+<div class="modal fade" id="modalAyudaPpto" tabindex="-1" aria-labelledby="modalAyudaPptoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalAyudaPptoLabel">
+                    <i class="fas fa-question-circle me-2"></i>¿Cómo funciona el Calendario de Presupuestos?
+                </h5>
+                <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <p class="text-muted">
+                    Este calendario muestra <strong>la duración completa de los eventos</strong> de los presupuestos.
+                    Cada presupuesto ocupa todos los días comprendidos entre su fecha de inicio y su fecha de fin de evento,
+                    coloreado según el estado en que se encuentra, <strong>independientemente del estado</strong>.
+                </p>
+
+                <h6 class="text-primary border-bottom pb-2 mt-4">
+                    <i class="fas fa-palette me-2"></i>¿Qué significan los colores?
+                </h6>
+                <div class="row mt-3">
+                    <div class="col-md-4 col-6 mb-3 text-center">
+                        <span class="badge d-block py-2 mb-1" style="font-size:.9rem; background:#28a745;">Aprobado</span>
+                        <small class="text-muted">Presupuesto aceptado por el cliente</small>
+                    </div>
+                    <div class="col-md-4 col-6 mb-3 text-center">
+                        <span class="badge d-block py-2 mb-1" style="font-size:.9rem; background:#17a2b8;">En proceso</span>
+                        <small class="text-muted">En elaboración o negociación</small>
+                    </div>
+                    <div class="col-md-4 col-6 mb-3 text-center">
+                        <span class="badge d-block py-2 mb-1" style="font-size:.9rem; background:#ff9b29;">Esperando respuesta</span>
+                        <small class="text-muted">Enviado, pendiente de confirmación</small>
+                    </div>
+                    <div class="col-md-4 col-6 mb-3 text-center">
+                        <span class="badge d-block py-2 mb-1" style="font-size:.9rem; background:#dc3545;">Rechazado</span>
+                        <small class="text-muted">El cliente no lo ha aceptado</small>
+                    </div>
+                    <div class="col-md-4 col-6 mb-3 text-center">
+                        <span class="badge d-block py-2 mb-1" style="font-size:.9rem; background:#6c757d;">Cancelado</span>
+                        <small class="text-muted">Servicio cancelado</small>
+                    </div>
+                    <div class="col-md-4 col-6 mb-3 text-center">
+                        <span class="badge d-block py-2 mb-1" style="font-size:.9rem; background:#0000ff;">Pendiente revisión</span>
+                        <small class="text-muted">Pendiente de revisar antes de enviar</small>
+                    </div>
+                </div>
+
+                <h6 class="text-primary border-bottom pb-2 mt-4">
+                    <i class="fas fa-mouse-pointer me-2"></i>¿Cómo navego por el calendario?
+                </h6>
+                <ul class="mt-2" style="line-height:2;">
+                    <li>Usa las flechas <strong>&#8249; &#8250;</strong> para moverte entre meses.</li>
+                    <li>El botón <strong>Hoy</strong> te devuelve al mes actual.</li>
+                    <li>Haz clic sobre un día con presupuestos para ver su <strong>detalle completo</strong>: cliente, evento, importe, condiciones de pago y observaciones.</li>
+                    <li>El botón <strong>Exportar PDF</strong> genera un documento con el mes visible.</li>
+                </ul>
+
+                <h6 class="text-primary border-bottom pb-2 mt-4">
+                    <i class="fas fa-info-circle me-2"></i>¿De dónde vienen los datos?
+                </h6>
+                <p class="text-muted">
+                    Cada presupuesto tiene asignada una <strong>fecha de inicio</strong> y una <strong>fecha de fin de evento</strong>.
+                    El calendario toma automáticamente ese rango y muestra el presupuesto en <strong>todos los días que dura el evento</strong>,
+                    coloreado con el estado actual. Los presupuestos aparecen en el calendario sea cual sea su estado.
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN MODAL AYUDA -->
+
 <!-- MODAL DETALLE DE PRESUPUESTO COMPLETO -->
 <div class="modal fade" id="modalDetalleElemento" tabindex="-1" role="dialog" aria-labelledby="modalDetalleElementoLabel" aria-hidden="true">
     <div class="modal-dialog modal-custom" role="document">

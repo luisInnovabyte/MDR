@@ -17,6 +17,7 @@ function puedeVerMenu($idRol, $modulo) {
         'comerciales'    => [3],                      // Solo admin
         'dashboard'      => [2, 3, 4],
         'area_tecnica'   => [2, 3, 5],               // Gestor, Admin y Técnico
+        'informes'       => [2, 3, 4],               // Gestor, Admin y Comercial
         // Otros módulos que tengas, según corresponda
     ];
     return in_array($idRol, $permisos[$modulo] ?? []);
@@ -183,6 +184,24 @@ function puedeVerMenu($idRol, $modulo) {
 
 
 
+    <?php if (puedeVerMenu($idRolUsuario, 'informes')): ?>
+    <li class="br-menu-item">
+        <a href="#" class="br-menu-link with-sub">
+            <i class="menu-item-icon icon ion-ios-analytics tx-24"></i>
+            <span class="menu-item-label">Informes</span>
+        </a>
+        <ul class="br-menu-sub">
+            <li class="sub-item"><a href="../Informe_ventas/index.php" class="sub-link">Ventas por Período(PRG)</a></li>
+            <li class="sub-item"><a href="../Informe_rotacion/index.php" class="sub-link">Rotación de Inventario(PRG)</a></li>
+            <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendarios Garantías</a></li>
+            <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendarios Mantenimientos</a></li>
+            <li class="sub-item"><a href="../Informe_ppto/index.php" class="sub-link">Calendarios Presupuestos</a></li>
+            <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantías</a></li>
+            <li class="sub-item"><a href="../Consulta_Mantenimientos/index.php" class="sub-link">Consulta Mantenimientos</a></li>
+        </ul>
+    </li>
+    <?php endif; ?>
+
     <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
     <li class="br-menu-item">
         <a href="#" class="br-menu-link with-sub">
@@ -198,27 +217,7 @@ function puedeVerMenu($idRol, $modulo) {
     <?php endif; ?>
 
 
-
-
-
-
-     <?php if (puedeVerMenu($idRolUsuario, 'logs')): ?>
-    <li class="br-menu-item">
-        <a href="#" class="br-menu-link with-sub">
-            <i class="menu-item-icon icon ion-ios-calendar tx-24"></i>
-            <span class="menu-item-label">Informes</span>
-        </a>
-        <ul class="br-menu-sub">
-            <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendarios Garantías</a></li>
-            <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendarios Mantenimientos</a></li>
-            <li class="sub-item"><a href="../Informe_ppto/index.php" class="sub-link">Calendarios Presupuestos</a></li>
-            <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantías</a></li>
-            <li class="sub-item"><a href="../Consulta_Mantenimientos/index.php" class="sub-link">Consulta Mantenimientos</a></li>
-            
-        </ul>
-        <!-- assets/Reunion/sistema-gestion-explicacion.html -->
-    </li>
-    <?php endif; ?>
+    
 
 <!---->
 <!---->
@@ -243,12 +242,14 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
-                � ALMÉN
+                🏬 ALMACÉN
             </li>
             <li class="sub-item"><a href="../Picking/index.php" class="sub-link" target="_blank">Picking / Salida de Almacén</a></li>
+            <li class="sub-item"><a href="../AlbaranesCarga/index.php" class="sub-link" target="_blank">Albaranes de Carga</a></li>
+            <li class="sub-item"><a href="../CalendarioTecnicos/index.php" class="sub-link" target="_blank">Calendario de Servicios</a></li>
 
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
-                �📊 CONSULTAS
+                📊 CONSULTAS
             </li>
             <li class="sub-item"><a href="../MntElementos_consulta/index.php" class="sub-link">Consulta de Elementos</a></li>
             <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantías</a></li>

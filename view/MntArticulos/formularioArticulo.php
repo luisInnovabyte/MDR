@@ -299,6 +299,12 @@
                                             <span id="precio-editable-text">Precio editable en presupuesto</span>
                                         </label>
                                     </div>
+                                    <div class="form-check form-switch mt-2">
+                                        <input class="form-check-input" type="checkbox" name="mostrar_parte_trabajo_articulo" id="mostrar_parte_trabajo_articulo" checked>
+                                        <label class="form-check-label" for="mostrar_parte_trabajo_articulo">
+                                            <span id="parte-trabajo-text">Mostrar en parte de trabajo</span>
+                                        </label>
+                                    </div>
                                     <small class="form-text text-muted">Flags especiales para el artículo</small>
                                 </div>
                                 

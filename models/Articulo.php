@@ -107,11 +107,12 @@ class Articulo
     public function get_articuloxid($id_articulo)
     {
         try {
-            // JOIN explícito con la tabla articulo para garantizar precio_editable_articulo
-            // aunque la vista no haya sido regenerada con ese campo todavía.
+            // JOIN explícito con la tabla articulo para garantizar campos recientes
+            // aunque la vista no haya sido regenerada con esos campos todavía.
             $sql = "SELECT 
                         a.*,
                         art_base.precio_editable_articulo,
+                        art_base.mostrar_parte_trabajo_articulo,
                         ap.peso_articulo_kg AS peso_medio_kg,
                         ap.items_con_peso AS elementos_con_peso,
                         ap.total_items AS total_elementos,
@@ -351,6 +352,7 @@ class Articulo
         $observaciones_articulo = '',
         $permitir_descuentos_articulo = 1,
         $precio_editable_articulo = 0,
+        $mostrar_parte_trabajo_articulo = 1,
         $id_impuesto = null
     )
     {
@@ -374,11 +376,12 @@ class Articulo
                         observaciones_articulo, 
                         permitir_descuentos_articulo,
                         precio_editable_articulo,
+                        mostrar_parte_trabajo_articulo,
                         id_impuesto,
                         activo_articulo, 
                         created_at_articulo, 
                         updated_at_articulo
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())";
             $stmt = $this->conexion->prepare($sql); // Se accede a la conexión correcta
             $stmt->bindValue(1, $id_familia, PDO::PARAM_INT);
             $stmt->bindValue(2, $id_unidad, $id_unidad === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
@@ -397,7 +400,8 @@ class Articulo
             $stmt->bindValue(15, $observaciones_articulo, PDO::PARAM_STR);
             $stmt->bindValue(16, $permitir_descuentos_articulo, PDO::PARAM_INT);
             $stmt->bindValue(17, $precio_editable_articulo, PDO::PARAM_INT);
-            $stmt->bindValue(18, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $stmt->bindValue(18, $mostrar_parte_trabajo_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(19, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
             $stmt->execute();
             $idInsert = $this->conexion->lastInsertId(); // Se obtiene el ID del ultimo insertado
 
@@ -450,6 +454,7 @@ class Articulo
         $observaciones_articulo = '',
         $permitir_descuentos_articulo = 1,
         $precio_editable_articulo = 0,
+        $mostrar_parte_trabajo_articulo = 1,
         $id_impuesto = null
     ){
         try {
@@ -471,6 +476,7 @@ class Articulo
                         observaciones_articulo = ?, 
                         permitir_descuentos_articulo = ?,
                         precio_editable_articulo = ?,
+                        mostrar_parte_trabajo_articulo = ?,
                         id_impuesto = ?,
                         updated_at_articulo = NOW() 
                     WHERE id_articulo = ?";
@@ -492,8 +498,9 @@ class Articulo
             $stmt->bindValue(15, $observaciones_articulo, PDO::PARAM_STR);
             $stmt->bindValue(16, $permitir_descuentos_articulo, PDO::PARAM_INT);
             $stmt->bindValue(17, $precio_editable_articulo, PDO::PARAM_INT);
-            $stmt->bindValue(18, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
-            $stmt->bindValue(19, $id_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(18, $mostrar_parte_trabajo_articulo, PDO::PARAM_INT);
+            $stmt->bindValue(19, $id_impuesto, $id_impuesto === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $stmt->bindValue(20, $id_articulo, PDO::PARAM_INT);
 
             $stmt->execute();
 

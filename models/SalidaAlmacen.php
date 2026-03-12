@@ -175,6 +175,7 @@ class SalidaAlmacen
                     AND lp.tipo_linea_ppto IN ('articulo','kit')
                     AND lp.activo_linea_ppto = 1
                     AND lp.id_articulo IS NOT NULL
+                    AND a.mostrar_parte_trabajo_articulo = 1
                     ORDER BY lp.orden_linea_ppto ASC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_version, PDO::PARAM_INT);

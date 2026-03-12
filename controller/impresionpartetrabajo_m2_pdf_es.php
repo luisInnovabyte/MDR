@@ -37,6 +37,7 @@ class MYPDF_ALBARAN extends TCPDF {
     private $datos_presupuesto;
     private $fecha_evento;
     private $observaciones;
+    protected $titulo_albaran = 'ALBARAN DE CARGA';
     
     public function setDatosHeader($empresa, $presupuesto, $logo, $path_logo, $fecha_ev, $obs) {
         $this->datos_empresa = $empresa;
@@ -54,7 +55,7 @@ class MYPDF_ALBARAN extends TCPDF {
         $this->SetY($y_start);
         $this->SetFont('helvetica', 'B', 16);
         $this->SetTextColor(46, 204, 113); // Color verde
-        $this->Cell(165, 8, 'ALBARAN DE CARGA', 0, 1, 'R'); // Alineado a la derecha (ancho reducido para no solapar QR)
+        $this->Cell(165, 8, $this->titulo_albaran, 0, 1, 'R'); // Alineado a la derecha (ancho reducido para no solapar QR)
 
         $this->Ln(2); // Pequeño margen después del título
 
@@ -440,6 +441,13 @@ class MYPDF_ALBARAN extends TCPDF {
 }
 
 // =====================================================
+// CLASE ALBARÁN RESUMIDO (hereda cabecera de MYPDF_ALBARAN)
+// =====================================================
+class MYPDF_ALBARAN_RESUMIDO extends MYPDF_ALBARAN {
+    protected $titulo_albaran = 'ALBARAN DE CARGA - RESUMEN';
+}
+
+// =====================================================
 // INICIALIZAR CLASES
 // =====================================================
 $registro = new RegistroActividad();
@@ -449,6 +457,7 @@ $kitModel = new Kit();
 // Switch principal basado en operación
 switch ($_GET["op"]) {
     
+    case "albaran_carga_m2":
     case "albaran_carga":
         try {
             // 1. Validar que se recibió el ID del presupuesto
@@ -526,7 +535,7 @@ switch ($_GET["op"]) {
                 : '';
             
             // 6. Obtener líneas del presupuesto (versión aprobada)
-            $lineas = $impresion->get_lineas_impresion($id_presupuesto, $numero_version_aprobada);
+            $lineas = $impresion->get_lineas_impresion($id_presupuesto, $numero_version_aprobada, true);
             
             // 6.1 Agrupar líneas por fecha de inicio y ubicación
             $lineas_agrupadas = [];
@@ -1084,6 +1093,242 @@ switch ($_GET["op"]) {
         }
         break;
         
+    case "albaran_carga_resumido":
+        try {
+            if (!isset($_POST['id_presupuesto']) || empty($_POST['id_presupuesto'])) {
+                throw new Exception("No se recibió el ID del presupuesto");
+            }
+
+            $id_presupuesto = intval($_POST['id_presupuesto']);
+
+            // Buscar la versión aprobada
+            $numero_version_aprobada = $impresion->get_numero_version_aprobada($id_presupuesto);
+
+            if (is_null($numero_version_aprobada)) {
+                ob_end_clean();
+                header('Content-Type: text/html; charset=utf-8');
+                echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+                <title>Albarán Resumido — Sin versión aprobada</title>
+                <style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f8f9fa}
+                .card{max-width:420px;padding:2.5rem 3rem;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.1);text-align:center}
+                .icon{font-size:3rem;margin-bottom:1rem}
+                h2{color:#d97706;margin:0 0 .75rem}
+                p{color:#6b7280;line-height:1.6;margin:0}</style></head>
+                <body><div class="card">
+                <div class="icon">⚠️</div>
+                <h2>Sin versión aprobada</h2>
+                <p>El albarán resumido solo puede generarse a partir de una <strong>versión aprobada</strong> del presupuesto.<br><br>
+                Aprueba una versión desde el historial de versiones y vuelve a intentarlo.</p>
+                </div></body></html>';
+                exit;
+            }
+
+            $datos_presupuesto = $impresion->get_datos_cabecera($id_presupuesto, $numero_version_aprobada);
+            if (!$datos_presupuesto) {
+                throw new Exception("No se encontraron datos del presupuesto ID: $id_presupuesto");
+            }
+
+            $datos_empresa = $impresion->get_empresa_datos();
+            if (!$datos_empresa) {
+                throw new Exception("No se encontraron datos de la empresa");
+            }
+
+            // Logo
+            $mostrar_logo = false;
+            $path_logo    = '';
+            if (!empty($datos_empresa['logotipo_empresa'])) {
+                if ($impresion->validar_logo($datos_empresa['logotipo_empresa'])) {
+                    $logo_name = ltrim($datos_empresa['logotipo_empresa'], '/');
+                    if (strpos($logo_name, 'public/') === 0) {
+                        $logo_name = substr($logo_name, 7);
+                    }
+                    $path_logo_tmp = realpath(__DIR__ . '/../public/' . $logo_name);
+                    if ($path_logo_tmp && file_exists($path_logo_tmp)) {
+                        $mostrar_logo = true;
+                        $path_logo    = $path_logo_tmp;
+                    }
+                }
+            }
+
+            $fecha_inicio_evento = !empty($datos_presupuesto['fecha_inicio_evento_presupuesto'])
+                ? date('d/m/Y', strtotime($datos_presupuesto['fecha_inicio_evento_presupuesto']))
+                : '';
+
+            // Líneas resumidas por artículo
+            $lineas_planas = $impresion->get_lineas_resumidas_por_articulo($id_presupuesto, $numero_version_aprobada);
+            if ($lineas_planas === false) {
+                throw new Exception("Error al obtener las líneas del presupuesto");
+            }
+
+            // Agrupar por familia
+            $lineas_por_familia = [];
+            foreach ($lineas_planas as $linea) {
+                $nombre_familia = $linea['nombre_familia'];
+                if (!isset($lineas_por_familia[$nombre_familia])) {
+                    $lineas_por_familia[$nombre_familia] = [];
+                }
+                $lineas_por_familia[$nombre_familia][] = $linea;
+            }
+            ksort($lineas_por_familia);
+
+            // Peso total
+            $datos_peso = null;
+            if (!empty($datos_presupuesto['id_version_presupuesto']) &&
+                isset($datos_empresa['mostrar_kits_albaran_empresa']) &&
+                $datos_empresa['mostrar_kits_albaran_empresa'] == 1) {
+                $datos_peso = $impresion->get_peso_total_presupuesto($datos_presupuesto['id_version_presupuesto']);
+            }
+
+            // =====================================================
+            // CREAR PDF
+            // =====================================================
+            $pdf = new MYPDF_ALBARAN_RESUMIDO('P', 'mm', 'A4', true, 'UTF-8', false);
+
+            $pdf->SetCreator('MDR ERP');
+            $pdf->SetAuthor($datos_empresa['nombre_empresa'] ?? 'MDR');
+            $pdf->SetTitle('Albarán Resumido ' . ($datos_presupuesto['numero_presupuesto'] ?? ''));
+            $pdf->SetSubject('Albarán Resumido para ' . ($datos_presupuesto['nombre_evento_presupuesto'] ?? ''));
+
+            $pdf->SetMargins(8, 75, 8);
+            $pdf->SetHeaderMargin(5);
+            $pdf->SetFooterMargin(10);
+            $pdf->SetAutoPageBreak(TRUE, 20);
+
+            $pdf->setDatosHeader(
+                $datos_empresa,
+                $datos_presupuesto,
+                $mostrar_logo,
+                $path_logo,
+                $fecha_inicio_evento,
+                ''
+            );
+
+            $pdf->AddPage();
+
+            // =====================================================
+            // CABECERA DE TABLA
+            // =====================================================
+            $ancho_desc = 170;
+            $ancho_cant = 24;
+
+            $pdf->SetFont('helvetica', 'B', 8);
+            $pdf->SetFillColor(240, 240, 240);
+            $pdf->SetDrawColor(200, 200, 200);
+            $pdf->Cell($ancho_desc, 6, 'Descripción', 1, 0, 'L', 1);
+            $pdf->Cell($ancho_cant, 6, 'Cant. Total', 1, 1, 'C', 1);
+            $pdf->SetDrawColor(0, 0, 0);
+
+            // =====================================================
+            // FILAS POR FAMILIA Y ARTÍCULO
+            // =====================================================
+            foreach ($lineas_por_familia as $nombre_familia => $articulos) {
+
+                // Comprobar espacio para cabecera de familia + al menos una fila de artículo
+                $espacio_disponible = $pdf->getPageHeight() - $pdf->GetY() - $pdf->getBreakMargin();
+                if ($espacio_disponible < 20) {
+                    $pdf->AddPage();
+                    // Repetir cabecera de tabla en nueva página
+                    $pdf->SetFont('helvetica', 'B', 8);
+                    $pdf->SetFillColor(240, 240, 240);
+                    $pdf->SetDrawColor(200, 200, 200);
+                    $pdf->Cell($ancho_desc, 6, 'Descripción', 1, 0, 'L', 1);
+                    $pdf->Cell($ancho_cant, 6, 'Cant. Total', 1, 1, 'C', 1);
+                    $pdf->SetDrawColor(0, 0, 0);
+                }
+
+                // Fila cabecera familia (fondo gris oscuro)
+                $pdf->SetFillColor(100, 100, 100);
+                $pdf->SetTextColor(255, 255, 255);
+                $pdf->SetFont('helvetica', 'B', 8);
+                $pdf->Cell($ancho_desc + $ancho_cant, 5, '  ' . mb_strtoupper($nombre_familia, 'UTF-8'), 0, 1, 'L', true);
+                $pdf->SetTextColor(0, 0, 0);
+
+                foreach ($articulos as $linea) {
+                    $nombre = $linea['nombre_articulo'] ?? '';
+                    $cantidad = number_format(floatval($linea['cantidad_total']), 0);
+
+                    // Calcular altura necesaria para la descripción
+                    $pdf->SetFont('helvetica', '', 7.5);
+                    $altura_texto = $pdf->getStringHeight($ancho_desc - 2, $nombre);
+                    $altura_fila  = max(5, ceil($altura_texto) + 1);
+
+                    // Salto de página preventivo
+                    $espacio_disponible = $pdf->getPageHeight() - $pdf->GetY() - $pdf->getBreakMargin();
+                    if ($espacio_disponible < $altura_fila + 4) {
+                        $pdf->AddPage();
+                        $pdf->SetFont('helvetica', 'B', 8);
+                        $pdf->SetFillColor(240, 240, 240);
+                        $pdf->SetDrawColor(200, 200, 200);
+                        $pdf->Cell($ancho_desc, 6, 'Descripción', 1, 0, 'L', 1);
+                        $pdf->Cell($ancho_cant, 6, 'Cant. Total', 1, 1, 'C', 1);
+                        $pdf->SetDrawColor(0, 0, 0);
+                        // Repetir cabecera de familia
+                        $pdf->SetFillColor(100, 100, 100);
+                        $pdf->SetTextColor(255, 255, 255);
+                        $pdf->SetFont('helvetica', 'B', 8);
+                        $pdf->Cell($ancho_desc + $ancho_cant, 5, '  ' . mb_strtoupper($nombre_familia, 'UTF-8') . ' (cont.)', 0, 1, 'L', true);
+                        $pdf->SetTextColor(0, 0, 0);
+                    }
+
+                    $x_ini = $pdf->GetX();
+                    $y_ini = $pdf->GetY();
+
+                    $pdf->SetFont('helvetica', '', 7.5);
+                    $pdf->SetDrawColor(200, 200, 200);
+
+                    if ($altura_fila > 5) {
+                        // MultiCell para descripción larga
+                        $pdf->Rect($x_ini, $y_ini, $ancho_desc, $altura_fila, 'D');
+                        $pdf->SetXY($x_ini + 0.5, $y_ini + 0.5);
+                        $lineas_mc = max(1, floor($altura_texto / 5));
+                        $pdf->MultiCell($ancho_desc - 1, ($altura_fila - 1) / $lineas_mc, $nombre, 0, 'L');
+                    } else {
+                        $pdf->Cell($ancho_desc, $altura_fila, $nombre, 1, 0, 'L');
+                    }
+
+                    $pdf->SetXY($x_ini + $ancho_desc, $y_ini);
+                    $pdf->Cell($ancho_cant, $altura_fila, $cantidad, 1, 0, 'C');
+
+                    $pdf->SetDrawColor(0, 0, 0);
+                    $pdf->SetXY($x_ini, $y_ini + $altura_fila);
+                }
+            }
+
+            // =====================================================
+            // PESO TOTAL (si aplica)
+            // =====================================================
+            if (!empty($datos_peso) && !empty($datos_peso['peso_total_bruto'])) {
+                $pdf->Ln(6);
+                $pdf->SetFont('helvetica', 'B', 8);
+                $pdf->SetFillColor(240, 240, 240);
+                $pdf->Cell(194, 6, 'PESO TOTAL ESTIMADO: ' . number_format($datos_peso['peso_total_bruto'], 2) . ' kg', 0, 1, 'L', true);
+            }
+
+            // Salida del PDF
+            $nombre_archivo = 'albaran_resumido_' . ($datos_presupuesto['numero_presupuesto'] ?? $id_presupuesto) . '.pdf';
+            ob_end_clean();
+            $pdf->Output($nombre_archivo, 'I');
+
+        } catch (Exception $e) {
+            $registro->registrarActividad(
+                'admin',
+                'impresionpartetrabajo_m2_pdf_es.php',
+                'albaran_carga_resumido',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+            ob_end_clean();
+            header('Content-Type: text/html; charset=utf-8');
+            echo '<!DOCTYPE html>';
+            echo '<html><head><meta charset="UTF-8"><title>Error</title></head><body>';
+            echo '<h2>Error al generar el Albarán Resumido</h2>';
+            echo '<p>' . htmlspecialchars($e->getMessage()) . '</p>';
+            echo '<p><a href="javascript:history.back()">Volver</a></p>';
+            echo '</body></html>';
+            exit;
+        }
+        break;
+
     default:
         ob_end_clean();
         header('Content-Type: application/json');
