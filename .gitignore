@@ -42,6 +42,7 @@ composer.lock
 
 # Configuración sensible
 config/conexion.json
+HTML/chat/api/anthropic.json
 
 # Logs
 public/logs/

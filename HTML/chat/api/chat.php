@@ -29,7 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // ─── Configuración ────────────────────────────────────────────────────────
-$apiKey = getenv('ANTHROPIC_API_KEY') ?: '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';   // fallback para test local — en producción usar variable de entorno Plesk
+// Prioridad: variable de entorno (Plesk) > anthropic.json (local, no versionado)
+$apiKey = getenv('ANTHROPIC_API_KEY') ?: '';
+if (empty($apiKey)) {
+    $cfg_file = __DIR__ . '/anthropic.json';
+    if (file_exists($cfg_file)) {
+        $cfg = json_decode(file_get_contents($cfg_file), true);
+        $apiKey = $cfg['api_key'] ?? '';
+    }
+}
 
 if (empty($apiKey)) {
     http_response_code(500);

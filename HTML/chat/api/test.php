@@ -5,7 +5,15 @@
  */
 header('Content-Type: application/json; charset=utf-8');
 
-$apiKey = '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';
+// Prioridad: variable de entorno (Plesk) > anthropic.json (local, no versionado)
+$apiKey = getenv('ANTHROPIC_API_KEY') ?: '';
+if (empty($apiKey)) {
+    $cfg_file = __DIR__ . '/anthropic.json';
+    if (file_exists($cfg_file)) {
+        $cfg = json_decode(file_get_contents($cfg_file), true);
+        $apiKey = $cfg['api_key'] ?? '';
+    }
+}
 
 $result = [
     'php_version'    => PHP_VERSION,
