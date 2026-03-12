@@ -81,6 +81,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
 
         /* ── Contenedor general ──────────────────────── */
         .page-wrap { padding: 16px 14px 0; }
+        #phase3 .page-wrap { padding-bottom: 140px; }
 
         /* ── Tarjeta base ────────────────────────────── */
         .app-card {
@@ -118,6 +119,17 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
         }
         .btn-app:active { transform: scale(.97); filter: brightness(.9); }
         .btn-app-primary  { background: var(--color-brand); color: #fff; }
+
+        /* ── Barra sticky acción ─────────────────────── */
+        .sticky-action-bar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #eef0f5;
+            margin: 6px -14px 0;
+            padding: 10px 14px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.10);
+        }
         .btn-app-success  { background: var(--color-ok);    color: #fff; }
         .btn-app-danger   { background: var(--color-err);   color: #fff; }
         .btn-app-secondary{ background: #e9ecef;            color: #333; }
@@ -135,8 +147,9 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             outline: none;
         }
         .inp-scan:focus { border-color: var(--color-brand); }
-        .inp-group { display: flex; margin-bottom: 12px; }
+        .inp-group { display: flex; margin-bottom: 8px; }
         .inp-group .btn-app { border-radius: 0 10px 10px 0; min-width: 56px; width: auto; }
+        .btn-nfc-full { border-radius: 10px !important; width: 100%; margin-bottom: 12px; }
 
         /* ── Feedback banner ─────────────────────────── */
         .fb-banner {
@@ -230,7 +243,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
         .elem-cod  { font-size: .9rem; font-weight: 700; font-family: monospace; }
         .elem-art  { font-size: .78rem; color: #555; }
         .elem-loc  { font-size: .75rem; color: #e65100; }
-        .elem-move { background: none; border: 1.5px solid #bbb; border-radius: 8px; padding: 6px 10px; color: #555; font-size: .9rem; min-height: 40px; }
+        .elem-move { background: none; border: 1.5px solid #bbb; border-radius: 8px; padding: 6px 10px; color: #555; font-size: .9rem; min-height: 40px; min-width: 44px; }
 
         /* ── Badge backup ────────────────────────────── */
         .badge-bkp { font-size: .65rem; background: var(--color-prep); color: #fff; padding: 2px 6px; border-radius: 6px; vertical-align: middle; }
@@ -363,6 +376,13 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             </button>
         </div>
 
+        <!-- Barra sticky: botón de acción principal -->
+        <div class="sticky-action-bar">
+            <button id="btn-iniciar-picking" class="btn-app btn-app-primary">
+                <i class="fa fa-tag"></i> Iniciar Escaneo de Elementos
+            </button>
+        </div>
+
         <!-- Progreso global -->
         <div class="prog-wrap">
             <div class="prog-label"><span>Material preparado</span><strong id="p2-contadores">0 / 0</strong></div>
@@ -375,9 +395,6 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
         </div>
 
         <!-- Botones de acción -->
-        <button id="btn-iniciar-picking" class="btn-app btn-app-primary mb-3">
-            <i class="fa fa-tag"></i> Iniciar Escaneo de Elementos
-        </button>
         <button id="btn-ver-mapa" class="btn-app btn-app-outline mb-3" style="display:none;">
             <i class="fa fa-map-location-dot"></i> Mapa de Ubicaciones
         </button>
@@ -406,13 +423,13 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                 <div class="inp-group">
                     <input type="text" id="inp-codigo-elem" class="inp-scan text-uppercase"
                            placeholder="Código NFC / manual" autocomplete="off" autocapitalize="characters" inputmode="text">
-                    <button class="btn-app btn-app-success" id="btn-escanear-manual" style="border-radius:0;width:56px;min-width:56px;">
+                    <button class="btn-app btn-app-success" id="btn-escanear-manual" style="border-radius:0 10px 10px 0;width:56px;min-width:56px;">
                         <i class="fa fa-check"></i>
                     </button>
-                    <button class="btn-app btn-app-secondary" id="btn-nfc" style="border-radius:0 10px 10px 0;width:56px;min-width:56px;" title="NFC">
-                        <i class="fa fa-wifi"></i>
-                    </button>
                 </div>
+                <button class="btn-app btn-app-secondary btn-nfc-full" id="btn-nfc" title="NFC">
+                    <i class="fa fa-wifi me-2"></i> Activar lectura NFC
+                </button>
                 <!-- Feedback escaneo -->
                 <div id="fb-escaneo" class="fb-banner fb-info">
                     <i class="fa fa-circle-info"></i>
@@ -470,7 +487,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                 <h5 class="modal-title" id="lblModalReubicacion">
                     <i class="fa fa-location-dot me-2"></i>Reubicar Elemento
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <p class="mb-1 fw-semibold fs-6" id="reub-elem-nombre"></p>
@@ -486,7 +503,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                        placeholder="Ej: zona lateral izquierda">
             </div>
             <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn-app btn-app-secondary flex-fill" data-bs-dismiss="modal" style="height:48px;border-radius:10px;">
+                <button type="button" class="btn-app btn-app-secondary flex-fill" data-dismiss="modal" style="height:48px;border-radius:10px;">
                     Cancelar
                 </button>
                 <button type="button" class="btn-app flex-fill" id="btn-confirmar-reubicacion"

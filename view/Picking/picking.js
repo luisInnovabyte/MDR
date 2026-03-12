@@ -361,7 +361,17 @@ function procesarEscaneo(codigo, esBackup = false) {
                 break;
             case 'ya_asignado':
                 vibrar('warn');
-                abrirModalReubicacion(data);
+                feedback('fb-escaneo', '<i class="fa fa-circle-info me-2"></i><strong>' + escHtml(codigo) + '</strong> ya está en la lista. ¿Reubicar?', 'warn');
+                if (data.progreso) { state.progreso = data.progreso; actualizarBarras(data.progreso); }
+                Swal.fire({
+                    title: 'Ya está preparado',
+                    html: '<strong>' + escHtml(codigo) + '</strong> ya se encuentra en la lista de esta salida.<br><small class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</small>',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fa fa-exchange-alt me-1"></i> Reubicar',
+                    cancelButtonText: 'Cerrar',
+                    confirmButtonColor: '#6c757d'
+                }).then(r => { if (r.isConfirmed) abrirModalReubicacion(data); });
                 return;
             case 'cantidad_completada':
                 vibrar('warn');
@@ -425,13 +435,18 @@ function renderElementosEscaneados(elementos) {
                 <span class="fw-semibold small text-uppercase">${escHtml(e.codigo_elemento)}</span>
                 ${e.es_backup_linea_salida == 1 ? '<span class="badge badge-backup ms-1 small">backup</span>' : ''}
                 <div class="text-muted" style="font-size:0.78rem;">${escHtml(e.nombre_articulo || '')}</div>
+                ${e.numero_serie_elemento ? `<div class="text-muted" style="font-size:0.75rem;"><i class="fa fa-barcode me-1"></i>S/N: ${escHtml(e.numero_serie_elemento)}</div>` : ''}
                 <div class="text-muted" style="font-size:0.75rem;">
-                    <i class="fa fa-location-dot me-1 text-danger"></i>${escHtml(e.nombre_ubicacion_actual || 'Sin ubicación')}
+                    <i class="fa fa-map-marker-alt me-1 text-danger"></i>${escHtml(e.nombre_ubicacion_actual || 'Sin ubicación')}
                 </div>
             </div>
             <button class="elem-move"
-                    onclick="abrirReubicacionDirecta(${e.id_elemento}, ${e.id_linea_salida}, '${escJs(e.codigo_elemento)}', '${escJs(e.nombre_articulo)}', '${escJs(e.nombre_ubicacion_actual || '')}')">
-                <i class="fa fa-arrows-turn-right"></i>
+                    data-id-elemento="${e.id_elemento}"
+                    data-id-linea="${e.id_linea_salida}"
+                    data-codigo="${escHtml(e.codigo_elemento)}"
+                    data-nombre="${escHtml(e.nombre_articulo || '')}"
+                    data-ubicacion="${escHtml(e.nombre_ubicacion_actual || '')}">
+                <i class="fa fa-exchange-alt"></i>
             </button>
         </div>
     `).join('');
@@ -452,7 +467,7 @@ function abrirModalReubicacion(data) {
     document.getElementById('reub-ubicacion-actual').textContent = ubic ? ubic.nombre_ubicacion : 'Sin ubicación';
     cargarSelectUbicaciones();
     document.getElementById('inp-obs-movimiento').value = '';
-    new bootstrap.Modal(document.getElementById('modalReubicacion')).show();
+    abrirModalReubicacionUI();
 }
 
 function abrirReubicacionDirecta(id_elemento, id_linea_salida, codigo, nombre, ubicacionActual) {
@@ -461,7 +476,14 @@ function abrirReubicacionDirecta(id_elemento, id_linea_salida, codigo, nombre, u
     document.getElementById('reub-ubicacion-actual').textContent = ubicacionActual || 'Sin ubicación';
     cargarSelectUbicaciones();
     document.getElementById('inp-obs-movimiento').value = '';
-    new bootstrap.Modal(document.getElementById('modalReubicacion')).show();
+    abrirModalReubicacionUI();
+}
+
+function abrirModalReubicacionUI() {
+    // Reset Bootstrap 4 modal state para que funcione en aperturas sucesivas
+    var $m = $('#modalReubicacion');
+    $m.data('bs.modal', null);
+    $m.modal({ backdrop: true, keyboard: true, show: true });
 }
 
 function cargarSelectUbicaciones() {
@@ -696,6 +718,23 @@ $(document).ready(function () {
     $('#btn-completar').on('click', completarSalida);
     $('#btn-cancelar-salida').on('click', cancelarSalida);
 
+    // --- Botones reubicar en lista (event delegation) ---
+    $(document).on('click', '.elem-move', function () {
+        var $btn = $(this);
+        var id_elemento    = parseInt($btn.data('id-elemento'));
+        var id_linea_salida = parseInt($btn.data('id-linea'));
+        var codigo         = $btn.data('codigo');
+        var nombre         = $btn.data('nombre');
+        var ubicacion      = $btn.data('ubicacion');
+        abrirReubicacionDirecta(id_elemento, id_linea_salida, codigo, nombre, ubicacion);
+    });
+
+    // Limpiar backdrop al cerrar modal (fix Bootstrap 4)
+    $('#modalReubicacion').on('hidden.bs.modal', function () {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open').css('padding-right', '');
+    });
+
     // --- Modal Reubicación ---
     $('#btn-confirmar-reubicacion').on('click', function () {
         const id_ubicacion_destino = parseInt($('#sel-ubicacion-destino').val());
@@ -713,7 +752,7 @@ $(document).ready(function () {
             id_usuario: ID_USUARIO,
             observaciones: observaciones || null
         }).done(function (data) {
-            bootstrap.Modal.getInstance(document.getElementById('modalReubicacion')).hide();
+            $('#modalReubicacion').modal('hide');
             if (data.success) {
                 vibrar('ok');
                 Swal.fire({ toast: true, position: 'top', icon: 'success', timer: 2000, showConfirmButton: false, title: 'Movimiento registrado' });

@@ -414,9 +414,49 @@ class SalidaAlmacen
     public function get_progreso_salida($id_salida)
     {
         try {
-            $sql = "SELECT * FROM vista_progreso_salida WHERE id_salida_almacen = ? ORDER BY nombre_articulo ASC";
+            // Consulta directa en lugar de la vista para evitar el bug de doble conteo:
+            // la vista hace JOIN lp × lsa por id_articulo, multiplicando cantidad_escaneada
+            // cuando un artículo aparece en varias líneas del presupuesto.
+            $sql = "SELECT
+                        lp_g.id_salida_almacen,
+                        lp_g.id_articulo,
+                        lp_g.nombre_articulo,
+                        lp_g.codigo_articulo,
+                        lp_g.cantidad_requerida,
+                        COALESCE(lsa_g.cantidad_escaneada, 0) AS cantidad_escaneada,
+                        COALESCE(lsa_g.cantidad_backup, 0)    AS cantidad_backup,
+                        CASE WHEN COALESCE(lsa_g.cantidad_escaneada, 0) >= lp_g.cantidad_requerida
+                             THEN 1 ELSE 0 END AS esta_completo
+                    FROM (
+                        SELECT sa.id_salida_almacen,
+                               lp.id_articulo,
+                               a.nombre_articulo,
+                               a.codigo_articulo,
+                               SUM(lp.cantidad_linea_ppto) AS cantidad_requerida
+                        FROM salida_almacen sa
+                        JOIN presupuesto_version pv ON sa.id_version_presupuesto = pv.id_version_presupuesto
+                        JOIN linea_presupuesto lp
+                            ON  lp.id_version_presupuesto = pv.id_version_presupuesto
+                            AND lp.tipo_linea_ppto IN ('articulo','kit')
+                            AND lp.activo_linea_ppto = 1
+                        JOIN articulo a ON lp.id_articulo = a.id_articulo
+                        WHERE sa.id_salida_almacen = ? AND sa.activo_salida_almacen = 1
+                        GROUP BY sa.id_salida_almacen, lp.id_articulo, a.nombre_articulo,
+                                 a.codigo_articulo
+                    ) lp_g
+                    LEFT JOIN (
+                        SELECT id_salida_almacen,
+                               id_articulo,
+                               SUM(CASE WHEN es_backup_linea_salida = 0 AND activo_linea_salida = 1 THEN 1 ELSE 0 END) AS cantidad_escaneada,
+                               SUM(CASE WHEN es_backup_linea_salida = 1 AND activo_linea_salida = 1 THEN 1 ELSE 0 END) AS cantidad_backup
+                        FROM linea_salida_almacen
+                        WHERE id_salida_almacen = ?
+                        GROUP BY id_salida_almacen, id_articulo
+                    ) lsa_g ON lp_g.id_articulo = lsa_g.id_articulo
+                    ORDER BY lp_g.nombre_articulo ASC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_salida, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_salida, PDO::PARAM_INT);
             $stmt->execute();
             $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -444,9 +484,11 @@ class SalidaAlmacen
     public function get_elementos_escaneados($id_salida)
     {
         try {
-            $sql = "SELECT * FROM vista_ubicacion_actual_elemento 
-                    WHERE id_salida_almacen = ? 
-                    ORDER BY nombre_articulo ASC, codigo_elemento ASC";
+            $sql = "SELECT v.*, e.numero_serie_elemento
+                    FROM vista_ubicacion_actual_elemento v
+                    JOIN elemento e ON v.id_elemento = e.id_elemento
+                    WHERE v.id_salida_almacen = ?
+                    ORDER BY v.nombre_articulo ASC, v.codigo_elemento ASC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_salida, PDO::PARAM_INT);
             $stmt->execute();
