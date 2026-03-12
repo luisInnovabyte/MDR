@@ -836,4 +836,110 @@ class Elemento
             );
             return false;
         }
-    }}
+    }
+
+    public function get_presupuesto_activo_elemento($id_elemento)
+    {
+        try {
+            $sql = "SELECT
+                        sa.id_presupuesto,
+                        sa.numero_presupuesto_salida,
+                        sa.estado_salida
+                    FROM linea_salida_almacen lsa
+                    INNER JOIN salida_almacen sa
+                        ON lsa.id_salida_almacen = sa.id_salida_almacen
+                    WHERE lsa.id_elemento = ?
+                      AND lsa.activo_linea_salida = 1
+                      AND sa.activo_salida_almacen = 1
+                      AND sa.estado_salida IN ('en_proceso', 'completada')
+                    ORDER BY lsa.created_at_linea_salida DESC
+                    LIMIT 1";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'get_presupuesto_activo_elemento',
+                'Error: ' . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+
+    public function get_elemento_by_codigo($codigo_elemento)
+    {
+        try {
+            $sql = "SELECT * FROM vista_elementos_completa
+                    WHERE (codigo_elemento = ? OR codigo_barras_elemento = ?)
+                    AND activo_elemento = 1
+                    LIMIT 1";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, strtoupper(trim($codigo_elemento)), PDO::PARAM_STR);
+            $stmt->bindValue(2, trim($codigo_elemento), PDO::PARAM_STR);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'get_elemento_by_codigo',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+
+    public function update_datos_almacen($id_elemento, $id_estado_elemento, $proximo_mantenimiento_elemento)
+    {
+        try {
+            $sql = "UPDATE elemento SET
+                        id_estado_elemento = ?,
+                        proximo_mantenimiento_elemento = ?,
+                        updated_at_elemento = NOW()
+                    WHERE id_elemento = ?";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_estado_elemento, PDO::PARAM_INT);
+
+            if (!empty($proximo_mantenimiento_elemento)) {
+                $stmt->bindValue(2, $proximo_mantenimiento_elemento, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(2, null, PDO::PARAM_NULL);
+            }
+
+            $stmt->bindValue(3, $id_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'update_datos_almacen',
+                "Elemento ID $id_elemento actualizado: estado=$id_estado_elemento",
+                'info'
+            );
+
+            return $stmt->rowCount() >= 0;
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin',
+                'Elemento',
+                'update_datos_almacen',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
+            return false;
+        }
+    }
+}

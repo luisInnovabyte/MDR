@@ -245,6 +245,7 @@ function puedeVerMenu($idRol, $modulo) {
                 🏬 ALMACÉN
             </li>
             <li class="sub-item"><a href="../Picking/index.php" class="sub-link" target="_blank">Picking / Salida de Almacén</a></li>
+            <li class="sub-item"><a href="../GestionElementosAlmacen/index.php" class="sub-link" target="_blank">Gestión de Elementos</a></li>
             <li class="sub-item"><a href="../AlbaranesCarga/index.php" class="sub-link" target="_blank">Albaranes de Carga</a></li>
             <li class="sub-item"><a href="../CalendarioTecnicos/index.php" class="sub-link" target="_blank">Calendario de Servicios</a></li>
 

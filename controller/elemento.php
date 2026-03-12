@@ -330,6 +330,12 @@ switch ($op) {
         header('Content-Type: application/json; charset=utf-8');
         $datos = $elemento->get_elementoxid($_POST["id_elemento"]);
         if ($datos) {
+            if (in_array($datos['codigo_estado_elemento'] ?? '', ['PREP', 'ALQU'])) {
+                $ppto = $elemento->get_presupuesto_activo_elemento($datos['id_elemento']);
+                $datos['presupuesto_activo'] = $ppto ?: null;
+            } else {
+                $datos['presupuesto_activo'] = null;
+            }
             echo json_encode($datos, JSON_UNESCAPED_UNICODE);
         } else {
             echo json_encode([

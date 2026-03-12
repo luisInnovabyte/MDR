@@ -44,8 +44,7 @@ $(document).ready(function() {
     // Cargar información del artículo
     cargarInfoArticulo(idArticulo);
 
-    // Cargar catálogos
-    cargarEstadosElemento();
+    // Cargar catálogos independientes del modo
     cargarProveedores();
     cargarFormasPago();
 
@@ -57,16 +56,20 @@ $(document).ready(function() {
     configurarDatepickers();
 
     // Configurar según modo
+    // $.when espera a que AMBOS catálogos (marcas y estados) estén listos
+    // antes de intentar asignar valores al formulario, evitando la race condition
     if (modo === 'editar' && idElemento) {
         configurarModoEdicion(idElemento);
-        // Cargar marcas primero, luego cargar datos del elemento
-        cargarMarcas(function() {
+        $.when(cargarMarcas(), cargarEstadosElemento()).done(function() {
             cargarDatosElemento(idElemento);
         });
     } else {
         configurarModoNuevo();
-        // En modo nuevo, solo cargar las marcas sin callback
-        cargarMarcas();
+        $.when(cargarMarcas(), cargarEstadosElemento()).done(function() {
+            // En modo nuevo, seleccionar "Disponible" por defecto una vez el select esté poblado
+            $('#id_estado_elemento').val('1');
+            actualizarColorSelect($('#id_estado_elemento'));
+        });
     }
 
     // Configurar validaciones en tiempo real
@@ -143,8 +146,9 @@ function cargarInfoArticulo(id) {
 /**
  * Carga las marcas en el select
  */
-function cargarMarcas(callback) {
+function cargarMarcas() {
     console.log('🔄 Cargando marcas...');
+    var deferred = $.Deferred();
     $.ajax({
         url: '../../controller/marca.php?op=listar',
         method: 'GET',
@@ -167,28 +171,31 @@ function cargarMarcas(callback) {
                     }
                 });
                 console.log('✅ Marcas activas cargadas:', marcasActivas);
-                
-                // Ejecutar callback si se proporcionó
-                if (typeof callback === 'function') {
-                    callback();
-                }
             } else {
                 console.warn('⚠️ Estructura de respuesta inesperada:', response);
             }
+            deferred.resolve();
         },
         error: function(xhr, status, error) {
             console.error('❌ Error al cargar marcas:', error);
             console.error('Respuesta:', xhr.responseText);
             console.error('Status:', status);
+            deferred.resolve(); // Resolver igual para no bloquear el flujo
         }
     });
+    return deferred.promise();
 }
 
 /**
  * Carga los estados de elementos en el select
  */
+// Estados gestionados automáticamente por el sistema de almacén;
+// no deben ser seleccionables manualmente por el usuario
+const ESTADOS_AUTOMATICOS = ['PREP', 'ALQU'];
+
 function cargarEstadosElemento() {
     console.log('🔄 Cargando estados de elementos...');
+    var deferred = $.Deferred();
     $.ajax({
         url: '../../controller/estado_elemento.php?op=listar',
         method: 'GET',
@@ -205,21 +212,18 @@ function cargarEstadosElemento() {
                 response.data.forEach(function(estado) {
                     // Comparación flexible: acepta '1', 1, true
                     if (estado.activo_estado_elemento == 1 || estado.activo_estado_elemento === '1' || estado.activo_estado_elemento === true) {
-                        // Seleccionar "Disponible" por defecto (id_estado_elemento = 1)
-                        const selected = (estado.id_estado_elemento == 1 || estado.id_estado_elemento === '1') ? 'selected' : '';
+                        // Excluir estados gestionados automáticamente del dropdown editable
+                        if (ESTADOS_AUTOMATICOS.includes(estado.codigo_estado_elemento)) return;
                         
-                        // Crear option con color de fondo
+                        // Crear option con color de fondo (sin 'selected'; el valor se asigna en cargarDatosElemento)
                         const color = estado.color_estado_elemento || '#CCCCCC';
-                        const $option = $(`<option value="${estado.id_estado_elemento}" ${selected} style="background-color: ${color}; color: white; font-weight: bold;">${estado.descripcion_estado_elemento}</option>`);
-                        $option.data('color', color); // Guardar color en data attribute
+                        const $option = $(`<option value="${estado.id_estado_elemento}" style="background-color: ${color}; color: white; font-weight: bold;">${estado.descripcion_estado_elemento}</option>`);
+                        $option.data('color', color);
                         $select.append($option);
                         estadosActivos++;
                     }
                 });
-                console.log('✅ Estados activos cargados:', estadosActivos);
-                
-                // Actualizar color del select según la opción seleccionada
-                actualizarColorSelect($select);
+                console.log('✅ Estados manuales cargados:', estadosActivos);
                 
                 // Evento change para actualizar color cuando cambia la selección
                 $select.off('change.colorEstado').on('change.colorEstado', function() {
@@ -228,13 +232,16 @@ function cargarEstadosElemento() {
             } else {
                 console.warn('⚠️ Estructura de respuesta inesperada:', response);
             }
+            deferred.resolve();
         },
         error: function(xhr, status, error) {
             console.error('❌ Error al cargar estados:', error);
             console.error('Respuesta:', xhr.responseText);
             console.error('Status:', status);
+            deferred.resolve(); // Resolver igual para no bloquear el flujo
         }
     });
+    return deferred.promise();
 }
 
 /**
@@ -432,7 +439,44 @@ function cargarDatosElemento(id) {
                 $('#id_marca_elemento').val(data.id_marca || '');
                 
                 $('#modelo_elemento').val(data.modelo_elemento || '');
-                $('#id_estado_elemento').val(data.id_estado_elemento || '1');
+
+                // Estado del elemento: si es automático (PREP/ALQU), mostrar badge de solo lectura
+                const codigoEstado = data.codigo_estado_elemento || '';
+                const colorEstado  = data.color_estado_elemento  || '#607D8B';
+                const nombreEstado = data.descripcion_estado_elemento || '';
+                if (ESTADOS_AUTOMATICOS.includes(codigoEstado)) {
+                    // Ocultar el select editable (y deshabilitarlo para que FormData no lo incluya)
+                    // y mostrar el badge informativo con el estado real
+                    $('#id_estado_elemento').prop('disabled', true);
+                    $('#estado_select_container').hide();
+                    $('#estado_readonly_badge').html(
+                        `<span class="badge fs-6 px-3 py-2" style="background-color:${colorEstado};">
+                            <i class="fas fa-lock me-1"></i>${nombreEstado}
+                        </span>`
+                    );
+                    // Guardar el ID real del estado en un data-attribute para usarlo al guardar
+                    $('#estado_readonly_container')
+                        .data('id_estado', data.id_estado_elemento)
+                        .show();
+                    // Mostrar presupuesto asociado si existe
+                    if (data.presupuesto_activo && data.presupuesto_activo.numero_presupuesto_salida) {
+                        $('#presupuesto_ppto_numero').text(data.presupuesto_activo.numero_presupuesto_salida);
+                        $('#presupuesto_ppto_info').show();
+                    } else {
+                        $('#presupuesto_ppto_info').hide();
+                        $('#presupuesto_ppto_numero').text('');
+                    }
+                } else {
+                    // Estado manual: habilitar select, mostrar y asignar valor
+                    $('#id_estado_elemento').prop('disabled', false);
+                    $('#estado_readonly_container').hide();
+                    $('#presupuesto_ppto_info').hide();
+                    $('#presupuesto_ppto_numero').text('');
+                    $('#estado_select_container').show();
+                    $('#id_estado_elemento').val(data.id_estado_elemento || '1');
+                    actualizarColorSelect($('#id_estado_elemento'));
+                }
+
                 $('#nave_elemento').val(data.nave_elemento || '');
                 $('#pasillo_columna_elemento').val(data.pasillo_columna_elemento || '');
                 $('#altura_elemento').val(data.altura_elemento || '');
@@ -821,6 +865,15 @@ function guardarElemento() {
         if (obsAlquiler) formData.set('observaciones_alquiler_elemento', obsAlquiler);
     }
     
+    // Si el estado es automático (PREP/ALQU), el select está deshabilitado y no se incluye
+    // en FormData; lo añadimos manualmente con el ID real guardado en el data-attribute
+    if ($('#estado_readonly_container').is(':visible')) {
+        const idEstadoReal = $('#estado_readonly_container').data('id_estado');
+        if (idEstadoReal) {
+            formData.set('id_estado_elemento', idEstadoReal);
+        }
+    }
+
     // Convertir fechas de formato europeo (dd/mm/yyyy) a formato MySQL (yyyy-mm-dd)
     ['fecha_compra_elemento', 'fecha_alta_elemento', 'fecha_fin_garantia_elemento', 'proximo_mantenimiento_elemento'].forEach(function(campo) {
         const valor = $(`#${campo}`).val();

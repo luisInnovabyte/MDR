@@ -168,12 +168,25 @@
                                     <input type="text" class="form-control" name="modelo_elemento" id="modelo_elemento" maxlength="100" placeholder="Ej: A7 III, FX6, etc.">
                                     <small class="form-text text-muted">Modelo específico del elemento</small>
                                 </div>
-                                <div class="col-12 col-md-4">
+                                <!-- Estado: select editable (estados manuales) -->
+                                <div class="col-12 col-md-4" id="estado_select_container">
                                     <label for="id_estado_elemento" class="form-label">Estado:</label>
                                     <select class="form-control" name="id_estado_elemento" id="id_estado_elemento">
-                                        <option value="1">Disponible</option>
+                                        <!-- Poblado din&aacute;micamente por JS (no incluye PREP ni ALQU) -->
                                     </select>
                                     <small class="form-text text-muted">Estado actual del elemento</small>
+                                </div>
+                                <!-- Estado: solo lectura (estados autom&aacute;ticos: PREP, ALQU) -->
+                                <div class="col-12 col-md-4" id="estado_readonly_container" style="display:none;">
+                                    <label class="form-label">Estado:</label>
+                                    <div id="estado_readonly_badge" class="mb-1"></div>
+                                    <div id="presupuesto_ppto_info" class="mt-2" style="display:none;">
+                                        <small class="text-muted d-block mb-1"><i class="fas fa-file-invoice me-1"></i>Presupuesto asociado:</small>
+                                        <span id="presupuesto_ppto_numero" class="badge bg-secondary fs-6 px-3 py-2"></span>
+                                    </div>
+                                    <small class="form-text text-muted mt-1 d-block">
+                                        <i class="fas fa-info-circle me-1"></i>Gestionado autom&aacute;ticamente por el sistema de almac&eacute;n
+                                    </small>
                                 </div>
                             </div>
 
