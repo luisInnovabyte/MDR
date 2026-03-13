@@ -8,7 +8,7 @@
 const CTR = '../../controller/gestion_almacen.php';
 
 const state = {
-    elemento:      null,   // datos completos del elemento activo
+    elemento: null,   // datos completos del elemento activo
     nfcController: null    // AbortController para NFC
 };
 
@@ -28,7 +28,7 @@ function mostrarFase(n) {
 
 function feedback(elementId, msg, tipo) {
     const el = document.getElementById(elementId);
-    const icons = { ok: 'circle-check', err: 'circle-xmark', warn: 'triangle-exclamation', info: 'circle-info' };
+    const icons = { ok: 'check-circle', err: 'times-circle', warn: 'exclamation-triangle', info: 'info-circle' };
     el.className = 'fb-banner fb-' + tipo;
     el.innerHTML = '<i class="fa fa-' + (icons[tipo] || 'circle-info') + '"></i>' + msg;
     el.classList.remove('fb-hidden');
@@ -42,7 +42,7 @@ function hideFeedback(elementId) {
 
 function vibrar(tipo) {
     if (!navigator.vibrate) return;
-    if (tipo === 'ok')  navigator.vibrate([100]);
+    if (tipo === 'ok') navigator.vibrate([100]);
     if (tipo === 'err') navigator.vibrate([200, 100, 200]);
 }
 
@@ -64,7 +64,7 @@ function iniciarNFC() {
         return;
     }
 
-    feedback('nfc-estado', '<i class="fa fa-spinner fa-spin me-2"></i> NFC activo — acerca la etiqueta…', 'info');
+    feedback('nfc-estado', 'NFC activo — acerca la etiqueta…', 'info');
 
     state.nfcController = new AbortController();
     const reader = new NDEFReader();
@@ -75,7 +75,7 @@ function iniciarNFC() {
                 for (const record of message.records) {
                     if (record.recordType === 'text') {
                         const decoder = new TextDecoder(record.encoding || 'utf-8');
-                        const codigo  = decoder.decode(record.data).trim().toUpperCase();
+                        const codigo = decoder.decode(record.data).trim().toUpperCase();
                         detenerNFC();
                         buscarElemento(codigo);
                         break;
@@ -104,10 +104,10 @@ function buscarElemento(codigoExterno) {
     const codigo = codigoExterno || document.getElementById('inp-codigo').value.trim().toUpperCase();
     if (!codigo) return;
 
-    feedback('fb-busqueda', '<i class="fa fa-spinner fa-spin me-2"></i> Buscando ' + escHtml(codigo) + '…', 'info');
+    feedback('fb-busqueda', 'Buscando ' + escHtml(codigo) + '…', 'info');
 
     $.post(CTR + '?op=buscar', { codigo_elemento: codigo })
-        .done(function(resp) {
+        .done(function (resp) {
             if (!resp.success) {
                 vibrar('err');
                 feedback('fb-busqueda', escHtml(resp.message || 'Elemento no encontrado'), 'err');
@@ -119,7 +119,7 @@ function buscarElemento(codigoExterno) {
             state.elemento = resp.elemento;
             renderFase2(resp.elemento, resp.estados, resp.presupuesto_activo);
         })
-        .fail(function() {
+        .fail(function () {
             vibrar('err');
             feedback('fb-busqueda', 'Error de comunicación con el servidor', 'err');
         });
@@ -130,8 +130,8 @@ function buscarElemento(codigoExterno) {
 // ────────────────────────────────────────────────────────────────
 function renderFase2(elem, estados, presupuestoActivo) {
     // Strip
-    document.getElementById('strip-codigo').textContent   = elem.codigo_elemento  || '—';
-    document.getElementById('strip-articulo').textContent = elem.nombre_articulo   || '—';
+    document.getElementById('strip-codigo').textContent = elem.codigo_elemento || '—';
+    document.getElementById('strip-articulo').textContent = elem.nombre_articulo || '—';
 
     // Badge estado actual
     const color = elem.color_estado_elemento || '#6c757d';
@@ -152,23 +152,24 @@ function renderFase2(elem, estados, presupuestoActivo) {
     const propText = elem.es_propio_elemento == 1
         ? '<span style="color:#198754;font-weight:700;">PROPIO</span>'
         : '<span style="color:#dc3545;font-weight:700;">ALQUILADO</span>'
-          + (elem.nombre_proveedor_alquiler ? ' · ' + escHtml(elem.nombre_proveedor_alquiler) : '');
+        + (elem.nombre_proveedor_alquiler ? ' · ' + escHtml(elem.nombre_proveedor_alquiler) : '');
     document.getElementById('info-propiedad').innerHTML = propText;
 
     const ubi = [elem.nave_elemento, elem.pasillo_columna_elemento, elem.altura_elemento]
         .filter(Boolean).join(' · ');
-    document.getElementById('info-ubicacion').textContent  = ubi || '—';
-    document.getElementById('info-peso').textContent       = elem.peso_elemento ? elem.peso_elemento + ' kg' : '—';
-    document.getElementById('info-serie').textContent      = elem.numero_serie_elemento || '—';
+    document.getElementById('info-ubicacion').textContent = ubi || '—';
+    document.getElementById('info-peso').textContent = elem.peso_elemento ? elem.peso_elemento + ' kg' : '—';
+    document.getElementById('info-serie').textContent = elem.numero_serie_elemento || '—';
     document.getElementById('info-descripcion').textContent = elem.descripcion_elemento || '—';
 
     // Poblar select de estados (TODOS — sin restricciones para almacén)
     const sel = document.getElementById('sel-estado');
     sel.innerHTML = '';
-    (estados || []).filter(e => e.activo_estado_elemento == 1).forEach(function(e) {
+    (estados || []).filter(e => e.activo_estado_elemento == 1).forEach(function (e) {
         const opt = document.createElement('option');
         opt.value = e.id_estado_elemento;
         opt.textContent = e.descripcion_estado_elemento;
+        opt.dataset.color = e.color_estado_elemento || '#6c757d';
         if (e.id_estado_elemento == elem.id_estado_elemento) opt.selected = true;
         sel.appendChild(opt);
     });
@@ -191,52 +192,106 @@ function renderFase2(elem, estados, presupuestoActivo) {
 // ────────────────────────────────────────────────────────────────
 // GUARDAR
 // ────────────────────────────────────────────────────────────────
+// function guardar() {
+//     const idElemento = document.getElementById('hidden-id-elemento').value;
+//     const idEstado = document.getElementById('sel-estado').value;
+//     const proxMant = document.getElementById('inp-mant').value;
+
+//     if (!idElemento || !idEstado) {
+//         Swal.fire('Error', 'Faltan datos obligatorios', 'error');
+//         return;
+//     }
+
+//     document.getElementById('btn-guardar').disabled = true;
+
+//     $.post(CTR + '?op=actualizar', {
+//         id_elemento: idElemento,
+//         id_estado_elemento: idEstado,
+//         proximo_mantenimiento_elemento: proxMant
+//     })
+//         .done(function (resp) {
+//             document.getElementById('btn-guardar').disabled = false;
+
+//             if (resp.success) {
+//                 vibrar('ok');
+//                 Swal.fire({
+//                     icon: 'success',
+//                     title: 'Guardado',
+//                     text: resp.message,
+//                     timer: 1800,
+//                     showConfirmButton: false
+//                 });
+
+//                 // Actualizar el badge del strip con el color real del estado seleccionado
+//                 const sel = document.getElementById('sel-estado');
+//                 const selOpt = sel.options[sel.selectedIndex];
+//                 const txtEstado = selOpt?.text || '';
+//                 const colorEstado = selOpt?.dataset.color || '#6c757d';
+//                 document.getElementById('strip-estado-badge').innerHTML =
+//                     '<span class="estado-badge" style="background:' + escHtml(colorEstado) + '">' + escHtml(txtEstado) + '</span>';
+
+//             } else {
+//                 vibrar('err');
+//                 Swal.fire('Error', resp.message || 'No se pudo guardar', 'error');
+//             }
+//         })
+//         .fail(function () {
+//             document.getElementById('btn-guardar').disabled = false;
+//             vibrar('err');
+//             Swal.fire('Error', 'Error de comunicación con el servidor', 'error');
+//         });
+// }
+
 function guardar() {
-    const idElemento  = document.getElementById('hidden-id-elemento').value;
-    const idEstado    = document.getElementById('sel-estado').value;
-    const proxMant    = document.getElementById('inp-mant').value;
+    const idElemento = document.getElementById('hidden-id-elemento').value;
+    const idEstado = document.getElementById('sel-estado').value;
+    const proxMant = document.getElementById('inp-mant').value;
 
-    if (!idElemento || !idEstado) {
-        Swal.fire('Error', 'Faltan datos obligatorios', 'error');
-        return;
-    }
+    if (!idElemento || !idEstado) return;
 
-    document.getElementById('btn-guardar').disabled = true;
+    // Bloquear controles para evitar doble disparo
+    document.getElementById('sel-estado').disabled = true;
+    document.getElementById('inp-mant').disabled = true;
+
+    feedback('fb-fase2', 'Guardando…', 'info');
 
     $.post(CTR + '?op=actualizar', {
-        id_elemento:                       idElemento,
-        id_estado_elemento:                idEstado,
-        proximo_mantenimiento_elemento:    proxMant
+        id_elemento: idElemento,
+        id_estado_elemento: idEstado,
+        proximo_mantenimiento_elemento: proxMant
     })
-    .done(function(resp) {
-        document.getElementById('btn-guardar').disabled = false;
+        .done(function (resp) {
+            document.getElementById('sel-estado').disabled = false;
+            document.getElementById('inp-mant').disabled = false;
 
-        if (resp.success) {
-            vibrar('ok');
-            Swal.fire({
-                icon: 'success',
-                title: 'Guardado',
-                text: resp.message,
-                timer: 1800,
-                showConfirmButton: false
-            });
+            if (resp.success) {
+                vibrar('ok');
+                feedback('fb-fase2', 'Guardado', 'ok');
+                setTimeout(function () { hideFeedback('fb-fase2'); }, 2000);
 
-            // Actualizar el badge del strip con el nuevo estado
-            const sel = document.getElementById('sel-estado');
-            const txtEstado = sel.options[sel.selectedIndex]?.text || '';
-            document.getElementById('strip-estado-badge').innerHTML =
-                '<span class="estado-badge" style="background:#1a237e">' + escHtml(txtEstado) + '</span>';
+                // Actualizar badge con el color real del estado guardado
+                const sel = document.getElementById('sel-estado');
+                const selOpt = sel.options[sel.selectedIndex];
+                const txtEstado = selOpt?.text || '';
+                const colorEst = selOpt?.dataset.color || '#6c757d';
+                document.getElementById('strip-estado-badge').innerHTML =
+                    '<span class="estado-badge" style="background:' + escHtml(colorEst) + '">' + escHtml(txtEstado) + '</span>';
 
-        } else {
+                // Sincronizar state con los valores guardados
+                state.elemento.id_estado_elemento = idEstado;
+                state.elemento.proximo_mantenimiento_elemento = proxMant || null;
+
+            } else {
+                vibrar('err');
+                feedback('fb-fase2', escHtml(resp.message || 'Error al guardar'), 'err');
+            }
+        })
+        .fail(function () {
+            document.getElementById('sel-estado').disabled = false;
+            document.getElementById('inp-mant').disabled = false;
             vibrar('err');
-            Swal.fire('Error', resp.message || 'No se pudo guardar', 'error');
-        }
-    })
-    .fail(function() {
-        document.getElementById('btn-guardar').disabled = false;
-        vibrar('err');
-        Swal.fire('Error', 'Error de comunicación con el servidor', 'error');
-    });
+            feedback('fb-fase2', 'Error de comunicación', 'err');
+        });
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -252,10 +307,25 @@ function nuevaBusqueda() {
 }
 
 // ────────────────────────────────────────────────────────────────
-// INIT — ocultar NFC si no disponible
+// INIT — ocultar NFC si no disponible + auto-guardar en cambios
 // ────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (!('NDEFReader' in window)) {
         document.getElementById('btn-nfc').style.display = 'none';
     }
+
+    // Auto-guardar al cambiar el estado (select)
+    document.getElementById('sel-estado').addEventListener('change', function () {
+        if (!state.elemento) return;  // solo si hay un elemento cargado
+        guardar();
+    });
+
+    // Auto-guardar al salir del campo fecha (blur en lugar de change para
+    // permitir escribir la fecha completa sin disparar guardados parciales)
+    const esTactil = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    document.getElementById('inp-mant').addEventListener(esTactil ? 'change' : 'blur', function () {
+        if (!state.elemento) return;
+        if (!this.value) return;
+        guardar();
+    });
 });

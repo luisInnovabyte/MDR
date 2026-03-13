@@ -149,6 +149,15 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../Presupuesto/index.php" class="sub-link">Mto. Presupuestos</a></li>
             <li class="sub-item"><a href="../ControlPagos/index.php" class="sub-link">Control de Pagos</a></li>
+            <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 11px; text-transform: uppercase; padding: 6px 15px; background-color: #fff3cd; margin: 4px 0; border-left: 3px solid #ffc107;">
+                ⚗️ TMP
+            </li>
+            <li class="sub-item"><a href="../TMP/index.php" class="sub-link" style="color: #856404;">
+                <i class="icon ion-ios-add-circle mg-r-5 tx-success"></i> Crear datos test
+            </a></li>
+            <li class="sub-item"><a href="../TMP/index.php?accion=limpiar" class="sub-link" style="color: #856404;">
+                <i class="icon ion-ios-trash mg-r-5 tx-danger"></i> Limpiar datos test
+            </a></li>
         </ul>
     </li>
 

@@ -20,7 +20,7 @@ switch ($op) {
     // buscar — encuentra elemento por código/cód. barras y devuelve info + estados
     // ─────────────────────────────────────────────────────────────────────────
     case 'buscar':
-        $codigo = htmlspecialchars(trim($_POST['codigo_elemento'] ?? ''), ENT_QUOTES, 'UTF-8');
+        $codigo = strtoupper(trim($_POST['codigo_elemento'] ?? ''));
 
         if (empty($codigo)) {
             echo json_encode(['success' => false, 'message' => 'Código vacío'], JSON_UNESCAPED_UNICODE);
@@ -61,8 +61,8 @@ switch ($op) {
         $id_elemento        = !empty($_POST['id_elemento'])        ? (int)$_POST['id_elemento']        : null;
         $id_estado_elemento = !empty($_POST['id_estado_elemento'])  ? (int)$_POST['id_estado_elemento']  : null;
         $proximo_mant       = !empty($_POST['proximo_mantenimiento_elemento'])
-                                ? htmlspecialchars(trim($_POST['proximo_mantenimiento_elemento']), ENT_QUOTES, 'UTF-8')
-                                : null;
+            ? trim($_POST['proximo_mantenimiento_elemento'])
+            : null;
 
         if (empty($id_elemento) || empty($id_estado_elemento)) {
             echo json_encode([
@@ -105,4 +105,3 @@ switch ($op) {
         echo json_encode(['success' => false, 'message' => 'Operación no reconocida'], JSON_UNESCAPED_UNICODE);
         break;
 }
-?>

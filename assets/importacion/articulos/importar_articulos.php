@@ -359,7 +359,7 @@ while (($fila = fgetcsv($fh, 0, TXT_SEP, TXT_ENC)) !== false) {
     // ── Normalizar nombre: primera mayúscula, resto minúsculas ───────────────
     $descripcion = mb_strtolower($descripcion, 'UTF-8');
     $descripcion = mb_strtoupper(mb_substr($descripcion, 0, 1, 'UTF-8'), 'UTF-8')
-                 . mb_substr($descripcion, 1, null, 'UTF-8');
+        . mb_substr($descripcion, 1, null, 'UTF-8');
 
     // ── Verificar duplicado por nombre (idempotencia) ────────────────────────
     try {
