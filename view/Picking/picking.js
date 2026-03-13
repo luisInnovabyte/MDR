@@ -35,14 +35,14 @@ function feedback(elementId, msg, tipo) {
     // tipo: ok | err | warn | info
     const el = document.getElementById(elementId);
     el.className = 'fb-banner fb-' + tipo;
-    el.innerHTML = '<i class="fa fa-' + {ok:'circle-check', err:'circle-xmark', warn:'triangle-exclamation', info:'circle-info'}[tipo] + ' me-2"></i>' + msg;
+    el.innerHTML = '<i class="fa fa-' + { ok: 'check-circle', err: 'times-circle', warn: 'exclamation-triangle', info: 'info-circle' }[tipo] + ' me-2"></i>' + msg;
     el.classList.remove('fb-hidden');
 }
 
 function vibrar(tipo) {
     if (!navigator.vibrate) return;
-    if (tipo === 'ok')   navigator.vibrate([100]);
-    if (tipo === 'err')  navigator.vibrate([200, 100, 200]);
+    if (tipo === 'ok') navigator.vibrate([100]);
+    if (tipo === 'err') navigator.vibrate([200, 100, 200]);
     if (tipo === 'warn') navigator.vibrate([150, 50, 150]);
 }
 
@@ -55,7 +55,7 @@ function post(op, data) {
 // ============================================================
 function iniciarQR() {
     const placeholder = document.getElementById('qr-placeholder');
-    const readerEl    = document.getElementById('qr-reader');
+    const readerEl = document.getElementById('qr-reader');
 
     // Feedback inmediato para confirmar que la función se ejecuta
     if (placeholder) {
@@ -91,11 +91,11 @@ function iniciarQR() {
 
         placeholder.innerHTML =
             '<div class="fb-banner fb-warn mb-3" style="flex-direction:column;align-items:flex-start;">'
-            + '<div><i class="fa fa-triangle-exclamation me-2"></i><strong>Cámara no disponible</strong></div>'
+            + '<div><i class="fa fa-exclamation-triangle me-2"></i><strong>Cámara no disponible</strong></div>'
             + '<div style="font-size:.85rem;margin-top:6px;">' + msg + '</div>'
             + '</div>'
             + '<button id="btn-activar-qr" class="btn-app btn-app-primary">'
-            + '<i class="fa fa-rotate-right me-2"></i>Reintentar</button>';
+            + '<i class="fa fa-redo me-2"></i>Reintentar</button>';
         placeholder.style.display = 'block';
         bindBtnActivarQR();
     }
@@ -131,9 +131,9 @@ function iniciarQR() {
             { facingMode: 'environment' },
             { fps: 12, qrbox: { width: dim, height: dim } },
             onQRSuccess,
-            function() { /* errores de frame, silencioso */ }
+            function () { /* errores de frame, silencioso */ }
         )
-        .then(function() {
+        .then(function () {
             if (readerEl) readerEl.style.display = 'block';
         })
         .catch(mostrarErrorCamara);
@@ -144,19 +144,19 @@ function detenerQR() {
     const scanner = state.qrScanner;
     state.qrScanner = null;           // null síncrono, evita que iniciarQR() lo reutilice
     scanner.stop()
-        .then(function() { try { scanner.clear(); } catch(e) {} })
-        .catch(function() {});
+        .then(function () { try { scanner.clear(); } catch (e) { } })
+        .catch(function () { });
 }
 
 function onQRSuccess(decodedText) {
     detenerQR();
     // Ocultar vídeo y mostrar placeholder de nuevo
     const placeholder = document.getElementById('qr-placeholder');
-    const readerEl    = document.getElementById('qr-reader');
-    if (readerEl)    readerEl.style.display = 'none';
+    const readerEl = document.getElementById('qr-reader');
+    if (readerEl) readerEl.style.display = 'none';
     if (placeholder) {
         placeholder.innerHTML = '<div class="d-flex align-items-center gap-2 text-success fw-semibold">'
-            + '<i class="fa fa-circle-check fa-lg"></i><span>QR leído ✓</span></div>';
+            + '<i class="fa fa-check-circle fa-lg"></i><span>QR leído ✓</span></div>';
         placeholder.style.display = 'block';
     }
     // El QR puede contener el número directamente o una URL con el número
@@ -169,22 +169,22 @@ function extraerNumeroPpto(raw) {
     try {
         const url = new URL(raw);
         if (url.searchParams.has('n')) return url.searchParams.get('n');
-    } catch(e) {}
+    } catch (e) { }
     // Si es código directo tipo P-00001/2026
     return raw.trim();
 }
 
 function buscarPresupuesto(numero) {
     if (!numero) return;
-    feedback('fb-busqueda', '<i class="fa fa-spinner fa-spin me-2"></i>Buscando...', 'info');
+    feedback('fb-busqueda', 'Buscando...', 'info');
 
     post('buscar_presupuesto', { numero_presupuesto: numero })
-        .done(function(data) {
+        .done(function (data) {
             if (!data.success) {
                 vibrar('err');
                 feedback('fb-busqueda', data.message, 'err');
                 // Reactivar cámara tras error para reintentar
-                setTimeout(function() {
+                setTimeout(function () {
                     const ph = document.getElementById('qr-placeholder');
                     if (ph) { ph.innerHTML = '<button id="btn-activar-qr" class="btn-app btn-app-primary"><i class="fa fa-camera me-2"></i>Activar Cámara</button>'; ph.style.display = 'block'; bindBtnActivarQR(); }
                     document.getElementById('qr-reader').style.display = 'none';
@@ -207,8 +207,8 @@ function buscarPresupuesto(numero) {
                 cargarFase2(data);
             }
         })
-        .fail(function(xhr) {
-            feedback('fb-busqueda', '<i class="fa fa-wifi me-2"></i>Error de conexión — HTTP ' + xhr.status + ' · ' + (xhr.responseText || '').substring(0, 120), 'err');
+        .fail(function (xhr) {
+            feedback('fb-busqueda', 'Error de conexión — HTTP ' + xhr.status + ' · ' + (xhr.responseText || '').substring(0, 120), 'err');
         });
 }
 
@@ -261,7 +261,7 @@ function renderNecesidades(necesidades) {
 function refrescarProgreso() {
     if (!state.salida) return;
     post('progreso', { id_salida_almacen: state.salida.id_salida_almacen })
-        .done(function(data) {
+        .done(function (data) {
             if (!data.success) return;
             state.progreso = data.progreso;
             actualizarBarras(data.progreso);
@@ -279,7 +279,7 @@ function actualizarBarras(progreso) {
 
     (progreso.por_articulo || []).forEach(art => {
         const cnt = document.getElementById('cnt-' + art.id_articulo);
-        const pb  = document.getElementById('pb-'  + art.id_articulo);
+        const pb = document.getElementById('pb-' + art.id_articulo);
         if (!cnt || !pb) return;
         const req = parseInt(art.cantidad_requerida) || 0;
         const esc = parseInt(art.cantidad_escaneada) || 0;
@@ -303,6 +303,7 @@ function actualizarBarras(progreso) {
 // ============================================================
 function iniciarFase3() {
     document.getElementById('p3-numero').textContent = state.presupuesto.numero_presupuesto;
+    feedback('fb-escaneo', 'Acerca el tag NFC o introduce el c\u00f3digo', 'info');
     mostrarFase(3);
     iniciarNFC();
     cargarElementosEscaneados();
@@ -322,7 +323,7 @@ function iniciarNFC() {
                 for (const record of message.records) {
                     if (record.recordType === 'text') {
                         const decoder = new TextDecoder(record.encoding || 'utf-8');
-                        const codigo  = decoder.decode(record.data).trim().toUpperCase();
+                        const codigo = decoder.decode(record.data).trim().toUpperCase();
                         procesarEscaneo(codigo);
                         break;
                     }
@@ -343,25 +344,25 @@ function detenerNFC() {
 function procesarEscaneo(codigo, esBackup = false) {
     if (!codigo) return;
     document.getElementById('inp-codigo-elem').value = '';
-    feedback('fb-escaneo', '<i class="fa fa-spinner fa-spin me-2"></i>Verificando ' + escHtml(codigo) + '...', 'info');
+    feedback('fb-escaneo', 'Verificando ' + escHtml(codigo) + '...', 'info');
 
     post('escanear', {
         id_salida_almacen: state.salida.id_salida_almacen,
         codigo_elemento: codigo,
         es_backup: esBackup ? 1 : 0
-    }).done(function(data) {
+    }).done(function (data) {
         switch (data.tipo) {
             case 'correcto':
                 vibrar('ok');
-                feedback('fb-escaneo', '<i class="fa fa-circle-check me-2"></i><strong>' + escHtml(codigo) + '</strong> — ' + escHtml(data.elemento.nombre_articulo), 'ok');
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — ' + escHtml(data.elemento.nombre_articulo), 'ok');
                 break;
             case 'backup':
                 vibrar('ok');
-                feedback('fb-escaneo', '<i class="fa fa-circle-plus me-2"></i><strong>' + escHtml(codigo) + '</strong> añadido como backup', 'warn');
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> añadido como backup', 'warn');
                 break;
             case 'ya_asignado':
                 vibrar('warn');
-                feedback('fb-escaneo', '<i class="fa fa-circle-info me-2"></i><strong>' + escHtml(codigo) + '</strong> ya está en la lista. ¿Reubicar?', 'warn');
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> ya está en la lista. ¿Reubicar?', 'warn');
                 if (data.progreso) { state.progreso = data.progreso; actualizarBarras(data.progreso); }
                 Swal.fire({
                     title: 'Ya está preparado',
@@ -372,6 +373,21 @@ function procesarEscaneo(codigo, esBackup = false) {
                     cancelButtonText: 'Cerrar',
                     confirmButtonColor: '#6c757d'
                 }).then(r => { if (r.isConfirmed) abrirModalReubicacion(data); });
+                return;
+            case 'ya_alquilado':
+                vibrar('warn');
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> está alquilado. ¿Reubicar?', 'warn');
+                if (data.linea_salida) {
+                    Swal.fire({
+                        title: 'Elemento alquilado',
+                        html: '<strong>' + escHtml(codigo) + '</strong> ya está en estado alquilado.<br><small class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</small>',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonText: '<i class="fa fa-exchange-alt me-1"></i> Reubicar',
+                        cancelButtonText: 'Cerrar',
+                        confirmButtonColor: '#6c757d'
+                    }).then(r => { if (r.isConfirmed) abrirModalReubicacion(data); });
+                }
                 return;
             case 'cantidad_completada':
                 vibrar('warn');
@@ -388,19 +404,19 @@ function procesarEscaneo(codigo, esBackup = false) {
                 return;
             case 'articulo_no_pertenece':
                 vibrar('err');
-                feedback('fb-escaneo', '<i class="fa fa-triangle-exclamation me-2"></i>' + escHtml(data.mensaje), 'err');
+                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
                 break;
             case 'no_disponible':
                 vibrar('err');
-                feedback('fb-escaneo', '<i class="fa fa-ban me-2"></i>' + escHtml(data.mensaje), 'err');
+                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
                 break;
             case 'elemento_no_encontrado':
                 vibrar('err');
-                feedback('fb-escaneo', '<i class="fa fa-question-circle me-2"></i>' + escHtml(data.mensaje), 'err');
+                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
                 break;
             default:
                 vibrar('err');
-                feedback('fb-escaneo', '<i class="fa fa-circle-xmark me-2"></i>' + (data.mensaje || 'Error desconocido'), 'err');
+                feedback('fb-escaneo', data.mensaje || 'Error desconocido', 'err');
         }
 
         if (data.progreso) {
@@ -408,8 +424,8 @@ function procesarEscaneo(codigo, esBackup = false) {
             actualizarBarras(data.progreso);
         }
         cargarElementosEscaneados();
-    }).fail(function() {
-        feedback('fb-escaneo', '<i class="fa fa-wifi me-2"></i>Error de conexión', 'err');
+    }).fail(function () {
+        feedback('fb-escaneo', 'Error de conexión', 'err');
     });
 }
 
@@ -417,7 +433,7 @@ function procesarEscaneo(codigo, esBackup = false) {
 function cargarElementosEscaneados() {
     if (!state.salida) return;
     post('elementos_escaneados', { id_salida_almacen: state.salida.id_salida_almacen })
-        .done(function(data) {
+        .done(function (data) {
             if (!data.success) return;
             renderElementosEscaneados(data.elementos || []);
         });
@@ -433,7 +449,7 @@ function renderElementosEscaneados(elementos) {
         <div class="elem-row">
             <div>
                 <span class="fw-semibold small text-uppercase">${escHtml(e.codigo_elemento)}</span>
-                ${e.es_backup_linea_salida == 1 ? '<span class="badge badge-backup ms-1 small">backup</span>' : ''}
+                ${e.es_backup_linea_salida == 1 ? '<span class="badge badge-bkp ms-1 small">backup</span>' : ''}
                 <div class="text-muted" style="font-size:0.78rem;">${escHtml(e.nombre_articulo || '')}</div>
                 ${e.numero_serie_elemento ? `<div class="text-muted" style="font-size:0.75rem;"><i class="fa fa-barcode me-1"></i>S/N: ${escHtml(e.numero_serie_elemento)}</div>` : ''}
                 <div class="text-muted" style="font-size:0.75rem;">
@@ -488,7 +504,7 @@ function abrirModalReubicacionUI() {
 
 function cargarSelectUbicaciones() {
     post('mapa_ubicaciones', { id_salida_almacen: state.salida.id_salida_almacen })
-        .done(function(data) {
+        .done(function (data) {
             const sel = document.getElementById('sel-ubicacion-destino');
             const ubicaciones = data.ubicaciones_disponibles || [];
             sel.innerHTML = '<option value="">-- Selecciona ubicación --</option>' +
@@ -511,7 +527,7 @@ function completarSalida() {
     }).then(r => {
         if (!r.isConfirmed) return;
         post('completar', { id_salida_almacen: state.salida.id_salida_almacen })
-            .done(function(data) {
+            .done(function (data) {
                 if (data.success) {
                     detenerNFC();
                     mostrarFase4();
@@ -534,7 +550,7 @@ function cancelarSalida() {
     }).then(r => {
         if (!r.isConfirmed) return;
         post('cancelar', { id_salida_almacen: state.salida.id_salida_almacen })
-            .done(function(data) {
+            .done(function (data) {
                 if (data.success) {
                     detenerNFC();
                     resetState();
@@ -585,12 +601,12 @@ function resetState() {
 // ============================================================
 function escHtml(str) {
     if (!str) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function escJs(str) {
     if (!str) return '';
-    return String(str).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
 // ============================================================
@@ -609,8 +625,8 @@ $(document).ready(function () {
     // --- Diagnóstico visible (pequeño texto gris bajo el lector QR) ---
     const diagEl = document.getElementById('diag-info');
     if (diagEl) {
-        const sc  = window.isSecureContext;
-        const md  = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+        const sc = window.isSecureContext;
+        const md = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
         diagEl.textContent = 'v' + (typeof PICKING_VER !== 'undefined' ? PICKING_VER : '?') + ' · secure:' + sc + ' · cam:' + md + ' · ' + location.protocol + '//' + location.hostname;
     }
 
@@ -623,9 +639,9 @@ $(document).ready(function () {
 
         // Mostrar aviso con instrucciones concretas para Android
         const $aviso = $('#aviso-https');
-        $aviso.css({'display': 'flex', 'align-items': 'flex-start', 'gap': '12px'});
+        $aviso.css({ 'display': 'flex', 'align-items': 'flex-start', 'gap': '12px' });
         $aviso.html(
-            '<i class="fa fa-triangle-exclamation" style="font-size:1.8rem;flex-shrink:0;margin-top:2px;"></i>' +
+            '<i class="fa fa-exclamation-triangle" style="font-size:1.8rem;flex-shrink:0;margin-top:2px;"></i>' +
             '<div>' +
             '<strong>Cámara y NFC no disponibles (HTTP)</strong><br>' +
             '<span style="font-size:.87rem;">Android Chrome bloquea la cámara en redes locales sin HTTPS. Opciones:</span>' +
@@ -707,7 +723,7 @@ $(document).ready(function () {
     });
 
     $('#btn-nfc').on('click', function () {
-        feedback('fb-escaneo', '<i class="fa fa-wifi me-2 text-primary"></i>NFC activo — acerca el tag', 'info');
+        feedback('fb-escaneo', 'NFC activo — acerca el tag', 'info');
     });
 
     $('#btn-refrescar-lista').on('click', function () {
@@ -721,11 +737,11 @@ $(document).ready(function () {
     // --- Botones reubicar en lista (event delegation) ---
     $(document).on('click', '.elem-move', function () {
         var $btn = $(this);
-        var id_elemento    = parseInt($btn.data('id-elemento'));
+        var id_elemento = parseInt($btn.data('id-elemento'));
         var id_linea_salida = parseInt($btn.data('id-linea'));
-        var codigo         = $btn.data('codigo');
-        var nombre         = $btn.data('nombre');
-        var ubicacion      = $btn.data('ubicacion');
+        var codigo = $btn.data('codigo');
+        var nombre = $btn.data('nombre');
+        var ubicacion = $btn.data('ubicacion');
         abrirReubicacionDirecta(id_elemento, id_linea_salida, codigo, nombre, ubicacion);
     });
 

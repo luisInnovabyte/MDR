@@ -291,6 +291,19 @@ class SalidaAlmacen
             }
 
             // 3. Verificar estado disponible
+            // 3a. Elemento alquilado → permitir reubicación sin crear nueva línea de salida
+            if ($elemento['codigo_estado_elemento'] === 'ALQU') {
+                $lineaAlqu = $this->get_linea_salida_por_elemento_presupuesto($id_salida, $elemento['id_elemento']);
+                $ubicacionActual = $lineaAlqu ? $this->get_ubicacion_actual($lineaAlqu['id_linea_salida']) : null;
+                return [
+                    'success' => true,
+                    'tipo' => 'ya_alquilado',
+                    'mensaje' => "Este elemento ya está alquilado.",
+                    'elemento' => $elemento,
+                    'linea_salida' => $lineaAlqu ?: null,
+                    'ubicacion_actual' => $ubicacionActual
+                ];
+            }
             $estadosValidos = ['DISP', 'TERC'];
             if (!in_array($elemento['codigo_estado_elemento'], $estadosValidos)) {
                 return [
@@ -446,13 +459,16 @@ class SalidaAlmacen
                                  a.codigo_articulo
                     ) lp_g
                     LEFT JOIN (
-                        SELECT id_salida_almacen,
-                               id_articulo,
-                               SUM(CASE WHEN es_backup_linea_salida = 0 AND activo_linea_salida = 1 THEN 1 ELSE 0 END) AS cantidad_escaneada,
-                               SUM(CASE WHEN es_backup_linea_salida = 1 AND activo_linea_salida = 1 THEN 1 ELSE 0 END) AS cantidad_backup
-                        FROM linea_salida_almacen
-                        WHERE id_salida_almacen = ?
-                        GROUP BY id_salida_almacen, id_articulo
+                        SELECT lsa.id_articulo,
+                               SUM(CASE WHEN lsa.es_backup_linea_salida = 0 AND lsa.activo_linea_salida = 1 THEN 1 ELSE 0 END) AS cantidad_escaneada,
+                               SUM(CASE WHEN lsa.es_backup_linea_salida = 1 AND lsa.activo_linea_salida = 1 THEN 1 ELSE 0 END) AS cantidad_backup
+                        FROM linea_salida_almacen lsa
+                        INNER JOIN salida_almacen sa2 ON lsa.id_salida_almacen = sa2.id_salida_almacen
+                        WHERE sa2.id_presupuesto = (
+                            SELECT id_presupuesto FROM salida_almacen WHERE id_salida_almacen = ?
+                        )
+                          AND sa2.activo_salida_almacen = 1
+                        GROUP BY lsa.id_articulo
                     ) lsa_g ON lp_g.id_articulo = lsa_g.id_articulo
                     ORDER BY lp_g.nombre_articulo ASC";
             $stmt = $this->conexion->prepare($sql);
@@ -818,6 +834,30 @@ class SalidaAlmacen
         $stmt->bindValue(2, $id_elemento, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->rowCount() > 0;
+    }
+
+    private function get_linea_salida_por_elemento_presupuesto($id_salida_actual, $id_elemento)
+    {
+        try {
+            $sql = "SELECT lsa.* FROM linea_salida_almacen lsa
+                    INNER JOIN salida_almacen sa ON lsa.id_salida_almacen = sa.id_salida_almacen
+                    WHERE lsa.id_elemento = ?
+                      AND sa.id_presupuesto = (
+                          SELECT id_presupuesto FROM salida_almacen WHERE id_salida_almacen = ?
+                      )
+                      AND lsa.activo_linea_salida = 1
+                    ORDER BY lsa.fecha_escaneo_linea_salida DESC
+                    LIMIT 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_salida_actual, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_linea_salida_por_elemento_presupuesto',
+                "Error: " . $e->getMessage(), 'error');
+            return false;
+        }
     }
 
     private function get_usuario_salida($id_salida)
