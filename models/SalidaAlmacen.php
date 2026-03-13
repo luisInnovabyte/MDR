@@ -15,8 +15,13 @@ class SalidaAlmacen
         try {
             $this->conexion->exec("SET time_zone = 'Europe/Madrid'");
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('system', 'SalidaAlmacen', '__construct',
-                "Error zona horaria: " . $e->getMessage(), 'warning');
+            $this->registro->registrarActividad(
+                'system',
+                'SalidaAlmacen',
+                '__construct',
+                "Error zona horaria: " . $e->getMessage(),
+                'warning'
+            );
         }
     }
 
@@ -75,10 +80,14 @@ class SalidaAlmacen
             $row['id_version_presupuesto'] = $version ? $version['id_version_presupuesto'] : null;
 
             return $row;
-
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'buscar_presupuesto_por_numero',
-                "Error SQL: " . $e->getMessage() . " | numero buscado: " . $numero, 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'buscar_presupuesto_por_numero',
+                "Error SQL: " . $e->getMessage() . " | numero buscado: " . $numero,
+                'error'
+            );
             return false;
         }
     }
@@ -95,7 +104,8 @@ class SalidaAlmacen
             $stmt = $this->conexion->prepare(
                 "SELECT id_presupuesto, numero_presupuesto, activo_presupuesto,
                         estado_general_presupuesto, version_actual_presupuesto, id_cliente
-                 FROM presupuesto WHERE numero_presupuesto = ? LIMIT 1");
+                 FROM presupuesto WHERE numero_presupuesto = ? LIMIT 1"
+            );
             $stmt->bindValue(1, trim($numero), PDO::PARAM_STR);
             $stmt->execute();
             $out['presupuesto'] = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -106,14 +116,16 @@ class SalidaAlmacen
                             estado_version_presupuesto, activo_version
                      FROM presupuesto_version
                      WHERE id_presupuesto = ?
-                     ORDER BY numero_version_presupuesto");
+                     ORDER BY numero_version_presupuesto"
+                );
                 $stmt2->bindValue(1, $out['presupuesto']['id_presupuesto'], PDO::PARAM_INT);
                 $stmt2->execute();
                 $out['versiones'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                 // Cliente
                 $stmt3 = $this->conexion->prepare(
                     "SELECT id_cliente, nombre_cliente, activo_cliente
-                     FROM cliente WHERE id_cliente = ? LIMIT 1");
+                     FROM cliente WHERE id_cliente = ? LIMIT 1"
+                );
                 $stmt3->bindValue(1, $out['presupuesto']['id_cliente'], PDO::PARAM_INT);
                 $stmt3->execute();
                 $out['cliente'] = $stmt3->fetch(PDO::FETCH_ASSOC);
@@ -182,8 +194,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_necesidades_presupuesto',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_necesidades_presupuesto',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return [];
         }
     }
@@ -205,8 +222,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_salida_activa',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_salida_activa',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
@@ -229,12 +251,22 @@ class SalidaAlmacen
             $stmt->bindValue(4, $numero_presupuesto, PDO::PARAM_STR);
             $stmt->execute();
             $id = (int)$this->conexion->lastInsertId();
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'iniciar_salida',
-                "Salida iniciada ID: $id para presupuesto $numero_presupuesto", 'info');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'iniciar_salida',
+                "Salida iniciada ID: $id para presupuesto $numero_presupuesto",
+                'info'
+            );
             return $id;
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'iniciar_salida',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'iniciar_salida',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
@@ -272,8 +304,11 @@ class SalidaAlmacen
             $elemento = $stmtE->fetch(PDO::FETCH_ASSOC);
 
             if (!$elemento) {
-                return ['success' => false, 'tipo' => 'elemento_no_encontrado',
-                        'mensaje' => "Elemento '$codigo_elemento' no encontrado en el sistema."];
+                return [
+                    'success' => false,
+                    'tipo' => 'elemento_no_encontrado',
+                    'mensaje' => "Elemento '$codigo_elemento' no encontrado en el sistema."
+                ];
             }
 
             // 2. ¿Ya está asignado en esta salida?
@@ -380,8 +415,11 @@ class SalidaAlmacen
             $stmtI->bindValue(1, $id_salida, PDO::PARAM_INT);
             $stmtI->bindValue(2, $elemento['id_elemento'], PDO::PARAM_INT);
             $stmtI->bindValue(3, $elemento['id_articulo'], PDO::PARAM_INT);
-            $stmtI->bindValue(4, $necesidad['id_linea_ppto'] ?? null,
-                              $necesidad['id_linea_ppto'] ? PDO::PARAM_INT : PDO::PARAM_NULL);
+            $stmtI->bindValue(
+                4,
+                $necesidad['id_linea_ppto'] ?? null,
+                $necesidad['id_linea_ppto'] ? PDO::PARAM_INT : PDO::PARAM_NULL
+            );
             $stmtI->bindValue(5, $es_backup ? 1 : 0, PDO::PARAM_INT);
             $stmtI->bindValue(6, $orden, PDO::PARAM_INT);
             $stmtI->execute();
@@ -389,31 +427,45 @@ class SalidaAlmacen
 
             // 8. Registrar primer movimiento automático (si hay ubicación en la línea del presupuesto)
             if (!empty($necesidad['id_ubicacion'])) {
-                $this->registrar_movimiento($id_linea_salida, null, $necesidad['id_ubicacion'], 
-                    $this->get_usuario_salida($id_salida), null);
+                $this->registrar_movimiento(
+                    $id_linea_salida,
+                    null,
+                    $necesidad['id_ubicacion'],
+                    $this->get_usuario_salida($id_salida),
+                    null
+                );
             }
 
             // 9. Cambiar estado del elemento a PREP
             $this->cambiar_estado_elemento($elemento['id_elemento'], 'PREP');
 
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'escanear_elemento',
-                "Elemento {$codigo_elemento} escaneado en salida $id_salida" . ($es_backup ? " (BACKUP)" : ""), 'info');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'escanear_elemento',
+                "Elemento {$codigo_elemento} escaneado en salida $id_salida" . ($es_backup ? " (BACKUP)" : ""),
+                'info'
+            );
 
             $tipo = $es_backup ? 'backup' : 'correcto';
             return [
                 'success' => true,
                 'tipo' => $tipo,
-                'mensaje' => $es_backup 
-                    ? "Elemento añadido como backup." 
+                'mensaje' => $es_backup
+                    ? "Elemento añadido como backup."
                     : "Elemento escaneado correctamente.",
                 'elemento' => $elemento,
                 'id_linea_salida' => $id_linea_salida,
                 'progreso' => $this->get_progreso_salida($id_salida)
             ];
-
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'escanear_elemento',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'escanear_elemento',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return ['success' => false, 'tipo' => 'error', 'mensaje' => "Error interno al procesar el escaneo."];
         }
     }
@@ -489,8 +541,13 @@ class SalidaAlmacen
                 'completo' => $completo
             ];
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_progreso_salida',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_progreso_salida',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return ['por_articulo' => [], 'total_requerido' => 0, 'total_escaneado' => 0, 'completo' => false];
         }
     }
@@ -511,8 +568,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_elementos_escaneados',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_elementos_escaneados',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return [];
         }
     }
@@ -532,8 +594,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_salidaxid',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_salidaxid',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
@@ -554,8 +621,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_salidas_por_presupuesto',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_salidas_por_presupuesto',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return [];
         }
     }
@@ -595,13 +667,23 @@ class SalidaAlmacen
             $stmtUpd->execute();
 
             $this->conexion->commit();
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'completar_salida',
-                "Salida $id_salida completada. " . count($elementos) . " elementos → ALQU", 'info');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'completar_salida',
+                "Salida $id_salida completada. " . count($elementos) . " elementos → ALQU",
+                'info'
+            );
             return true;
         } catch (PDOException $e) {
             $this->conexion->rollback();
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'completar_salida',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'completar_salida',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
@@ -653,13 +735,23 @@ class SalidaAlmacen
             $stmtUpd->execute();
 
             $this->conexion->commit();
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'cancelar_salida',
-                "Salida $id_salida cancelada. " . count($elementos) . " elementos → DISP", 'info');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'cancelar_salida',
+                "Salida $id_salida cancelada. " . count($elementos) . " elementos → DISP",
+                'info'
+            );
             return true;
         } catch (PDOException $e) {
             $this->conexion->rollback();
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'cancelar_salida',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'cancelar_salida',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
@@ -683,8 +775,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_linea_salida_por_elemento',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_linea_salida_por_elemento',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
@@ -709,8 +806,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_ubicacion_actual',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_ubicacion_actual',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
@@ -734,12 +836,22 @@ class SalidaAlmacen
             $stmt->bindValue(5, $observaciones, $observaciones ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->execute();
             $id = (int)$this->conexion->lastInsertId();
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'registrar_movimiento',
-                "Movimiento registrado ID: $id en linea_salida $id_linea_salida → ubicacion $id_ubicacion_destino", 'info');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'registrar_movimiento',
+                "Movimiento registrado ID: $id en linea_salida $id_linea_salida → ubicacion $id_ubicacion_destino",
+                'info'
+            );
             return $id;
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'registrar_movimiento',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'registrar_movimiento',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
@@ -765,8 +877,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_historial_movimientos',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_historial_movimientos',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return [];
         }
     }
@@ -786,8 +903,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_mapa_ubicaciones',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_mapa_ubicaciones',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return [];
         }
     }
@@ -809,8 +931,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_ubicaciones_del_presupuesto',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_ubicaciones_del_presupuesto',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return [];
         }
     }
@@ -854,8 +981,13 @@ class SalidaAlmacen
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->registro->registrarActividad('admin', 'SalidaAlmacen', 'get_linea_salida_por_elemento_presupuesto',
-                "Error: " . $e->getMessage(), 'error');
+            $this->registro->registrarActividad(
+                'admin',
+                'SalidaAlmacen',
+                'get_linea_salida_por_elemento_presupuesto',
+                "Error: " . $e->getMessage(),
+                'error'
+            );
             return false;
         }
     }
