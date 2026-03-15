@@ -4,8 +4,10 @@
  */
 
 const CTRL = '../../controller/informerotacion.php';
-let tablaRotacion = null;
-let graficoTop = null;
+let tablaRotacion    = null;
+let graficoTop       = null;
+let graficoFamilias  = null;
+let graficoTendencia = null;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // INICIALIZACIÓN
@@ -29,13 +31,23 @@ function limpiarFiltros() {
 }
 
 function recargarTodo() {
-    const dias     = parseInt($('#filtroPeriodo').val()) || 90;
-    const familia  = $('#filtroFamilia').val() || '';
+    const diasStr = $('#filtroPeriodo').val();
+    const dias    = (diasStr === null || diasStr === '') ? 90 : parseInt(diasStr, 10);
+    const familia = $('#filtroFamilia').val() || '';
+    const tipo    = $('#selectorGrafico').val() || 'top10';
 
     actualizarSubPeriodo(dias);
-    cargarKPIs(dias);
-    cargarGrafico(dias);
+    cargarKPIs(dias, familia);
+    cargarGrafico(tipo, dias, familia);
     inicializarTabla(dias, familia);
+}
+
+function cambiarGrafico() {
+    const diasStr = $('#filtroPeriodo').val();
+    const dias    = (diasStr === null || diasStr === '') ? 90 : parseInt(diasStr, 10);
+    const familia = $('#filtroFamilia').val() || '';
+    const tipo    = $('#selectorGrafico').val() || 'top10';
+    cargarGrafico(tipo, dias, familia);
 }
 
 function actualizarSubPeriodo(dias) {
@@ -71,12 +83,12 @@ function cargarFamilias() {
 // ─────────────────────────────────────────────────────────────────────────────
 // KPIs
 // ─────────────────────────────────────────────────────────────────────────────
-function cargarKPIs(dias) {
+function cargarKPIs(dias, familia) {
     $('#kpi-total, #kpi-usados, #kpi-pct, #kpi-sin-uso').text('…');
 
-    $.post(CTRL + '?op=kpis', { dias_periodo: dias })
+    $.post(CTRL + '?op=kpis', { dias_periodo: dias, id_familia: familia || '' })
         .done(function (resp) {
-            if (!resp || resp.error) {
+            if (!resp || resp.error || !resp.total_articulos) {
                 $('#kpi-total, #kpi-usados, #kpi-pct, #kpi-sin-uso').text('—');
                 return;
             }
@@ -93,10 +105,22 @@ function cargarKPIs(dias) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// GRÁFICO — Dispatcher según tipo seleccionado
+// ─────────────────────────────────────────────────────────────────────────────
+function cargarGrafico(tipo, dias, familia) {
+    $('#chartTopArticulos, #chartFamilias, #chartTendencia').hide();
+    switch (tipo) {
+        case 'familias':  $('#chartFamilias').show();     cargarGraficoFamilias(dias);         break;
+        case 'tendencia': $('#chartTendencia').show();    cargarGraficoTendencia();            break;
+        default:          $('#chartTopArticulos').show(); cargarGraficoTop(dias, familia);     break;
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // GRÁFICO — Top 10 artículos (barras horizontales)
 // ─────────────────────────────────────────────────────────────────────────────
-function cargarGrafico(dias) {
-    $.post(CTRL + '?op=top_articulos', { dias_periodo: dias, limite: 10 })
+function cargarGraficoTop(dias, familia) {
+    $.post(CTRL + '?op=top_articulos', { dias_periodo: dias, limite: 10, id_familia: familia || '' })
         .done(function (resp) {
             if (!Array.isArray(resp) || resp.length === 0) {
                 if (graficoTop) { graficoTop.destroy(); graficoTop = null; }
@@ -187,15 +211,15 @@ function inicializarTabla(dias, familia) {
         columns: [
             { data: 'codigo_articulo',          width: '10%' },
             { data: 'nombre_articulo' },
-            { data: 'nombre_familia',            width: '14%' },
-            { data: 'total_usos',                width: '8%',  className: 'text-center', type: 'num' },
-            { data: 'total_unidades_alquiladas', width: '9%',  className: 'text-center', type: 'num' },
-            { data: 'ultimo_uso',                width: '11%',
+            { data: 'nombre_familia',            width: '13%' },
+            { data: 'total_usos',                width: '7%',  className: 'text-center', type: 'num' },
+            { data: 'total_unidades_alquiladas', width: '8%',  className: 'text-center', type: 'num' },
+            { data: 'ultimo_uso',                width: '10%',
               render: function (data) {
                   return data ? data : '<span class="text-muted">—</span>';
               }
             },
-            { data: 'dias_desde_ultimo_uso',     width: '9%',  className: 'text-center', type: 'num',
+            { data: 'dias_desde_ultimo_uso',     width: '8%',  className: 'text-center', type: 'num',
               render: function (data) {
                   if (data === null || data === '' || data === undefined) {
                       return '<span class="text-muted">—</span>';
@@ -203,15 +227,204 @@ function inicializarTabla(dias, familia) {
                   return data;
               }
             },
-            { data: 'estado_rotacion',           width: '10%', className: 'text-center',
-              orderable: false
-            }
+            { data: 'tendencia',                 width: '8%',  className: 'text-center', orderable: false },
+            { data: 'estado_rotacion',           width: '9%',  className: 'text-center', orderable: false }
         ],
         language: {
-            url: '../../public/lib/DataTables/es-ES.json'
+            sProcessing:   "Procesando...",
+            sLengthMenu:   "Mostrar _MENU_ registros",
+            sZeroRecords:  "No se encontraron resultados",
+            sEmptyTable:   "Ningún dato disponible en esta tabla",
+            sInfo:         "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            sInfoEmpty:    "Mostrando registros del 0 al 0 de un total de 0 registros",
+            sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+            sSearch:       "Buscar:",
+            sUrl:          "",
+            oPaginate: {
+                sFirst:    "«",
+                sLast:     "»",
+                sNext:     "›",
+                sPrevious: "‹"
+            }
         },
-        order:    [[3, 'desc']],     // ordenar por usos descendente por defecto
+        order:    [[3, 'desc']],
         pageLength: 25,
         responsive: true
     });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GRÁFICO — Resumen por familia (donut)
+// ─────────────────────────────────────────────────────────────────────────────
+function cargarGraficoFamilias(dias) {
+    $.post(CTRL + '?op=resumen_familias', { dias_periodo: dias })
+        .done(function (resp) {
+            if (!Array.isArray(resp) || resp.length === 0) {
+                if (graficoFamilias) { graficoFamilias.destroy(); graficoFamilias = null; }
+                return;
+            }
+
+            const labels  = resp.map(function (r) { return r.nombre_familia; });
+            const datos   = resp.map(function (r) { return parseInt(r.total_usos) || 0; });
+            const colores = generarColores(resp.length);
+
+            const ctx = document.getElementById('chartFamilias').getContext('2d');
+
+            if (graficoFamilias) {
+                graficoFamilias.data.labels                       = labels;
+                graficoFamilias.data.datasets[0].data             = datos;
+                graficoFamilias.data.datasets[0].backgroundColor  = colores;
+                graficoFamilias.update();
+                return;
+            }
+
+            graficoFamilias = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: datos,
+                        backgroundColor: colores,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { font: { size: 11 }, padding: 12 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    const total = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
+                                    const pct   = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
+                                    return ' ' + ctx.label + ': ' + ctx.parsed + ' usos (' + pct + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GRÁFICO — Tendencia mensual (líneas: año actual vs año anterior)
+// ─────────────────────────────────────────────────────────────────────────────
+function cargarGraficoTendencia() {
+    $.post(CTRL + '?op=tendencia_mensual', {})
+        .done(function (resp) {
+            if (!Array.isArray(resp) || resp.length === 0) {
+                if (graficoTendencia) { graficoTendencia.destroy(); graficoTendencia = null; }
+                return;
+            }
+
+            const hoy    = new Date();
+            const meses  = [];
+            const actual = [];
+            const anyo   = [];
+            const nombreMeses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+            // Generar los 12 meses como eje X
+            for (let i = 11; i >= 0; i--) {
+                const d = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1);
+                meses.push(nombreMeses[d.getMonth()] + ' ' + d.getFullYear());
+                actual.push(0);
+                anyo.push(0);
+            }
+
+            resp.forEach(function (row) {
+                const partes = row.mes.split('-');
+                const y = parseInt(partes[0]);
+                const m = parseInt(partes[1]) - 1;
+                const v = parseInt(row.total_presupuestos) || 0;
+
+                for (let i = 0; i < 12; i++) {
+                    // Año actual: últimos 12 meses
+                    const da = new Date(hoy.getFullYear(), hoy.getMonth() - (11 - i), 1);
+                    if (da.getFullYear() === y && da.getMonth() === m) { actual[i] += v; break; }
+                    // Año anterior: mismos meses pero un año antes
+                    const dp = new Date(hoy.getFullYear() - 1, hoy.getMonth() - (11 - i), 1);
+                    if (dp.getFullYear() === y && dp.getMonth() === m) { anyo[i]   += v; break; }
+                }
+            });
+
+            const ctx = document.getElementById('chartTendencia').getContext('2d');
+
+            if (graficoTendencia) {
+                graficoTendencia.data.labels           = meses;
+                graficoTendencia.data.datasets[0].data = actual;
+                graficoTendencia.data.datasets[1].data = anyo;
+                graficoTendencia.update();
+                return;
+            }
+
+            graficoTendencia = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: meses,
+                    datasets: [
+                        {
+                            label: 'Año actual',
+                            data: actual,
+                            borderColor:     'rgba(13, 110, 253, 1)',
+                            backgroundColor: 'rgba(13, 110, 253, 0.08)',
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Año anterior',
+                            data: anyo,
+                            borderColor:     'rgba(108, 117, 125, 0.7)',
+                            backgroundColor: 'transparent',
+                            tension: 0.3,
+                            fill: false,
+                            borderDash: [5, 4],
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + ' presupuestos aprobados';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: 'rgba(0,0,0,0.06)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function generarColores(n) {
+    const base = [
+        'rgba(13,110,253,0.8)',  'rgba(25,135,84,0.8)',   'rgba(220,53,69,0.8)',
+        'rgba(255,193,7,0.85)',  'rgba(102,16,242,0.8)',  'rgba(13,202,240,0.8)',
+        'rgba(253,126,20,0.8)',  'rgba(32,201,151,0.8)',  'rgba(214,51,132,0.8)',
+        'rgba(108,117,125,0.8)','rgba(0,123,255,0.7)',   'rgba(40,167,69,0.7)',
+        'rgba(255,102,0,0.8)',   'rgba(111,66,193,0.8)',  'rgba(23,162,184,0.8)'
+    ];
+    const result = [];
+    for (let i = 0; i < n; i++) result.push(base[i % base.length]);
+    return result;
 }
