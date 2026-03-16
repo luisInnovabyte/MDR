@@ -165,6 +165,10 @@
         }, // de layout
         language: {
             url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/es-ES.json',
+            buttons: {
+                colvis:        'Visibilidad de columnas',
+                colvisRestore: 'Restaurar visibilidad'
+            }
         }, //https://datatables.net/plug-ins/i18n/Spanish.html
         lengthMenu: [
             [3, 10, 30, 50, 100, -1],

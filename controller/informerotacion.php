@@ -60,7 +60,9 @@ switch ($op) {
 
         foreach ($datos as $row) {
             $diasDesdeUso = $row['dias_desde_ultimo_uso'];
-            $ultimoUso    = $row['ultimo_uso'];
+            $ultimoUso    = !empty($row['ultimo_uso'])
+                            ? date('d/m/Y', strtotime($row['ultimo_uso']))
+                            : null;
 
             // Semáforo de actividad
             if ($row['total_usos'] == 0) {
