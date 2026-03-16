@@ -90,16 +90,16 @@ session_start();
                 <!-- ========================================== -->
                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                     <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <h4 class="mb-0">
-                                <i class="fas fa-money-check-alt me-2 text-primary"></i>Control de Pagos
+                        <div>
+                            <h4 class="mb-0 d-flex align-items-center gap-2">
+                                <i class="fas fa-money-check-alt me-1 text-primary"></i>Control de Pagos
+                                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal"
+                                        data-bs-target="#modalAyudaControlPagos" title="Ayuda sobre esta pantalla">
+                                    <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
+                                </button>
                             </h4>
-                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-                                    data-bs-target="#modalAyudaControlPagos" title="Ayuda">
-                                <i class="fas fa-question-circle"></i>
-                            </button>
+                            <p class="text-muted mb-0 small">Estado financiero de presupuestos aprobados</p>
                         </div>
-                        <p class="text-muted mb-0 small">Estado financiero de presupuestos aprobados</p>
                     </div>
                     <button class="btn btn-sm btn-outline-secondary" onclick="recargarTabla()">
                         <i class="fas fa-sync-alt me-1"></i>Actualizar
