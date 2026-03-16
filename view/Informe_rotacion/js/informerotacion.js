@@ -108,11 +108,11 @@ function cargarKPIs(dias, familia) {
 // GRÁFICO — Dispatcher según tipo seleccionado
 // ─────────────────────────────────────────────────────────────────────────────
 function cargarGrafico(tipo, dias, familia) {
-    $('#chartTopArticulos, #chartFamilias, #chartTendencia').hide();
+    $('#vistaTop, #vistaFamilias, #vistaTendencia').hide();
     switch (tipo) {
-        case 'familias':  $('#chartFamilias').show();     cargarGraficoFamilias(dias);         break;
-        case 'tendencia': $('#chartTendencia').show();    cargarGraficoTendencia();            break;
-        default:          $('#chartTopArticulos').show(); cargarGraficoTop(dias, familia);     break;
+        case 'familias':  $('#vistaFamilias').show();  cargarGraficoFamilias(dias);     break;
+        case 'tendencia': $('#vistaTendencia').show(); cargarGraficoTendencia();        break;
+        default:          $('#vistaTop').show();       cargarGraficoTop(dias, familia); break;
     }
 }
 
@@ -216,7 +216,9 @@ function inicializarTabla(dias, familia) {
             { data: 'total_unidades_alquiladas', width: '8%',  className: 'text-center', type: 'num' },
             { data: 'ultimo_uso',                width: '10%',
               render: function (data) {
-                  return data ? data : '<span class="text-muted">—</span>';
+                  // PHP ya envia la fecha formateada como DD/MM/YYYY o '—'
+                  if (!data || data === '—') return '<span class="text-muted">—</span>';
+                  return data;
               }
             },
             { data: 'dias_desde_ultimo_uso',     width: '8%',  className: 'text-center', type: 'num',
@@ -270,10 +272,46 @@ function cargarGraficoFamilias(dias) {
 
             const ctx = document.getElementById('chartFamilias').getContext('2d');
 
+            // Poblar tabla de desglose (siempre, tanto en creación como en actualización)
+            var total = datos.reduce(function (a, b) { return a + b; }, 0);
+            var tbodyHtml = '';
+            var sortedIdx = datos.map(function (v, i) { return i; })
+                                 .sort(function (a, b) { return datos[b] - datos[a]; });
+            sortedIdx.forEach(function (i) {
+                var pct = total > 0 ? ((datos[i] / total) * 100).toFixed(1) : '0.0';
+                var barW = total > 0 ? Math.round((datos[i] / total) * 100) : 0;
+                tbodyHtml += '<tr>' +
+                    '<td><span class="me-2" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:' + colores[i % colores.length] + '"></span>' + labels[i] + '</td>' +
+                    '<td class="text-center">' + datos[i].toLocaleString('es-ES') + '</td>' +
+                    '<td class="text-center">' +
+                        '<div class="d-flex align-items-center gap-1">' +
+                            '<div class="flex-grow-1" style="background:#e9ecef;border-radius:4px;height:8px;">' +
+                                '<div style="width:' + barW + '%;background:' + colores[i % colores.length] + ';height:8px;border-radius:4px;"></div>' +
+                            '</div>' +
+                            '<span class="text-nowrap" style="min-width:42px">' + pct + ' %</span>' +
+                        '</div>' +
+                    '</td>' +
+                    '</tr>';
+            });
+            var footHtml = '<tr class="table-light fw-semibold">' +
+                '<td>Total</td>' +
+                '<td class="text-center">' + total.toLocaleString('es-ES') + '</td>' +
+                '<td class="text-center">100 %</td>' +
+                '</tr>';
+            $('#tblFamiliasBody').html(tbodyHtml);
+            $('#tblFamiliasFoot').html(footHtml);
+
+            // Construir etiquetas de leyenda con % incluido
+            var totalC = datos.reduce(function (a, b) { return a + b; }, 0);
+            var labelsConPct = labels.map(function (lbl, i) {
+                var pctL = totalC > 0 ? ((datos[i] / totalC) * 100).toFixed(1) : '0.0';
+                return lbl + '  (' + pctL + ' %)';
+            });
+
             if (graficoFamilias) {
-                graficoFamilias.data.labels                       = labels;
-                graficoFamilias.data.datasets[0].data             = datos;
-                graficoFamilias.data.datasets[0].backgroundColor  = colores;
+                graficoFamilias.data.labels                      = labelsConPct;
+                graficoFamilias.data.datasets[0].data            = datos;
+                graficoFamilias.data.datasets[0].backgroundColor = colores;
                 graficoFamilias.update();
                 return;
             }
@@ -281,7 +319,7 @@ function cargarGraficoFamilias(dias) {
             graficoFamilias = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: labels,
+                    labels: labelsConPct,
                     datasets: [{
                         data: datos,
                         backgroundColor: colores,
@@ -291,7 +329,7 @@ function cargarGraficoFamilias(dias) {
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'right',
@@ -300,9 +338,9 @@ function cargarGraficoFamilias(dias) {
                         tooltip: {
                             callbacks: {
                                 label: function (ctx) {
-                                    const total = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
-                                    const pct   = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
-                                    return ' ' + ctx.label + ': ' + ctx.parsed + ' usos (' + pct + '%)';
+                                    const tot = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
+                                    const pct = tot > 0 ? ((ctx.parsed / tot) * 100).toFixed(1) : 0;
+                                    return ' ' + ctx.parsed.toLocaleString('es-ES') + ' usos (' + pct + ' %)';
                                 }
                             }
                         }

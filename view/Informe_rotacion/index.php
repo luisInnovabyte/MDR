@@ -70,13 +70,18 @@ session_start();
 
                 <!-- CABECERA -->
                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                    <div>
-                        <h4 class="mb-0">
-                            <i class="fas fa-boxes me-2 text-primary"></i>Rotación de Inventario
-                        </h4>
-                        <p class="text-muted mb-0 small">
-                            Análisis de uso de artículos — identifica equipos activos, moderados e inactivos
-                        </p>
+                    <div class="d-flex align-items-center gap-2">
+                        <div>
+                            <h4 class="mb-0 d-flex align-items-center gap-2">
+                                <i class="fas fa-boxes me-1 text-primary"></i>Rotación de Inventario
+                                <button type="button" class="btn btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#modalAyudaRotacion" title="Ayuda sobre este informe">
+                                    <i class="bi bi-question-circle text-primary" style="font-size: 1.3rem;"></i>
+                                </button>
+                            </h4>
+                            <p class="text-muted mb-0 small">
+                                Análisis de uso de artículos — identifica equipos activos, moderados e inactivos
+                            </p>
+                        </div>
                     </div>
                     <button class="btn btn-sm btn-outline-secondary" onclick="recargarTodo()">
                         <i class="fas fa-sync-alt me-1"></i>Actualizar
@@ -181,9 +186,42 @@ session_start();
                         </select>
                     </div>
                     <div class="card-body">
-                        <canvas id="chartTopArticulos" style="max-height:320px;"></canvas>
-                        <canvas id="chartFamilias"     style="max-height:320px; display:none;"></canvas>
-                        <canvas id="chartTendencia"    style="max-height:320px; display:none;"></canvas>
+                        <!-- Vista: Top 10 -->
+                        <div id="vistaTop">
+                            <canvas id="chartTopArticulos" style="max-height:320px;"></canvas>
+                        </div>
+                        <!-- Vista: Resumen por familia (donut + tabla lado a lado) -->
+                        <div id="vistaFamilias" style="display:none;">
+                            <div class="row align-items-start g-3">
+                                <div class="col-md-8">
+                                    <div style="position:relative;height:320px;">
+                                        <canvas id="chartFamilias"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted mb-1" style="font-size:0.75rem;">
+                                        <i class="fas fa-table me-1"></i>Desglose por familia
+                                    </h6>
+                                    <div class="table-responsive" style="max-height:310px;overflow-y:auto;">
+                                        <table class="table table-sm table-bordered mb-0" style="font-size:0.74rem;">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Familia</th>
+                                                    <th class="text-center" style="width:46px">Usos</th>
+                                                    <th class="text-center" style="width:56px">%</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tblFamiliasBody"></tbody>
+                                            <tfoot id="tblFamiliasFoot"></tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Vista: Tendencia mensual -->
+                        <div id="vistaTendencia" style="display:none;">
+                            <canvas id="chartTendencia" style="max-height:320px;"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -224,33 +262,14 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="js/informerotacion.js"></script>
 
+    <!--  MODAL AYUDA  -->
+    <?php include_once('ayudaRotacion.php') ?>
+
     <script>
         $(document).ready(function () {
             $('body').addClass('collapsed-menu');
             $('.br-sideleft').addClass('collapsed');
         });
     </script>
-</body>
-</html>
-                                    <th class="text-center">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div><!-- br-section-wrapper -->
-        </div><!-- br-pagebody -->
-
-        <footer class="br-footer">
-            <?php include_once('../../config/template/mainFooter.php') ?>
-        </footer>
-    </div><!-- br-mainpanel -->
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-    <script src="js/informerotacion.js"></script>
 </body>
 </html>
