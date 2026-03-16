@@ -14,34 +14,30 @@ switch ($op) {
     // ─── KPIs globales de rotación ────────────────────────────────────────────
     case 'kpis':
         $diasPeriodo = isset($_POST['dias_periodo']) ? (int) $_POST['dias_periodo'] : 90;
+        $idFamilia   = !empty($_POST['id_familia'])  ? (int) $_POST['id_familia']  : null;
 
-        $datos = $informe->getKpisRotacion($diasPeriodo);
+        $datos = $informe->getKpisRotacion($diasPeriodo, $idFamilia);
 
         header('Content-Type: application/json');
 
         if (empty($datos)) {
-            echo json_encode(['success' => false, 'message' => 'Sin datos'], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['error' => 'Sin datos'], JSON_UNESCAPED_UNICODE);
             break;
         }
 
-        echo json_encode([
-            'success' => true,
-            'data'    => $datos,
-        ], JSON_UNESCAPED_UNICODE);
+        echo json_encode($datos, JSON_UNESCAPED_UNICODE);
         break;
 
     // ─── Top artículos (para gráfico de barras horizontal) ───────────────────
     case 'top_articulos':
         $diasPeriodo = isset($_POST['dias_periodo']) ? (int) $_POST['dias_periodo'] : 0;
         $limite      = isset($_POST['limite'])       ? (int) $_POST['limite']       : 10;
+        $idFamilia   = !empty($_POST['id_familia'])  ? (int) $_POST['id_familia']  : null;
 
-        $datos = $informe->getTopArticulos($diasPeriodo, $limite);
+        $datos = $informe->getTopArticulos($diasPeriodo, $limite, $idFamilia);
 
         header('Content-Type: application/json');
-        echo json_encode([
-            'success' => true,
-            'data'    => $datos,
-        ], JSON_UNESCAPED_UNICODE);
+        echo json_encode($datos, JSON_UNESCAPED_UNICODE);
         break;
 
     // ─── Tabla completa de rotación (para DataTable) ──────────────────────────
@@ -52,8 +48,14 @@ switch ($op) {
         ];
 
         $datos = $informe->getTablaRotacion($filtros);
-        $data  = [];
 
+        // Comparativa tendencia (sólo si hay período definido)
+        $tendencia = [];
+        if (!empty($filtros['dias_periodo']) && $filtros['dias_periodo'] > 0) {
+            $tendencia = $informe->getTendenciaArticulos($filtros['dias_periodo']);
+        }
+
+        $data  = [];
         $hoy = new DateTime();
 
         foreach ($datos as $row) {
@@ -71,15 +73,31 @@ switch ($op) {
                 $badge = '<span class="badge bg-danger">Inactivo</span>';
             }
 
+            // Tendencia
+            $id = (int) $row['id_articulo'];
+            if (empty($tendencia) || !isset($tendencia[$id])) {
+                $iconoTendencia = '<span class="text-muted small">—</span>';
+            } else {
+                $t = $tendencia[$id];
+                if ($t['usos_actual'] > $t['usos_anterior']) {
+                    $iconoTendencia = '<span class="text-success fw-bold fs-5" title="Subiendo: '.$t['usos_actual'].' vs '.$t['usos_anterior'].' usos">▲</span>';
+                } elseif ($t['usos_actual'] < $t['usos_anterior']) {
+                    $iconoTendencia = '<span class="text-danger fw-bold fs-5" title="Bajando: '.$t['usos_actual'].' vs '.$t['usos_anterior'].' usos">▼</span>';
+                } else {
+                    $iconoTendencia = '<span class="text-secondary fs-5" title="Estable: '.$t['usos_actual'].' usos">→</span>';
+                }
+            }
+
             $data[] = [
-                'codigo_articulo'          => htmlspecialchars($row['codigo_articulo'], ENT_QUOTES, 'UTF-8'),
-                'nombre_articulo'          => htmlspecialchars($row['nombre_articulo'], ENT_QUOTES, 'UTF-8'),
-                'nombre_familia'           => htmlspecialchars($row['nombre_familia'],  ENT_QUOTES, 'UTF-8'),
-                'total_usos'               => (int) $row['total_usos'],
-                'total_unidades_alquiladas'=> (int) $row['total_unidades_alquiladas'],
-                'ultimo_uso'               => $ultimoUso ?? '—',
-                'dias_desde_ultimo_uso'    => $diasDesdeUso !== null ? (int) $diasDesdeUso : '—',
-                'estado_rotacion'          => $badge,
+                'codigo_articulo'           => htmlspecialchars($row['codigo_articulo'], ENT_QUOTES, 'UTF-8'),
+                'nombre_articulo'           => htmlspecialchars($row['nombre_articulo'], ENT_QUOTES, 'UTF-8'),
+                'nombre_familia'            => htmlspecialchars($row['nombre_familia'],  ENT_QUOTES, 'UTF-8'),
+                'total_usos'                => (int) $row['total_usos'],
+                'total_unidades_alquiladas' => (int) $row['total_unidades_alquiladas'],
+                'ultimo_uso'                => $ultimoUso ?? '—',
+                'dias_desde_ultimo_uso'     => $diasDesdeUso !== null ? (int) $diasDesdeUso : '—',
+                'tendencia'                 => $iconoTendencia,
+                'estado_rotacion'           => $badge,
             ];
         }
 
@@ -97,10 +115,24 @@ switch ($op) {
         $familias = $informe->getFamilias();
 
         header('Content-Type: application/json');
-        echo json_encode([
-            'success' => true,
-            'data'    => $familias,
-        ], JSON_UNESCAPED_UNICODE);
+        echo json_encode($familias, JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ─── Resumen por familia (para gráfico donut) ─────────────────────────────
+    case 'resumen_familias':
+        $diasPeriodo = isset($_POST['dias_periodo']) ? (int) $_POST['dias_periodo'] : 0;
+        $datos = $informe->getResumenFamilias($diasPeriodo);
+
+        header('Content-Type: application/json');
+        echo json_encode($datos, JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ─── Tendencia mensual (para gráfico de líneas) ───────────────────────────
+    case 'tendencia_mensual':
+        $datos = $informe->getTendenciaMensual();
+
+        header('Content-Type: application/json');
+        echo json_encode($datos, JSON_UNESCAPED_UNICODE);
         break;
 
     default:

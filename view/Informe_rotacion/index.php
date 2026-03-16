@@ -30,6 +30,8 @@ session_start();
 
         /* ---- Gráfico ---- */
         #chartTopArticulos { max-height: 320px; }
+        #chartFamilias     { max-height: 320px; }
+        #chartTendencia    { max-height: 320px; }
 
         /* ---- DataTable ---- */
         .dataTables_wrapper { overflow-x: auto; }
@@ -166,13 +168,22 @@ session_start();
                     </div>
                 </div>
 
-                <!-- GRÁFICO TOP 10 -->
+                <!-- GRÁFICO con selector -->
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header fw-semibold">
-                        <i class="fas fa-trophy me-2"></i>Top 10 Artículos más Alquilados
+                    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <span class="fw-semibold">
+                            <i class="fas fa-chart-bar me-2"></i>Análisis de Inventario
+                        </span>
+                        <select class="form-select form-select-sm w-auto" id="selectorGrafico" onchange="cambiarGrafico()">
+                            <option value="top10">🏆 Top 10 más alquilados</option>
+                            <option value="familias">🍩 Resumen por familia</option>
+                            <option value="tendencia">📈 Tendencia mensual</option>
+                        </select>
                     </div>
                     <div class="card-body">
-                        <canvas id="chartTopArticulos"></canvas>
+                        <canvas id="chartTopArticulos" style="max-height:320px;"></canvas>
+                        <canvas id="chartFamilias"     style="max-height:320px; display:none;"></canvas>
+                        <canvas id="chartTendencia"    style="max-height:320px; display:none;"></canvas>
                     </div>
                 </div>
 
@@ -192,6 +203,7 @@ session_start();
                                     <th class="text-center">Uds. totales</th>
                                     <th>Último uso</th>
                                     <th class="text-center">Días sin uso</th>
+                                    <th class="text-center">Tendencia</th>
                                     <th class="text-center">Estado</th>
                                 </tr>
                             </thead>
