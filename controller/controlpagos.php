@@ -214,7 +214,13 @@ switch ($_GET["op"] ?? '') {
     // RESUMEN_GLOBAL: KPIs para las tarjetas superiores
     // ------------------------------------------------------------------
     case "resumen_global":
-        $resumen = $controlPagos->get_resumen_global();
+        $filtros_kpi = [
+            'solo_pdte_facturar' => !empty($_POST['solo_pdte_facturar']) && $_POST['solo_pdte_facturar'] === '1',
+            'solo_pdte_cobrar'   => !empty($_POST['solo_pdte_cobrar'])   && $_POST['solo_pdte_cobrar']   === '1',
+            'fecha_evento_desde' => !empty($_POST['fecha_evento_desde']) ? $_POST['fecha_evento_desde'] : null,
+            'fecha_evento_hasta' => !empty($_POST['fecha_evento_hasta']) ? $_POST['fecha_evento_hasta'] : null,
+        ];
+        $resumen = $controlPagos->get_resumen_global($filtros_kpi);
 
         header('Content-Type: application/json');
         echo json_encode([

@@ -96,8 +96,8 @@ function inicializarTabla(filtros) {
 }
 
 // ─── Cargar KPIs ─────────────────────────────────────────────────────────────
-function cargarKPIs() {
-    $.post('../../controller/controlpagos.php?op=resumen_global')
+function cargarKPIs(filtros) {
+    $.post('../../controller/controlpagos.php?op=resumen_global', filtros || {})
         .done(function (res) {
             if (!res.success || !res.data) return;
             const d = res.data;
@@ -225,7 +225,7 @@ function aplicarFiltros() {
         fecha_evento_hasta : $('#filtroFechaHasta').val() || '',
     };
     inicializarTabla(filtrosActivos);
-    cargarKPIs();
+    cargarKPIs(filtrosActivos);
 }
 
 // ─── Limpiar filtros ──────────────────────────────────────────────────────────
@@ -236,7 +236,7 @@ function limpiarFiltros() {
     $('#filtroFechaHasta').val('');
     filtrosActivos = {};
     inicializarTabla();
-    cargarKPIs();
+    cargarKPIs({});
 }
 
 // ─── Recargar tabla (botón actualizar) ───────────────────────────────────────
@@ -248,5 +248,5 @@ function recargarTabla() {
             tablaControlPagos.ajax.reload(null, false);
         }
     }
-    cargarKPIs();
+    cargarKPIs(filtrosActivos);
 }

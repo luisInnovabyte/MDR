@@ -90,9 +90,15 @@ session_start();
                 <!-- ========================================== -->
                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                     <div>
-                        <h4 class="mb-0">
-                            <i class="fas fa-money-check-alt me-2 text-primary"></i>Control de Pagos
-                        </h4>
+                        <div class="d-flex align-items-center gap-2">
+                            <h4 class="mb-0">
+                                <i class="fas fa-money-check-alt me-2 text-primary"></i>Control de Pagos
+                            </h4>
+                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#modalAyudaControlPagos" title="Ayuda">
+                                <i class="fas fa-question-circle"></i>
+                            </button>
+                        </div>
                         <p class="text-muted mb-0 small">Estado financiero de presupuestos aprobados</p>
                     </div>
                     <button class="btn btn-sm btn-outline-secondary" onclick="recargarTabla()">
@@ -286,6 +292,9 @@ session_start();
         </div>
     </div>
     <!-- FIN MODAL DETALLE -->
+
+    <!-- Modal Ayuda -->
+    <?php include_once('ayudaControlPagos.php') ?>
 
     <!-- MainJs.php (jQuery, Bootstrap, DataTables, SweetAlert2...) -->
     <?php include_once('../../config/template/mainJs.php') ?>

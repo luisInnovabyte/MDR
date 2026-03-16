@@ -107,10 +107,13 @@ class ControlPagos
 
     /**
      * Devuelve los KPIs globales del sistema de control de pagos.
+     * Acepta los mismos filtros que get_control_pagos() para que los KPI
+     * reflejen siempre los datos de las filas visibles en la tabla.
      *
+     * @param array $filtros
      * @return array
      */
-    public function get_resumen_global()
+    public function get_resumen_global($filtros = [])
     {
         try {
             $sql = "SELECT
@@ -127,10 +130,28 @@ class ControlPagos
                             THEN SUM(total_conciliado) / SUM(total_pagado) * 100
                             ELSE 0 END, 2
                         ) AS porcentaje_global_pagado
-                    FROM vista_control_pagos";
+                    FROM vista_control_pagos
+                    WHERE 1=1";
+
+            $params = [];
+
+            if (!empty($filtros['solo_pdte_facturar'])) {
+                $sql .= " AND ROUND(saldo_pendiente, 2) > 0";
+            }
+            if (!empty($filtros['solo_pdte_cobrar'])) {
+                $sql .= " AND ROUND(total_pagado - total_conciliado, 2) > 0";
+            }
+            if (!empty($filtros['fecha_evento_desde'])) {
+                $sql .= " AND (fecha_inicio_evento_presupuesto >= ? OR fecha_inicio_evento_presupuesto IS NULL)";
+                $params[] = $filtros['fecha_evento_desde'];
+            }
+            if (!empty($filtros['fecha_evento_hasta'])) {
+                $sql .= " AND (fecha_inicio_evento_presupuesto <= ? OR fecha_inicio_evento_presupuesto IS NULL)";
+                $params[] = $filtros['fecha_evento_hasta'];
+            }
 
             $stmt = $this->conexion->prepare($sql);
-            $stmt->execute();
+            $stmt->execute($params);
             return $stmt->fetch(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
