@@ -66,3 +66,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+# Imágenes y vídeos grandes de diseño del landing
+HTML/imagenes_land/
+
