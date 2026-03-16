@@ -66,6 +66,7 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-# Imágenes y vídeos grandes de diseño del landing
+# Imï¿½genes y vï¿½deos grandes de diseï¿½o del landing
 HTML/imagenes_land/
-
+# Archivos de diseÃ±o Photoshop
+*.psd
