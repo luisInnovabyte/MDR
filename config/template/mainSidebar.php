@@ -201,7 +201,7 @@ function puedeVerMenu($idRol, $modulo) {
         </a>
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../Informe_ventas/index.php" class="sub-link">Ventas por Período(PRG)</a></li>
-            <li class="sub-item"><a href="../Informe_rotacion/index.php" class="sub-link">Rotación de Inventario(PRG)</a></li>
+            <li class="sub-item"><a href="../Informe_rotacion/index.php" class="sub-link">Rotación de Inventario</a></li>
             <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendarios Garantías</a></li>
             <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendarios Mantenimientos</a></li>
             <li class="sub-item"><a href="../Informe_ppto/index.php" class="sub-link">Calendarios Presupuestos</a></li>
