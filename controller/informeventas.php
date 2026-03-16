@@ -13,10 +13,12 @@ switch ($op) {
 
     // ─── KPIs globales ────────────────────────────────────────────────────────
     case 'kpis':
-        $anyo = isset($_POST['anyo']) ? (int) $_POST['anyo'] : 0;
-        $mes  = isset($_POST['mes'])  ? (int) $_POST['mes']  : 0;
+        $anyo_actual    = isset($_POST['anyo_actual'])    ? (int) $_POST['anyo_actual']    : 0;
+        $mes_actual     = isset($_POST['mes_actual'])     ? (int) $_POST['mes_actual']     : 0;
+        $anyo_comparar  = isset($_POST['anyo_comparar'])  ? (int) $_POST['anyo_comparar']  : 0;
+        $mes_comparar   = isset($_POST['mes_comparar'])   ? (int) $_POST['mes_comparar']   : 0;
 
-        $datos = $informe->getKpisVentas($anyo, $mes);
+        $datos = $informe->getKpisVentas($anyo_actual, $mes_actual, $anyo_comparar, $mes_comparar);
 
         header('Content-Type: application/json');
 
@@ -27,13 +29,7 @@ switch ($op) {
 
         echo json_encode([
             'success' => true,
-            'data'    => [
-                'total_facturado'  => $datos['total_facturado'] ?? 0,
-                'num_presupuestos' => $datos['num_presupuestos'] ?? 0,
-                'ticket_promedio'  => $datos['ticket_promedio']  ?? 0,
-                'mes_top'          => $datos['mes_top']          ?? null,
-                'mes_top_total'    => $datos['mes_top_total']    ?? 0,
-            ],
+            'data'    => $datos,
         ], JSON_UNESCAPED_UNICODE);
         break;
 
@@ -52,15 +48,15 @@ switch ($op) {
 
     // ─── Top clientes (para DataTable) ────────────────────────────────────────
     case 'top_clientes':
-        $anyo   = isset($_POST['anyo'])   ? (int) $_POST['anyo']   : 0;
-        $mes    = isset($_POST['mes'])    ? (int) $_POST['mes']    : 0;
-        $limite = isset($_POST['limite']) ? (int) $_POST['limite'] : 10;
+        $anyo = isset($_POST['anyo']) ? (int) $_POST['anyo'] : 0;
+        $mes  = isset($_POST['mes'])  ? (int) $_POST['mes']  : 0;
 
-        $datos = $informe->getTopClientes($anyo, $limite, $mes);
+        $datos = $informe->getTopClientes($anyo, 0, $mes);
         $data  = [];
 
         foreach ($datos as $row) {
             $data[] = [
+                'id_cliente'              => (int) $row['id_cliente'],
                 'nombre_completo_cliente' => htmlspecialchars($row['nombre_completo_cliente'], ENT_QUOTES, 'UTF-8'),
                 'num_presupuestos'        => (int) $row['num_presupuestos'],
                 'total_facturado'         => number_format((float) $row['total_facturado'], 2, ',', '.') . ' €',
@@ -121,6 +117,60 @@ switch ($op) {
         echo json_encode([
             'success' => true,
             'data'    => $anyos,
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ─── Gráfico mensual comparativo (barras) ─────────────────────────────────
+    case 'grafico_mensual_comparativo':
+        $anyo_actual   = isset($_POST['anyo_actual'])   ? (int) $_POST['anyo_actual']   : (int) date('Y');
+        $anyo_comparar = isset($_POST['anyo_comparar']) ? (int) $_POST['anyo_comparar'] : 0;
+
+        // Obtener datos del año actual
+        $datosActual = $informe->getVentasPorMes($anyo_actual);
+        $valoresActual = array_column($datosActual, 'total');
+        
+        // Obtener datos del año a comparar (si existe)
+        $valoresComparar = null;
+        if ($anyo_comparar > 0) {
+            $datosComparar = $informe->getVentasPorMes($anyo_comparar);
+            $valoresComparar = array_column($datosComparar, 'total');
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data'    => [
+                'actual'    => $valoresActual,
+                'comparar'  => $valoresComparar,
+                'anyo_actual'   => $anyo_actual,
+                'anyo_comparar' => $anyo_comparar
+            ]
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ─── Gráfico por familias (líneas) ────────────────────────────────────────
+    case 'grafico_familias':
+        $anyo_actual   = isset($_POST['anyo_actual'])   ? (int) $_POST['anyo_actual']   : (int) date('Y');
+        $anyo_comparar = isset($_POST['anyo_comparar']) ? (int) $_POST['anyo_comparar'] : 0;
+
+        // Obtener datos del año actual
+        $datosActual = $informe->getIngresosPorFamiliaMensual($anyo_actual);
+        
+        // Obtener datos del año a comparar (si existe)
+        $datosComparar = null;
+        if ($anyo_comparar > 0) {
+            $datosComparar = $informe->getIngresosPorFamiliaMensual($anyo_comparar);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data'    => [
+                'actual'    => $datosActual,
+                'comparar'  => $datosComparar,
+                'anyo_actual'   => $anyo_actual,
+                'anyo_comparar' => $anyo_comparar
+            ]
         ], JSON_UNESCAPED_UNICODE);
         break;
 
