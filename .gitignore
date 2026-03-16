@@ -18,6 +18,12 @@ BD/Importacion_BD_VerI/**/*.accdb
 # Claude AI files
 CLAUDE.md
 .claude/
+tmpclaude-*-cwd
+
+# JSON en directorios de código (controller, models, view)
+controller/**/*.json
+models/**/*.json
+view/**/*.json
 =======
 # Archivos de Claude
 CLAUDE.md
