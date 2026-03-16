@@ -544,10 +544,10 @@
                                 <div className="flex items-center space-x-4">
                                     <div className="text-right hidden md:block">
                                         <div className="flex items-center justify-end space-x-2 mb-1">
-                                            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                                                <span className="text-white font-bold text-sm">IB</span>
-                                            </div>
-                                            <p className="text-lg font-bold text-gray-800">Innovabyte</p>
+                                            <a href="https://innovabyte.es" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                                                <img src="./imagenes_land/logo3d.png" alt="Innovabyte Logo" className="w-8 h-8 object-contain" />
+                                                <p className="text-lg font-bold text-gray-800">Innovabyte</p>
+                                            </a>
                                         </div>
                                         <p className="text-xs text-gray-500 font-medium">Desarrollo Profesional</p>
                                     </div>
@@ -1380,6 +1380,10 @@
                                     { img: 'JA_listadoGarantias.png', title: 'Control de Garantías', desc: 'Módulo de gestión y seguimiento de garantías de equipos. Listado con fechas de vencimiento, alertas automáticas, documentación asociada y trazabilidad de reclamaciones y renovaciones' },
                                     { img: 'JB_calendarioGarantias.png', title: 'Calendario de Garantías', desc: 'Vista de calendario interactivo para control visual de vencimientos de garantías. Permite planificar renovaciones, identificar equipos próximos a caducidad y gestionar proactivamente el mantenimiento de garantías' },
                                     { img: 'KA_pantallaAyuda.png', title: 'Sistema de Ayuda Integrado', desc: 'Interfaz de ayuda contextual del sistema con documentación, guías de uso, FAQs y tutoriales interactivos. Ayuda específica por módulo para facilitar la adopción y uso eficiente del sistema' },
+                                    { img: 'LA_SistemasVersiones.png', title: 'Sistema de Versiones de Presupuestos', desc: 'Gestión avanzada de versionado de presupuestos con trazabilidad completa de cambios. Permite crear, comparar y gestionar múltiples versiones de una oferta comercial manteniendo el historial de modificaciones, responsables y fechas de cada revisión' },
+                                    { img: 'MA_SistemasImpresion.png', title: 'Impresión de Documentos y Multilingüe', desc: 'Módulo de generación e impresión de documentos profesionales: presupuestos para cliente final, versiones para intermediarios y albaranes de trabajo para técnicos. Soporte multilingüe (ES/EN) para adaptarse a clientes internacionales con plantillas configurables' },
+                                    { img: 'NA_Kanban.png', title: 'Kanban de Técnicos', desc: 'Tablero Kanban visual diseñado para mostrarse en los monitores del área técnica. Visualización en tiempo real del estado de los trabajos, asignaciones de técnicos y flujo de preparación de eventos, facilitando la coordinación operativa del equipo' },
+                                    { img: 'OA_SalidaAlmacen.png', title: 'Salida de Almacén (Móvil)', desc: 'Interfaz móvil para gestión de salidas de almacén. Permite al personal de almacén registrar la salida de equipos directamente desde su smartphone, con validación por NFC, confirmación de unidades y generación del albarán de salida en tiempo real' },
                                 ].map((item, index) => (
                                     <div key={index} className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
                                          onClick={() => setSelectedImage(item)}>
@@ -1458,6 +1462,27 @@
                                             tag: 'KITs',
                                             desc: 'Crear un presupuesto completo para un evento corporativo solía llevarte toda una mañana. AssetTrack lo resuelve con KITs: paquetes predefinidos de equipos que se insertan con un clic. ¿Evento corporativo estándar? KIT base. ¿Con streaming? KIT streaming añadido. ¿Iluminación premium? KIT Premium. Cada KIT lleva sus descuentos, coeficientes y configuración ya aplicados. Tú solo personalizas lo que necesites. Ahorro: 60% del tiempo. Ganancia: más presupuestos, más clientes, más rentabilidad.',
                                             hashtags: ['#AssetTrack', '#KITs', '#Presupuestos', '#Audiovisual', '#ERP']
+                                        },
+                                        {
+                                            src: './imagenes_land/videos/AssetTrack-Trazabilidad-NFC_Semana 5.mp4',
+                                            title: 'Trazabilidad NFC en campo',
+                                            tag: 'NFC',
+                                            desc: 'Apunta. Identifica. Listo. AssetTrack integra tecnología NFC para el control de inventario en campo. Sin escaneos manuales, sin listas en papel, sin margen de error. Cada unidad física tiene su propio tag NFC. Al acercar el móvil, el sistema identifica el equipo, actualiza su estado y lo asocia al evento correspondiente. En tiempo real. El resultado: trazabilidad del 100% en inventario. Sin intervención manual. Así funciona AssetTrack.',
+                                            hashtags: ['#AssetTrack', '#NFC', '#Inventario', '#Trazabilidad', '#Tecnología']
+                                        },
+                                        {
+                                            src: './imagenes_land/videos/AssetTrack-Eficiencia Visual_Semana 6.mp4',
+                                            title: ' 85% menos errores',
+                                            tag: 'Errores',
+                                            desc: 'Ese es el resultado de automatizar la asignación de equipos con AssetTrack. Antes: técnicos anotando seriales a mano, confusiones en devoluciones, equipos "perdidos" que aparecen semanas después, reclamaciones de clientes por material equivocado. Ahora: cada unidad física está identificada con NFC. El sistema asigna automáticamente, valida en campo y registra cada movimiento. Imposible confundir un equipo. La diferencia: operativa profesional. Clientes satisfechos. Equipo técnico trabajando sin fricciones. Un solo sistema. 85% menos problemas.',
+                                            hashtags: ['#AssetTrack #datos #impacto #trazabilidad #ERPaudiovisual #alquilerAV #audiovisual #eficiencia #NFC #gestionAV']
+                                        },
+                                        {
+                                            src: './imagenes_land/videos/AssetTrack-Logística-Eficiente_Semana 7.mp4',
+                                            title: 'Control de la flota',
+                                            tag: 'Vehiculos',
+                                            desc: '¿Cuántas horas pierdes coordinando transportes por WhatsApp? AssetTrack centraliza toda la logística de tu flota en un solo lugar. Vehículos, conductores, técnicos, rutas de entrega y recogida. Asigna vehículo y conductor a cada evento. Controla kilometraje automático. Recibe alertas de ITV y mantenimientos. Todo sincronizado con tus eventos. El resultado: logística sin fricciones. Técnicos que saben exactamente qué vehículo usar. Clientes que reciben sus equipos a tiempo. Control total de tu flota.',
+                                            hashtags: ['#AssetTrack #flota #logística #vehiculos #ERPaudiovisual #alquilerAV #audiovisual #transporteAV #gestionAV']
                                         },
                                     ].map((video, index) => (
                                         <div key={index} className="flex flex-col" style={{width: '300px'}}>
@@ -1644,7 +1669,5 @@
         ReactDOM.render(<LandingPage />, document.getElementById('root'));
     </script>
 
-    <!-- AssetTrack Chat Widget -->
-    <script src="/MDR/HTML/chat/widget/assettrack-chat.js" defer></script>
 </body>
 </html>
