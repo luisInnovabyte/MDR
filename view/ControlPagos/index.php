@@ -298,7 +298,7 @@ session_start();
 
     <!-- MainJs.php (jQuery, Bootstrap, DataTables, SweetAlert2...) -->
     <?php include_once('../../config/template/mainJs.php') ?>
-    <script src="controlpagos.js"></script>
+    <script src="controlpagos.js?v=<?php echo filemtime(__DIR__ . '/controlpagos.js'); ?>"></script>
 
     <script>
         // Colapsar sidebar al cargar

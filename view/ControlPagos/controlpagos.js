@@ -39,15 +39,17 @@ function inicializarTabla(filtros) {
         $('#tblControlPagos tbody').empty();
     }
 
-    const opBase          = filtros ? 'listar_filtrado' : 'listar';
-    const dataPost        = filtros ? filtros : {};
-    const urlController   = '../../controller/controlpagos.php?op=' + opBase;
+    const opBase        = filtros ? 'listar_filtrado' : 'listar';
+    const filtrosPost   = filtros ? Object.assign({}, filtros) : {};
+    const urlController = '../../controller/controlpagos.php?op=' + opBase;
 
     tablaControlPagos = $('#tblControlPagos').DataTable({
         ajax: {
             url  : urlController,
             type : 'POST',
-            data : dataPost,
+            data : function (d) {
+                return Object.assign(d, filtrosPost);
+            },
             dataSrc: 'data',
             error: function (xhr, error, code) {
                 console.error('Error AJAX Control Pagos:', error, code);
