@@ -56,7 +56,7 @@
                                 </tr>
                                 <tr>
                                     <td><span class="badge bg-success">Total Facturado <sup>*</sup></span></td>
-                                    <td>Suma de todos los pagos registrados que <strong>no están anulados</strong> (facturas emitidas, anticipos, abonos con signo positivo), <strong>con IVA incluido</strong>. Es lo que el cliente tiene comprometido documentalmente.</td>
+                                    <td>Suma de todos las facturas registradas que <strong>no están anuladas</strong> (facturas emitidas, anticipos, abonos con signo positivo), <strong>con IVA incluido</strong>. Es lo que el cliente tiene comprometido documentalmente.</td>
                                 </tr>
                                 <tr>
                                     <td><span class="badge bg-info text-dark">Total Pagado <sup>*</sup></span></td>
@@ -155,7 +155,7 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Facturado <sup>*</sup></strong></td>
-                                    <td>Suma de todos los pagos emitidos al cliente (facturas, anticipos…) que <strong>no están anulados</strong>, <strong>con IVA incluido</strong>. Puede ser menor que Aprobado si hay partes sin facturar aún. Un valor <strong>0,00 €</strong> indica que aún no se ha emitido ninguna factura.</td>
+                                    <td>Suma de todas las facturas emitidas al cliente (facturas, anticipos…) que <strong>no están anuladas</strong>, <strong>con IVA incluido</strong>. Puede ser menor que Aprobado si hay partes sin facturar aún. Un valor <strong>0,00 €</strong> indica que aún no se ha emitido ninguna factura.</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Pagado <sup>*</sup></strong></td>
