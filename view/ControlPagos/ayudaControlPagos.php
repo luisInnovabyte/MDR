@@ -51,20 +51,20 @@
                             </thead>
                             <tbody class="small text-muted">
                                 <tr>
-                                    <td><span class="badge bg-secondary">Total Aprobado</span></td>
-                                    <td>Suma de los importes de todos los presupuestos aprobados. Incluye el subtotal del presupuesto. Debajo indica cuántos presupuestos están en este estado.</td>
+                                    <td><span class="badge bg-secondary">Total Aprobado <sup>*</sup></span></td>
+                                    <td>Suma de los importes de todos los presupuestos aprobados, <strong>con IVA incluido</strong>. Debajo indica cuántos presupuestos están en este estado.</td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-success">Total Facturado</span></td>
-                                    <td>Suma de todos los pagos registrados que <strong>no están anulados</strong> (facturas emitidas, anticipos, abonoscon signo positivo). Es lo que el cliente tiene comprometido documentalmente.</td>
+                                    <td><span class="badge bg-success">Total Facturado <sup>*</sup></span></td>
+                                    <td>Suma de todos los pagos registrados que <strong>no están anulados</strong> (facturas emitidas, anticipos, abonos con signo positivo), <strong>con IVA incluido</strong>. Es lo que el cliente tiene comprometido documentalmente.</td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-info text-dark">Total Pagado</span></td>
-                                    <td>Importe de pagos marcados como <strong>conciliados</strong>, es decir, cobro efectivamente confirmado en el banco. Puede ser menor que el Facturado si hay facturas pendientes de cobrar.</td>
+                                    <td><span class="badge bg-info text-dark">Total Pagado <sup>*</sup></span></td>
+                                    <td>Importe de pagos marcados como <strong>conciliados</strong>, es decir, cobro efectivamente confirmado en el banco, <strong>con IVA incluido</strong>. Puede ser menor que el Facturado si hay facturas pendientes de cobrar.</td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-danger">Pdte. de Facturar</span></td>
-                                    <td><strong>Aprobado − Facturado.</strong> Lo que aún falta por emitir al cliente. Debajo indica cuántos presupuestos tienen pago parcial y cuántos no tienen ningún pago.</td>
+                                    <td><span class="badge bg-danger">Pdte. de Facturar <sup>*</sup></span></td>
+                                    <td><strong>Aprobado − Facturado</strong>, <strong>con IVA incluido</strong>. Lo que aún falta por emitir al cliente. Debajo indica cuántos presupuestos tienen pago parcial y cuántos no tienen ningún pago.</td>
                                 </tr>
                                 <tr>
                                     <td><span class="badge bg-primary">% Global Cobrado</span></td>
@@ -77,7 +77,8 @@
                         <small>
                             <i class="fas fa-info-circle me-1"></i>
                             Los KPI se recalculan automáticamente al aplicar o limpiar filtros, reflejando
-                            siempre los datos de las filas visibles en ese momento.
+                            siempre los datos de las filas visibles en ese momento.<br>
+                            <sup>*</sup> Todos los importes incluyen IVA (21%).
                         </small>
                     </div>
                 </div>
@@ -99,23 +100,24 @@
                             </thead>
                             <tbody class="small text-muted">
                                 <tr>
-                                    <td><i class="fas fa-toggle-on me-1 text-primary"></i>Solo pdtes. de Facturar</td>
-                                    <td>Muestra únicamente los presupuestos con importe pendiente de facturar &gt; 0 (Aprobado &gt; Facturado).</td>
+                                    <td><i class="fas fa-toggle-on me-1 text-primary"></i>Pdte. facturar</td>
+                                    <td>Muestra únicamente los presupuestos con importe pendiente de facturar &gt; 0 (Aprobado &gt; Facturado). Útil para detectar presupuestos parcialmente facturados.</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-toggle-on me-1 text-primary"></i>Solo pdtes. de Cobrar</td>
-                                    <td>Muestra únicamente los presupuestos con facturas emitidas pero aún no cobradas (Facturado &gt; Pagado).</td>
+                                    <td><i class="fas fa-toggle-on me-1 text-primary"></i>Sin facturas</td>
+                                    <td>Muestra únicamente los presupuestos que <strong>no tienen ninguna factura emitida</strong> (Facturado = 0,00 €). Útil para detectar presupuestos aprobados a los que aún no se ha realizado ninguna facturación.</td>
                                 </tr>
                                 <tr>
                                     <td><i class="fas fa-calendar me-1"></i>Evento desde / hasta</td>
-                                    <td>Filtra por la <strong>fecha del evento</strong> del presupuesto, no por la fecha de creación. Útil para cerrar periodos o revisar una temporada.</td>
+                                    <td>Filtra por la <strong>fecha del evento</strong> del presupuesto, no por la fecha de creación. Útil para cerrar periodos o revisar una temporada. Los campos de fecha muestran el aviso <em>"Pulsa «Filtrar» para aplicar"</em>.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <p class="text-muted small mt-2 mb-0">
-                        Los switches se aplican inmediatamente al activarlos. El rango de fechas requiere pulsar el botón <strong>Filtrar</strong>.
-                        Usa <strong>Limpiar</strong> para volver a ver todos los presupuestos.
+                        Los switches (<em>Pdte. facturar</em> y <em>Sin facturas</em>) se aplican inmediatamente al activarlos.
+                        El rango de fechas requiere pulsar el botón <strong>Filtrar</strong> para que surtan efecto.
+                        Usa <strong>Limpiar</strong> para restablecer todos los filtros y ver todos los presupuestos.
                     </p>
                 </div>
 
@@ -148,20 +150,20 @@
                                     <td>Nombre del evento o servicio contratado y su fecha. Ordena la tabla por este campo por defecto (ascendente).</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Aprobado</strong></td>
-                                    <td>Importe total del presupuesto en estado <em>Aprobado</em>. Es la cifra de referencia máxima a cobrar.</td>
+                                    <td><strong>Aprobado <sup>*</sup></strong></td>
+                                    <td>Importe total del presupuesto en estado <em>Aprobado</em>, <strong>con IVA incluido</strong>. Calculado desde las líneas del presupuesto. Es la cifra de referencia máxima a cobrar.</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Facturado</strong></td>
-                                    <td>Suma de todos los pagos emitidos al cliente (facturas, anticipos…) que <strong>no están anulados</strong>. Puede ser menor que Aprobado si hay partes sin facturar aún.</td>
+                                    <td><strong>Facturado <sup>*</sup></strong></td>
+                                    <td>Suma de todos los pagos emitidos al cliente (facturas, anticipos…) que <strong>no están anulados</strong>, <strong>con IVA incluido</strong>. Puede ser menor que Aprobado si hay partes sin facturar aún. Un valor <strong>0,00 €</strong> indica que aún no se ha emitido ninguna factura.</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Pagado</strong></td>
-                                    <td>Importe de pagos <strong>conciliados</strong>; cobro confirmado y verificado en cuenta. Puede ser menor que Facturado si hay facturas emitidas pero pendientes de cobrar.</td>
+                                    <td><strong>Pagado <sup>*</sup></strong></td>
+                                    <td>Importe de pagos <strong>conciliados</strong>, <strong>con IVA incluido</strong>; cobro confirmado y verificado en cuenta. Puede ser menor que Facturado si hay facturas emitidas pero pendientes de cobrar.</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Pdte. Facturar</strong></td>
-                                    <td><em>Aprobado − Facturado.</em> Lo que queda por emitir al cliente. Un valor <strong>0,00 €</strong> indica que toda la facturación está completa. Valores negativos indican que se ha facturado más de lo aprobado (ej. ajustes o revisiones).</td>
+                                    <td><strong>Pdte. Facturar <sup>*</sup></strong></td>
+                                    <td><em>Aprobado − Facturado</em>, <strong>con IVA incluido</strong>. Lo que queda por emitir al cliente. Un valor <strong>0,00 €</strong> indica que toda la facturación está completa. Valores negativos indican que se ha facturado más de lo aprobado (ej. ajustes o revisiones).</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Documentos</strong></td>
@@ -249,8 +251,8 @@
                         <i class="fas fa-book me-2"></i>Flujo de trabajo recomendado
                     </h6>
                     <ol class="text-muted small mb-0">
-                        <li>Activa <strong>"Solo pdtes. de Facturar"</strong> para ver qué presupuestos necesitan que emitas factura.</li>
-                        <li>Activa <strong>"Solo pdtes. de Cobrar"</strong> para controlar las facturas emitidas aún no cobradas.</li>
+                        <li>Activa <strong>"Pdte. facturar"</strong> para ver qué presupuestos tienen importe pendiente de facturar (Aprobado &gt; Facturado).</li>
+                        <li>Activa <strong>"Sin facturas"</strong> para detectar presupuestos aprobados a los que todavía no se les ha emitido ninguna factura (Facturado = 0,00 €).</li>
                         <li>Usa el <strong>rango de fechas de evento</strong> para revisar un periodo concreto (cierre mensual, trimestral…).</li>
                         <li>Pulsa el icono <i class="fas fa-eye text-primary"></i> en cualquier fila para ver el detalle completo de sus pagos.</li>
                         <li>Desde el desglose, usa <strong>"Ir al presupuesto"</strong> si necesitas registrar un nuevo pago o modificar uno existente.</li>
