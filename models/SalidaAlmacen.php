@@ -171,15 +171,20 @@ class SalidaAlmacen
     public function get_necesidades_presupuesto($id_version)
     {
         try {
-            $sql = "SELECT 
-                        lp.id_linea_ppto,
+            // Agrupamos por id_articulo para que un mismo artículo que aparezca
+            // en varias líneas del presupuesto (distintas fechas, etc.) se muestre
+            // una sola vez con la cantidad total. Así el contador es consistente
+            // con get_progreso_salida(), que también agrega por id_articulo.
+            $sql = "SELECT
                         lp.id_articulo,
-                        lp.cantidad_linea_ppto,
-                        lp.tipo_linea_ppto,
-                        lp.id_ubicacion,
+                        SUM(lp.cantidad_linea_ppto) AS cantidad_linea_ppto,
                         a.nombre_articulo,
                         a.codigo_articulo,
-                        cu.nombre_ubicacion
+                        GROUP_CONCAT(
+                            DISTINCT cu.nombre_ubicacion
+                            ORDER BY cu.nombre_ubicacion
+                            SEPARATOR ', '
+                        ) AS nombre_ubicacion
                     FROM linea_presupuesto lp
                     INNER JOIN articulo a ON lp.id_articulo = a.id_articulo
                     LEFT JOIN cliente_ubicacion cu ON lp.id_ubicacion = cu.id_ubicacion
@@ -188,7 +193,8 @@ class SalidaAlmacen
                     AND lp.activo_linea_ppto = 1
                     AND lp.id_articulo IS NOT NULL
                     AND a.mostrar_parte_trabajo_articulo = 1
-                    ORDER BY lp.orden_linea_ppto ASC";
+                    GROUP BY lp.id_articulo, a.nombre_articulo, a.codigo_articulo
+                    ORDER BY MIN(lp.orden_linea_ppto) ASC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_version, PDO::PARAM_INT);
             $stmt->execute();
@@ -368,12 +374,17 @@ class SalidaAlmacen
             $necesidad = $stmtN->fetch(PDO::FETCH_ASSOC);
 
             if (!$necesidad) {
-                return [
-                    'success' => false,
-                    'tipo' => 'articulo_no_pertenece',
-                    'mensaje' => "El artículo '{$elemento['nombre_articulo']}' no forma parte de este presupuesto.",
-                    'elemento' => $elemento
-                ];
+                // Si ya viene marcado como backup, permitir igualmente el registro
+                // con id_linea_ppto = NULL (material de repuesto fuera de presupuesto)
+                if (!$es_backup) {
+                    return [
+                        'success' => true,
+                        'tipo' => 'articulo_no_pertenece_preguntar',
+                        'mensaje' => "'{$elemento['nombre_articulo']}' no está en el presupuesto. ¿Es material de repuesto?",
+                        'elemento' => $elemento
+                    ];
+                }
+                // Backup fuera de presupuesto: $necesidad queda null, se usa más abajo
             }
 
             // 5. Si NO es backup, comprobar si quedan unidades por cubrir
@@ -418,7 +429,7 @@ class SalidaAlmacen
             $stmtI->bindValue(
                 4,
                 $necesidad['id_linea_ppto'] ?? null,
-                $necesidad['id_linea_ppto'] ? PDO::PARAM_INT : PDO::PARAM_NULL
+                !empty($necesidad['id_linea_ppto']) ? PDO::PARAM_INT : PDO::PARAM_NULL
             );
             $stmtI->bindValue(5, $es_backup ? 1 : 0, PDO::PARAM_INT);
             $stmtI->bindValue(6, $orden, PDO::PARAM_INT);
@@ -426,7 +437,7 @@ class SalidaAlmacen
             $id_linea_salida = (int)$this->conexion->lastInsertId();
 
             // 8. Registrar primer movimiento automático (si hay ubicación en la línea del presupuesto)
-            if (!empty($necesidad['id_ubicacion'])) {
+            if (!empty($necesidad['id_ubicacion'] ?? null)) {
                 $this->registrar_movimiento(
                     $id_linea_salida,
                     null,

@@ -246,7 +246,7 @@ function renderNecesidades(necesidades) {
                     <div class="text-muted small">${n.nombre_ubicacion ? '📍 ' + escHtml(n.nombre_ubicacion) : 'Sin ubicación asignada'}</div>
                 </div>
                 <div class="text-end">
-                    <span class="badge bg-secondary badge-count" id="cnt-${n.id_articulo}">0/${n.cantidad_linea_ppto}</span>
+                    <span class="badge bg-secondary badge-count" id="cnt-${n.id_articulo}">0/${parseInt(n.cantidad_linea_ppto) || 0}</span>
                 </div>
             </div>
             <div class="px-3 pb-2">
@@ -400,6 +400,22 @@ function procesarEscaneo(codigo, esBackup = false) {
                     cancelButtonText: 'No'
                 }).then(r => {
                     if (r.isConfirmed) procesarEscaneo(codigo, true);
+                });
+                return;
+            case 'articulo_no_pertenece_preguntar':
+                vibrar('warn');
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> no está en el presupuesto', 'warn');
+                Swal.fire({
+                    title: 'No está en el presupuesto',
+                    html: '<strong>' + escHtml(codigo) + '</strong><br><span class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</span><br><br>¿Lo añades como <strong>material de repuesto</strong>?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fa fa-toolbox me-1"></i> Sí, es repuesto',
+                    cancelButtonText: 'No, descartar',
+                    confirmButtonColor: '#795548'
+                }).then(r => {
+                    if (r.isConfirmed) procesarEscaneo(codigo, true);
+                    else feedback('fb-escaneo', 'Elemento descartado', 'info');
                 });
                 return;
             case 'articulo_no_pertenece':

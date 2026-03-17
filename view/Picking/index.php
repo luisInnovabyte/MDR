@@ -583,6 +583,9 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             <span>Picking MDR</span>
         </div>
         <span id="nav-numero" class="sub"></span>
+        <button id="btn-ayuda" onclick="document.getElementById('modalAyuda').classList.add('modal-ayuda--open')" style="background:transparent;border:none;color:#fff;opacity:.75;font-size:1.2rem;padding:8px;line-height:1;" title="Ayuda">
+            <i class="fa fa-question-circle"></i>
+        </button>
     </div>
 
     <!-- ============================================================ -->
@@ -689,7 +692,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
 
             <!-- Botones de acción -->
             <button id="btn-ver-mapa" class="btn-app btn-app-outline mb-3" style="display:none;">
-                <i class="fa fa-map-marked-alt"></i> Mapa de Ubicaciones
+                <i class="fa fa-wifi"></i> Escanear Elementos
             </button>
 
         </div>
@@ -807,6 +810,140 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             </div>
         </div>
     </div>
+
+    <!-- ============================================================ -->
+    <!-- MODAL AYUDA                                                   -->
+    <!-- ============================================================ -->
+    <div id="modalAyuda" class="modal-ayuda" role="dialog" aria-modal="true" aria-labelledby="ayuda-titulo">
+        <div class="modal-ayuda__backdrop" onclick="document.getElementById('modalAyuda').classList.remove('modal-ayuda--open')"></div>
+        <div class="modal-ayuda__sheet">
+            <div class="modal-ayuda__header">
+                <span id="ayuda-titulo"><i class="fa fa-info-circle me-2"></i>¿Cómo funciona esta pantalla?</span>
+                <button onclick="document.getElementById('modalAyuda').classList.remove('modal-ayuda--open')" class="modal-ayuda__close" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="modal-ayuda__body">
+
+                <div class="ayuda-item">
+                    <div class="ayuda-item__icon" style="background:#e3f2fd;color:#1a237e;"><i class="fa fa-list"></i></div>
+                    <div>
+                        <div class="ayuda-item__title">Lista de artículos agrupada</div>
+                        <div class="ayuda-item__desc">Cada artículo aparece <strong>una sola vez</strong>, aunque figure en varias líneas del presupuesto (por ejemplo, alquilado el día 1 y de nuevo el día 3). La cantidad mostrada es el <strong>total acumulado</strong> de todas las líneas.</div>
+                    </div>
+                </div>
+
+                <div class="ayuda-item">
+                    <div class="ayuda-item__icon" style="background:#e8f5e9;color:#198754;"><i class="fa fa-tag"></i></div>
+                    <div>
+                        <div class="ayuda-item__title">Contador escaneados / requeridos</div>
+                        <div class="ayuda-item__desc">El indicador <strong>X / Y</strong> muestra cuántos elementos físicos se han escaneado (X) frente a los que pide el presupuesto (Y). Es posible ver valores como <strong>2/1</strong> si se preparan más unidades de las previstas.</div>
+                    </div>
+                </div>
+
+                <div class="ayuda-item">
+                    <div class="ayuda-item__icon" style="background:#fff3e0;color:#fd7e14;"><i class="fa fa-wifi"></i></div>
+                    <div>
+                        <div class="ayuda-item__title">Botón «Escanear Elementos»</div>
+                        <div class="ayuda-item__desc">Pasa a la pantalla de <strong>escaneo NFC</strong> para registrar los elementos físicos uno a uno mediante etiquetas NFC o introduciendo el código manualmente.</div>
+                    </div>
+                </div>
+
+                <div class="ayuda-item">
+                    <div class="ayuda-item__icon" style="background:#fce4ec;color:#dc3545;"><i class="fa fa-check-double"></i></div>
+                    <div>
+                        <div class="ayuda-item__title">Completar Salida</div>
+                        <div class="ayuda-item__desc">El botón se activa únicamente cuando <strong>todos los artículos</strong> han alcanzado la cantidad requerida. Al confirmar, los elementos quedan registrados como <strong>alquilados</strong>.</div>
+                    </div>
+                </div>
+
+                <div class="ayuda-item">
+                    <div class="ayuda-item__icon" style="background:#fff8e1;color:#795548;"><i class="fa fa-undo"></i></div>
+                    <div>
+                        <div class="ayuda-item__title">Cancelar y devolver elementos</div>
+                        <div class="ayuda-item__desc">Al cancelar, <strong>todos los elementos escaneados vuelven al estado Disponible</strong> como si nunca hubieran sido preparados. La salida queda registrada como cancelada y se puede iniciar de nuevo el picking desde cero.</div>
+                    </div>
+                </div>
+
+                <div class="ayuda-item">
+                    <div class="ayuda-item__icon" style="background:#fff3e0;color:#e65100;"><i class="fa fa-exclamation-triangle"></i></div>
+                    <div>
+                        <div class="ayuda-item__title">Escaneado excede las unidades previstas</div>
+                        <div class="ayuda-item__desc">Si ya se ha cubierto la cantidad requerida de un artículo y se escanea otra unidad adicional, el sistema pregunta si deseas <strong>añadirla igualmente como material extra</strong>. Puede ser útil para llevar unidades de recambio al evento. Se registra fuera del conteo obligatorio.</div>
+                    </div>
+                </div>
+
+                <div class="ayuda-item">
+                    <div class="ayuda-item__icon" style="background:#efebe9;color:#4e342e;"><i class="fa fa-toolbox"></i></div>
+                    <div>
+                        <div class="ayuda-item__title">Artículo no está en el presupuesto</div>
+                        <div class="ayuda-item__desc">Si se escanea un elemento cuyo artículo <strong>no figura en el presupuesto</strong>, el sistema pregunta si lo quieres añadir como <strong>material de repuesto</strong>. Si confirmas, queda registrado como repuesto (backup) en la salida, sin afectar a los contadores del presupuesto.</div>
+                    </div>
+                </div>
+
+                <div class="ayuda-item">
+                    <div class="ayuda-item__icon" style="background:#e8eaf6;color:#3949ab;"><i class="fa fa-exchange-alt"></i></div>
+                    <div>
+                        <div class="ayuda-item__title">Traslado de elemento alquilado</div>
+                        <div class="ayuda-item__desc">Si se escanea un elemento que ya está en estado <strong>Alquilado</strong> (asignado a otra salida), el sistema avisa y ofrece la opción de <strong>reubicar</strong>. Al confirmar, el elemento se transfiere a esta salida, quedando desvinculado de la salida anterior.</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal-ayuda {
+            position: fixed; inset: 0; z-index: 9999;
+            display: flex; align-items: flex-end;
+            pointer-events: none;
+        }
+        .modal-ayuda--open { pointer-events: auto; }
+        .modal-ayuda__backdrop {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,.45);
+            opacity: 0; transition: opacity .25s;
+        }
+        .modal-ayuda--open .modal-ayuda__backdrop { opacity: 1; }
+        .modal-ayuda__sheet {
+            position: relative; width: 100%;
+            background: #fff;
+            border-radius: 20px 20px 0 0;
+            max-height: 88vh; overflow-y: auto;
+            transform: translateY(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .modal-ayuda--open .modal-ayuda__sheet { transform: translateY(0); }
+        .modal-ayuda__header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px 12px;
+            font-size: 1rem; font-weight: 700; color: #1a237e;
+            border-bottom: 1px solid #eee;
+            position: sticky; top: 0; background: #fff; z-index: 1;
+        }
+        .modal-ayuda__close {
+            background: none; border: none; font-size: 1.6rem; line-height: 1;
+            color: #999; padding: 0 4px; cursor: pointer;
+        }
+        .modal-ayuda__body { padding: 18px 20px 24px; }
+        .ayuda-item {
+            display: flex; gap: 14px; align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .ayuda-item:last-child { margin-bottom: 0; }
+        .ayuda-item__icon {
+            flex-shrink: 0; width: 42px; height: 42px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+        .ayuda-item__title {
+            font-size: .9rem; font-weight: 700; color: #222;
+            margin-bottom: 4px;
+        }
+        .ayuda-item__desc {
+            font-size: .82rem; color: #555; line-height: 1.5;
+        }
+    </style>
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
