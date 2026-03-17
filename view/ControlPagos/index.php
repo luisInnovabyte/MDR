@@ -163,19 +163,21 @@ session_start();
                 <div id="barraFiltros" class="mb-3 d-flex flex-wrap align-items-end gap-3">
                     <div class="form-check form-switch align-self-center mb-0">
                         <input class="form-check-input" type="checkbox" id="chkSoloPdteFacturar">
-                        <label class="form-check-label" for="chkSoloPdteFacturar">Solo pdtes. de Facturar</label>
+                        <label class="form-check-label" for="chkSoloPdteFacturar">Pdte. facturar</label>
                     </div>
                     <div class="form-check form-switch align-self-center mb-0">
                         <input class="form-check-input" type="checkbox" id="chkSoloPdteCobrar">
-                        <label class="form-check-label" for="chkSoloPdteCobrar">Solo pdtes. de Cobrar</label>
+                        <label class="form-check-label" for="chkSoloPdteCobrar">Sin facturas</label>
                     </div>
                     <div>
                         <label class="form-label mb-1 small">Evento desde</label>
                         <input type="date" class="form-control form-control-sm" id="filtroFechaDesde" style="max-width:150px;">
+                        <div class="text-muted mt-1" style="font-size:0.70rem;">Pulsa «Filtrar» para aplicar</div>
                     </div>
                     <div>
                         <label class="form-label mb-1 small">Evento hasta</label>
                         <input type="date" class="form-control form-control-sm" id="filtroFechaHasta" style="max-width:150px;">
+                        <div class="text-muted mt-1" style="font-size:0.70rem;">Pulsa «Filtrar» para aplicar</div>
                     </div>
                     <div class="d-flex gap-2">
                         <button class="btn btn-sm btn-primary" onclick="aplicarFiltros()">
