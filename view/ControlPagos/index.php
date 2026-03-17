@@ -113,7 +113,7 @@ session_start();
                     <div class="col">
                         <div class="card kpi-card kpi-total h-100 shadow-sm">
                             <div class="card-body py-3">
-                                <div class="kpi-label">Total Aprobado</div>
+                                <div class="kpi-label">Total Aprobado<sup>*</sup></div>
                                 <div class="kpi-valor text-secondary" id="kpi-total">—</div>
                                 <div class="kpi-sub" id="kpi-total-sub">— presupuestos</div>
                             </div>
@@ -122,7 +122,7 @@ session_start();
                     <div class="col">
                         <div class="card kpi-card kpi-cobrado h-100 shadow-sm">
                             <div class="card-body py-3">
-                                <div class="kpi-label">Total Facturado</div>
+                                <div class="kpi-label">Total Facturado<sup>*</sup></div>
                                 <div class="kpi-valor text-success" id="kpi-cobrado">—</div>
                                 <div class="kpi-sub">Pagos no anulados</div>
                             </div>
@@ -131,7 +131,7 @@ session_start();
                     <div class="col">
                         <div class="card kpi-card kpi-conciliado h-100 shadow-sm">
                             <div class="card-body py-3">
-                                <div class="kpi-label">Total Pagado</div>
+                                <div class="kpi-label">Total Pagado<sup>*</sup></div>
                                 <div class="kpi-valor text-info" id="kpi-conciliado">—</div>
                                 <div class="kpi-sub">Pagos conciliados</div>
                             </div>
@@ -140,7 +140,7 @@ session_start();
                     <div class="col">
                         <div class="card kpi-card kpi-pendiente h-100 shadow-sm">
                             <div class="card-body py-3">
-                                <div class="kpi-label">Total Pdte. Facturar</div>
+                                <div class="kpi-label">Total Pdte. Facturar<sup>*</sup></div>
                                 <div class="kpi-valor text-danger" id="kpi-pendiente">—</div>
                                 <div class="kpi-sub" id="kpi-pendiente-sub">Aprobado − Facturado</div>
                             </div>
@@ -197,10 +197,10 @@ session_start();
                                 <th>Nº Presupuesto</th>
                                 <th>Cliente</th>
                                 <th>Evento</th>
-                                <th class="text-end">Aprobado</th>
-                                <th class="text-end">Facturado</th>
-                                <th class="text-end">Pagado</th>
-                                <th class="text-end">Pdte. Facturar</th>
+                                <th class="text-end">Aprobado<sup>*</sup></th>
+                                <th class="text-end">Facturado<sup>*</sup></th>
+                                <th class="text-end">Pagado<sup>*</sup></th>
+                                <th class="text-end">Pdte. Facturar<sup>*</sup></th>
                                 <th>Documentos</th>
                                 <th>Última Factura</th>
                                 <th class="text-center" style="width:80px;">Opciones</th>
@@ -209,6 +209,7 @@ session_start();
                         <tbody></tbody>
                     </table>
                 </div>
+                <p class="small text-muted mt-1 mb-0"><sup>*</sup> Importes con IVA incluido (21%)</p>
 
             </div><!-- br-section-wrapper -->
         </div><!-- br-pagebody -->

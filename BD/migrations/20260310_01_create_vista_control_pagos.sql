@@ -17,7 +17,7 @@ SELECT
 
     -- Cliente
     c.id_cliente,
-    COALESCE(NULLIF(TRIM(c.nombre_facturacion_cliente), ''), c.nombre_cliente) AS nombre_completo_cliente,
+    c.nombre_cliente AS nombre_completo_cliente,
 
     -- Estado presupuesto
     ep.id_estado_ppto,
@@ -28,14 +28,13 @@ SELECT
     -- Forma de pago
     fp.nombre_pago AS nombre_forma_pago,
 
-    -- Total acordado: suma de TODOS los pagos del plan (incl. anulados)
-    -- Representa el importe total real facturado/acordado con el cliente
-    COALESCE(plan.total_acordado, 0) AS total_presupuesto,
+    -- Total del presupuesto calculado desde líneas (con IVA incluido)
+    COALESCE(vt.total_con_iva, 0) AS total_presupuesto,
 
     -- Totales de pagos agregados
     COALESCE(ag.total_pagado, 0)      AS total_pagado,
     COALESCE(ag.total_conciliado, 0)  AS total_conciliado,
-    COALESCE(plan.total_acordado, 0) - COALESCE(ag.total_pagado, 0) AS saldo_pendiente,
+    COALESCE(vt.total_con_iva, 0) - COALESCE(ag.total_pagado, 0) AS saldo_pendiente,
     ROUND(
         CASE
             WHEN COALESCE(ag.total_pagado, 0) > 0
@@ -67,16 +66,10 @@ INNER JOIN cliente c
 LEFT JOIN forma_pago fp
     ON p.id_forma_pago = fp.id_pago
 
--- Total acordado: suma de TODOS los pagos activos (incluido estado='anulado')
--- porque representan el plan de pago total del presupuesto
-LEFT JOIN (
-    SELECT
-        id_presupuesto,
-        SUM(importe_pago_ppto) AS total_acordado
-    FROM pago_presupuesto
-    WHERE activo_pago_ppto = 1
-    GROUP BY id_presupuesto
-) plan ON plan.id_presupuesto = p.id_presupuesto
+-- Total calculado desde líneas del presupuesto (versión activa, con IVA)
+LEFT JOIN v_presupuesto_totales vt
+    ON  vt.id_presupuesto             = p.id_presupuesto
+    AND vt.numero_version_presupuesto = p.version_actual_presupuesto
 
 -- Subquery: agregados de pagos activos no anulados
 LEFT JOIN (
