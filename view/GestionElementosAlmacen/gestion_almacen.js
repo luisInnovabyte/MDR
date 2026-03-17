@@ -106,28 +106,44 @@ function buscarElemento(codigoExterno) {
 
     feedback('fb-busqueda', 'Buscando ' + escHtml(codigo) + '…', 'info');
 
-    $.post(CTR + '?op=buscar', { codigo_elemento: codigo })
+    $.post(CTR + '?op=buscar', { codigo_elemento: codigo }, null, 'json')
         .done(function (resp) {
-            if (!resp.success) {
+            if (!resp || !resp.success) {
                 vibrar('err');
-                feedback('fb-busqueda', escHtml(resp.message || 'Elemento no encontrado'), 'err');
+                feedback('fb-busqueda', escHtml((resp && resp.message) || 'Elemento no encontrado'), 'err');
+                // Si falla, relanzar NFC para poder intentarlo de nuevo
+                if ('NDEFReader' in window) iniciarNFC();
                 return;
             }
 
             vibrar('ok');
-            hideFeedback('fb-busqueda');
             state.elemento = resp.elemento;
-            renderFase2(resp.elemento, resp.estados, resp.presupuesto_activo);
+            hideFeedback('fb-busqueda');
+            try {
+                renderFase2(resp.elemento, resp.estados, resp.presupuesto_activo);
+            } catch (ex) {
+                // alert() nativo: visible siempre, sin CDN, bloquea el loop NFC
+                alert('Error renderFase2:\n' + ex.message + '\n\n' + (ex.stack || '').substring(0, 400));
+                feedback('fb-busqueda', 'Error al mostrar: ' + escHtml(ex.message), 'err');
+                // NO relanzar NFC aquí: evita el loop que sobreescribe el mensaje
+            }
         })
         .fail(function () {
             vibrar('err');
             feedback('fb-busqueda', 'Error de comunicación con el servidor', 'err');
+            if ('NDEFReader' in window) iniciarNFC();
         });
 }
 
 // ────────────────────────────────────────────────────────────────
 // FASE 2 — RENDERIZAR DETALLE
 // ────────────────────────────────────────────────────────────────
+function fmtFecha(iso) {
+    if (!iso) return null;
+    const p = String(iso).substring(0, 10).split('-');
+    return p[2] + '/' + p[1] + '/' + p[0];
+}
+
 function renderFase2(elem, estados, presupuestoActivo) {
     // Strip
     document.getElementById('strip-codigo').textContent = elem.codigo_elemento || '—';
@@ -140,13 +156,47 @@ function renderFase2(elem, estados, presupuestoActivo) {
         + escHtml(elem.descripcion_estado_elemento || elem.codigo_estado_elemento)
         + '</span>';
 
-    // Info readonly
-    const rowPpto = document.getElementById('row-presupuesto');
+    // Info readonly — bloque presupuesto activo
+    const bloquePpto = document.getElementById('bloque-presupuesto');
     if (presupuestoActivo && presupuestoActivo.numero_presupuesto_salida) {
         document.getElementById('info-presupuesto').textContent = presupuestoActivo.numero_presupuesto_salida;
-        rowPpto.style.display = '';
+
+        document.getElementById('info-ppto-cliente').textContent =
+            escHtml(presupuestoActivo.nombre_completo_cliente || '—');
+
+        const rowEvento = document.getElementById('row-ppto-evento');
+        const evento = presupuestoActivo.nombre_evento_presupuesto;
+        if (evento) {
+            document.getElementById('info-ppto-evento').textContent = evento;
+            rowEvento.style.display = '';
+        } else {
+            rowEvento.style.display = 'none';
+        }
+
+        const fi = fmtFecha(presupuestoActivo.fecha_inicio_evento_presupuesto);
+        const ff = fmtFecha(presupuestoActivo.fecha_fin_evento_presupuesto);
+        document.getElementById('info-ppto-fechas-evento').textContent =
+            [fi, ff].filter(Boolean).join(' → ') || '—';
+
+        const rowLugar = document.getElementById('row-ppto-lugar');
+        const lugar = [presupuestoActivo.poblacion_evento_presupuesto,
+                       presupuestoActivo.provincia_evento_presupuesto].filter(Boolean).join(', ');
+        if (lugar) {
+            document.getElementById('info-ppto-lugar').textContent = lugar;
+            rowLugar.style.display = '';
+        } else {
+            rowLugar.style.display = 'none';
+        }
+
+        const salidaInicio = presupuestoActivo.fecha_inicio_salida
+            ? fmtFecha(presupuestoActivo.fecha_inicio_salida.substring(0, 10))
+              + ' ' + String(presupuestoActivo.fecha_inicio_salida).replace('T', ' ').substring(11, 16)
+            : '—';
+        document.getElementById('info-ppto-salida-inicio').textContent = salidaInicio;
+
+        bloquePpto.style.display = '';
     } else {
-        rowPpto.style.display = 'none';
+        bloquePpto.style.display = 'none';
     }
 
     const propText = elem.es_propio_elemento == 1
@@ -312,6 +362,9 @@ function nuevaBusqueda() {
 document.addEventListener('DOMContentLoaded', function () {
     if (!('NDEFReader' in window)) {
         document.getElementById('btn-nfc').style.display = 'none';
+    } else {
+        // Auto-iniciar NFC al cargar la página (sin necesidad de pulsar el botón)
+        iniciarNFC();
     }
 
     // Auto-guardar al cambiar el estado (select)

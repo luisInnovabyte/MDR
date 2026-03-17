@@ -835,10 +835,23 @@ class Elemento
             $sql = "SELECT
                         sa.id_presupuesto,
                         sa.numero_presupuesto_salida,
-                        sa.estado_salida
+                        sa.estado_salida,
+                        sa.fecha_inicio_salida,
+                        sa.fecha_fin_salida,
+                        p.nombre_evento_presupuesto,
+                        p.fecha_inicio_evento_presupuesto,
+                        p.fecha_fin_evento_presupuesto,
+                        p.poblacion_evento_presupuesto,
+                        p.provincia_evento_presupuesto,
+                        p.direccion_evento_presupuesto,
+                        c.nombre_cliente AS nombre_completo_cliente
                     FROM linea_salida_almacen lsa
                     INNER JOIN salida_almacen sa
                         ON lsa.id_salida_almacen = sa.id_salida_almacen
+                    INNER JOIN presupuesto p
+                        ON sa.id_presupuesto = p.id_presupuesto
+                    INNER JOIN cliente c
+                        ON p.id_cliente = c.id_cliente
                     WHERE lsa.id_elemento = ?
                       AND lsa.activo_linea_salida = 1
                       AND sa.activo_salida_almacen = 1

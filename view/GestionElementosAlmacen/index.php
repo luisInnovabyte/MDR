@@ -465,9 +465,33 @@ if (!isset($_SESSION['sesion_iniciada']) || $_SESSION['sesion_iniciada'] !== tru
                 <div class="app-card-body">
                     <div class="app-card-title"><i class="fa fa-info-circle me-1"></i> Información</div>
 
-                    <div class="info-row" id="row-presupuesto" style="display:none;">
-                        <span class="lbl">Presupuesto</span>
-                        <span class="val" id="info-presupuesto">—</span>
+                    <!-- Bloque presupuesto activo (visible sólo en PREP / ALQU) -->
+                    <div id="bloque-presupuesto" style="display:none;">
+                        <div class="info-row">
+                            <span class="lbl">Presupuesto</span>
+                            <span class="val" id="info-presupuesto">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="lbl">Cliente</span>
+                            <span class="val" id="info-ppto-cliente">—</span>
+                        </div>
+                        <div class="info-row" id="row-ppto-evento">
+                            <span class="lbl">Evento</span>
+                            <span class="val" id="info-ppto-evento">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="lbl">Fechas evento</span>
+                            <span class="val" id="info-ppto-fechas-evento">—</span>
+                        </div>
+                        <div class="info-row" id="row-ppto-lugar">
+                            <span class="lbl">Lugar</span>
+                            <span class="val" id="info-ppto-lugar">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="lbl">Salida iniciada</span>
+                            <span class="val" id="info-ppto-salida-inicio">—</span>
+                        </div>
+                        <div style="border-bottom:2px solid #e9ecef;margin:4px 0 8px;"></div>
                     </div>
                     <div class="info-row">
                         <span class="lbl">Propiedad</span>
@@ -530,9 +554,9 @@ if (!isset($_SESSION['sesion_iniciada']) || $_SESSION['sesion_iniciada'] !== tru
     </div>
 
     <!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../public/lib/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-    <script src="gestion_almacen.js"></script>
+    <script src="gestion_almacen.js?v=<?php echo time(); ?>"></script>
 
 </body>
 
