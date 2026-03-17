@@ -28,10 +28,9 @@ class InformeVentas
 
     /**
      * Devuelve los KPIs globales de ventas con comparación de dos períodos.
-     * - Total facturado (suma total_linea_ppto)
-     * - Nº de presupuestos distintos
-     * - Ticket promedio (total / nº presupuestos)
-     * - Mes con más ingresos del año
+     *
+     * Nota de consistencia: la base monetaria se alinea con ControlPagos
+     * utilizando vista_control_pagos.total_pagado.
      *
      * @param int $anyo_actual      Año actual
      * @param int $mes_actual       Mes actual (0 = todos)
@@ -49,6 +48,7 @@ class InformeVentas
             // Si no hay mes seleccionado (0), usar el mes actual del sistema
             $mesEspecifico = ($mes_actual > 0) ? $mes_actual : (int)date('n');
             $ingresosMesActual = $this->consultarIngresosMes($anyo_actual, $mesEspecifico);
+            $datosActualMesGauge = $this->consultarKpisPeriodo($anyo_actual, $mesEspecifico);
             
             // KPIs #3 y #4: Datos del mes seleccionado (o año si no hay mes)
             $datosActualMes = null;
@@ -62,6 +62,14 @@ class InformeVentas
             $datosActual['ingresos_mes_actual'] = $ingresosMesActual;
             $datosActual['mes_especifico'] = $mesEspecifico;
             $datosActual['tiene_mes_seleccionado'] = ($mes_actual > 0);
+            $datosActual['total_presupuesto_anyo'] = $datosActualAnyo['total_presupuesto'] ?? 0;
+            $datosActual['total_pagado_anyo'] = $datosActualAnyo['total_pagado'] ?? 0;
+            $datosActual['total_conciliado_anyo'] = $datosActualAnyo['total_conciliado'] ?? 0;
+            $datosActual['total_pendiente_anyo'] = $datosActualAnyo['total_pendiente'] ?? 0;
+            $datosActual['total_presupuesto_mes'] = $datosActualMesGauge['total_presupuesto'] ?? 0;
+            $datosActual['total_pagado_mes'] = $datosActualMesGauge['total_pagado'] ?? 0;
+            $datosActual['total_conciliado_mes'] = $datosActualMesGauge['total_conciliado'] ?? 0;
+            $datosActual['total_pendiente_mes'] = $datosActualMesGauge['total_pendiente'] ?? 0;
             
             // Si hay mes seleccionado, agregar datos del mes para KPIs #3 y #4
             if ($datosActualMes) {
@@ -86,6 +94,7 @@ class InformeVentas
                 
                 // KPI #2: Mismo mes específico del año a comparar
                 $ingresosMesComparar = $this->consultarIngresosMes($anyo_comparar, $mesEspecifico);
+                $datosCompararMesGauge = $this->consultarKpisPeriodo($anyo_comparar, $mesEspecifico);
                 
                 // KPIs #3 y #4: Datos del mes del año a comparar
                 $datosCompararMes = null;
@@ -99,6 +108,14 @@ class InformeVentas
                 $datosComparar['ingresos_mes_actual'] = $ingresosMesComparar;
                 $datosComparar['mes_especifico'] = $mesEspecifico;
                 $datosComparar['tiene_mes_seleccionado'] = ($mes_actual > 0);
+                $datosComparar['total_presupuesto_anyo'] = $datosCompararAnyo['total_presupuesto'] ?? 0;
+                $datosComparar['total_pagado_anyo'] = $datosCompararAnyo['total_pagado'] ?? 0;
+                $datosComparar['total_conciliado_anyo'] = $datosCompararAnyo['total_conciliado'] ?? 0;
+                $datosComparar['total_pendiente_anyo'] = $datosCompararAnyo['total_pendiente'] ?? 0;
+                $datosComparar['total_presupuesto_mes'] = $datosCompararMesGauge['total_presupuesto'] ?? 0;
+                $datosComparar['total_pagado_mes'] = $datosCompararMesGauge['total_pagado'] ?? 0;
+                $datosComparar['total_conciliado_mes'] = $datosCompararMesGauge['total_conciliado'] ?? 0;
+                $datosComparar['total_pendiente_mes'] = $datosCompararMesGauge['total_pendiente'] ?? 0;
                 
                 // Si hay mes seleccionado, agregar datos del mes para KPIs #3 y #4
                 if ($datosCompararMes) {
@@ -165,21 +182,25 @@ class InformeVentas
     private function consultarKpisPeriodo($anyo, $mes)
     {
         $sql = "SELECT
-                    ROUND(SUM(total_linea_ppto), 2)              AS total_facturado,
-                    COUNT(DISTINCT id_presupuesto)               AS num_presupuestos,
-                    ROUND(
-                        SUM(total_linea_ppto) /
-                        NULLIF(COUNT(DISTINCT id_presupuesto), 0)
-                    , 2)                                          AS ticket_promedio
-                FROM vista_ventas_periodo
+                    COALESCE(ROUND(SUM(total_presupuesto), 2), 0) AS total_presupuesto,
+                    COALESCE(ROUND(SUM(total_pagado), 2), 0)      AS total_pagado,
+                    COALESCE(ROUND(SUM(total_conciliado), 2), 0)  AS total_conciliado,
+                    COALESCE(ROUND(SUM(saldo_pendiente), 2), 0)   AS total_pendiente,
+                    COALESCE(ROUND(SUM(total_pagado), 2), 0)      AS total_facturado,
+                    COUNT(*)                                      AS num_presupuestos,
+                    ROUND(CASE
+                        WHEN COUNT(*) > 0 THEN SUM(total_pagado) / COUNT(*)
+                        ELSE 0
+                    END, 2)                                       AS ticket_promedio
+                FROM vista_control_pagos
                 WHERE 1=1";
 
         // Construir WHERE dinámicamente
         if ($anyo > 0) {
-            $sql .= " AND anyo_presupuesto = :anyo";
+            $sql .= " AND YEAR(fecha_presupuesto) = :anyo";
         }
         if ($mes > 0) {
-            $sql .= " AND mes_presupuesto = :mes";
+            $sql .= " AND MONTH(fecha_presupuesto) = :mes";
         }
 
         $stmt = $this->conexion->prepare($sql);
@@ -197,17 +218,17 @@ class InformeVentas
 
         // Mes con más ingresos del período
         $sqlMesMejor = "SELECT
-                            mes_presupuesto,
-                            ROUND(SUM(total_linea_ppto), 2) AS total_mes
-                        FROM vista_ventas_periodo
+                            MONTH(fecha_presupuesto) AS mes_presupuesto,
+                            ROUND(SUM(total_pagado), 2) AS total_mes
+                        FROM vista_control_pagos
                         WHERE 1=1";
 
         // Construir WHERE dinámicamente
         if ($anyo > 0) {
-            $sqlMesMejor .= " AND anyo_presupuesto = :anyo";
+            $sqlMesMejor .= " AND YEAR(fecha_presupuesto) = :anyo";
         }
         if ($mes > 0) {
-            $sqlMesMejor .= " AND mes_presupuesto = :mes";
+            $sqlMesMejor .= " AND MONTH(fecha_presupuesto) = :mes";
         }
 
         $sqlMesMejor .= " GROUP BY mes_presupuesto ORDER BY total_mes DESC LIMIT 1";
@@ -236,9 +257,10 @@ class InformeVentas
      */
     private function consultarIngresosMes($anyo, $mes)
     {
-        $sql = "SELECT ROUND(SUM(total_linea_ppto), 2) AS total_mes
-                FROM vista_ventas_periodo
-                WHERE anyo_presupuesto = ? AND mes_presupuesto = ?";
+        $sql = "SELECT ROUND(SUM(total_pagado), 2) AS total_mes
+            FROM vista_control_pagos
+            WHERE YEAR(fecha_presupuesto) = ?
+              AND MONTH(fecha_presupuesto) = ?";
         
         $stmt = $this->conexion->prepare($sql);
         $stmt->execute([(int) $anyo, (int) $mes]);
@@ -276,19 +298,20 @@ class InformeVentas
     public function getVentasPorMes($anyo)
     {
         try {
-            // Tabla auxiliar de 1..12 para garantizar los 12 meses
+            // Tabla auxiliar de 1..12 para garantizar los 12 meses.
             $sql = "SELECT
                         meses.mes,
-                        COALESCE(ROUND(SUM(v.total_linea_ppto), 2), 0) AS total
+                        COALESCE(ROUND(SUM(v.total_pagado), 2), 0)       AS total_pagado,
+                        COALESCE(ROUND(SUM(v.total_presupuesto), 2), 0)  AS total_presupuesto
                     FROM (
                         SELECT 1 AS mes UNION SELECT 2 UNION SELECT 3  UNION
                         SELECT 4      UNION SELECT 5 UNION SELECT 6  UNION
                         SELECT 7      UNION SELECT 8 UNION SELECT 9  UNION
                         SELECT 10     UNION SELECT 11 UNION SELECT 12
                     ) AS meses
-                    LEFT JOIN vista_ventas_periodo v
-                        ON v.mes_presupuesto  = meses.mes
-                        AND v.anyo_presupuesto = ?
+                    LEFT JOIN vista_control_pagos v
+                        ON MONTH(v.fecha_presupuesto) = meses.mes
+                        AND YEAR(v.fecha_presupuesto) = ?
                     GROUP BY meses.mes
                     ORDER BY meses.mes ASC";
 
@@ -322,15 +345,15 @@ class InformeVentas
             $sql = "SELECT
                         id_cliente,
                         nombre_completo_cliente,
-                        COUNT(DISTINCT id_presupuesto)     AS num_presupuestos,
-                        ROUND(SUM(total_linea_ppto), 2)   AS total_facturado
-                    FROM vista_ventas_periodo";
+                        COUNT(*)                         AS num_presupuestos,
+                        ROUND(SUM(total_pagado), 2)     AS total_facturado
+                    FROM vista_control_pagos";
 
             $where  = [];
             $params = [];
 
-            if ($anyo > 0) { $where[] = 'anyo_presupuesto = ?'; $params[] = (int) $anyo; }
-            if ($mes  > 0) { $where[] = 'mes_presupuesto  = ?'; $params[] = (int) $mes;  }
+            if ($anyo > 0) { $where[] = 'YEAR(fecha_presupuesto) = ?';  $params[] = (int) $anyo; }
+            if ($mes  > 0) { $where[] = 'MONTH(fecha_presupuesto) = ?'; $params[] = (int) $mes;  }
 
             if (!empty($where)) {
                 $sql .= ' WHERE ' . implode(' AND ', $where);
@@ -370,25 +393,48 @@ class InformeVentas
     {
         try {
             $sql = "SELECT
-                        id_familia,
-                        nombre_familia,
-                        codigo_familia,
-                        COUNT(DISTINCT id_presupuesto)     AS num_presupuestos,
-                        ROUND(SUM(total_linea_ppto), 2)   AS total_facturado,
-                        ROUND(SUM(cantidad_linea_ppto), 0) AS total_unidades
-                    FROM vista_ventas_periodo";
+                        COALESCE(v.id_familia, 0) AS id_familia,
+                        COALESCE(NULLIF(v.nombre_familia, ''), 'Sin familia') AS nombre_familia,
+                        COALESCE(NULLIF(v.codigo_familia, ''), 'SIN') AS codigo_familia,
+                        COUNT(DISTINCT v.id_presupuesto) AS num_presupuestos,
+                        ROUND(
+                            SUM(
+                                CASE
+                                    WHEN COALESCE(tl.total_linea_presupuesto, 0) > 0
+                                        THEN b.total_pagado * (v.total_linea_ppto / tl.total_linea_presupuesto)
+                                    ELSE 0
+                                END
+                            ),
+                            2
+                        ) AS total_facturado,
+                        ROUND(SUM(v.cantidad_linea_ppto), 0) AS total_unidades
+                    FROM vista_control_pagos b
+                    INNER JOIN vista_ventas_periodo v
+                        ON b.id_presupuesto = v.id_presupuesto
+                    LEFT JOIN (
+                        SELECT
+                            id_presupuesto,
+                            SUM(total_linea_ppto) AS total_linea_presupuesto
+                        FROM vista_ventas_periodo
+                        GROUP BY id_presupuesto
+                    ) tl ON v.id_presupuesto = tl.id_presupuesto
+                    WHERE 1=1";
 
-            $where  = [];
             $params = [];
 
-            if ($anyo > 0) { $where[] = 'anyo_presupuesto = ?'; $params[] = (int) $anyo; }
-            if ($mes  > 0) { $where[] = 'mes_presupuesto  = ?'; $params[] = (int) $mes;  }
-
-            if (!empty($where)) {
-                $sql .= ' WHERE ' . implode(' AND ', $where);
+            if ($anyo > 0) {
+                $sql .= ' AND YEAR(b.fecha_presupuesto) = ?';
+                $params[] = (int) $anyo;
+            }
+            if ($mes > 0) {
+                $sql .= ' AND MONTH(b.fecha_presupuesto) = ?';
+                $params[] = (int) $mes;
             }
 
-            $sql .= " GROUP BY id_familia, nombre_familia, codigo_familia
+            $sql .= " GROUP BY
+                        COALESCE(v.id_familia, 0),
+                        COALESCE(NULLIF(v.nombre_familia, ''), 'Sin familia'),
+                        COALESCE(NULLIF(v.codigo_familia, ''), 'SIN')
                       ORDER BY total_facturado DESC";
 
             $stmt = $this->conexion->prepare($sql);
@@ -415,8 +461,8 @@ class InformeVentas
     public function getAnyosDisponibles()
     {
         try {
-            $sql = "SELECT DISTINCT anyo_presupuesto AS anyo
-                    FROM vista_ventas_periodo
+                $sql = "SELECT DISTINCT YEAR(fecha_presupuesto) AS anyo
+                    FROM vista_control_pagos
                     ORDER BY anyo DESC";
 
             $stmt = $this->conexion->prepare($sql);
@@ -445,19 +491,15 @@ class InformeVentas
     public function getIngresosPorFamiliaMensual($anyo)
     {
         try {
-            // 1. Obtener top 6 familias por facturación total del año
-            $sqlTop = "SELECT nombre_familia,
-                              ROUND(SUM(total_linea_ppto), 2) AS total_anual
-                       FROM vista_ventas_periodo
-                       WHERE anyo_presupuesto = ?
-                       GROUP BY nombre_familia
-                       ORDER BY total_anual DESC
-                       LIMIT 6";
-            
-            $stmtTop = $this->conexion->prepare($sqlTop);
-            $stmtTop->bindValue(1, (int)$anyo, PDO::PARAM_INT);
-            $stmtTop->execute();
-            $topFamilias = $stmtTop->fetchAll(PDO::FETCH_COLUMN, 0); // Array de nombres
+            // 1. Obtener top 6 familias con la misma base monetaria de control de pagos.
+            $topFamiliasData = $this->getVentasPorFamilia((int)$anyo, 0);
+            $topFamiliasData = array_slice($topFamiliasData, 0, 6);
+            $topFamilias = array_map(
+                function ($row) {
+                    return $row['nombre_familia'];
+                },
+                $topFamiliasData
+            );
             
             // 2. Obtener ingresos mensuales para las top familias
             $resultado = [];
@@ -465,18 +507,40 @@ class InformeVentas
             foreach ($topFamilias as $familia) {
                 $sqlMensual = "SELECT
                                    meses.mes,
-                                   COALESCE(ROUND(SUM(v.total_linea_ppto), 2), 0) AS total
+                                   COALESCE(mt.total, 0) AS total
                                FROM (
                                    SELECT 1 AS mes UNION SELECT 2 UNION SELECT 3  UNION
                                    SELECT 4      UNION SELECT 5 UNION SELECT 6  UNION
                                    SELECT 7      UNION SELECT 8 UNION SELECT 9  UNION
                                    SELECT 10     UNION SELECT 11 UNION SELECT 12
                                ) AS meses
-                               LEFT JOIN vista_ventas_periodo v
-                                   ON v.mes_presupuesto = meses.mes
-                                   AND v.anyo_presupuesto = ?
-                                   AND v.nombre_familia = ?
-                               GROUP BY meses.mes
+                               LEFT JOIN (
+                                   SELECT
+                                       MONTH(b.fecha_presupuesto) AS mes,
+                                       ROUND(
+                                           SUM(
+                                               CASE
+                                                   WHEN COALESCE(tl.total_linea_presupuesto, 0) > 0
+                                                       THEN b.total_presupuesto * (v.total_linea_ppto / tl.total_linea_presupuesto)
+                                                   ELSE 0
+                                               END
+                                           ),
+                                           2
+                                       ) AS total
+                                   FROM vista_control_pagos b
+                                   INNER JOIN vista_ventas_periodo v
+                                       ON b.id_presupuesto = v.id_presupuesto
+                                   LEFT JOIN (
+                                       SELECT
+                                           id_presupuesto,
+                                           SUM(total_linea_ppto) AS total_linea_presupuesto
+                                       FROM vista_ventas_periodo
+                                       GROUP BY id_presupuesto
+                                   ) tl ON v.id_presupuesto = tl.id_presupuesto
+                                   WHERE YEAR(b.fecha_presupuesto) = ?
+                                     AND COALESCE(NULLIF(v.nombre_familia, ''), 'Sin familia') = ?
+                                   GROUP BY MONTH(b.fecha_presupuesto)
+                               ) mt ON mt.mes = meses.mes
                                ORDER BY meses.mes ASC";
                 
                 $stmtMensual = $this->conexion->prepare($sqlMensual);
@@ -495,18 +559,40 @@ class InformeVentas
                 $placeholders = str_repeat('?,', count($topFamilias) - 1) . '?';
                 $sqlOtras = "SELECT
                                  meses.mes,
-                                 COALESCE(ROUND(SUM(v.total_linea_ppto), 2), 0) AS total
+                                 COALESCE(mt.total, 0) AS total
                              FROM (
                                  SELECT 1 AS mes UNION SELECT 2 UNION SELECT 3  UNION
                                  SELECT 4      UNION SELECT 5 UNION SELECT 6  UNION
                                  SELECT 7      UNION SELECT 8 UNION SELECT 9  UNION
                                  SELECT 10     UNION SELECT 11 UNION SELECT 12
                              ) AS meses
-                             LEFT JOIN vista_ventas_periodo v
-                                 ON v.mes_presupuesto = meses.mes
-                                 AND v.anyo_presupuesto = ?
-                                 AND v.nombre_familia NOT IN ($placeholders)
-                             GROUP BY meses.mes
+                             LEFT JOIN (
+                                 SELECT
+                                     MONTH(b.fecha_presupuesto) AS mes,
+                                     ROUND(
+                                         SUM(
+                                             CASE
+                                                 WHEN COALESCE(tl.total_linea_presupuesto, 0) > 0
+                                                     THEN b.total_presupuesto * (v.total_linea_ppto / tl.total_linea_presupuesto)
+                                                 ELSE 0
+                                             END
+                                         ),
+                                         2
+                                     ) AS total
+                                 FROM vista_control_pagos b
+                                 INNER JOIN vista_ventas_periodo v
+                                     ON b.id_presupuesto = v.id_presupuesto
+                                 LEFT JOIN (
+                                     SELECT
+                                         id_presupuesto,
+                                         SUM(total_linea_ppto) AS total_linea_presupuesto
+                                     FROM vista_ventas_periodo
+                                     GROUP BY id_presupuesto
+                                 ) tl ON v.id_presupuesto = tl.id_presupuesto
+                                 WHERE YEAR(b.fecha_presupuesto) = ?
+                                   AND COALESCE(NULLIF(v.nombre_familia, ''), 'Sin familia') NOT IN ($placeholders)
+                                 GROUP BY MONTH(b.fecha_presupuesto)
+                             ) mt ON mt.mes = meses.mes
                              ORDER BY meses.mes ASC";
                 
                 $stmtOtras = $this->conexion->prepare($sqlOtras);

@@ -18,6 +18,8 @@ let chartVentasMensuales = null;
 let chartFamiliasActual = null;
 let chartFamiliasComparar = null;
 let chartFamiliaDonut = null;
+let chartGaugeKpiAnyo = null;
+let chartGaugeKpiMes = null;
 let tablaFamiliaIniciada = false; // lazy init para la tabla de desglose
 
 const MESES = [
@@ -243,41 +245,7 @@ function cargarKPIs(anyo, mes) {
         .done(function (res) {
             if (!res.success || !res.data) return;
             const d = res.data;
-            
-            // KPI 1: Total Facturado
-            actualizarKPI(
-                'total',
-                d.actual.total_facturado,
-                d.comparacion ? d.diferencias.total_facturado : null,
-                d.comparacion ? d.comparar.total_facturado : null,
-                anyoComp,
-                true // es formato moneda
-            );
-            
-            // KPI 2: Ingresos del Mes (siempre muestra un mes específico)
-            const ingresosMesActual = d.actual.ingresos_mes_actual || 0;
-            const mesEspecifico = d.actual.mes_especifico || (new Date().getMonth() + 1);
-            const mesNombre = MESES[mesEspecifico - 1];
-            
-            if (d.comparacion && d.diferencias.ingresos_mes_actual) {
-                const diff = d.diferencias.ingresos_mes_actual;
-                const ingresosMesAnterior = d.comparar.ingresos_mes_actual || 0;
-                const icono = diff.tendencia === 'up' ? 'fa-arrow-up' : 'fa-arrow-down';
-                const color = diff.tendencia === 'up' ? '#198754' : '#dc3545';
-                const signo = diff.porcentaje >= 0 ? '+' : '';
-                
-                $('#kpi-mes').html(
-                    formatEuro(ingresosMesActual) + ' ' +
-                    '<i class="fas ' + icono + '" style="color:' + color + '; font-size:0.7em; margin-left:5px"></i> ' +
-                    '<span style="color:' + color + '; font-weight:600; font-size:0.7em">' + signo + diff.porcentaje + '%</span>'
-                );
-                $('#kpi-mes-sub').html(
-                    mesNombre + ' ' + anyoComp + ': ' + formatEuro(ingresosMesAnterior)
-                );
-            } else {
-                $('#kpi-mes').text(formatEuro(ingresosMesActual));
-                $('#kpi-mes-sub').text(mesNombre + ' ' + anyo);
-            }
+            renderizarVelocimetrosKPIs(d, anyo);
             
             // KPI 3: Presupuestos (mes como principal, año como contexto)
             const numPptosMes = d.actual.num_presupuestos_mes || 0;
@@ -379,8 +347,172 @@ function cargarKPIs(anyo, mes) {
         });
 }
 
+function crearOActualizarVelocimetro(chartRef, canvasId, maximo, completado) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return chartRef;
+
+    const maxVal = Math.max(0, Number(maximo) || 0);
+    const completadoVal = Math.max(0, Math.min(maxVal, Number(completado) || 0));
+    const restanteVal = Math.max(0, maxVal - completadoVal);
+
+    const datos = maxVal > 0 ? [completadoVal, restanteVal] : [0, 1];
+    const colores = maxVal > 0
+        ? ['rgba(25, 135, 84, 0.9)', 'rgba(220, 53, 69, 0.3)']
+        : ['rgba(108, 117, 125, 0.35)', 'rgba(108, 117, 125, 0.1)'];
+    const labels = ['completado', 'pendiente'];
+
+    if (chartRef) {
+        chartRef.destroy();
+    }
+
+    chartRef = new Chart(canvas.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: datos,
+                backgroundColor: colores,
+                borderWidth: 0,
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            circumference: 180,
+            rotation: 270,
+            cutout: '72%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        label: function (ctx) {
+                            const label = ctx.label || 'seccion';
+                            const valor = Number(ctx.parsed) || 0;
+                            return label + ': ' + formatEuro(valor);
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    return chartRef;
+}
+
+function renderizarVelocimetrosKPIs(d, anyo) {
+    const mesEspecifico = d.actual.mes_especifico || (new Date().getMonth() + 1);
+    const mesNombre = MESES[mesEspecifico - 1] || 'Mes';
+    const periodoAnyo = 'Año ' + anyo;
+    const periodoMes = mesNombre + ' ' + anyo;
+    const anyoComp = anyoComparar();
+    const hayComparacion = !!(d.comparacion && d.comparar && anyoComp > 0);
+
+    const totalPresupuestoAnyo = Number(d.actual.total_presupuesto_anyo || 0);
+    const totalPagadoAnyo = Number(d.actual.total_pagado_anyo || 0);
+    const totalPendienteAnyo = Number(d.actual.total_pendiente_anyo || 0);
+
+    chartGaugeKpiAnyo = crearOActualizarVelocimetro(
+        chartGaugeKpiAnyo,
+        'gaugeKpiAnyo',
+        totalPresupuestoAnyo,
+        totalPagadoAnyo
+    );
+
+    $('#gaugeKpiAnyoPeriodo').text(periodoAnyo);
+
+    $('#gaugeKpiAnyoInfo').html(
+        construirLineaGauge(
+            'Aprovado',
+            totalPresupuestoAnyo,
+            hayComparacion ? Number(d.comparar.total_presupuesto_anyo || 0) : null,
+            hayComparacion ? ('Año ' + anyoComp) : ''
+        ) +
+        construirLineaGauge(
+            'Pendiente',
+            totalPendienteAnyo,
+            hayComparacion ? Number(d.comparar.total_pendiente_anyo || 0) : null,
+            hayComparacion ? ('Año ' + anyoComp) : ''
+        ) +
+        construirLineaGauge(
+            'Completado',
+            totalPagadoAnyo,
+            hayComparacion ? Number(d.comparar.total_pagado_anyo || 0) : null,
+            hayComparacion ? ('Año ' + anyoComp) : ''
+        )
+    );
+
+    const totalPresupuestoMes = Number(d.actual.total_presupuesto_mes || 0);
+    const totalPagadoMes = Number(d.actual.total_pagado_mes || 0);
+    const totalPendienteMes = Number(d.actual.total_pendiente_mes || 0);
+
+    chartGaugeKpiMes = crearOActualizarVelocimetro(
+        chartGaugeKpiMes,
+        'gaugeKpiMes',
+        totalPresupuestoMes,
+        totalPagadoMes
+    );
+
+    $('#gaugeKpiMesPeriodo').text(periodoMes);
+
+    $('#gaugeKpiMesInfo').html(
+        construirLineaGauge(
+            'Aprovado',
+            totalPresupuestoMes,
+            hayComparacion ? Number(d.comparar.total_presupuesto_mes || 0) : null,
+            hayComparacion ? (mesNombre + ' ' + anyoComp) : ''
+        ) +
+        construirLineaGauge(
+            'Pendiente',
+            totalPendienteMes,
+            hayComparacion ? Number(d.comparar.total_pendiente_mes || 0) : null,
+            hayComparacion ? (mesNombre + ' ' + anyoComp) : ''
+        ) +
+        construirLineaGauge(
+            'Completado',
+            totalPagadoMes,
+            hayComparacion ? Number(d.comparar.total_pagado_mes || 0) : null,
+            hayComparacion ? (mesNombre + ' ' + anyoComp) : ''
+        )
+    );
+}
+
+function construirLineaGauge(etiqueta, actual, comparar, etiquetaComparar) {
+    const valorActual = Number(actual || 0);
+
+    if (comparar === null || comparar === undefined) {
+        return '<div class="kpi-gauge-row">' +
+            '<span class="kpi-gauge-label">' + etiqueta + '</span>' +
+            '<span class="kpi-gauge-current">' + formatEuro(valorActual) + '</span>' +
+            '</div>';
+    }
+
+    const valorComparar = Number(comparar || 0);
+    const variacion = calcularVariacionPorcentual(valorActual, valorComparar);
+    const clase = variacion >= 0 ? 'up' : 'down';
+    const signo = variacion >= 0 ? '+' : '';
+
+    return '<div class="kpi-gauge-row">' +
+        '<span class="kpi-gauge-label">' + etiqueta + '</span>' +
+        '<span class="kpi-gauge-current">' + formatEuro(valorActual) + '</span>' +
+        '<span class="kpi-gauge-delta ' + clase + '">' + signo + variacion.toFixed(1) + '%</span>' +
+        '<span class="kpi-gauge-compare">' + etiquetaComparar + ': ' + formatEuro(valorComparar) + '</span>' +
+        '</div>';
+}
+
+function calcularVariacionPorcentual(actual, comparar) {
+    const a = Number(actual || 0);
+    const b = Number(comparar || 0);
+
+    if (b === 0) {
+        return a === 0 ? 0 : 100;
+    }
+
+    return ((a - b) / Math.abs(b)) * 100;
+}
+
 // ─── Gráfico mensual ──────────────────────────────────────────────────────────
-// ─── Gráfico de Barras Comparativo ───────────────────────────────────────────
+// ─── Gráfico de Barras Compuestas (stacked) ──────────────────────────────────
 function cargarGraficoBarras(anyoActual, anyoComp) {
     $.post(CTRL + '?op=grafico_mensual_comparativo', {
         anyo_actual: anyoActual,
@@ -389,63 +521,102 @@ function cargarGraficoBarras(anyoActual, anyoComp) {
         .done(function (res) {
             if (!res.success || !res.data) return;
 
-            // Destruir gráfico anterior si existe
             if (chartVentasMensuales) {
                 chartVentasMensuales.destroy();
                 chartVentasMensuales = null;
             }
 
-            const ctx = document.getElementById('chartVentasMensuales').getContext('2d');
-            
-            // Preparar datasets
-            const datasets = [];
-            
-            // Dataset año actual (azul)
-            datasets.push({
-                label: anyoActual,
-                data: res.data.actual,
-                backgroundColor: 'rgba(13, 110, 253, 0.7)',
-                borderColor: 'rgba(13, 110, 253, 1)',
-                borderWidth: 1,
-                borderRadius: 4
-            });
-            
-            // Dataset año a comparar (gris) - solo si existe
-            if (anyoComp > 0 && res.data.comparar) {
-                datasets.push({
-                    label: anyoComp,
-                    data: res.data.comparar,
-                    backgroundColor: 'rgba(108, 117, 125, 0.7)',
-                    borderColor: 'rgba(108, 117, 125, 1)',
-                    borderWidth: 1,
-                    borderRadius: 4
+            const d = res.data;
+            const hayComp = (anyoComp > 0 && d.comparar);
+
+            // Precalcular pendiente = presupuesto - pagado (nunca negativo)
+            function pendiente(presupuesto, pagado) {
+                return presupuesto.map(function (p, i) {
+                    return Math.max(0, (parseFloat(p) || 0) - (parseFloat(pagado[i]) || 0));
                 });
             }
 
+            const actualPend  = pendiente(d.actual.presupuesto, d.actual.pagado);
+            const compPend    = hayComp ? pendiente(d.comparar.presupuesto, d.comparar.pagado) : null;
+
+            // Para el tooltip: recuperar total_presupuesto por índice de mes
+            const actualPpto  = d.actual.presupuesto.map(function (v) { return parseFloat(v) || 0; });
+            const compPpto    = hayComp ? d.comparar.presupuesto.map(function (v) { return parseFloat(v) || 0; }) : null;
+
+            const datasets = [];
+
+            // ── Stack año actual ──────────────────────────────────────────
+            datasets.push({
+                label: anyoActual + ' – Completado',
+                data: d.actual.pagado,
+                backgroundColor: 'rgba(13, 110, 253, 0.82)',
+                borderColor:     'rgba(13, 110, 253, 1)',
+                borderWidth: 1,
+                stack: 'anyo_actual'
+            });
+            datasets.push({
+                label: anyoActual + ' – Aprovado',
+                data: actualPend,
+                // Guardamos el array de totales para el tooltip
+                _ppto: actualPpto,
+                backgroundColor: 'rgba(13, 110, 253, 0.20)',
+                borderColor:     'rgba(13, 110, 253, 0.45)',
+                borderWidth: 1,
+                stack: 'anyo_actual'
+            });
+
+            // ── Stack año comparar (si existe) ────────────────────────────
+            if (hayComp) {
+                datasets.push({
+                    label: anyoComp + ' – Completado',
+                    data: d.comparar.pagado,
+                    backgroundColor: 'rgba(108, 117, 125, 0.82)',
+                    borderColor:     'rgba(108, 117, 125, 1)',
+                    borderWidth: 1,
+                    stack: 'anyo_comp'
+                });
+                datasets.push({
+                    label: anyoComp + ' – Aprovado',
+                    data: compPend,
+                    _ppto: compPpto,
+                    backgroundColor: 'rgba(108, 117, 125, 0.20)',
+                    borderColor:     'rgba(108, 117, 125, 0.45)',
+                    borderWidth: 1,
+                    stack: 'anyo_comp'
+                });
+            }
+
+            const ctx = document.getElementById('chartVentasMensuales').getContext('2d');
             chartVentasMensuales = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: MESES,
-                    datasets: datasets
-                },
+                data: { labels: MESES, datasets: datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: {
-                            display: anyoComp > 0, // Mostrar leyenda solo si hay comparación
-                            position: 'top'
-                        },
+                        legend: { display: true, position: 'top' },
                         tooltip: {
                             callbacks: {
-                                label: function (ctx) {
-                                    return ctx.dataset.label + ': ' + formatEuro(ctx.parsed.y);
+                                label: function (ctxItem) {
+                                    const val = parseFloat(ctxItem.raw) || 0;
+                                    if (val === 0) return null; // ocultar segmentos vacíos
+                                    const ds    = ctxItem.dataset;
+                                    const isAprovado = ds.label && ds.label.indexOf('Aprovado') !== -1;
+                                    if (isAprovado && ds._ppto) {
+                                        // Mostrar total aprovado (presupuesto completo), no solo la diferencia
+                                        const totalPpto = ds._ppto[ctxItem.dataIndex] || 0;
+                                        return ds.label + ': ' + formatEuro(totalPpto);
+                                    }
+                                    return ds.label + ': ' + formatEuro(val);
                                 }
                             }
                         }
                     },
                     scales: {
+                        x: { stacked: true },
                         y: {
+                            stacked: true,
                             beginAtZero: true,
                             ticks: {
                                 callback: function (val) {
@@ -547,7 +718,7 @@ function crearGraficoLinealFamilias(canvasId, datos) {
                 tooltip: {
                     callbacks: {
                         label: function (ctx) {
-                            return ctx.dataset.label + ': ' + formatEuro(ctx.parsed.y);
+                            return ctx.dataset.label + ' (Aprovado): ' + formatEuro(ctx.parsed.y);
                         }
                     }
                 }

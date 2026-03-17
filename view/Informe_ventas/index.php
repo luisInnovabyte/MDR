@@ -21,6 +21,36 @@ session_start();
         .kpi-valor { font-size: 1.6rem; font-weight: 700; line-height: 1.2; }
         .kpi-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: .05em; color: #6c757d; }
         .kpi-sub   { font-size: 0.82rem; color: #6c757d; min-height: 20px; line-height: 1.4; }
+        .kpi-gauge-layout { display: flex; align-items: center; gap: 14px; }
+        .kpi-gauge-wrap { position: relative; width: 48%; min-width: 210px; height: 150px; }
+        .kpi-gauge-wrap canvas { width: 100% !important; height: 150px !important; }
+        .kpi-gauge-period {
+            position: absolute;
+            left: 50%;
+            bottom: 6px;
+            transform: translateX(-50%);
+            width: 92%;
+            text-align: center;
+            font-size: 1.7rem;
+            color: #6c757d;
+            font-weight: 700;
+            pointer-events: none;
+        }
+        .kpi-gauge-info { width: 52%; margin-left: 4px; font-size: 1.02rem; color: #6c757d; line-height: 1.3; }
+        .kpi-gauge-info strong { font-size: 1.2rem; color: #495057; }
+        .kpi-gauge-row { margin-bottom: 5px; }
+        .kpi-gauge-row:last-child { margin-bottom: 0; }
+        .kpi-gauge-label { display: block; font-size: 0.9rem; color: #6c757d; }
+        .kpi-gauge-current { font-size: 1.12rem; font-weight: 700; color: #343a40; }
+        .kpi-gauge-delta { margin-left: 4px; font-size: 0.88rem; font-weight: 700; }
+        .kpi-gauge-delta.up { color: #198754; }
+        .kpi-gauge-delta.down { color: #dc3545; }
+        .kpi-gauge-compare { display: block; margin-top: 0; font-size: 0.78rem; color: #8c959d; line-height: 1.15; }
+
+        @media (max-width: 991.98px) {
+            .kpi-gauge-layout { flex-direction: column; align-items: stretch; }
+            .kpi-gauge-wrap, .kpi-gauge-info { width: 100%; min-width: 0; }
+        }
 
         /* ---- Filtros ---- */
         #barraFiltros { background: #f8f9fa; border-radius: 8px; padding: 12px 16px; }
@@ -139,26 +169,36 @@ session_start();
                 </div>
 
                 <!-- KPI CARDS -->
-                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4" id="seccionKPIs">
-                    <div class="col">
+                <div class="row g-3 mb-4" id="seccionKPIs">
+                    <div class="col-12 col-xl-6">
                         <div class="card kpi-card kpi-total h-100 shadow-sm">
                             <div class="card-body py-3">
-                                <div class="kpi-label">Total Facturado</div>
-                                <div class="kpi-valor text-secondary" id="kpi-total">—</div>
-                                <div class="kpi-sub" id="kpi-total-sub">Año completo</div>
+                                <div class="kpi-label">Velocímetro Anual</div>
+                                <div class="kpi-gauge-layout mt-1">
+                                    <div class="kpi-gauge-wrap">
+                                        <canvas id="gaugeKpiAnyo"></canvas>
+                                        <div class="kpi-gauge-period" id="gaugeKpiAnyoPeriodo">—</div>
+                                    </div>
+                                    <div class="kpi-gauge-info" id="gaugeKpiAnyoInfo">—</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-xl-6">
                         <div class="card kpi-card kpi-mes h-100 shadow-sm">
                             <div class="card-body py-3">
-                                <div class="kpi-label">Ingresos del Mes</div>
-                                <div class="kpi-valor text-success" id="kpi-mes">—</div>
-                                <div class="kpi-sub" id="kpi-mes-sub">Mes actual</div>
+                                <div class="kpi-label">Velocímetro Mensual</div>
+                                <div class="kpi-gauge-layout mt-1">
+                                    <div class="kpi-gauge-wrap">
+                                        <canvas id="gaugeKpiMes"></canvas>
+                                        <div class="kpi-gauge-period" id="gaugeKpiMesPeriodo">—</div>
+                                    </div>
+                                    <div class="kpi-gauge-info" id="gaugeKpiMesInfo">—</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-md-6 col-xl-6">
                         <div class="card kpi-card kpi-ppto h-100 shadow-sm">
                             <div class="card-body py-3">
                                 <div class="kpi-label">Presupuestos</div>
@@ -167,7 +207,7 @@ session_start();
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-md-6 col-xl-6">
                         <div class="card kpi-card kpi-ticket h-100 shadow-sm">
                             <div class="card-body py-3">
                                 <div class="kpi-label">Ticket Promedio</div>
