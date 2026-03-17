@@ -359,7 +359,7 @@ function crearOActualizarVelocimetro(chartRef, canvasId, maximo, completado) {
     const colores = maxVal > 0
         ? ['rgba(25, 135, 84, 0.9)', 'rgba(220, 53, 69, 0.3)']
         : ['rgba(108, 117, 125, 0.35)', 'rgba(108, 117, 125, 0.1)'];
-    const labels = ['completado', 'pendiente'];
+    const labels = ['Facturado', 'Pdte. Facturar'];
 
     if (chartRef) {
         chartRef.destroy();
@@ -423,19 +423,19 @@ function renderizarVelocimetrosKPIs(d, anyo) {
 
     $('#gaugeKpiAnyoInfo').html(
         construirLineaGauge(
-            'Aprovado',
+            'Aprobado',
             totalPresupuestoAnyo,
             hayComparacion ? Number(d.comparar.total_presupuesto_anyo || 0) : null,
             hayComparacion ? ('Año ' + anyoComp) : ''
         ) +
         construirLineaGauge(
-            'Pendiente',
+            'Pdte. Facturar',
             totalPendienteAnyo,
             hayComparacion ? Number(d.comparar.total_pendiente_anyo || 0) : null,
             hayComparacion ? ('Año ' + anyoComp) : ''
         ) +
         construirLineaGauge(
-            'Completado',
+            'Facturado',
             totalPagadoAnyo,
             hayComparacion ? Number(d.comparar.total_pagado_anyo || 0) : null,
             hayComparacion ? ('Año ' + anyoComp) : ''
@@ -457,19 +457,19 @@ function renderizarVelocimetrosKPIs(d, anyo) {
 
     $('#gaugeKpiMesInfo').html(
         construirLineaGauge(
-            'Aprovado',
+            'Aprobado',
             totalPresupuestoMes,
             hayComparacion ? Number(d.comparar.total_presupuesto_mes || 0) : null,
             hayComparacion ? (mesNombre + ' ' + anyoComp) : ''
         ) +
         construirLineaGauge(
-            'Pendiente',
+            'Pdte. Facturar',
             totalPendienteMes,
             hayComparacion ? Number(d.comparar.total_pendiente_mes || 0) : null,
             hayComparacion ? (mesNombre + ' ' + anyoComp) : ''
         ) +
         construirLineaGauge(
-            'Completado',
+            'Facturado',
             totalPagadoMes,
             hayComparacion ? Number(d.comparar.total_pagado_mes || 0) : null,
             hayComparacion ? (mesNombre + ' ' + anyoComp) : ''
@@ -547,7 +547,7 @@ function cargarGraficoBarras(anyoActual, anyoComp) {
 
             // ── Stack año actual ──────────────────────────────────────────
             datasets.push({
-                label: anyoActual + ' – Completado',
+                label: anyoActual + ' – Facturado',
                 data: d.actual.pagado,
                 backgroundColor: 'rgba(13, 110, 253, 0.82)',
                 borderColor:     'rgba(13, 110, 253, 1)',
@@ -555,7 +555,7 @@ function cargarGraficoBarras(anyoActual, anyoComp) {
                 stack: 'anyo_actual'
             });
             datasets.push({
-                label: anyoActual + ' – Aprovado',
+                label: anyoActual + ' – Aprobado',
                 data: actualPend,
                 // Guardamos el array de totales para el tooltip
                 _ppto: actualPpto,
@@ -568,7 +568,7 @@ function cargarGraficoBarras(anyoActual, anyoComp) {
             // ── Stack año comparar (si existe) ────────────────────────────
             if (hayComp) {
                 datasets.push({
-                    label: anyoComp + ' – Completado',
+                    label: anyoComp + ' – Facturado',
                     data: d.comparar.pagado,
                     backgroundColor: 'rgba(108, 117, 125, 0.82)',
                     borderColor:     'rgba(108, 117, 125, 1)',
@@ -576,7 +576,7 @@ function cargarGraficoBarras(anyoActual, anyoComp) {
                     stack: 'anyo_comp'
                 });
                 datasets.push({
-                    label: anyoComp + ' – Aprovado',
+                    label: anyoComp + ' – Aprobado',
                     data: compPend,
                     _ppto: compPpto,
                     backgroundColor: 'rgba(108, 117, 125, 0.20)',
@@ -602,9 +602,9 @@ function cargarGraficoBarras(anyoActual, anyoComp) {
                                     const val = parseFloat(ctxItem.raw) || 0;
                                     if (val === 0) return null; // ocultar segmentos vacíos
                                     const ds    = ctxItem.dataset;
-                                    const isAprovado = ds.label && ds.label.indexOf('Aprovado') !== -1;
+                                    const isAprovado = ds.label && ds.label.indexOf('Aprobado') !== -1;
                                     if (isAprovado && ds._ppto) {
-                                        // Mostrar total aprovado (presupuesto completo), no solo la diferencia
+                                        // Mostrar total Aprobado (presupuesto completo), no solo la diferencia
                                         const totalPpto = ds._ppto[ctxItem.dataIndex] || 0;
                                         return ds.label + ': ' + formatEuro(totalPpto);
                                     }
@@ -718,7 +718,7 @@ function crearGraficoLinealFamilias(canvasId, datos) {
                 tooltip: {
                     callbacks: {
                         label: function (ctx) {
-                            return ctx.dataset.label + ' (Aprovado): ' + formatEuro(ctx.parsed.y);
+                            return ctx.dataset.label + ' (Aprobado): ' + formatEuro(ctx.parsed.y);
                         }
                     }
                 }

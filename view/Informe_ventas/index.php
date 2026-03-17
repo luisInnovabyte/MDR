@@ -122,12 +122,12 @@ session_start();
                     <div class="d-flex flex-wrap align-items-end gap-3 mb-3">
                         <!-- Período Actual -->
                         <div>
-                            <label class="form-label mb-1 small fw-semibold text-primary">Año Actual</label>
+                            <label class="form-label mb-1 small fw-semibold text-primary">Año </label>
                             <select class="form-select form-select-sm" id="filtroAnyoActual" style="min-width:100px;">
                             </select>
                         </div>
                         <div>
-                            <label class="form-label mb-1 small fw-semibold text-primary">Mes Actual</label>
+                            <label class="form-label mb-1 small fw-semibold text-primary">Mes </label>
                             <select class="form-select form-select-sm" id="filtroMesActual" style="min-width:130px;">
                                 <option value="0">Todos</option>
                                 <option value="1">Enero</option>
@@ -173,7 +173,7 @@ session_start();
                     <div class="col-12 col-xl-6">
                         <div class="card kpi-card kpi-total h-100 shadow-sm">
                             <div class="card-body py-3">
-                                <div class="kpi-label">Velocímetro Anual</div>
+                                <div class="kpi-label">Gráfico Anual</div>
                                 <div class="kpi-gauge-layout mt-1">
                                     <div class="kpi-gauge-wrap">
                                         <canvas id="gaugeKpiAnyo"></canvas>
@@ -187,7 +187,7 @@ session_start();
                     <div class="col-12 col-xl-6">
                         <div class="card kpi-card kpi-mes h-100 shadow-sm">
                             <div class="card-body py-3">
-                                <div class="kpi-label">Velocímetro Mensual</div>
+                                <div class="kpi-label">Gráfico Mensual</div>
                                 <div class="kpi-gauge-layout mt-1">
                                     <div class="kpi-gauge-wrap">
                                         <canvas id="gaugeKpiMes"></canvas>
@@ -410,12 +410,12 @@ session_start();
                                 <tbody>
                                     <tr>
                                         <td><strong>Total Facturado</strong> <span class="badge bg-secondary">Gris</span></td>
-                                        <td>Suma total del año (o del mes si hay filtro de mes aplicado).</td>
+                                        <td>Suma total del año (o del mes si hay filtro de mes aplicado). El velocímetro muestra en <span class="text-success fw-bold">verde</span> el importe <strong>Facturado</strong> y en rojo tenue el importe <strong>Pdte. Facturar</strong> (aprobado aún no cobrado).</td>
                                         <td>Valor del año base + el del año comparado debajo con flecha de variación.</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Ingresos del Mes</strong> <span class="badge bg-success">Verde</span></td>
-                                        <td>Total del mes seleccionado. Si no hay mes, muestra el último mes con datos.</td>
+                                        <td>Total del mes seleccionado. Si no hay mes, muestra el último mes con datos. Incluye las líneas <strong>Facturado</strong> (cobrado) y <strong>Pdte. Facturar</strong> (pendiente de cobro) del mes.</td>
                                         <td>Comparativa del mismo mes en ambos años con diferencia.</td>
                                     </tr>
                                     <tr>
