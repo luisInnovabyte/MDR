@@ -127,21 +127,30 @@ switch ($op) {
 
         // Obtener datos del año actual
         $datosActual = $informe->getVentasPorMes($anyo_actual);
-        $valoresActual = array_column($datosActual, 'total');
-        
+        $actualPagado      = array_column($datosActual, 'total_pagado');
+        $actualPresupuesto = array_column($datosActual, 'total_presupuesto');
+
         // Obtener datos del año a comparar (si existe)
-        $valoresComparar = null;
+        $compararPagado      = null;
+        $compararPresupuesto = null;
         if ($anyo_comparar > 0) {
-            $datosComparar = $informe->getVentasPorMes($anyo_comparar);
-            $valoresComparar = array_column($datosComparar, 'total');
+            $datosComparar       = $informe->getVentasPorMes($anyo_comparar);
+            $compararPagado      = array_column($datosComparar, 'total_pagado');
+            $compararPresupuesto = array_column($datosComparar, 'total_presupuesto');
         }
 
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
             'data'    => [
-                'actual'    => $valoresActual,
-                'comparar'  => $valoresComparar,
+                'actual'    => [
+                    'pagado'      => $actualPagado,
+                    'presupuesto' => $actualPresupuesto
+                ],
+                'comparar'  => ($anyo_comparar > 0) ? [
+                    'pagado'      => $compararPagado,
+                    'presupuesto' => $compararPresupuesto
+                ] : null,
                 'anyo_actual'   => $anyo_actual,
                 'anyo_comparar' => $anyo_comparar
             ]
