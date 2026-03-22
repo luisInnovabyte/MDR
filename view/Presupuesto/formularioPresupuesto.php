@@ -92,10 +92,15 @@
                     </span>
                 </div>
                 
-                <!-- Botón de regreso -->
-                <a href="index.php" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Volver al listado
-                </a>
+                <!-- Botones de cabecera -->
+                <div class="d-flex align-items-center gap-2">
+                    <a href="#" id="btn-ver-lineas" class="btn btn-outline-primary d-none">
+                        <i class="fas fa-list-ul me-2"></i>Ver líneas del presupuesto
+                    </a>
+                    <a href="index.php" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al listado
+                    </a>
+                </div>
             </div>
             <br>
         </div><!-- br-pagetitle -->
@@ -642,6 +647,21 @@
                             <table id="tblDocumentos"
                                    class="table table-hover align-middle w-100"
                                    style="font-size:.875rem;"></table>
+                        </div>
+
+                        <!-- ===== Facturas agrupadas vinculadas ===== -->
+                        <div id="seccion-facturas-agrupadas" class="d-none mt-4">
+                            <hr class="my-3">
+                            <h6 class="fw-bold mb-1">
+                                <i class="fas fa-layer-group text-secondary me-2"></i>Facturas agrupadas
+                                <span class="badge bg-secondary ms-1" id="badge-facturas-agrupadas">0</span>
+                            </h6>
+                            <p class="text-muted small mb-2">Este presupuesto está incluido en las siguientes facturas agrupadas.</p>
+                            <div class="table-responsive">
+                                <table id="tblFacturasAgrupadas"
+                                       class="table table-hover align-middle w-100"
+                                       style="font-size:.875rem;"></table>
+                            </div>
                         </div>
 
                         <!-- Estado vacío (oculto; lo gestiona la DataTable) -->

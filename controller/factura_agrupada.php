@@ -386,6 +386,63 @@ switch ($_GET["op"] ?? '') {
     // ------------------------------------------------------------------
     // DESCARGAR PDF — redirige al controlador de impresión
     // ------------------------------------------------------------------
+    // LISTAR POR PRESUPUESTO — sección Documentos del formulario de presupuesto
+    // ------------------------------------------------------------------
+    case "listar_por_presupuesto":
+        $id_presupuesto = (int)($_POST['id_presupuesto'] ?? 0);
+        if (!$id_presupuesto) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'id_presupuesto requerido.'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $datos = $facturaAgrupada->get_facturas_agrupadas_por_presupuesto($id_presupuesto);
+        $data  = [];
+
+        foreach ($datos as $row) {
+            $es_abono     = (bool)($row['is_abono_agrupada'] ?? false);
+            $esta_abonada = !$es_abono
+                            && !(bool)($row['activo_factura_agrupada'] ?? true)
+                            && !empty($row['id_abono_asociado']);
+
+            $num     = htmlspecialchars($row['numero_factura_agrupada'], ENT_QUOTES, 'UTF-8');
+            $empresa = htmlspecialchars($row['nombre_empresa'],          ENT_QUOTES, 'UTF-8');
+            $id      = (int)$row['id_factura_agrupada'];
+            $fecha   = $row['fecha_factura_agrupada']
+                        ? date('d/m/Y', strtotime($row['fecha_factura_agrupada']))
+                        : '—';
+
+            // Badge de estado
+            if ($es_abono) {
+                $badge = '<span class="badge bg-warning text-dark">ABONO</span>';
+            } elseif ($esta_abonada) {
+                $badge = '<span class="badge bg-danger">ABONADA</span>';
+            } else {
+                $badge = '<span class="badge bg-success">FACTURA</span>';
+            }
+
+            // Botón PDF
+            $btn_pdf = '<a href="../../controller/impresion_factura_agrupada.php?op=generar&id=' . $id . '"
+                           target="_blank"
+                           class="btn btn-info btn-sm"
+                           title="Ver PDF"><i class="fa fa-file-pdf"></i></a>';
+
+            $data[] = [
+                'id_factura_agrupada'     => $id,
+                'numero_factura_agrupada' => $num,
+                'fecha'                   => $fecha,
+                'empresa'                 => $empresa,
+                'badge_estado'            => $badge,
+                'btn_pdf'                 => $btn_pdf,
+                'numero_abono_asociado'   => $row['numero_abono_asociado'] ?? null,
+            ];
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'data' => $data], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ------------------------------------------------------------------
     case "descargar_pdf":
         $id = (int)($_GET['id'] ?? $_POST['id_factura_agrupada'] ?? 0);
         header('Content-Type: application/json');

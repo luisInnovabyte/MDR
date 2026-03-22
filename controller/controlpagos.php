@@ -44,14 +44,17 @@ switch ($_GET["op"] ?? '') {
             $badges_docs = '';
             if (!empty($row['tipos_documentos'])) {
                 $etiquetas = [
-                    'presupuesto'           => ['Presupuesto',   'secondary'],
-                    'parte_trabajo'         => ['Parte',         'info'],
-                    'factura_proforma'      => ['Proforma',      'primary'],
-                    'factura_anticipo'      => ['Anticipo',      'warning'],
-                    'factura_final'         => ['Final',         'success'],
-                    'factura_rectificativa' => ['Abono',         'danger'],
+                    'presupuesto'            => ['Presupuesto',   'secondary'],
+                    'parte_trabajo'          => ['Parte',         'info'],
+                    'factura_proforma'       => ['Proforma',      'primary'],
+                    'factura_anticipo'       => ['Anticipo',      'warning'],
+                    'factura_final'          => ['Final',         'success'],
+                    'factura_rectificativa'  => ['Abono',         'danger'],
+                    'factura_agrupada'       => ['Agrupada',      'dark'],
+                    'factura_agrupada_abono' => ['Abono Agr.',    'danger'],
                 ];
                 foreach (explode(',', $row['tipos_documentos']) as $tipo) {
+                    $tipo = trim($tipo);
                     if (isset($etiquetas[$tipo])) {
                         [$label, $col] = $etiquetas[$tipo];
                         $badges_docs .= '<span class="badge bg-' . $col . ' me-1">' . $label . '</span>';
@@ -149,14 +152,17 @@ switch ($_GET["op"] ?? '') {
             $badges_docs = '';
             if (!empty($row['tipos_documentos'])) {
                 $etiquetas = [
-                    'presupuesto'           => ['Presupuesto',   'secondary'],
-                    'parte_trabajo'         => ['Parte',         'info'],
-                    'factura_proforma'      => ['Proforma',      'primary'],
-                    'factura_anticipo'      => ['Anticipo',      'warning'],
-                    'factura_final'         => ['Final',         'success'],
-                    'factura_rectificativa' => ['Abono',         'danger'],
+                    'presupuesto'            => ['Presupuesto',   'secondary'],
+                    'parte_trabajo'          => ['Parte',         'info'],
+                    'factura_proforma'       => ['Proforma',      'primary'],
+                    'factura_anticipo'       => ['Anticipo',      'warning'],
+                    'factura_final'          => ['Final',         'success'],
+                    'factura_rectificativa'  => ['Abono',         'danger'],
+                    'factura_agrupada'       => ['Agrupada',      'dark'],
+                    'factura_agrupada_abono' => ['Abono Agr.',    'danger'],
                 ];
                 foreach (explode(',', $row['tipos_documentos']) as $tipo) {
+                    $tipo = trim($tipo);
                     if (isset($etiquetas[$tipo])) {
                         [$label, $col] = $etiquetas[$tipo];
                         $badges_docs .= '<span class="badge bg-' . $col . ' me-1">' . $label . '</span>';
