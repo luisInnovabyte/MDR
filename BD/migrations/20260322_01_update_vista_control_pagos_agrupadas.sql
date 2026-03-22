@@ -1,8 +1,9 @@
 -- =============================================================
--- Migration: 20260310_01_create_vista_control_pagos.sql
--- Descripción: Vista global de control de pagos por presupuesto
+-- Migration: 20260322_01_update_vista_control_pagos_agrupadas.sql
+-- Descripción: Añade soporte a facturas agrupadas en la columna
+--              "Tipos de documentos" de la vista control de pagos
 -- Proyecto: MDR ERP Manager
--- Fecha: 2026-03-10
+-- Fecha: 2026-03-22
 -- =============================================================
 
 CREATE OR REPLACE VIEW vista_control_pagos AS
@@ -107,7 +108,7 @@ LEFT JOIN (
     GROUP BY pp.id_presupuesto
 ) ag ON ag.id_presupuesto = p.id_presupuesto
 
--- Subquery: tipos de documentos emitidos
+-- Subquery: tipos de documentos emitidos (facturas individuales)
 LEFT JOIN (
     SELECT
         dp.id_presupuesto,

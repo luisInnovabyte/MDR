@@ -82,6 +82,54 @@ class FacturaAgrupada
     }
 
     /**
+     * Facturas agrupadas vinculadas a un presupuesto concreto.
+     * Incluye FA activas, abonos y FA originales abonadas (activo=0 con abono asociado).
+     */
+    public function get_facturas_agrupadas_por_presupuesto($id_presupuesto)
+    {
+        try {
+            $sql = "SELECT fa.id_factura_agrupada,
+                           fa.numero_factura_agrupada,
+                           fa.fecha_factura_agrupada,
+                           fa.is_abono_agrupada,
+                           fa.activo_factura_agrupada,
+                           fa.id_factura_agrupada_ref,
+                           COALESCE(e.nombre_empresa, '') AS nombre_empresa,
+                           (SELECT fa2.id_factura_agrupada
+                            FROM factura_agrupada fa2
+                            WHERE fa2.id_factura_agrupada_ref = fa.id_factura_agrupada
+                              AND fa2.is_abono_agrupada = 1
+                              AND fa2.activo_factura_agrupada = 1
+                            LIMIT 1) AS id_abono_asociado,
+                           (SELECT fa2.numero_factura_agrupada
+                            FROM factura_agrupada fa2
+                            WHERE fa2.id_factura_agrupada_ref = fa.id_factura_agrupada
+                              AND fa2.is_abono_agrupada = 1
+                              AND fa2.activo_factura_agrupada = 1
+                            LIMIT 1) AS numero_abono_asociado
+                    FROM factura_agrupada fa
+                    JOIN factura_agrupada_presupuesto fap
+                         ON fap.id_factura_agrupada = fa.id_factura_agrupada
+                    LEFT JOIN empresa e ON e.id_empresa = fa.id_empresa
+                    WHERE fap.id_presupuesto = ?
+                      AND fap.activo_fap = 1
+                    ORDER BY fa.fecha_factura_agrupada DESC, fa.id_factura_agrupada DESC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'FacturaAgrupada', 'get_facturas_agrupadas_por_presupuesto',
+                "Error: " . $e->getMessage(), 'error'
+            );
+            return [];
+        }
+    }
+
+    /**
      * Facturas agrupadas de un cliente concreto (activas).
      */
     public function get_facturas_agrupadas_by_cliente($id_cliente)

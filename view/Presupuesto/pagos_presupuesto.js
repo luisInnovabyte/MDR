@@ -11,6 +11,7 @@
    ============================================================ */
 let tblDocumentos        = null;
 let tblPagos             = null;
+let tblFacturasAgrupadas = null;
 let tabDocumentosInited  = false;
 let tabPagosInited       = false;
 
@@ -229,12 +230,71 @@ function initTabDocumentos() {
             $('#badge-documentos').text(this.api().rows().count());
         }
     });
+
+    loadFacturasAgrupadasPpto(idPresupuesto);
 }
 
 function recargarDocumentos() {
     if (tblDocumentos) {
         tblDocumentos.ajax.reload(null, false);
     }
+}
+
+function loadFacturasAgrupadasPpto(idPresupuesto) {
+    tblFacturasAgrupadas = $('#tblFacturasAgrupadas').DataTable({
+        destroy: true,
+        processing: true,
+        serverSide: false,
+        ajax: {
+            url: '../../controller/factura_agrupada.php?op=listar_por_presupuesto',
+            type: 'POST',
+            data: { id_presupuesto: idPresupuesto },
+            dataSrc: 'data'
+        },
+        columns: [
+            { data: 'numero_factura_agrupada', title: 'Nº Factura' },
+            { data: 'badge_estado',            title: 'Tipo',          orderable: false, searchable: false },
+            { data: 'empresa',                 title: 'Empresa' },
+            {
+                data: 'fecha',
+                title: 'Fecha emisión',
+                render: function (data) {
+                    if (!data) return '';
+                    var parts = data.split('-');
+                    if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+                    return data;
+                }
+            },
+            { data: 'btn_pdf', title: 'Opciones', orderable: false, searchable: false }
+        ],
+        language: {
+            emptyTable:    'No hay facturas agrupadas para este presupuesto',
+            info:          'Mostrando _START_ a _END_ de _TOTAL_ facturas',
+            infoEmpty:     'Sin facturas agrupadas',
+            infoFiltered:  '(filtrado de _MAX_ facturas totales)',
+            lengthMenu:    'Mostrar _MENU_ facturas',
+            loadingRecords:'Cargando...',
+            processing:    'Procesando...',
+            search:        'Buscar:',
+            zeroRecords:   'No se encontraron facturas agrupadas',
+            paginate: {
+                first:    '<i class="fas fa-angle-double-left"></i>',
+                last:     '<i class="fas fa-angle-double-right"></i>',
+                previous: '<i class="fas fa-angle-left"></i>',
+                next:     '<i class="fas fa-angle-right"></i>'
+            }
+        },
+        order: [[3, 'desc']],
+        responsive: true,
+        pageLength: 10,
+        drawCallback: function () {
+            const count = this.api().rows().count();
+            $('#badge-facturas-agrupadas').text(count);
+            if (count > 0) {
+                $('#seccion-facturas-agrupadas').removeClass('d-none');
+            }
+        }
+    });
 }
 
 /* ---- Acciones sobre documentos (llamadas desde HTML del controller) ---- */
