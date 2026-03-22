@@ -422,7 +422,7 @@ switch ($_GET["op"] ?? '') {
             }
 
             // Botón PDF
-            $btn_pdf = '<a href="../../controller/impresion_factura_agrupada.php?op=generar&id=' . $id . '"
+            $btn_pdf = '<a href="../../controller/impresion_factura_agrupada.php?op=descargar&id=' . $id . '"
                            target="_blank"
                            class="btn btn-info btn-sm"
                            title="Ver PDF"><i class="fa fa-file-pdf"></i></a>';
