@@ -581,6 +581,47 @@ switch ($op) {
         break;
     
 
+    case "historial_presupuestos":
+        $id_elemento = intval($_GET['id_elemento'] ?? $_POST['id_elemento'] ?? 0);
+        header('Content-Type: application/json');
+        if (!$id_elemento) {
+            echo json_encode(["draw" => 1, "recordsTotal" => 0, "recordsFiltered" => 0, "data" => []]);
+            break;
+        }
+        $filas = $elemento->get_historial_presupuestos($id_elemento);
+        $data  = [];
+        foreach ($filas as $row) {
+            $color  = htmlspecialchars($row['color_estado_ppto'] ?? '#6c757d', ENT_QUOTES, 'UTF-8');
+            $estado = htmlspecialchars($row['nombre_estado_ppto'] ?? '—', ENT_QUOTES, 'UTF-8');
+            $fecha  = !empty($row['fecha_inicio_salida'])
+                      ? date('d/m/Y', strtotime($row['fecha_inicio_salida']))
+                      : '—';
+            $data[] = [
+                "numero_presupuesto"       => htmlspecialchars($row['numero_presupuesto']       ?? '—', ENT_QUOTES, 'UTF-8'),
+                "nombre_evento_presupuesto"=> htmlspecialchars($row['nombre_evento_presupuesto']?? '—', ENT_QUOTES, 'UTF-8'),
+                "nombre_cliente"           => htmlspecialchars($row['nombre_cliente']           ?? '—', ENT_QUOTES, 'UTF-8'),
+                "fecha_salida"             => $fecha,
+                "estado_badge"             => '<span class="badge" style="background:' . $color . ';color:#fff;">' . $estado . '</span>',
+            ];
+        }
+        echo json_encode([
+            "draw"            => 1,
+            "recordsTotal"    => count($data),
+            "recordsFiltered" => count($data),
+            "data"            => $data
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    case "salidas_por_mes":
+        $id_elemento = intval($_GET['id_elemento'] ?? $_POST['id_elemento'] ?? 0);
+        if (!$id_elemento) {
+            echo json_encode(['success' => false, 'message' => 'ID no válido']);
+            break;
+        }
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'data' => $elemento->get_salidas_por_mes($id_elemento)], JSON_UNESCAPED_UNICODE);
+        break;
+
     default:
         echo json_encode([
             "status" => "error",
