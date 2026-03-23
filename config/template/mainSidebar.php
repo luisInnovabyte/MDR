@@ -16,8 +16,10 @@ function puedeVerMenu($idRol, $modulo) {
         'llamadas'       => [2, 3, 4],
         'comerciales'    => [3],                      // Solo admin
         'dashboard'      => [2, 3, 4],
-        'area_tecnica'   => [2, 3, 5],               // Gestor, Admin y Técnico
-        'informes'       => [2, 3, 4],               // Gestor, Admin y Comercial
+        'area_tecnica'      => [2, 3, 5],               // Gestor, Admin y Técnico
+        'informes'          => [2, 3, 4],               // Gestor, Admin y Comercial
+        'kanban_direccion'  => [2, 3],                   // Solo Gestor y Admin
+        'kanban_operaciones' => [2, 3, 4, 5],               // Todos los roles
         // Otros módulos que tengas, según corresponda
     ];
     return in_array($idRol, $permisos[$modulo] ?? []);
@@ -149,15 +151,7 @@ function puedeVerMenu($idRol, $modulo) {
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../Presupuesto/index.php" class="sub-link">Mto. Presupuestos</a></li>
             <li class="sub-item"><a href="../ControlPagos/index.php" class="sub-link">Control de Pagos</a></li>
-            <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 11px; text-transform: uppercase; padding: 6px 15px; background-color: #fff3cd; margin: 4px 0; border-left: 3px solid #ffc107;">
-                ⚗️ TMP
-            </li>
-            <li class="sub-item"><a href="../TMP/index.php" class="sub-link" style="color: #856404;">
-                <i class="icon ion-ios-add-circle mg-r-5 tx-success"></i> Crear datos test
-            </a></li>
-            <li class="sub-item"><a href="../TMP/index.php?accion=limpiar" class="sub-link" style="color: #856404;">
-                <i class="icon ion-ios-trash mg-r-5 tx-danger"></i> Limpiar datos test
-            </a></li>
+            <li class="sub-item"><a href="../FacturasAgrupadas/index.php" class="sub-link">Facturas Agrupadas</a></li>
         </ul>
     </li>
 
@@ -207,6 +201,12 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item"><a href="../Informe_ppto/index.php" class="sub-link">Calendarios Presupuestos</a></li>
             <li class="sub-item"><a href="../Consulta_Garantias/index.php" class="sub-link">Consulta Garantías</a></li>
             <li class="sub-item"><a href="../Consulta_Mantenimientos/index.php" class="sub-link">Consulta Mantenimientos</a></li>
+            <?php if (puedeVerMenu($idRolUsuario, 'kanban_direccion')): ?>
+            <li class="sub-item"><a href="../KanbanDireccion/index.php" class="sub-link" target="_blank" rel="noopener">Kanban Dirección</a></li>
+            <?php endif; ?>
+            <?php if (puedeVerMenu($idRolUsuario, 'kanban_operaciones')): ?>
+            <li class="sub-item"><a href="../KanbanOperaciones/index.php" class="sub-link" target="_blank" rel="noopener">Kanban Operaciones</a></li>
+            <?php endif; ?>
         </ul>
     </li>
     <?php endif; ?>

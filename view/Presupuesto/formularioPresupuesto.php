@@ -820,6 +820,25 @@
                         </div>
                         
                         <div class="col-12">
+                            <h6 class="text-primary"><i class="fas fa-list-alt me-2"></i>Acceso rápido a las líneas del presupuesto</h6>
+                            <div class="alert alert-primary border-start border-primary border-4 mb-3" role="alert">
+                                <div class="d-flex align-items-start gap-3">
+                                    <i class="fas fa-table-list fs-4 flex-shrink-0 mt-1"></i>
+                                    <div>
+                                        <h6 class="alert-heading mb-1"><strong>Botón «Ver líneas de presupuesto»</strong></h6>
+                                        <p class="mb-2">En la cabecera del formulario, junto al título, encontrarás el botón <span class="badge bg-secondary"><i class="fas fa-list me-1"></i>Ver líneas</span> que te lleva directamente al detalle de las líneas del presupuesto actual.</p>
+                                        <ul class="mb-0 small">
+                                            <li>Evita tener que volver al listado y buscar el presupuesto para entrar en «Gestionar líneas».</li>
+                                            <li>Solo aparece en modo <strong>edición</strong> (no en la creación de un presupuesto nuevo).</li>
+                                            <li>Abre la vista de líneas en la misma ventana, conservando el contexto.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+
+                        <div class="col-12">
                             <h6 class="text-primary"><i class="fas fa-calendar-event me-2"></i>Datos del Evento</h6>
                             <p><strong>Información del evento.</strong> Campos opcionales para detallar el evento.</p>
                             <ul class="list-unstyled ms-3">
@@ -1054,6 +1073,47 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- FACTURAS AGRUPADAS -->
+                <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4"><i class="fas fa-layer-group me-2 text-warning"></i>Facturas agrupadas vinculadas</h6>
+                <p class="text-muted small mb-3">
+                    Si este presupuesto forma parte de una <strong>factura agrupada</strong>, aparecerá una segunda tabla bajo la de documentos individuales con la información de dicha agrupación.
+                </p>
+                <table class="table table-sm table-bordered align-middle mb-3">
+                    <thead class="table-warning">
+                        <tr><th style="width:175px">Columna</th><th>Descripción</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Número</strong></td>
+                            <td>Número de la factura agrupada (p. ej. <code>FE-0040/2026</code>). Identifica el documento conjunto que agrupa varios presupuestos.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fecha</strong></td>
+                            <td>Fecha de emisión de la factura agrupada.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total bruto</strong></td>
+                            <td>Importe total de la factura agrupada (suma de todos los presupuestos incluidos).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Anticipos</strong></td>
+                            <td>Total de anticipos ya facturados y descontados en la agrupación.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>A cobrar</strong></td>
+                            <td>Importe neto pendiente de cobro (Total bruto − Anticipos).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estado</strong></td>
+                            <td>Indica si la factura agrupada está <span class="badge bg-success">Activa</span> o <span class="badge bg-secondary">Inactiva</span>.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="alert alert-warning d-flex gap-2 small mb-3">
+                    <i class="fas fa-triangle-exclamation mt-1 flex-shrink-0"></i>
+                    <span>Un presupuesto incluido en una factura agrupada <strong>no puede volver a seleccionarse</strong> para otra agrupación mientras la factura esté activa.</span>
+                </div>
 
                 <!-- NOTA IMPORTANTE -->
                 <div class="alert alert-info d-flex gap-2 small mt-3 mb-0">

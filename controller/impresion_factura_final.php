@@ -123,12 +123,12 @@ class MYPDF_FINAL extends TCPDF
         $this->SetTextColor(44, 62, 80);
         $this->Cell(95, 3.5, $this->datos_empresa['nombre_comercial_empresa'] ?? ($this->datos_empresa['nombre_empresa'] ?? ''), 0, 1, 'L');
 
-        // CIF en rojo (solo si no termina en 0000)
+        // CIF (mismo color que el nombre de empresa)
         $nif_empresa = $this->datos_empresa['nif_empresa'] ?? '';
         if ($nif_empresa && substr($nif_empresa, -4) !== '0000') {
             $this->SetX(8);
             $this->SetFont('helvetica', 'B', 8);
-            $this->SetTextColor(231, 76, 60);
+            $this->SetTextColor(44, 62, 80);
             $this->Cell(95, 2.5, 'CIF: ' . $nif_empresa, 0, 1, 'L');
         }
 

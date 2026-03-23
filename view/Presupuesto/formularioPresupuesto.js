@@ -611,6 +611,13 @@ $(document).ready(function () {
                     // Llenar los campos del formulario
                     $('#id_presupuesto').val(data.id_presupuesto);
 
+                    // Botón de acceso directo a líneas del presupuesto
+                    if (data.id_version_actual) {
+                        $('#btn-ver-lineas')
+                            .attr('href', '../lineasPresupuesto/index.php?id_version_presupuesto=' + data.id_version_actual)
+                            .removeClass('d-none');
+                    }
+
                     // Notificar a pagos_presupuesto.js que el ID ya está disponible
                     // (por si llegase antes que el URLSearchParams fallback)
                     if (typeof window.onPresupuestoGuardado === 'function') {
