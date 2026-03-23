@@ -150,6 +150,7 @@ function puedeVerMenu($idRol, $modulo) {
         </a>
         <ul class="br-menu-sub">
             <li class="sub-item"><a href="../Presupuesto/index.php" class="sub-link">Mto. Presupuestos</a></li>
+            <li class="sub-item"><a href="../FichaElemento/index.php" class="sub-link">Ficha de Elementos</a></li>
             <li class="sub-item"><a href="../ControlPagos/index.php" class="sub-link">Control de Pagos</a></li>
             <li class="sub-item"><a href="../FacturasAgrupadas/index.php" class="sub-link">Facturas Agrupadas</a></li>
         </ul>
