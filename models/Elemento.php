@@ -943,4 +943,62 @@ class Elemento
             return false;
         }
     }
+
+    public function get_historial_presupuestos($id_elemento)
+    {
+        try {
+            $sql = "SELECT DISTINCT
+                        p.id_presupuesto,
+                        p.numero_presupuesto,
+                        p.nombre_evento_presupuesto,
+                        p.fecha_inicio_evento_presupuesto,
+                        p.fecha_fin_evento_presupuesto,
+                        c.nombre_cliente,
+                        sa.fecha_inicio_salida,
+                        sa.estado_salida,
+                        ep.nombre_estado_ppto,
+                        ep.color_estado_ppto
+                    FROM linea_salida_almacen lsa
+                    JOIN salida_almacen sa      ON lsa.id_salida_almacen = sa.id_salida_almacen
+                    JOIN presupuesto p          ON sa.id_presupuesto     = p.id_presupuesto
+                    JOIN cliente c             ON p.id_cliente           = c.id_cliente
+                    JOIN estado_presupuesto ep ON p.id_estado_ppto       = ep.id_estado_ppto
+                    WHERE lsa.id_elemento = ?
+                      AND sa.activo_salida_almacen = 1
+                    ORDER BY sa.fecha_inicio_salida DESC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad('admin', 'Elemento', 'get_historial_presupuestos', "Error: " . $e->getMessage(), 'error');
+            return [];
+        }
+    }
+
+    public function get_salidas_por_mes($id_elemento)
+    {
+        try {
+            $sql = "SELECT
+                        DATE_FORMAT(sa.fecha_inicio_salida, '%Y-%m')  AS mes,
+                        DATE_FORMAT(sa.fecha_inicio_salida, '%b %Y')  AS mes_label,
+                        COUNT(DISTINCT sa.id_presupuesto)             AS num_presupuestos
+                    FROM linea_salida_almacen lsa
+                    JOIN salida_almacen sa ON lsa.id_salida_almacen = sa.id_salida_almacen
+                    WHERE lsa.id_elemento = ?
+                      AND sa.activo_salida_almacen = 1
+                      AND sa.fecha_inicio_salida IS NOT NULL
+                      AND sa.fecha_inicio_salida >= DATE_SUB(NOW(), INTERVAL 24 MONTH)
+                    GROUP BY DATE_FORMAT(sa.fecha_inicio_salida,'%Y-%m'),
+                             DATE_FORMAT(sa.fecha_inicio_salida,'%b %Y')
+                    ORDER BY mes ASC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad('admin', 'Elemento', 'get_salidas_por_mes', "Error: " . $e->getMessage(), 'error');
+            return [];
+        }
+    }
 }
