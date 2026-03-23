@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "MDR PHP Built-in Server",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["-S", "0.0.0.0:8080", "-t", "W:/MDR"],
+      "port": 8080
+    },
+    {
+      "name": "Summernote Vite Dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "W:/MDR/public/lib/summernote-main/summernote-main"],
+      "port": 5173
+    }
+  ]
+}

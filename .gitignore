@@ -14,25 +14,21 @@ Thumbs.db
 BD/Importacion_BD_VerI/**/*.accdb
 *.accdb
 
-
 # Claude AI files
 CLAUDE.md
-.claude/
 tmpclaude-*-cwd
+.claude/worktrees/
+.claude/settings.local.json
 
 # JSON en directorios de código (controller, models, view)
 controller/**/*.json
 models/**/*.json
 view/**/*.json
 =======
-# Archivos de Claude
-CLAUDE.md
-.claude/
 
 # IDEs y editores
 .vscode/
 .idea/
-.claude/
 *.swp
 *.swo
 *~
@@ -70,3 +66,5 @@ Thumbs.db
 HTML/imagenes_land/
 # Archivos de diseño Photoshop
 *.psd
+
+.claude/settings.local.json

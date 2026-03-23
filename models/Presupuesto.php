@@ -153,7 +153,7 @@ class Presupuesto
     public function get_presupuestos()
     {
         try {
-            $sql = "SELECT * FROM vista_presupuesto_completa ORDER BY fecha_presupuesto DESC";
+            $sql = "SELECT * FROM vista_presupuesto_completa WHERE activo_presupuesto = 1 ORDER BY fecha_presupuesto DESC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
 

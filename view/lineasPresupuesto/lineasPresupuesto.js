@@ -171,7 +171,7 @@ function cargarInfoVersion() {
                 
                 // Configurar enlaces de navegación para volver al presupuesto específico
                 if (data.id_presupuesto) {
-                    const urlPresupuesto = `../Presupuesto/index.php?id_presupuesto=${data.id_presupuesto}`;
+                    const urlPresupuesto = `../Presupuesto/formularioPresupuesto.php?modo=editar&id=${data.id_presupuesto}`;
                     $('#btn-volver-header, #btn-volver-footer').attr('href', urlPresupuesto);
                     
                     // Actualizar breadcrumb con número de presupuesto
