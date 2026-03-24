@@ -971,3 +971,139 @@ function formatoFechaEuropeo(fechaString) {
     
     return `${dia}/${mes}/${anio}`;
 }
+
+/* =========================================
+   HISTÓRICO DEL ELEMENTO — Presupuestos y Salidas por mes
+   (Solo visible en modo edición)
+   ========================================= */
+
+let tablaPresupuestosElemento = null;
+let chartSalidasElemento      = null;
+
+$(document).ready(function () {
+    if (!idElemento) return; // Solo en modo edición
+
+    // Carga inicial: pestaña Presupuestos
+    cargarPresupuestosElemento(idElemento);
+
+    // Pestaña Salidas por mes → carga al activarse
+    $('#tab-salidas-elem-btn').on('shown.bs.tab', function () {
+        cargarGraficoElemento(idElemento);
+    });
+});
+
+function cargarPresupuestosElemento(id) {
+    if (!id) return;
+
+    if (tablaPresupuestosElemento) {
+        tablaPresupuestosElemento.ajax
+            .url('../../controller/elemento.php?op=historial_presupuestos&id_elemento=' + id)
+            .load(function (json) {
+                $('#cnt-presupuestos-elem').text(json ? (json.recordsTotal || 0) : 0);
+            });
+        return;
+    }
+
+    tablaPresupuestosElemento = $('#tblPresupuestosElemento').DataTable({
+        ajax: {
+            url: '../../controller/elemento.php?op=historial_presupuestos&id_elemento=' + id,
+            type: 'POST',
+            dataSrc: function (json) {
+                $('#cnt-presupuestos-elem').text(json.recordsTotal || 0);
+                return json.data || [];
+            }
+        },
+        columns: [
+            { data: 'numero_presupuesto',        title: 'Nº' },
+            { data: 'nombre_evento_presupuesto',  title: 'Evento' },
+            { data: 'nombre_cliente',             title: 'Cliente' },
+            { data: 'fecha_salida',               title: 'Fecha salida' },
+            { data: 'estado_badge',               title: 'Estado', orderable: false }
+        ],
+        order: [[3, 'desc']],
+        pageLength: 10,
+        language: {
+            paginate: { first: '«', last: '»', previous: '‹', next: '›' },
+            emptyTable: 'Este elemento no ha aparecido en ningún presupuesto',
+            info: 'Mostrando _START_ - _END_ de _TOTAL_ presupuestos',
+            infoEmpty: 'Sin presupuestos',
+            search: 'Buscar:',
+            lengthMenu: 'Mostrar _MENU_ registros'
+        },
+        responsive: true
+    });
+}
+
+function cargarGraficoElemento(id) {
+    if (!id) return;
+
+    $('#spinner-chart-elem').show();
+    $('#chart-empty-elem').hide();
+    $('#chartSalidasElemento').hide();
+
+    $.ajax({
+        url: '../../controller/elemento.php?op=salidas_por_mes',
+        method: 'POST',
+        dataType: 'json',
+        data: { id_elemento: id },
+        success: function (res) {
+            $('#spinner-chart-elem').hide();
+
+            const datos = (res && res.success && Array.isArray(res.data)) ? res.data : [];
+
+            if (chartSalidasElemento) {
+                chartSalidasElemento.destroy();
+                chartSalidasElemento = null;
+            }
+
+            if (datos.length === 0) {
+                $('#chart-empty-elem').show();
+                return;
+            }
+
+            const labels = datos.map(function (d) { return d.mes_label; });
+            const values = datos.map(function (d) { return parseInt(d.num_presupuestos, 10); });
+
+            $('#chartSalidasElemento').show();
+            const ctx = document.getElementById('chartSalidasElemento').getContext('2d');
+            chartSalidasElemento = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Presupuestos',
+                        data: values,
+                        backgroundColor: 'rgba(13, 110, 253, 0.6)',
+                        borderColor: 'rgba(13, 110, 253, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    return ' ' + ctx.parsed.y + ' presupuesto' +
+                                           (ctx.parsed.y !== 1 ? 's' : '');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        },
+        error: function () {
+            $('#spinner-chart-elem').hide();
+            $('#chart-empty-elem').show();
+        }
+    });
+}
