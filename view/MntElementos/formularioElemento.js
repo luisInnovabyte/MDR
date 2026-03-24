@@ -1086,18 +1086,6 @@ function cargarGraficoElemento(id) {
                 values.push(mesMap[key] || 0);
             }
 
-            // Regresión lineal para línea de tendencia
-            const n = values.length;
-            const sumX = values.reduce(function (s, _, i) { return s + i; }, 0);
-            const sumY = values.reduce(function (s, v) { return s + v; }, 0);
-            const sumXY = values.reduce(function (s, v, i) { return s + i * v; }, 0);
-            const sumX2 = values.reduce(function (s, _, i) { return s + i * i; }, 0);
-            const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX) || 0;
-            const intercept = (sumY - slope * sumX) / n;
-            const trendData = values.map(function (_, i) {
-                return Math.max(0, parseFloat((slope * i + intercept).toFixed(2)));
-            });
-
             // Plugin inline: etiquetas encima de las barras
             const datalabelsPlugin = {
                 id: 'datalabelsInline',
@@ -1138,46 +1126,23 @@ function cargarGraficoElemento(id) {
                     datasets: [
                         {
                             label: 'Presupuestos',
-                            type: 'bar',
                             data: values,
                             backgroundColor: bgColors,
                             borderColor: 'rgba(13, 110, 253, 1)',
                             borderWidth: 1,
-                            borderRadius: 4,
-                            order: 2
-                        },
-                        {
-                            label: 'Tendencia',
-                            type: 'line',
-                            data: trendData,
-                            borderColor: 'rgba(220, 53, 69, 0.85)',
-                            borderWidth: 2,
-                            borderDash: [6, 3],
-                            pointRadius: 3,
-                            pointBackgroundColor: 'rgba(220, 53, 69, 0.85)',
-                            fill: false,
-                            tension: 0.3,
-                            order: 1
+                            borderRadius: 4
                         }
                     ]
                 },
                 options: {
                     responsive: true,
-                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: { usePointStyle: true, font: { size: 12 } }
-                        },
+                        legend: { display: false },
                         tooltip: {
                             callbacks: {
                                 label: function (item) {
-                                    if (item.datasetIndex === 0) {
-                                        return ' ' + item.parsed.y + ' presupuesto' +
-                                               (item.parsed.y !== 1 ? 's' : '');
-                                    }
-                                    return ' Tendencia: ' + item.parsed.y;
+                                    return ' ' + item.parsed.y + ' presupuesto' +
+                                           (item.parsed.y !== 1 ? 's' : '');
                                 }
                             }
                         }
