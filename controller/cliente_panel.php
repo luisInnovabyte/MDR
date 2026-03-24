@@ -108,6 +108,25 @@ switch ($op) {
         ], JSON_UNESCAPED_UNICODE);
         break;
 
+    // ─── Contadores de tabs (badges) ─────────────────────────────────────────
+    case 'contadores':
+        $id_cliente = isset($_POST['id_cliente']) ? (int) $_POST['id_cliente'] : 0;
+
+        if ($id_cliente <= 0) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'ID de cliente no válido'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $datos = $panel->getContadoresTabsCliente($id_cliente);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data'    => $datos,
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
     default:
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'Operación no reconocida'], JSON_UNESCAPED_UNICODE);

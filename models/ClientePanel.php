@@ -133,5 +133,83 @@ class ClientePanel
         // TODO: implementar
         return [];
     }
+
+    /**
+     * Devuelve los contadores de registros activos para cada tab del panel.
+     * Se usa para mostrar los badges en los botones de acceso a las tabs
+     * sin necesidad de cargar los DataTables completos.
+     *
+     * @param int $id_cliente
+     * @return array { presupuestos, facturas, pagos, contactos, ubicaciones }
+     */
+    public function getContadoresTabsCliente(int $id_cliente): array
+    {
+        try {
+            // Presupuestos activos
+            $stmt = $this->conexion->prepare(
+                "SELECT COUNT(*) FROM presupuesto
+                 WHERE id_cliente = ? AND activo_presupuesto = 1"
+            );
+            $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
+            $stmt->execute();
+            $cntPresupuestos = (int) $stmt->fetchColumn();
+
+            // Documentos de factura (anticipo, final, rectificativa)
+            $stmt = $this->conexion->prepare(
+                "SELECT COUNT(*) FROM v_documentos_presupuesto
+                 WHERE id_cliente = ?
+                   AND tipo_documento_ppto IN ('factura_anticipo','factura_final','factura_rectificativa')"
+            );
+            $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
+            $stmt->execute();
+            $cntFacturas = (int) $stmt->fetchColumn();
+
+            // Pagos
+            $stmt = $this->conexion->prepare(
+                "SELECT COUNT(*) FROM v_pagos_presupuesto
+                 WHERE id_cliente = ?"
+            );
+            $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
+            $stmt->execute();
+            $cntPagos = (int) $stmt->fetchColumn();
+
+            // Contactos activos
+            $stmt = $this->conexion->prepare(
+                "SELECT COUNT(*) FROM contacto_cliente
+                 WHERE id_cliente = ? AND activo_contacto_cliente = 1"
+            );
+            $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
+            $stmt->execute();
+            $cntContactos = (int) $stmt->fetchColumn();
+
+            // Ubicaciones activas
+            $stmt = $this->conexion->prepare(
+                "SELECT COUNT(*) FROM cliente_ubicacion
+                 WHERE id_cliente = ? AND activo_ubicacion = 1"
+            );
+            $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
+            $stmt->execute();
+            $cntUbicaciones = (int) $stmt->fetchColumn();
+
+            return [
+                'presupuestos' => $cntPresupuestos,
+                'facturas'     => $cntFacturas,
+                'pagos'        => $cntPagos,
+                'contactos'    => $cntContactos,
+                'ubicaciones'  => $cntUbicaciones,
+            ];
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad('admin', 'ClientePanel', 'getContadoresTabsCliente',
+                "Error id_cliente=$id_cliente: " . $e->getMessage(), 'error');
+            return [
+                'presupuestos' => 0,
+                'facturas'     => 0,
+                'pagos'        => 0,
+                'contactos'    => 0,
+                'ubicaciones'  => 0,
+            ];
+        }
+    }
 }
 ?>

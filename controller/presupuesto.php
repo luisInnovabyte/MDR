@@ -1423,16 +1423,7 @@ break;
         $data  = [];
 
         foreach ($datos as $row) {
-            $data[] = [
-                'id_presupuesto'                  => $row['id_presupuesto'],
-                'numero_presupuesto'              => $row['numero_presupuesto'],
-                'nombre_evento_presupuesto'       => $row['nombre_evento_presupuesto'],
-                'fecha_inicio_evento_presupuesto' => $row['fecha_inicio_evento_presupuesto'] ?? '',
-                'fecha_fin_evento_presupuesto'    => $row['fecha_fin_evento_presupuesto'] ?? '',
-                'nombre_estado_ppto'              => $row['nombre_estado_ppto'] ?? '',
-                'color_estado_ppto'               => $row['color_estado_ppto'] ?? '#6c757d',
-                'total_presupuesto'               => $row['total_presupuesto'] ?? 0,
-            ];
+            $data[] = $row; // Pasar todos los campos para que el child-row tenga acceso completo
         }
 
         header('Content-Type: application/json');

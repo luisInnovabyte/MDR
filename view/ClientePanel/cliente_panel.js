@@ -43,9 +43,10 @@ $(document).ready(function () {
         return;
     }
 
-    // Cargar cabecera y KPIs al entrar
+    // Cargar cabecera, KPIs y contadores de badges al entrar
     cargarResumen();
     cargarKPIs();
+    cargarContadores();
 
     // Lazy init: inicializar DataTables al activar cada pestaña
     $('#tab-presupuestos-btn').on('shown.bs.tab', function () {
@@ -69,6 +70,23 @@ $(document).ready(function () {
     });
 
 });
+
+// ─── Contadores de tabs (badges) ────────────────────────────────────────────
+function cargarContadores() {
+    $.post(CTRL + '?op=contadores', { id_cliente: ID_CLIENTE })
+        .done(function (res) {
+            if (!res || !res.success) return;
+            const d = res.data;
+            $('#badge-presupuestos').text(d.presupuestos);
+            $('#badge-facturas').text(d.facturas);
+            $('#badge-pagos').text(d.pagos);
+            $('#badge-contactos').text(d.contactos);
+            $('#badge-ubicaciones').text(d.ubicaciones);
+        })
+        .fail(function () {
+            console.error('[ClientePanel] Error al cargar contadores de tabs');
+        });
+}
 
 // ─── KPIs ─────────────────────────────────────────────────────────────────────
 function cargarKPIs() {
@@ -138,6 +156,127 @@ function cargarResumen() {
 }
 
 // ─── DataTable: Presupuestos ──────────────────────────────────────────────────
+function formatPresupuestoDetalle(d) {
+    const val = (v) => (v !== null && v !== undefined && v !== '') ? v : '<span class="text-muted">-</span>';
+    const fec = (v) => v ? formatoFechaEuropeo(v) : val(null);
+
+    return `
+        <div class="card border-primary mb-3">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-file-earmark-text-fill fs-3 me-2"></i>
+                    <h5 class="card-title mb-0">Detalles del Presupuesto</h5>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="row">
+
+                    <!-- ========== COLUMNA 1 ========== -->
+                    <div class="col-md-4">
+
+                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="bi bi-file-text me-2"></i>Datos del Presupuesto
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-hash me-1"></i>ID:</strong> ${val(d.id_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-file-earmark-code me-1"></i>Número:</strong> ${val(d.numero_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar-event me-1"></i>F. Presupuesto:</strong> ${fec(d.fecha_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar-check me-1"></i>F. Validez:</strong> ${fec(d.fecha_validez_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>Descuento (%):</strong>
+                                <span class="badge bg-success">${parseFloat(d.descuento_presupuesto || 0).toFixed(2)}%</span>
+                            </p>
+                        </div>
+
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="bi bi-geo-alt me-2"></i>Datos del Evento
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-pin-map me-1"></i>Ubicación:</strong></p>
+                            <p class="ms-3 text-muted small" style="word-break:break-word">${val(d.direccion_completa_evento_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar3 me-1"></i>F. Inicio:</strong> ${fec(d.fecha_inicio_evento_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar3 me-1"></i>F. Fin:</strong> ${fec(d.fecha_fin_evento_presupuesto)}</p>
+                        </div>
+
+                        <h6 class="text-info border-bottom pb-2 mb-3">
+                            <i class="bi bi-person me-2"></i>Datos del Cliente
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-building me-1"></i>Dirección:</strong></p>
+                            <p class="ms-3 text-muted small" style="word-break:break-word">${val(d.direccion_completa_cliente)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-receipt me-1"></i>Dir. Facturación:</strong></p>
+                            <p class="ms-3 text-muted small" style="word-break:break-word">${val(d.direccion_facturacion_completa_cliente)}</p>
+                        </div>
+                    </div>
+
+                    <!-- ========== COLUMNA 2 ========== -->
+                    <div class="col-md-4">
+
+                        <h6 class="text-warning border-bottom pb-2 mb-3">
+                            <i class="bi bi-chat-square-text me-2"></i>Observaciones
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-file-text me-1"></i>Obs. Cabecera:</strong></p>
+                            <p class="ms-3 text-muted small" style="word-break:break-word">${val(d.observaciones_cabecera_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-file-text me-1"></i>Obs. Pie:</strong></p>
+                            <p class="ms-3 text-muted small" style="word-break:break-word">${val(d.observaciones_pie_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-lock me-1"></i>Obs. Internas:</strong></p>
+                            <p class="ms-3 text-muted small" style="word-break:break-word">${val(d.observaciones_internas_presupuesto)}</p>
+                        </div>
+
+                        <h6 class="text-secondary border-bottom pb-2 mb-3">
+                            <i class="bi bi-person-lines-fill me-2"></i>Contacto del Cliente
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-person-badge me-1"></i>Nombre:</strong> ${val(d.nombre_completo_contacto)}</p>
+                        </div>
+
+                        <h6 class="text-dark border-bottom pb-2 mb-3">
+                            <i class="bi bi-telephone me-2"></i>Método de Contacto
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-envelope me-1"></i>Método:</strong> ${val(d.nombre_metodo_contacto)}</p>
+                        </div>
+                    </div>
+
+                    <!-- ========== COLUMNA 3 ========== -->
+                    <div class="col-md-4">
+
+                        <h6 class="text-danger border-bottom pb-2 mb-3">
+                            <i class="bi bi-flag me-2"></i>Estado del Presupuesto
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-bookmark me-1"></i>Estado:</strong>
+                                <span class="badge" style="background-color:${d.color_estado_ppto || '#6c757d'}">
+                                    ${val(d.nombre_estado_ppto)}
+                                </span>
+                            </p>
+                        </div>
+
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="bi bi-credit-card me-2"></i>Forma de Pago
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-tag me-1"></i>Nombre:</strong> ${val(d.nombre_pago)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>% Anticipo:</strong> ${val(d.porcentaje_anticipo_pago)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>% Final:</strong> ${val(d.porcentaje_final_pago)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-cash me-1"></i>Tipo Pago:</strong> ${val(d.tipo_pago_presupuesto)}</p>
+                        </div>
+
+                        <h6 class="text-muted border-bottom pb-2 mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Control
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-calendar-plus me-1"></i>Creado:</strong> ${fec(d.created_at_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar-event me-1"></i>Actualizado:</strong> ${fec(d.updated_at_presupuesto)}</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function inicializarTablaPresupuestos() {
     tablaPresupuestos = $('#tblPresupuestosCliente').DataTable({
         ajax: {
@@ -147,6 +286,13 @@ function inicializarTablaPresupuestos() {
             dataSrc: 'data'
         },
         columns: [
+            {
+                data: null,
+                defaultContent: '',
+                className: 'details-control text-center',
+                orderable: false,
+                searchable: false
+            },
             { data: 'numero_presupuesto' },
             { data: 'nombre_evento_presupuesto' },
             { data: 'fecha_inicio_evento_presupuesto' },
@@ -174,9 +320,28 @@ function inicializarTablaPresupuestos() {
                 }
             }
         ],
+        columnDefs: [
+            { targets: 0, width: '3%' }
+        ],
         language: DT_LANG,
         responsive: true,
-        order: [[0, 'desc']]
+        order: [[1, 'desc']],
+        drawCallback: function () {
+            $('#badge-presupuestos').text(this.api().page.info().recordsTotal);
+        }
+    });
+
+    // Child-row: expandir/contraer al hacer click en la celda details-control
+    $('#tblPresupuestosCliente tbody').on('click', 'td.details-control', function () {
+        var tr  = $(this).closest('tr');
+        var row = tablaPresupuestos.row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            row.child(formatPresupuestoDetalle(row.data())).show();
+            tr.addClass('shown');
+        }
     });
 }
 
@@ -184,9 +349,116 @@ function inicializarTablaPresupuestos() {
 const TIPO_BADGE = {
     'factura_anticipo':      { label: 'Anticipo',  cls: 'bg-success' },
     'factura_final':         { label: 'Final',     cls: 'bg-primary' },
-    'factura_proforma':      { label: 'Proforma',  cls: 'bg-secondary' },
+    'factura_proforma':      { label: 'Proforma',  cls: 'bg-warning text-dark' },
     'factura_rectificativa': { label: 'Abono',     cls: 'bg-danger' },
 };
+
+function formatFacturaDetalle(d) {
+    const val = (v) => (v !== null && v !== undefined && v !== '') ? v : '<span class="text-muted">-</span>';
+    const fec = (v) => v ? formatoFechaEuropeo(v) : val(null);
+    const eur = (v) => formatEuro(parseFloat(v) || 0);
+    const esProforma  = d.tipo_documento_ppto === 'factura_proforma';
+    const headerCls   = esProforma ? 'bg-warning text-dark' : 'bg-primary text-white';
+    const titulo      = esProforma ? 'Detalles del Documento (Proforma)' : 'Detalles de la Factura';
+    const iconoCls    = esProforma ? 'bi-file-earmark-text' : 'bi-receipt-cutoff';
+
+    const bannerProforma = esProforma ? `
+        <div class="alert alert-warning py-2 px-3 mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Documento sin validez fiscal.</strong> La proforma no genera obligación de pago ni puede utilizarse como justificante contable.
+        </div>` : '';
+
+    const bloqueOrigen = d.numero_documento_origen ? `
+        <h6 class="text-danger border-bottom pb-2 mb-3">
+            <i class="bi bi-arrow-return-left me-2"></i>Documento de origen
+        </h6>
+        <div class="mb-3">
+            <p class="mb-1"><strong><i class="bi bi-hash me-1"></i>Nº origen:</strong>
+                ${val(d.numero_documento_origen)}
+                <span class="badge bg-secondary ms-1">${val(d.tipo_documento_origen)}</span>
+            </p>
+            <p class="mb-1"><strong><i class="bi bi-currency-euro me-1"></i>Importe origen:</strong> ${eur(d.total_documento_origen)}</p>
+            ${d.motivo_abono_documento_ppto ? `<p class="mb-1"><strong><i class="bi bi-chat-text me-1"></i>Motivo:</strong> ${val(d.motivo_abono_documento_ppto)}</p>` : ''}
+        </div>` : '';
+
+    return `
+        <div class="card border-primary mb-3">
+            <div class="card-header ${headerCls}">
+                <div class="d-flex align-items-center">
+                    <i class="bi ${iconoCls} fs-3 me-2"></i>
+                    <h5 class="card-title mb-0">${titulo}</h5>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                ${bannerProforma}
+                <div class="row">
+
+                    <!-- ========== COLUMNA 1: Identificación ========== -->
+                    <div class="col-md-4">
+
+                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="bi bi-file-earmark-code me-2"></i>Identificación
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-bookmark me-1"></i>Serie:</strong> ${val(d.serie_documento_ppto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-hash me-1"></i>Número:</strong> ${val(d.numero_documento_ppto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar-event me-1"></i>F. emisión:</strong> ${fec(d.fecha_emision_documento_ppto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar-check me-1"></i>F. generación:</strong> ${fec(d.fecha_generacion_documento_ppto)}</p>
+                        </div>
+
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="bi bi-file-text me-2"></i>Presupuesto vinculado
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-file-earmark-code me-1"></i>Número:</strong> ${val(d.numero_presupuesto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-calendar-event me-1"></i>Evento:</strong></p>
+                            <p class="ms-3 text-muted small" style="word-break:break-word">${val(d.nombre_evento_presupuesto)}</p>
+                        </div>
+
+                        ${bloqueOrigen}
+
+                    </div>
+
+                    <!-- ========== COLUMNA 2: Desglose económico ========== -->
+                    <div class="col-md-4">
+
+                        <h6 class="text-warning border-bottom pb-2 mb-3">
+                            <i class="bi bi-calculator me-2"></i>Desglose económico
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-currency-euro me-1"></i>Base imponible:</strong> ${eur(d.subtotal_documento_ppto)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-percent me-1"></i>IVA:</strong> ${eur(d.total_iva_documento_ppto)}</p>
+                            <hr class="my-2">
+                            <p class="mb-1 fw-bold fs-6"><strong><i class="bi bi-cash me-1"></i>Total:</strong> ${eur(d.total_documento_ppto)}</p>
+                        </div>
+
+                    </div>
+
+                    <!-- ========== COLUMNA 3: Empresa + Observaciones ========== -->
+                    <div class="col-md-4">
+
+                        <h6 class="text-info border-bottom pb-2 mb-3">
+                            <i class="bi bi-building me-2"></i>Empresa emisora
+                        </h6>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong><i class="bi bi-building me-1"></i>Nombre:</strong> ${val(d.nombre_comercial_empresa || d.nombre_empresa)}</p>
+                            <p class="mb-1"><strong><i class="bi bi-card-text me-1"></i>NIF:</strong> ${val(d.nif_empresa)}</p>
+                        </div>
+
+                        <h6 class="text-secondary border-bottom pb-2 mb-3">
+                            <i class="bi bi-chat-square-text me-2"></i>Observaciones
+                        </h6>
+                        <div class="mb-3">
+                            <p class="ms-0 text-muted small" style="word-break:break-word">${val(d.observaciones_documento_ppto)}</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    `;
+}
 
 function inicializarTablaFacturas() {
     tablaFacturas = $('#tblFacturasCliente').DataTable({
@@ -197,6 +469,13 @@ function inicializarTablaFacturas() {
             dataSrc: 'data'
         },
         columns: [
+            {
+                data: null,
+                defaultContent: '',
+                className: 'details-control text-center',
+                orderable: false,
+                searchable: false
+            },
             {
                 data: 'tipo_documento_ppto',
                 render: function (d) {
@@ -219,9 +498,33 @@ function inicializarTablaFacturas() {
                 }
             }
         ],
+        columnDefs: [
+            { targets: 0, width: '3%' }
+        ],
+        createdRow: function (row, data) {
+            if (data.tipo_documento_ppto === 'factura_proforma') {
+                $(row).addClass('fila-proforma');
+            }
+        },
         language: DT_LANG,
         responsive: true,
-        order: [[3, 'desc']]
+        order: [[4, 'desc']],
+        drawCallback: function () {
+            $('#badge-facturas').text(this.api().page.info().recordsTotal);
+        }
+    });
+
+    // Child-row: expandir/contraer al hacer click en la celda details-control
+    $('#tblFacturasCliente tbody').on('click', 'td.details-control', function () {
+        var tr  = $(this).closest('tr');
+        var row = tablaFacturas.row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            row.child(formatFacturaDetalle(row.data())).show();
+            tr.addClass('shown');
+        }
     });
 }
 
@@ -244,7 +547,10 @@ function inicializarTablaPagos() {
         ],
         language: DT_LANG,
         responsive: true,
-        order: [[3, 'desc']]
+        order: [[3, 'desc']],
+        drawCallback: function () {
+            $('#badge-pagos').text(this.api().page.info().recordsTotal);
+        }
     });
 }
 
@@ -279,7 +585,10 @@ function inicializarTablaContactos() {
         ],
         language: DT_LANG,
         responsive: true,
-        order: [[1, 'asc']]
+        order: [[1, 'asc']],
+        drawCallback: function () {
+            $('#badge-contactos').text(this.api().page.info().recordsTotal);
+        }
     });
 
     // Click handler para expand/collapse del child-row
@@ -327,7 +636,10 @@ function inicializarTablaUbicaciones() {
         ],
         language: DT_LANG,
         responsive: true,
-        order: [[1, 'asc']]
+        order: [[1, 'asc']],
+        drawCallback: function () {
+            $('#badge-ubicaciones').text(this.api().page.info().recordsTotal);
+        }
     });
 
     // Click handler para expand/collapse del child-row

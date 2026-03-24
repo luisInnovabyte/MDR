@@ -71,7 +71,7 @@ require_once('../../config/template/verificarPermiso.php');
                     <div class="col-6 col-md-3">
                         <div class="card shadow-sm h-100">
                             <div class="card-body">
-                                <div class="text-muted small mb-1">Total presupuestado</div>
+                                <div class="text-muted mb-1">Total presupuestado</div>
                                 <div class="fs-5 fw-bold" id="kpiTotalPresupuestado">
                                     <span class="placeholder col-8"></span>
                                 </div>
@@ -81,7 +81,7 @@ require_once('../../config/template/verificarPermiso.php');
                     <div class="col-6 col-md-3">
                         <div class="card shadow-sm h-100">
                             <div class="card-body">
-                                <div class="text-muted small mb-1">Facturas emitidas</div>
+                                <div class="text-muted mb-1">Facturas emitidas</div>
                                 <div class="fs-5 fw-bold" id="kpiFacturasEmitidas">
                                     <span class="placeholder col-8"></span>
                                 </div>
@@ -91,7 +91,7 @@ require_once('../../config/template/verificarPermiso.php');
                     <div class="col-6 col-md-3">
                         <div class="card shadow-sm h-100">
                             <div class="card-body">
-                                <div class="text-muted small mb-1">Total cobrado</div>
+                                <div class="text-muted mb-1">Total cobrado</div>
                                 <div class="fs-5 fw-bold" id="kpiTotalCobrado">
                                     <span class="placeholder col-8"></span>
                                 </div>
@@ -101,7 +101,7 @@ require_once('../../config/template/verificarPermiso.php');
                     <div class="col-6 col-md-3">
                         <div class="card shadow-sm h-100">
                             <div class="card-body">
-                                <div class="text-muted small mb-1">Pendiente cobro</div>
+                                <div class="text-muted mb-1">Pendiente cobro</div>
                                 <div class="fs-5 fw-bold" id="kpiPendienteCobro">
                                     <span class="placeholder col-8"></span>
                                 </div>
@@ -123,7 +123,58 @@ require_once('../../config/template/verificarPermiso.php');
                 </div>
 
                 <!-- ── TABS ──────────────────────────────────────────────── -->
-                <ul class="nav nav-tabs mb-3" id="tabsPanel" role="tablist">
+                <style>
+                    #tabsPanel .nav-link {
+                        font-weight: 600;
+                        font-size: 1rem;
+                        padding: 0.65rem 1.2rem;
+                        color: #6c757d;
+                        border-bottom: 3px solid transparent;
+                        transition: color .15s, border-color .15s;
+                    }
+                    #tabsPanel .nav-link:hover {
+                        color: #5a6acf;
+                        border-bottom-color: #c5c9f0;
+                    }
+                    #tabsPanel .nav-link.active {
+                        color: #5a6acf;
+                        border-bottom: 3px solid #5a6acf;
+                        background: transparent;
+                    }
+                    #tabsPanel .tab-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 20px;
+                        height: 20px;
+                        font-size: 0.72rem;
+                        border-radius: 50%;
+                        background: #e9ecef;
+                        color: #6c757d;
+                        margin-left: 6px;
+                        font-weight: 700;
+                        transition: background .15s;
+                    }
+                    #tabsPanel .nav-link.active .tab-badge {
+                        background: #5a6acf;
+                        color: #fff;
+                    }
+                    #tabsPanelContent {
+                        background: #fff;
+                        font-size: 1rem;
+                    }
+                    td.details-control {
+                        cursor: pointer;
+                    }
+                    .fila-proforma td {
+                        background-color: #fff8e1 !important;
+                        color: #6d4c41 !important;
+                    }
+                    .fila-proforma:hover td {
+                        background-color: #ffecb3 !important;
+                    }
+                </style>
+                <ul class="nav nav-tabs mb-0 border-bottom" id="tabsPanel" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="tab-resumen-btn"
                                 data-bs-toggle="tab" data-bs-target="#paneResumen"
@@ -136,6 +187,7 @@ require_once('../../config/template/verificarPermiso.php');
                                 data-bs-toggle="tab" data-bs-target="#panePresupuestos"
                                 type="button" role="tab">
                             <i class="bi bi-file-text me-1"></i>Presupuestos
+                            <span class="tab-badge" id="badge-presupuestos">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -143,6 +195,7 @@ require_once('../../config/template/verificarPermiso.php');
                                 data-bs-toggle="tab" data-bs-target="#paneFacturas"
                                 type="button" role="tab">
                             <i class="bi bi-receipt me-1"></i>Facturas
+                            <span class="tab-badge" id="badge-facturas">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -150,6 +203,7 @@ require_once('../../config/template/verificarPermiso.php');
                                 data-bs-toggle="tab" data-bs-target="#panePagos"
                                 type="button" role="tab">
                             <i class="bi bi-cash-coin me-1"></i>Pagos
+                            <span class="tab-badge" id="badge-pagos">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -157,6 +211,7 @@ require_once('../../config/template/verificarPermiso.php');
                                 data-bs-toggle="tab" data-bs-target="#paneContactos"
                                 type="button" role="tab">
                             <i class="bi bi-people me-1"></i>Contactos
+                            <span class="tab-badge" id="badge-contactos">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -164,11 +219,12 @@ require_once('../../config/template/verificarPermiso.php');
                                 data-bs-toggle="tab" data-bs-target="#paneUbicaciones"
                                 type="button" role="tab">
                             <i class="bi bi-geo-alt me-1"></i>Ubicaciones
+                            <span class="tab-badge" id="badge-ubicaciones">0</span>
                         </button>
                     </li>
                 </ul>
 
-                <div class="tab-content" id="tabsPanelContent">
+                <div class="tab-content border border-top-0" id="tabsPanelContent">
 
                     <!-- Tab: Resumen -->
                     <div class="tab-pane fade show active" id="paneResumen" role="tabpanel">
@@ -236,6 +292,7 @@ require_once('../../config/template/verificarPermiso.php');
                                class="table table-striped table-bordered dt-responsive nowrap w-100">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Número</th>
                                     <th>Nombre evento</th>
                                     <th>F. inicio</th>
@@ -255,6 +312,7 @@ require_once('../../config/template/verificarPermiso.php');
                                class="table table-striped table-bordered dt-responsive nowrap w-100">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Tipo</th>
                                     <th>Número</th>
                                     <th>Presupuesto</th>

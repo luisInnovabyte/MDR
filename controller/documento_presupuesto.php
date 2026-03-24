@@ -376,14 +376,7 @@ switch ($op) {
         $data  = [];
 
         foreach ($datos as $row) {
-            $data[] = [
-                'tipo_documento_ppto'          => $row['tipo_documento_ppto'],
-                'numero_documento_ppto'        => $row['numero_documento_ppto'],
-                'numero_presupuesto'           => $row['numero_presupuesto'],
-                'fecha_emision_documento_ppto' => $row['fecha_emision_documento_ppto'],
-                'total_documento_ppto'         => $row['total_documento_ppto'],
-                'ruta_pdf_documento_ppto'      => $row['ruta_pdf_documento_ppto'] ?? '',
-            ];
+            $data[] = $row; // Pasar todos los campos para el child-row
         }
 
         header('Content-Type: application/json');
