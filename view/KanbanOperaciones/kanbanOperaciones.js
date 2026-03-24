@@ -2,7 +2,7 @@
  * kanbanOperaciones.js
  * Kanban semanal de operaciones — MDR ERP
  *
- * 7 columnas (Lunes–Domingo), un evento puede aparecer en varios días
+ * 7 columnas (hoy + 6 días siguientes), un evento puede aparecer en varios días
  * Datos: controller/kanbanOperaciones.php?op=listar
  */
 
@@ -14,8 +14,8 @@
 const URL_LISTAR    = '../../controller/kanbanOperaciones.php?op=listar';
 const INTERVALO_MS  = 5 * 60 * 1000;   // 5 minutos
 
-// Clave de día (para IDs de DOM), en orden L-D
-const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+// Índices de columna 0–6 (0 = hoy, 6 = hoy+6 días)
+const DIAS_SEMANA = [0, 1, 2, 3, 4, 5, 6];
 
 /* =====================================================
    RELOJ Y COUNTDOWN
@@ -54,17 +54,15 @@ function iniciarCountdown() {
 
 /**
  * Devuelve array[7] de objetos Date normalizados a 00:00:00
- * índice 0 = lunes, 6 = domingo
+ * índice 0 = hoy, índice 6 = hoy + 6 días
  */
 function getDiasSemana() {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
-    const dow   = hoy.getDay();               // 0=Dom, 1=Lun … 6=Sáb
-    const diffL = (dow === 0) ? -6 : 1 - dow; // offset hasta lunes
-    const dias  = [];
+    const dias = [];
     for (let i = 0; i < 7; i++) {
         const d = new Date(hoy);
-        d.setDate(hoy.getDate() + diffL + i);
+        d.setDate(hoy.getDate() + i);
         dias.push(d);
     }
     return dias;
@@ -83,24 +81,26 @@ function parseDate(str) {
 }
 
 /**
- * Rellena las cabeceras de fecha y marca la columna de hoy con .hoy
+ * Rellena las cabeceras de fecha/nombre y marca la columna de hoy con .hoy
  */
 function inicializarFechasColumnas() {
-    const meses  = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-    const semana = getDiasSemana();
-    const hoy    = new Date(); hoy.setHours(0, 0, 0, 0);
+    const meses   = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    const nombres = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    const semana  = getDiasSemana();
+    const hoy     = new Date(); hoy.setHours(0, 0, 0, 0);
 
     semana.forEach((d, idx) => {
-        const clave = DIAS_SEMANA[idx];
-        const hdrEl = document.getElementById(`hdr-${clave}`);
+        const nameEl = document.querySelector(`#kc-${idx} .day-name`);
+        if (nameEl) nameEl.textContent = nombres[d.getDay()];
+        const hdrEl  = document.getElementById(`hdr-${idx}`);
         if (hdrEl) hdrEl.textContent = `${d.getDate()} ${meses[d.getMonth()]}`;
-        const colEl = document.getElementById(`kc-${clave}`);
+        const colEl  = document.getElementById(`kc-${idx}`);
         if (colEl) colEl.classList.toggle('hoy', d.getTime() === hoy.getTime());
     });
 
-    // Rango semana en topbar
+    // Rango en topbar
     const fmt = d => `${d.getDate()} ${meses[d.getMonth()]}`;
-    const el = document.getElementById('rango-semana');
+    const el  = document.getElementById('rango-semana');
     if (el) el.textContent = `${fmt(semana[0])} – ${fmt(semana[6])}`;
 }
 

@@ -422,103 +422,103 @@
     </div>
 </div>
 
-<!-- ===== KANBAN 7 DÍAS ===== -->
+<!-- ===== KANBAN 7 DÍAS (ventana deslizante: hoy + 6 días) ===== -->
 <div id="kanban-wrapper">
 
-    <!-- Lunes -->
-    <div class="kanban-col" id="kc-lunes">
+    <!-- Día 0: HOY -->
+    <div class="kanban-col" id="kc-0">
         <div class="kanban-col-header">
             <div>
-                <div class="day-name">Lunes</div>
-                <div class="day-date" id="hdr-lunes"></div>
+                <div class="day-name"></div>
+                <div class="day-date" id="hdr-0"></div>
             </div>
-            <span class="count-badge" id="cnt-lunes">0</span>
+            <span class="count-badge" id="cnt-0">0</span>
         </div>
-        <div class="kanban-col-body" id="col-lunes">
+        <div class="kanban-col-body" id="col-0">
             <div class="spinner-kanban"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div>
         </div>
     </div>
 
-    <!-- Martes -->
-    <div class="kanban-col" id="kc-martes">
+    <!-- Día 1 -->
+    <div class="kanban-col" id="kc-1">
         <div class="kanban-col-header">
             <div>
-                <div class="day-name">Martes</div>
-                <div class="day-date" id="hdr-martes"></div>
+                <div class="day-name"></div>
+                <div class="day-date" id="hdr-1"></div>
             </div>
-            <span class="count-badge" id="cnt-martes">0</span>
+            <span class="count-badge" id="cnt-1">0</span>
         </div>
-        <div class="kanban-col-body" id="col-martes">
+        <div class="kanban-col-body" id="col-1">
             <div class="spinner-kanban"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div>
         </div>
     </div>
 
-    <!-- Miércoles -->
-    <div class="kanban-col" id="kc-miercoles">
+    <!-- Día 2 -->
+    <div class="kanban-col" id="kc-2">
         <div class="kanban-col-header">
             <div>
-                <div class="day-name">Miércoles</div>
-                <div class="day-date" id="hdr-miercoles"></div>
+                <div class="day-name"></div>
+                <div class="day-date" id="hdr-2"></div>
             </div>
-            <span class="count-badge" id="cnt-miercoles">0</span>
+            <span class="count-badge" id="cnt-2">0</span>
         </div>
-        <div class="kanban-col-body" id="col-miercoles">
+        <div class="kanban-col-body" id="col-2">
             <div class="spinner-kanban"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div>
         </div>
     </div>
 
-    <!-- Jueves -->
-    <div class="kanban-col" id="kc-jueves">
+    <!-- Día 3 -->
+    <div class="kanban-col" id="kc-3">
         <div class="kanban-col-header">
             <div>
-                <div class="day-name">Jueves</div>
-                <div class="day-date" id="hdr-jueves"></div>
+                <div class="day-name"></div>
+                <div class="day-date" id="hdr-3"></div>
             </div>
-            <span class="count-badge" id="cnt-jueves">0</span>
+            <span class="count-badge" id="cnt-3">0</span>
         </div>
-        <div class="kanban-col-body" id="col-jueves">
+        <div class="kanban-col-body" id="col-3">
             <div class="spinner-kanban"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div>
         </div>
     </div>
 
-    <!-- Viernes -->
-    <div class="kanban-col" id="kc-viernes">
+    <!-- Día 4 -->
+    <div class="kanban-col" id="kc-4">
         <div class="kanban-col-header">
             <div>
-                <div class="day-name">Viernes</div>
-                <div class="day-date" id="hdr-viernes"></div>
+                <div class="day-name"></div>
+                <div class="day-date" id="hdr-4"></div>
             </div>
-            <span class="count-badge" id="cnt-viernes">0</span>
+            <span class="count-badge" id="cnt-4">0</span>
         </div>
-        <div class="kanban-col-body" id="col-viernes">
+        <div class="kanban-col-body" id="col-4">
             <div class="spinner-kanban"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div>
         </div>
     </div>
 
-    <!-- Sábado -->
-    <div class="kanban-col" id="kc-sabado">
+    <!-- Día 5 -->
+    <div class="kanban-col" id="kc-5">
         <div class="kanban-col-header">
             <div>
-                <div class="day-name">Sábado</div>
-                <div class="day-date" id="hdr-sabado"></div>
+                <div class="day-name"></div>
+                <div class="day-date" id="hdr-5"></div>
             </div>
-            <span class="count-badge" id="cnt-sabado">0</span>
+            <span class="count-badge" id="cnt-5">0</span>
         </div>
-        <div class="kanban-col-body" id="col-sabado">
+        <div class="kanban-col-body" id="col-5">
             <div class="spinner-kanban"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div>
         </div>
     </div>
 
-    <!-- Domingo -->
-    <div class="kanban-col" id="kc-domingo">
+    <!-- Día 6 -->
+    <div class="kanban-col" id="kc-6">
         <div class="kanban-col-header">
             <div>
-                <div class="day-name">Domingo</div>
-                <div class="day-date" id="hdr-domingo"></div>
+                <div class="day-name"></div>
+                <div class="day-date" id="hdr-6"></div>
             </div>
-            <span class="count-badge" id="cnt-domingo">0</span>
+            <span class="count-badge" id="cnt-6">0</span>
         </div>
-        <div class="kanban-col-body" id="col-domingo">
+        <div class="kanban-col-body" id="col-6">
             <div class="spinner-kanban"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div>
         </div>
     </div>
@@ -526,7 +526,7 @@
 </div>
 
 <div id="info-periodo">
-    Presupuestos aprobados y pendientes con actividad esta semana (lunes–domingo) — Actualización automática cada 5 minutos
+    Presupuestos aprobados y pendientes con actividad los próximos 7 días (hoy + 6 días) — Actualización automática cada 5 minutos
 </div>
 
 <!-- ===== MODAL AYUDA ===== -->
