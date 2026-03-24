@@ -990,7 +990,7 @@ class Elemento
                       AND lp.activo_linea_ppto = 1
                       AND p.activo_presupuesto = 1
                       AND p.fecha_inicio_evento_presupuesto IS NOT NULL
-                      AND p.fecha_inicio_evento_presupuesto >= DATE_SUB(NOW(), INTERVAL 24 MONTH)
+                      AND YEAR(p.fecha_inicio_evento_presupuesto) = YEAR(NOW())
                     GROUP BY DATE_FORMAT(p.fecha_inicio_evento_presupuesto, '%Y-%m'),
                              DATE_FORMAT(p.fecha_inicio_evento_presupuesto, '%b %Y')
                     ORDER BY mes ASC";

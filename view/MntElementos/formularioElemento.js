@@ -1069,13 +1069,22 @@ function cargarGraficoElemento(id) {
                 chartSalidasElemento = null;
             }
 
-            if (datos.length === 0) {
-                $('#chart-empty-elem').show();
-                return;
-            }
+            // Con año completo siempre mostramos los 12 meses (0 si no hay datos)
 
-            const labels = datos.map(function (d) { return d.mes_label; });
-            const values = datos.map(function (d) { return parseInt(d.num_presupuestos, 10); });
+            // Generar los 12 meses del año actual con valor 0 por defecto
+            const year = new Date().getFullYear();
+            const mesMap = {};
+            datos.forEach(function (d) { mesMap[d.mes] = parseInt(d.num_presupuestos, 10); });
+
+            const labels = [];
+            const values = [];
+            for (var m = 0; m < 12; m++) {
+                var key = year + '-' + String(m + 1).padStart(2, '0');
+                var d = new Date(year, m, 1);
+                var label = d.toLocaleString('es-ES', { month: 'short' }).replace('.', '') + ' ' + year;
+                labels.push(label.charAt(0).toUpperCase() + label.slice(1));
+                values.push(mesMap[key] || 0);
+            }
 
             // Regresión lineal para línea de tendencia
             const n = values.length;
