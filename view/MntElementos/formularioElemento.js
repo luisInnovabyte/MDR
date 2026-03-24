@@ -1080,16 +1080,20 @@ function cargarGraficoElemento(id) {
             $('#chartSalidasElemento').show();
             const ctx = document.getElementById('chartSalidasElemento').getContext('2d');
             chartSalidasElemento = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Presupuestos',
                         data: values,
-                        backgroundColor: 'rgba(13, 110, 253, 0.6)',
+                        backgroundColor: 'rgba(13, 110, 253, 0.15)',
                         borderColor: 'rgba(13, 110, 253, 1)',
-                        borderWidth: 1,
-                        borderRadius: 4
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(13, 110, 253, 1)',
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        fill: true,
+                        tension: 0.35
                     }]
                 },
                 options: {
