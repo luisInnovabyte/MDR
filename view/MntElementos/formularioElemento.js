@@ -1077,34 +1077,98 @@ function cargarGraficoElemento(id) {
             const labels = datos.map(function (d) { return d.mes_label; });
             const values = datos.map(function (d) { return parseInt(d.num_presupuestos, 10); });
 
+            // Regresión lineal para línea de tendencia
+            const n = values.length;
+            const sumX = values.reduce(function (s, _, i) { return s + i; }, 0);
+            const sumY = values.reduce(function (s, v) { return s + v; }, 0);
+            const sumXY = values.reduce(function (s, v, i) { return s + i * v; }, 0);
+            const sumX2 = values.reduce(function (s, _, i) { return s + i * i; }, 0);
+            const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX) || 0;
+            const intercept = (sumY - slope * sumX) / n;
+            const trendData = values.map(function (_, i) {
+                return Math.max(0, parseFloat((slope * i + intercept).toFixed(2)));
+            });
+
+            // Plugin inline: etiquetas encima de las barras
+            const datalabelsPlugin = {
+                id: 'datalabelsInline',
+                afterDatasetsDraw: function (chart) {
+                    const ds = chart.data.datasets[0];
+                    if (!ds) return;
+                    const meta = chart.getDatasetMeta(0);
+                    const ctx2 = chart.ctx;
+                    ctx2.save();
+                    ctx2.font = 'bold 11px sans-serif';
+                    ctx2.textAlign = 'center';
+                    ctx2.textBaseline = 'bottom';
+                    meta.data.forEach(function (bar, i) {
+                        const val = ds.data[i];
+                        if (val > 0) {
+                            ctx2.fillStyle = 'rgba(13, 110, 253, 0.9)';
+                            ctx2.fillText(val, bar.x, bar.y - 3);
+                        }
+                    });
+                    ctx2.restore();
+                }
+            };
+
+            // Opacidad dinámica según magnitud
+            const maxVal = Math.max.apply(null, values) || 1;
+            const bgColors = values.map(function (v) {
+                const alpha = 0.35 + 0.5 * (v / maxVal);
+                return 'rgba(13, 110, 253, ' + alpha.toFixed(2) + ')';
+            });
+
             $('#chartSalidasElemento').show();
             const ctx = document.getElementById('chartSalidasElemento').getContext('2d');
             chartSalidasElemento = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
+                plugins: [datalabelsPlugin],
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: 'Presupuestos',
-                        data: values,
-                        backgroundColor: 'rgba(13, 110, 253, 0.15)',
-                        borderColor: 'rgba(13, 110, 253, 1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: 'rgba(13, 110, 253, 1)',
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        fill: true,
-                        tension: 0.35
-                    }]
+                    datasets: [
+                        {
+                            label: 'Presupuestos',
+                            type: 'bar',
+                            data: values,
+                            backgroundColor: bgColors,
+                            borderColor: 'rgba(13, 110, 253, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            order: 2
+                        },
+                        {
+                            label: 'Tendencia',
+                            type: 'line',
+                            data: trendData,
+                            borderColor: 'rgba(220, 53, 69, 0.85)',
+                            borderWidth: 2,
+                            borderDash: [6, 3],
+                            pointRadius: 3,
+                            pointBackgroundColor: 'rgba(220, 53, 69, 0.85)',
+                            fill: false,
+                            tension: 0.3,
+                            order: 1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
+                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: { usePointStyle: true, font: { size: 12 } }
+                        },
                         tooltip: {
                             callbacks: {
-                                label: function (ctx) {
-                                    return ' ' + ctx.parsed.y + ' presupuesto' +
-                                           (ctx.parsed.y !== 1 ? 's' : '');
+                                label: function (item) {
+                                    if (item.datasetIndex === 0) {
+                                        return ' ' + item.parsed.y + ' presupuesto' +
+                                               (item.parsed.y !== 1 ? 's' : '');
+                                    }
+                                    return ' Tendencia: ' + item.parsed.y;
                                 }
                             }
                         }
