@@ -361,6 +361,41 @@ switch ($op) {
         break;
 
     // ══════════════════════════════════════════════════════════
+    // LISTAR_POR_CLIENTE — facturas de todos los presupuestos de un cliente (Panel 360°)
+    // POST: id_cliente
+    // ══════════════════════════════════════════════════════════
+    case "listar_por_cliente":
+        $id_cliente = isset($_POST['id_cliente']) ? (int) $_POST['id_cliente'] : 0;
+
+        if (!$id_cliente) {
+            echo json_encode(['success' => false, 'message' => 'Falta id_cliente'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $datos = $documento->get_documentos_por_cliente($id_cliente);
+        $data  = [];
+
+        foreach ($datos as $row) {
+            $data[] = [
+                'tipo_documento_ppto'          => $row['tipo_documento_ppto'],
+                'numero_documento_ppto'        => $row['numero_documento_ppto'],
+                'numero_presupuesto'           => $row['numero_presupuesto'],
+                'fecha_emision_documento_ppto' => $row['fecha_emision_documento_ppto'],
+                'total_documento_ppto'         => $row['total_documento_ppto'],
+                'ruta_pdf_documento_ppto'      => $row['ruta_pdf_documento_ppto'] ?? '',
+            ];
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'draw'            => intval($_POST['draw'] ?? 1),
+            'recordsTotal'    => count($data),
+            'recordsFiltered' => count($data),
+            'data'            => $data,
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ══════════════════════════════════════════════════════════
     // DEFAULT
     // ══════════════════════════════════════════════════════════
     default:

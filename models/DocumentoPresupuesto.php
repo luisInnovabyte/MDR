@@ -807,4 +807,33 @@ class DocumentoPresupuesto
             return false;
         }
     }
+
+    public function get_documentos_por_cliente(int $id_cliente): array
+    {
+        try {
+            $sql = "SELECT dp.*, p.numero_presupuesto
+                    FROM   v_documentos_presupuesto dp
+                    INNER  JOIN presupuesto p ON dp.id_presupuesto = p.id_presupuesto
+                    WHERE  p.id_cliente             = ?
+                      AND  p.activo_presupuesto     = 1
+                      AND  dp.activo_documento_ppto = 1
+                      AND  dp.tipo_documento_ppto IN (
+                               'factura_anticipo', 'factura_final',
+                               'factura_proforma', 'factura_rectificativa'
+                           )
+                    ORDER  BY dp.fecha_emision_documento_ppto DESC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'DocumentoPresupuesto', 'get_documentos_por_cliente',
+                "Error id_cliente=$id_cliente: " . $e->getMessage(), 'error'
+            );
+            return [];
+        }
+    }
 }

@@ -1413,6 +1413,33 @@ class Presupuesto
         }
     }
 
+    public function get_presupuestos_por_cliente(int $id_cliente): array
+    {
+        try {
+            $sql = "SELECT vpc.*,
+                           COALESCE(vpt.total_con_iva, 0) AS total_presupuesto
+                    FROM   vista_presupuesto_completa vpc
+                    LEFT   JOIN v_presupuesto_totales vpt
+                           ON  vpt.id_presupuesto             = vpc.id_presupuesto
+                           AND vpt.numero_version_presupuesto = vpc.version_actual_presupuesto
+                    WHERE  vpc.id_cliente        = ?
+                      AND  vpc.activo_presupuesto = 1
+                    ORDER  BY vpc.fecha_presupuesto DESC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'Presupuesto', 'get_presupuestos_por_cliente',
+                "Error id_cliente=$id_cliente: " . $e->getMessage(), 'error'
+            );
+            return [];
+        }
+    }
+
 }
 
 

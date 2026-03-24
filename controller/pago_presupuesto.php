@@ -445,6 +445,41 @@ switch ($op) {
         break;
 
     // ══════════════════════════════════════════════════════════
+    // LISTAR_POR_CLIENTE — pagos de todos los presupuestos de un cliente (Panel 360°)
+    // POST: id_cliente
+    // ══════════════════════════════════════════════════════════
+    case "listar_por_cliente":
+        $id_cliente = isset($_POST['id_cliente']) ? (int) $_POST['id_cliente'] : 0;
+
+        if (!$id_cliente) {
+            echo json_encode(['success' => false, 'message' => 'Falta id_cliente'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $datos = $pago->get_pagos_por_cliente($id_cliente);
+        $data  = [];
+
+        foreach ($datos as $row) {
+            $data[] = [
+                'numero_presupuesto' => $row['numero_presupuesto'],
+                'tipo_pago_ppto'     => $row['tipo_pago_ppto'],
+                'importe_pago_ppto'  => $row['importe_pago_ppto'],
+                'fecha_pago_ppto'    => $row['fecha_pago_ppto'],
+                'nombre_metodo_pago' => $row['nombre_metodo_pago'] ?? '',
+                'estado_pago_ppto'   => $row['estado_pago_ppto'],
+            ];
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'draw'            => intval($_POST['draw'] ?? 1),
+            'recordsTotal'    => count($data),
+            'recordsFiltered' => count($data),
+            'data'            => $data,
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ══════════════════════════════════════════════════════════
     // DEFAULT
     // ══════════════════════════════════════════════════════════
     default:
