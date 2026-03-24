@@ -111,7 +111,87 @@
 
         <div class="br-pagebody">
             <div class="br-section-wrapper">
-                
+
+                <!-- Tabs del Elemento -->
+                <style>
+                    #elementoTabs .nav-link {
+                        font-weight: 600;
+                        font-size: 0.92rem;
+                        padding: 0.65rem 1.2rem;
+                        color: #6c757d;
+                        border-bottom: 3px solid transparent;
+                        transition: color .15s, border-color .15s;
+                    }
+                    #elementoTabs .nav-link:not(.disabled):hover {
+                        color: #5a6acf;
+                        border-bottom-color: #c5c9f0;
+                    }
+                    #elementoTabs .nav-link.active {
+                        color: #5a6acf;
+                        border-bottom: 3px solid #5a6acf;
+                        background: transparent;
+                    }
+                    #elementoTabs .tab-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 20px;
+                        height: 20px;
+                        font-size: 0.72rem;
+                        border-radius: 50%;
+                        background: #e9ecef;
+                        color: #6c757d;
+                        margin-left: 6px;
+                        font-weight: 700;
+                        transition: background .15s;
+                    }
+                    #elementoTabs .nav-link.active .tab-badge {
+                        background: #5a6acf;
+                        color: #fff;
+                    }
+                    #elementoTabs .nav-link.disabled {
+                        opacity: 0.45;
+                        cursor: not-allowed;
+                    }
+                    #elementoTabContent {
+                        background: #fff;
+                    }
+                </style>
+
+                <ul class="nav nav-tabs mb-0 border-bottom" id="elementoTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-datos-elem-btn"
+                                data-bs-toggle="tab" data-bs-target="#pane-datos-elem"
+                                type="button" role="tab">
+                            <i class="fas fa-info-circle me-1"></i> Datos del elemento
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link <?php echo empty($_GET['id']) ? 'disabled' : ''; ?>"
+                                id="tab-presupuestos-elem-btn"
+                                data-bs-toggle="tab" data-bs-target="#pane-presupuestos-elem"
+                                type="button" role="tab"
+                                <?php echo empty($_GET['id']) ? 'disabled' : ''; ?>>
+                            <i class="fas fa-file-alt me-1"></i> Presupuestos
+                            <span class="tab-badge" id="cnt-presupuestos-elem">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link <?php echo empty($_GET['id']) ? 'disabled' : ''; ?>"
+                                id="tab-salidas-elem-btn"
+                                data-bs-toggle="tab" data-bs-target="#pane-salidas-elem"
+                                type="button" role="tab"
+                                <?php echo empty($_GET['id']) ? 'disabled' : ''; ?>>
+                            <i class="fas fa-bar-chart me-1"></i> Salidas por mes
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content border border-top-0" id="elementoTabContent">
+
+                    <!-- ===== TAB 1: DATOS DEL ELEMENTO ===== -->
+                    <div class="tab-pane fade show active p-3" id="pane-datos-elem" role="tabpanel" aria-labelledby="tab-datos-elem-btn">
+
                 <!-- Formulario de Elemento -->
                 <form id="formElemento">
                     <!-- Campos ocultos -->
@@ -435,6 +515,42 @@
 
                 </form>
 
+                    </div><!-- /pane-datos-elem -->
+
+                    <?php if (!empty($_GET['id'])): ?>
+                    <!-- ===== TAB 2: PRESUPUESTOS ===== -->
+                    <div class="tab-pane fade p-3" id="pane-presupuestos-elem" role="tabpanel" aria-labelledby="tab-presupuestos-elem-btn">
+                        <table id="tblPresupuestosElemento"
+                               class="table table-sm table-striped table-bordered w-100">
+                            <thead>
+                                <tr>
+                                    <th>Nº</th>
+                                    <th>Evento</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha evento</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div><!-- /pane-presupuestos-elem -->
+
+                    <!-- ===== TAB 3: SALIDAS POR MES ===== -->
+                    <div class="tab-pane fade p-3" id="pane-salidas-elem" role="tabpanel" aria-labelledby="tab-salidas-elem-btn">
+                        <div id="spinner-chart-elem" class="text-center py-4 text-muted" style="display:none;">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                            Cargando datos...
+                        </div>
+                        <div id="chart-empty-elem" class="text-center py-4 text-muted" style="display:none;">
+                            <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                            <p>Sin datos de salidas para este elemento</p>
+                        </div>
+                        <canvas id="chartSalidasElemento" style="max-height:320px; display:none;"></canvas>
+                    </div><!-- /pane-salidas-elem -->
+                    <?php endif; ?>
+
+                </div><!-- /elementoTabContent -->
+
             </div><!-- br-section-wrapper -->
         </div><!-- br-pagebody -->
 
@@ -510,6 +626,7 @@
     <!-- ------------------------- -->
     <!--     END mainJs.php        -->
     <!-- ------------------------- -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script type="text/javascript" src="formularioElemento.js"></script>
 
     <!-- Botones flotantes para navegación -->

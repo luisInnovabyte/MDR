@@ -971,3 +971,194 @@ function formatoFechaEuropeo(fechaString) {
     
     return `${dia}/${mes}/${anio}`;
 }
+
+/* =========================================
+   HISTÓRICO DEL ELEMENTO — Presupuestos y Salidas por mes
+   (Solo visible en modo edición)
+   ========================================= */
+
+let tablaPresupuestosElemento = null;
+let chartSalidasElemento      = null;
+
+$(document).ready(function () {
+    if (!idElemento) return; // Solo en modo edición
+
+    // Pre-cargar badge con conteo (sin inicializar DataTable en elemento oculto)
+    $.get('../../controller/elemento.php', { op: 'historial_presupuestos', id_elemento: idElemento }, function (json) {
+        if (json && typeof json.recordsTotal !== 'undefined') {
+            $('#cnt-presupuestos-elem').text(json.recordsTotal);
+        }
+    });
+
+    // Pestaña Presupuestos → inicializa DataTable solo cuando es visible (evita bug DataTables en elementos ocultos)
+    $('#tab-presupuestos-elem-btn').on('shown.bs.tab', function () {
+        if (!tablaPresupuestosElemento) {
+            cargarPresupuestosElemento(idElemento);
+        } else {
+            tablaPresupuestosElemento.columns.adjust().draw();
+        }
+    });
+
+    // Pestaña Salidas por mes → carga al activarse
+    $('#tab-salidas-elem-btn').on('shown.bs.tab', function () {
+        cargarGraficoElemento(idElemento);
+    });
+});
+
+function cargarPresupuestosElemento(id) {
+    if (!id) return;
+
+    if (tablaPresupuestosElemento) {
+        tablaPresupuestosElemento.ajax
+            .url('../../controller/elemento.php?op=historial_presupuestos&id_elemento=' + id)
+            .load(function (json) {
+                $('#cnt-presupuestos-elem').text(json ? (json.recordsTotal || 0) : 0);
+            });
+        return;
+    }
+
+    tablaPresupuestosElemento = $('#tblPresupuestosElemento').DataTable({
+        ajax: {
+            url: '../../controller/elemento.php?op=historial_presupuestos&id_elemento=' + id,
+            type: 'POST',
+            dataSrc: function (json) {
+                $('#cnt-presupuestos-elem').text(json.recordsTotal || 0);
+                return json.data || [];
+            }
+        },
+        columns: [
+            { data: 'numero_presupuesto',        title: 'Nº' },
+            { data: 'nombre_evento_presupuesto',  title: 'Evento' },
+            { data: 'nombre_cliente',             title: 'Cliente' },
+            { data: 'fecha_salida',               title: 'Fecha salida' },
+            { data: 'estado_badge',               title: 'Estado', orderable: false }
+        ],
+        order: [[3, 'desc']],
+        pageLength: 10,
+        language: {
+            paginate: { first: '«', last: '»', previous: '‹', next: '›' },
+            emptyTable: 'Este elemento no ha aparecido en ningún presupuesto',
+            info: 'Mostrando _START_ - _END_ de _TOTAL_ presupuestos',
+            infoEmpty: 'Sin presupuestos',
+            search: 'Buscar:',
+            lengthMenu: 'Mostrar _MENU_ registros'
+        },
+        responsive: true
+    });
+}
+
+function cargarGraficoElemento(id) {
+    if (!id) return;
+
+    $('#spinner-chart-elem').show();
+    $('#chart-empty-elem').hide();
+    $('#chartSalidasElemento').hide();
+
+    $.ajax({
+        url: '../../controller/elemento.php?op=salidas_por_mes',
+        method: 'POST',
+        dataType: 'json',
+        data: { id_elemento: id },
+        success: function (res) {
+            $('#spinner-chart-elem').hide();
+
+            const datos = (res && res.success && Array.isArray(res.data)) ? res.data : [];
+
+            if (chartSalidasElemento) {
+                chartSalidasElemento.destroy();
+                chartSalidasElemento = null;
+            }
+
+            // Con año completo siempre mostramos los 12 meses (0 si no hay datos)
+
+            // Generar los 12 meses del año actual con valor 0 por defecto
+            const year = new Date().getFullYear();
+            const mesMap = {};
+            datos.forEach(function (d) { mesMap[d.mes] = parseInt(d.num_presupuestos, 10); });
+
+            const labels = [];
+            const values = [];
+            for (var m = 0; m < 12; m++) {
+                var key = year + '-' + String(m + 1).padStart(2, '0');
+                var d = new Date(year, m, 1);
+                var label = d.toLocaleString('es-ES', { month: 'short' }).replace('.', '') + ' ' + year;
+                labels.push(label.charAt(0).toUpperCase() + label.slice(1));
+                values.push(mesMap[key] || 0);
+            }
+
+            // Plugin inline: etiquetas encima de las barras
+            const datalabelsPlugin = {
+                id: 'datalabelsInline',
+                afterDatasetsDraw: function (chart) {
+                    const ds = chart.data.datasets[0];
+                    if (!ds) return;
+                    const meta = chart.getDatasetMeta(0);
+                    const ctx2 = chart.ctx;
+                    ctx2.save();
+                    ctx2.font = 'bold 11px sans-serif';
+                    ctx2.textAlign = 'center';
+                    ctx2.textBaseline = 'bottom';
+                    meta.data.forEach(function (bar, i) {
+                        const val = ds.data[i];
+                        if (val > 0) {
+                            ctx2.fillStyle = 'rgba(13, 110, 253, 0.9)';
+                            ctx2.fillText(val, bar.x, bar.y - 3);
+                        }
+                    });
+                    ctx2.restore();
+                }
+            };
+
+            // Opacidad dinámica según magnitud
+            const maxVal = Math.max.apply(null, values) || 1;
+            const bgColors = values.map(function (v) {
+                const alpha = 0.35 + 0.5 * (v / maxVal);
+                return 'rgba(13, 110, 253, ' + alpha.toFixed(2) + ')';
+            });
+
+            $('#chartSalidasElemento').show();
+            const ctx = document.getElementById('chartSalidasElemento').getContext('2d');
+            chartSalidasElemento = new Chart(ctx, {
+                type: 'bar',
+                plugins: [datalabelsPlugin],
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Presupuestos',
+                            data: values,
+                            backgroundColor: bgColors,
+                            borderColor: 'rgba(13, 110, 253, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (item) {
+                                    return ' ' + item.parsed.y + ' presupuesto' +
+                                           (item.parsed.y !== 1 ? 's' : '');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        },
+        error: function () {
+            $('#spinner-chart-elem').hide();
+            $('#chart-empty-elem').show();
+        }
+    });
+}

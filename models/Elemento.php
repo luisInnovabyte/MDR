@@ -952,20 +952,19 @@ class Elemento
                         p.numero_presupuesto,
                         p.nombre_evento_presupuesto,
                         p.fecha_inicio_evento_presupuesto,
-                        p.fecha_fin_evento_presupuesto,
                         c.nombre_cliente,
-                        sa.fecha_inicio_salida,
-                        sa.estado_salida,
                         ep.nombre_estado_ppto,
                         ep.color_estado_ppto
-                    FROM linea_salida_almacen lsa
-                    JOIN salida_almacen sa      ON lsa.id_salida_almacen = sa.id_salida_almacen
-                    JOIN presupuesto p          ON sa.id_presupuesto     = p.id_presupuesto
-                    JOIN cliente c             ON p.id_cliente           = c.id_cliente
-                    JOIN estado_presupuesto ep ON p.id_estado_ppto       = ep.id_estado_ppto
-                    WHERE lsa.id_elemento = ?
-                      AND sa.activo_salida_almacen = 1
-                    ORDER BY sa.fecha_inicio_salida DESC";
+                    FROM elemento e
+                    INNER JOIN linea_presupuesto lp      ON e.id_articulo_elemento = lp.id_articulo
+                    INNER JOIN presupuesto_version pv    ON lp.id_version_presupuesto = pv.id_version_presupuesto
+                    INNER JOIN presupuesto p             ON pv.id_presupuesto = p.id_presupuesto
+                    INNER JOIN estado_presupuesto ep     ON p.id_estado_ppto = ep.id_estado_ppto
+                    INNER JOIN cliente c                 ON p.id_cliente = c.id_cliente
+                    WHERE e.id_elemento = ?
+                      AND lp.activo_linea_ppto = 1
+                      AND p.activo_presupuesto = 1
+                    ORDER BY p.fecha_inicio_evento_presupuesto DESC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
             $stmt->execute();
@@ -980,17 +979,20 @@ class Elemento
     {
         try {
             $sql = "SELECT
-                        DATE_FORMAT(sa.fecha_inicio_salida, '%Y-%m')  AS mes,
-                        DATE_FORMAT(sa.fecha_inicio_salida, '%b %Y')  AS mes_label,
-                        COUNT(DISTINCT sa.id_presupuesto)             AS num_presupuestos
-                    FROM linea_salida_almacen lsa
-                    JOIN salida_almacen sa ON lsa.id_salida_almacen = sa.id_salida_almacen
-                    WHERE lsa.id_elemento = ?
-                      AND sa.activo_salida_almacen = 1
-                      AND sa.fecha_inicio_salida IS NOT NULL
-                      AND sa.fecha_inicio_salida >= DATE_SUB(NOW(), INTERVAL 24 MONTH)
-                    GROUP BY DATE_FORMAT(sa.fecha_inicio_salida,'%Y-%m'),
-                             DATE_FORMAT(sa.fecha_inicio_salida,'%b %Y')
+                        DATE_FORMAT(p.fecha_inicio_evento_presupuesto, '%Y-%m') AS mes,
+                        DATE_FORMAT(p.fecha_inicio_evento_presupuesto, '%b %Y') AS mes_label,
+                        COUNT(DISTINCT p.id_presupuesto)                        AS num_presupuestos
+                    FROM elemento e
+                    INNER JOIN linea_presupuesto lp   ON e.id_articulo_elemento = lp.id_articulo
+                    INNER JOIN presupuesto_version pv ON lp.id_version_presupuesto = pv.id_version_presupuesto
+                    INNER JOIN presupuesto p          ON pv.id_presupuesto = p.id_presupuesto
+                    WHERE e.id_elemento = ?
+                      AND lp.activo_linea_ppto = 1
+                      AND p.activo_presupuesto = 1
+                      AND p.fecha_inicio_evento_presupuesto IS NOT NULL
+                      AND YEAR(p.fecha_inicio_evento_presupuesto) = YEAR(NOW())
+                    GROUP BY DATE_FORMAT(p.fecha_inicio_evento_presupuesto, '%Y-%m'),
+                             DATE_FORMAT(p.fecha_inicio_evento_presupuesto, '%b %Y')
                     ORDER BY mes ASC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
