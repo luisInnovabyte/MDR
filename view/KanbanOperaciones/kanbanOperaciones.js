@@ -11,7 +11,8 @@
 /* =====================================================
    CONFIGURACIÓN
    ===================================================== */
-const URL_LISTAR    = '../../controller/kanbanOperaciones.php?op=listar';
+const MODO_DEMO     = true;   // ← false para usar datos reales de BD
+const URL_LISTAR    = '../../controller/kanbanOperaciones.php?op=' + (MODO_DEMO ? 'listar_demo' : 'listar');
 const INTERVALO_MS  = 5 * 60 * 1000;   // 5 minutos
 
 // Índices de columna 0–6 (0 = hoy, 6 = hoy+6 días)
@@ -162,9 +163,11 @@ function badgeEstado(codigo) {
 }
 
 function crearTarjeta(ev) {
-    const tipo      = ev.tipo_dia || 'en_curso';
-    const tipoLabel = TIPO_LABEL[tipo] || tipo;
-    const tipoIcon  = TIPO_ICON[tipo]  || 'fa-circle';
+    const tipo        = ev.tipo_dia || 'en_curso';
+    const tipoLabel   = TIPO_LABEL[tipo] || tipo;
+    const tipoIcon    = TIPO_ICON[tipo]  || 'fa-circle';
+    const estadoClass = ev.estado_codigo === 'APROB'     ? 'card-top-aprob'
+                      : ev.estado_codigo === 'ESPE-RESP' ? 'card-top-espe-resp' : '';
 
     const ubicacion = ev.ubicacion
         ? `<div class="card-ubicacion">
@@ -175,7 +178,7 @@ function crearTarjeta(ev) {
 
     return `
     <div class="evento-card tipo-${tipo}">
-        <div class="card-top">
+        <div class="card-top ${estadoClass}">
             <span class="tipo-badge ${tipo}">
                 <i class="fas ${tipoIcon} me-1"></i>${tipoLabel}
             </span>
