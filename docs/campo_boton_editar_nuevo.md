@@ -4,6 +4,7 @@
 
 Este documento describe la implementación de un componente de interfaz de usuario que combina un campo `<select>` con botones de acción (Nuevo/Editar) integrados, diseñado específicamente para permitir la gestión CRUD de entidades relacionadas sin abandonar el formulario principal. 
 
+
 El caso de uso implementado es el campo `id_contacto_cliente` en el formulario de presupuestos, que permite:
 - Seleccionar un contacto existente de un cliente
 - Crear nuevos contactos mediante un modal
