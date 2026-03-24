@@ -983,8 +983,21 @@ let chartSalidasElemento      = null;
 $(document).ready(function () {
     if (!idElemento) return; // Solo en modo edición
 
-    // Carga inicial: pestaña Presupuestos
-    cargarPresupuestosElemento(idElemento);
+    // Pre-cargar badge con conteo (sin inicializar DataTable en elemento oculto)
+    $.get('../../controller/elemento.php', { op: 'historial_presupuestos', id_elemento: idElemento }, function (json) {
+        if (json && typeof json.recordsTotal !== 'undefined') {
+            $('#cnt-presupuestos-elem').text(json.recordsTotal);
+        }
+    });
+
+    // Pestaña Presupuestos → inicializa DataTable solo cuando es visible (evita bug DataTables en elementos ocultos)
+    $('#tab-presupuestos-elem-btn').on('shown.bs.tab', function () {
+        if (!tablaPresupuestosElemento) {
+            cargarPresupuestosElemento(idElemento);
+        } else {
+            tablaPresupuestosElemento.columns.adjust().draw();
+        }
+    });
 
     // Pestaña Salidas por mes → carga al activarse
     $('#tab-salidas-elem-btn').on('shown.bs.tab', function () {
