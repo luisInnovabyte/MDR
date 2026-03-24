@@ -11,7 +11,7 @@
 /* =====================================================
    CONFIGURACIÓN
    ===================================================== */
-const MODO_DEMO     = true;   // ← false para usar datos reales de BD
+const MODO_DEMO     = false;  // true = datos hardcoded de prueba | false = BD real
 const URL_LISTAR    = '../../controller/kanbanOperaciones.php?op=' + (MODO_DEMO ? 'listar_demo' : 'listar');
 const INTERVALO_MS  = 5 * 60 * 1000;   // 5 minutos
 
@@ -159,6 +159,7 @@ function badgeEstado(codigo) {
     const c = codigo.toUpperCase();
     if (c === 'APROB')     return '<span class="estado-badge badge-aprobado">Aprobado</span>';
     if (c === 'ESPE-RESP') return '<span class="estado-badge badge-pendiente">Pdte. resp.</span>';
+    if (c === 'PROC')      return '<span class="estado-badge badge-en-proceso">En Proceso</span>';
     return `<span class="estado-badge badge-pendiente">${codigo}</span>`;
 }
 
@@ -167,7 +168,8 @@ function crearTarjeta(ev) {
     const tipoLabel   = TIPO_LABEL[tipo] || tipo;
     const tipoIcon    = TIPO_ICON[tipo]  || 'fa-circle';
     const estadoClass = ev.estado_codigo === 'APROB'     ? 'card-top-aprob'
-                      : ev.estado_codigo === 'ESPE-RESP' ? 'card-top-espe-resp' : '';
+                      : ev.estado_codigo === 'ESPE-RESP' ? 'card-top-espe-resp'
+                      : ev.estado_codigo === 'PROC'      ? 'card-top-proc' : '';
 
     const ubicacion = ev.ubicacion
         ? `<div class="card-ubicacion">
