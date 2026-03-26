@@ -237,9 +237,8 @@
             letter-spacing: .04em;
             white-space: nowrap;
         }
-        .badge-aprobado   { background: #1a3a6e; color: #58a6ff; }
-        .badge-pendiente  { background: #2d2106; color: #e3b341; }
-        .badge-en-proceso { background: #0d3038; color: #39c5cf; }
+        .badge-aprobado  { background: #1a3a6e; color: #58a6ff; }
+        .badge-pendiente { background: #2d2106; color: #e3b341; }
 
         .card-numero {
             font-size: .82rem;
@@ -281,29 +280,6 @@
             display: flex;
             align-items: center;
             gap: 4px;
-        }
-
-        /* ===== Franja de estado en header de tarjeta ===== */
-        .card-top-aprob {
-            margin: -9px -11px 6px;
-            padding: 6px 11px;
-            background: rgba(56, 211, 100, 0.07);
-            border-bottom: 1px solid rgba(56, 211, 100, 0.14);
-            border-radius: 4px 4px 0 0;
-        }
-        .card-top-espe-resp {
-            margin: -9px -11px 6px;
-            padding: 6px 11px;
-            background: rgba(227, 179, 65, 0.08);
-            border-bottom: 1px solid rgba(227, 179, 65, 0.16);
-            border-radius: 4px 4px 0 0;
-        }
-        .card-top-proc {
-            margin: -9px -11px 6px;
-            padding: 6px 11px;
-            background: rgba(23, 162, 184, 0.07);
-            border-bottom: 1px solid rgba(23, 162, 184, 0.15);
-            border-radius: 4px 4px 0 0;
         }
 
         /* Estado vacío */
@@ -617,6 +593,6 @@
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="kanbanOperaciones.js?v=4"></script>
+<script src="kanbanOperaciones.js"></script>
 </body>
 </html>

@@ -593,8 +593,13 @@ switch ($op) {
         foreach ($filas as $row) {
             $color  = htmlspecialchars($row['color_estado_ppto'] ?? '#6c757d', ENT_QUOTES, 'UTF-8');
             $estado = htmlspecialchars($row['nombre_estado_ppto'] ?? '—', ENT_QUOTES, 'UTF-8');
+
+            $fecha  = !empty($row['fecha_inicio_salida'])
+                      ? date('d/m/Y', strtotime($row['fecha_inicio_salida']))
+
             $fecha  = !empty($row['fecha_inicio_evento_presupuesto'])
                       ? date('d/m/Y', strtotime($row['fecha_inicio_evento_presupuesto']))
+
                       : '—';
             $data[] = [
                 "numero_presupuesto"       => htmlspecialchars($row['numero_presupuesto']       ?? '—', ENT_QUOTES, 'UTF-8'),

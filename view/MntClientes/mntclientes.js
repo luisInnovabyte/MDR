@@ -192,6 +192,13 @@ $(document).ready(function () {
                                         <i class="fa-solid fa-pen-to-square me-2"></i>Editar
                                     </a>
                                 </li>
+                                <!-- Perfil completo 360° -->
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="../ClientePanel/index.php?id_cliente=${row.id_cliente}">
+                                        <i class="bi bi-person-lines-fill me-2"></i>Perfil completo
+                                    </a>
+                                </li>
                                 <!-- Contactos -->
                                 <li>
                                     <a class="dropdown-item formularioCliente" href="#"

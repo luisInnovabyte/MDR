@@ -40,7 +40,7 @@ switch ($_GET["op"] ?? '') {
                    AND pv.numero_version_presupuesto   = p.version_actual_presupuesto
                 LEFT JOIN v_linea_presupuesto_calculada vlp
                     ON vlp.id_version_presupuesto = pv.id_version_presupuesto
-                WHERE ep.codigo_estado_ppto IN ('APROB', 'ESPE-RESP', 'PROC')
+                WHERE ep.codigo_estado_ppto IN ('ESPE-RESP', 'APROB')
                   AND p.activo_presupuesto = 1
                 GROUP BY
                     p.id_presupuesto,
@@ -60,18 +60,18 @@ switch ($_GET["op"] ?? '') {
                         MIN(vlp.fecha_montaje_linea_ppto),
                         p.fecha_inicio_evento_presupuesto
                     ) IS NOT NULL
-                    -- inicio_ref <= hoy + 6 días (ventana deslizante, igual que el JS)
+                    -- inicio_ref <= domingo de la semana actual
                     AND COALESCE(
                         MIN(vlp.fecha_montaje_linea_ppto),
                         p.fecha_inicio_evento_presupuesto
-                    ) <= ADDDATE(CURDATE(), INTERVAL 6 DAY)
-                    -- fin_ref >= hoy (no mostrar eventos ya terminados)
+                    ) <= ADDDATE(CURDATE(), INTERVAL (6 - WEEKDAY(CURDATE())) DAY)
+                    -- fin_ref >= lunes de la semana actual
                     AND COALESCE(
                         MAX(vlp.fecha_desmontaje_linea_ppto),
                         p.fecha_fin_evento_presupuesto,
                         MIN(vlp.fecha_montaje_linea_ppto),
                         p.fecha_inicio_evento_presupuesto
-                    ) >= CURDATE()
+                    ) >= SUBDATE(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)
                 ORDER BY
                     (p.fecha_inicio_evento_presupuesto IS NULL) ASC,
                     p.fecha_inicio_evento_presupuesto ASC
@@ -112,11 +112,14 @@ switch ($_GET["op"] ?? '') {
                 }
 
                 // ---- Formatear fechas ----
-                // Fechas en formato YYYY-MM-DD (parseDate() del JS lo requiere)
-                $f_inicio             = $row['fecha_inicio_evento_presupuesto'] ?: null;
-                $f_fin                = $row['fecha_fin_evento_presupuesto']    ?: null;
-                $fecha_montaje_str    = $row['fecha_montaje_min']               ?: null;
-                $fecha_desmontaje_str = $row['fecha_desmontaje_max']            ?: null;
+                $f_inicio = $row['fecha_inicio_evento_presupuesto']
+                    ? date('d/m/Y', strtotime($row['fecha_inicio_evento_presupuesto'])) : null;
+                $f_fin = $row['fecha_fin_evento_presupuesto']
+                    ? date('d/m/Y', strtotime($row['fecha_fin_evento_presupuesto'])) : null;
+                $fecha_montaje_str    = $row['fecha_montaje_min']
+                    ? date('d/m/Y', strtotime($row['fecha_montaje_min'])) : null;
+                $fecha_desmontaje_str = $row['fecha_desmontaje_max']
+                    ? date('d/m/Y', strtotime($row['fecha_desmontaje_max'])) : null;
 
                 // ---- Ubicación ----
                 $ubicacion_parts = array_filter([
@@ -128,7 +131,7 @@ switch ($_GET["op"] ?? '') {
 
                 $data[] = [
                     'id_presupuesto'   => (int)$row['id_presupuesto'],
-                    'numero'           => htmlspecialchars($row['numero_presupuesto'], ENT_QUOTES, 'UTF-8'),
+                    'numero_presupuesto' => htmlspecialchars($row['numero_presupuesto'], ENT_QUOTES, 'UTF-8'),
                     'nombre_evento'    => htmlspecialchars($row['nombre_evento_presupuesto'], ENT_QUOTES, 'UTF-8'),
                     'nombre_cliente'   => htmlspecialchars($row['nombre_cliente'], ENT_QUOTES, 'UTF-8'),
                     'ubicacion'        => $ubicacion,
@@ -150,76 +153,6 @@ switch ($_GET["op"] ?? '') {
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Error al cargar los datos.'], JSON_UNESCAPED_UNICODE);
         }
-        break;
-
-    // ------------------------------------------------------------------
-    // LISTAR_DEMO: datos hardcoded para pruebas visuales del Kanban
-    // Días: 26, 27, 28, 29, 30 de marzo de 2026
-    // Para activar: const MODO_DEMO = true en kanbanOperaciones.js
-    // ------------------------------------------------------------------
-    case "listar_demo":
-
-        $demo = [
-            [
-                'id_presupuesto'   => 1001,
-                'numero'           => 'P-00501/2026',
-                'nombre_evento'    => 'Boda García-Martínez',
-                'nombre_cliente'   => 'Ana García López',
-                'ubicacion'        => 'Finca La Rosaleda, Murcia',
-                'fecha_inicio'     => '2026-03-26',
-                'fecha_fin'        => '2026-03-27',
-                'fecha_montaje'    => '2026-03-26',
-                'fecha_desmontaje' => '2026-03-27',
-                'estado_codigo'    => 'APROB',
-                'estado_nombre'    => 'Aprobado',
-                'columna'          => 'montaje',
-            ],
-            [
-                'id_presupuesto'   => 1002,
-                'numero'           => 'P-00502/2026',
-                'nombre_evento'    => 'Gala Benéfica Cruz Roja',
-                'nombre_cliente'   => 'Cruz Roja Española',
-                'ubicacion'        => 'Palacio de Congresos, Valencia',
-                'fecha_inicio'     => '2026-03-27',
-                'fecha_fin'        => '2026-03-30',
-                'fecha_montaje'    => '2026-03-27',
-                'fecha_desmontaje' => '2026-03-30',
-                'estado_codigo'    => 'ESPE-RESP',
-                'estado_nombre'    => 'Esperando respuesta',
-                'columna'          => 'montaje',
-            ],
-            [
-                'id_presupuesto'   => 1003,
-                'numero'           => 'P-00503/2026',
-                'nombre_evento'    => 'Festival de Primavera',
-                'nombre_cliente'   => 'Ayuntamiento de Benidorm',
-                'ubicacion'        => 'Parque Municipal, Benidorm',
-                'fecha_inicio'     => '2026-03-26',
-                'fecha_fin'        => '2026-03-30',
-                'fecha_montaje'    => null,
-                'fecha_desmontaje' => null,
-                'estado_codigo'    => 'APROB',
-                'estado_nombre'    => 'Aprobado',
-                'columna'          => 'en_curso',
-            ],
-            [
-                'id_presupuesto'   => 1004,
-                'numero'           => 'P-00504/2026',
-                'nombre_evento'    => 'Inauguración Showroom Vega',
-                'nombre_cliente'   => 'Grupo Vega Interiorismo S.L.',
-                'ubicacion'        => 'C/ Gran Vía 88, Madrid',
-                'fecha_inicio'     => '2026-03-30',
-                'fecha_fin'        => '2026-03-30',
-                'fecha_montaje'    => '2026-03-30',
-                'fecha_desmontaje' => '2026-03-30',
-                'estado_codigo'    => 'ESPE-RESP',
-                'estado_nombre'    => 'Esperando respuesta',
-                'columna'          => 'montaje',
-            ],
-        ];
-
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true, 'data' => $demo, 'total' => count($demo)], JSON_UNESCAPED_UNICODE);
         break;
 
     default:

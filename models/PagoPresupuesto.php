@@ -705,4 +705,29 @@ class PagoPresupuesto
             return false;
         }
     }
+
+    public function get_pagos_por_cliente(int $id_cliente): array
+    {
+        try {
+            $sql = "SELECT pp.*, p.numero_presupuesto
+                    FROM   v_pagos_presupuesto pp
+                    INNER  JOIN presupuesto p ON pp.id_presupuesto = p.id_presupuesto
+                    WHERE  p.id_cliente         = ?
+                      AND  p.activo_presupuesto = 1
+                      AND  pp.activo_pago_ppto  = 1
+                    ORDER  BY pp.fecha_pago_ppto DESC, pp.id_pago_ppto DESC";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $this->registro->registrarActividad(
+                'admin', 'PagoPresupuesto', 'get_pagos_por_cliente',
+                "Error id_cliente=$id_cliente: " . $e->getMessage(), 'error'
+            );
+            return [];
+        }
+    }
 }

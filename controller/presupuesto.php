@@ -1404,5 +1404,35 @@ break;
             'message' => $resultado ? 'Estado actualizado correctamente' : 'No se pudo actualizar el estado'
         ], JSON_UNESCAPED_UNICODE);
         break;
+
+    // =========================================================
+    // CASE: listar_por_cliente
+    // Lista presupuestos activos de un cliente (Panel 360°)
+    // POST: id_cliente
+    // =========================================================
+    case "listar_por_cliente":
+        $id_cliente = isset($_POST['id_cliente']) ? (int) $_POST['id_cliente'] : 0;
+
+        if (!$id_cliente) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Falta id_cliente'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $datos = $presupuesto->get_presupuestos_por_cliente($id_cliente);
+        $data  = [];
+
+        foreach ($datos as $row) {
+            $data[] = $row; // Pasar todos los campos para que el child-row tenga acceso completo
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'draw'            => intval($_POST['draw'] ?? 1),
+            'recordsTotal'    => count($data),
+            'recordsFiltered' => count($data),
+            'data'            => $data,
+        ], JSON_UNESCAPED_UNICODE);
+        break;
 }
 ?>
