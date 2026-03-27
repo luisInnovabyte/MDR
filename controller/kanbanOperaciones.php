@@ -60,18 +60,18 @@ switch ($_GET["op"] ?? '') {
                         MIN(vlp.fecha_montaje_linea_ppto),
                         p.fecha_inicio_evento_presupuesto
                     ) IS NOT NULL
-                    -- inicio_ref <= domingo de la semana actual
+                    -- inicio_ref <= hoy + 6 días (ventana deslizante igual que el JS)
                     AND COALESCE(
                         MIN(vlp.fecha_montaje_linea_ppto),
                         p.fecha_inicio_evento_presupuesto
-                    ) <= ADDDATE(CURDATE(), INTERVAL (6 - WEEKDAY(CURDATE())) DAY)
-                    -- fin_ref >= lunes de la semana actual
+                    ) <= ADDDATE(CURDATE(), INTERVAL 6 DAY)
+                    -- fin_ref >= hoy
                     AND COALESCE(
                         MAX(vlp.fecha_desmontaje_linea_ppto),
                         p.fecha_fin_evento_presupuesto,
                         MIN(vlp.fecha_montaje_linea_ppto),
                         p.fecha_inicio_evento_presupuesto
-                    ) >= SUBDATE(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)
+                    ) >= CURDATE()
                 ORDER BY
                     (p.fecha_inicio_evento_presupuesto IS NULL) ASC,
                     p.fecha_inicio_evento_presupuesto ASC
