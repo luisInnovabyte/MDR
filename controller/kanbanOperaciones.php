@@ -111,15 +111,11 @@ switch ($_GET["op"] ?? '') {
                     $columna = 'desmontaje';
                 }
 
-                // ---- Formatear fechas ----
-                $f_inicio = $row['fecha_inicio_evento_presupuesto']
-                    ? date('d/m/Y', strtotime($row['fecha_inicio_evento_presupuesto'])) : null;
-                $f_fin = $row['fecha_fin_evento_presupuesto']
-                    ? date('d/m/Y', strtotime($row['fecha_fin_evento_presupuesto'])) : null;
-                $fecha_montaje_str    = $row['fecha_montaje_min']
-                    ? date('d/m/Y', strtotime($row['fecha_montaje_min'])) : null;
-                $fecha_desmontaje_str = $row['fecha_desmontaje_max']
-                    ? date('d/m/Y', strtotime($row['fecha_desmontaje_max'])) : null;
+                // ---- Fechas en ISO (YYYY-MM-DD) para que parseDate() del JS funcione ----
+                $f_inicio             = $row['fecha_inicio_evento_presupuesto'] ?: null;
+                $f_fin                = $row['fecha_fin_evento_presupuesto'] ?: null;
+                $fecha_montaje_str    = $row['fecha_montaje_min'] ?: null;
+                $fecha_desmontaje_str = $row['fecha_desmontaje_max'] ?: null;
 
                 // ---- Ubicación ----
                 $ubicacion_parts = array_filter([
@@ -131,7 +127,7 @@ switch ($_GET["op"] ?? '') {
 
                 $data[] = [
                     'id_presupuesto'   => (int)$row['id_presupuesto'],
-                    'numero_presupuesto' => htmlspecialchars($row['numero_presupuesto'], ENT_QUOTES, 'UTF-8'),
+                    'numero'           => htmlspecialchars($row['numero_presupuesto'], ENT_QUOTES, 'UTF-8'),
                     'nombre_evento'    => htmlspecialchars($row['nombre_evento_presupuesto'], ENT_QUOTES, 'UTF-8'),
                     'nombre_cliente'   => htmlspecialchars($row['nombre_cliente'], ENT_QUOTES, 'UTF-8'),
                     'ubicacion'        => $ubicacion,
