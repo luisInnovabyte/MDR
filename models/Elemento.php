@@ -965,9 +965,34 @@ class Elemento
                     JOIN estado_presupuesto ep ON p.id_estado_ppto       = ep.id_estado_ppto
                     WHERE lsa.id_elemento = ?
                       AND sa.activo_salida_almacen = 1
-                    ORDER BY sa.fecha_inicio_salida DESC";
+
+                    UNION
+
+                    SELECT DISTINCT
+                        p.id_presupuesto,
+                        p.numero_presupuesto,
+                        p.nombre_evento_presupuesto,
+                        p.fecha_inicio_evento_presupuesto,
+                        p.fecha_fin_evento_presupuesto,
+                        c.nombre_cliente,
+                        NULL                    AS fecha_inicio_salida,
+                        NULL                    AS estado_salida,
+                        ep.nombre_estado_ppto,
+                        ep.color_estado_ppto
+                    FROM elemento e
+                    JOIN linea_presupuesto lp   ON lp.id_articulo            = e.id_articulo_elemento
+                                               AND lp.activo_linea_ppto      = 1
+                    JOIN presupuesto_version pv ON pv.id_version_presupuesto = lp.id_version_presupuesto
+                    JOIN presupuesto p          ON p.id_presupuesto          = pv.id_presupuesto
+                                               AND p.activo_presupuesto      = 1
+                    JOIN cliente c             ON p.id_cliente               = c.id_cliente
+                    JOIN estado_presupuesto ep ON p.id_estado_ppto           = ep.id_estado_ppto
+                    WHERE e.id_elemento = ?
+
+                    ORDER BY fecha_inicio_salida DESC, fecha_inicio_evento_presupuesto DESC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_elemento, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -980,20 +1005,42 @@ class Elemento
     {
         try {
             $sql = "SELECT
-                        DATE_FORMAT(sa.fecha_inicio_salida, '%Y-%m')  AS mes,
-                        DATE_FORMAT(sa.fecha_inicio_salida, '%b %Y')  AS mes_label,
-                        COUNT(DISTINCT sa.id_presupuesto)             AS num_presupuestos
-                    FROM linea_salida_almacen lsa
-                    JOIN salida_almacen sa ON lsa.id_salida_almacen = sa.id_salida_almacen
-                    WHERE lsa.id_elemento = ?
-                      AND sa.activo_salida_almacen = 1
-                      AND sa.fecha_inicio_salida IS NOT NULL
-                      AND sa.fecha_inicio_salida >= DATE_SUB(NOW(), INTERVAL 24 MONTH)
-                    GROUP BY DATE_FORMAT(sa.fecha_inicio_salida,'%Y-%m'),
-                             DATE_FORMAT(sa.fecha_inicio_salida,'%b %Y')
+                        mes,
+                        mes_label,
+                        COUNT(DISTINCT id_presupuesto) AS num_presupuestos
+                    FROM (
+                        SELECT
+                            DATE_FORMAT(sa.fecha_inicio_salida, '%Y-%m') AS mes,
+                            DATE_FORMAT(sa.fecha_inicio_salida, '%b %Y') AS mes_label,
+                            sa.id_presupuesto
+                        FROM linea_salida_almacen lsa
+                        JOIN salida_almacen sa ON lsa.id_salida_almacen = sa.id_salida_almacen
+                        WHERE lsa.id_elemento = ?
+                          AND sa.activo_salida_almacen = 1
+                          AND sa.fecha_inicio_salida IS NOT NULL
+                          AND sa.fecha_inicio_salida >= DATE_SUB(NOW(), INTERVAL 24 MONTH)
+
+                        UNION ALL
+
+                        SELECT
+                            DATE_FORMAT(p.fecha_inicio_evento_presupuesto, '%Y-%m') AS mes,
+                            DATE_FORMAT(p.fecha_inicio_evento_presupuesto, '%b %Y') AS mes_label,
+                            p.id_presupuesto
+                        FROM elemento e
+                        JOIN linea_presupuesto lp   ON lp.id_articulo            = e.id_articulo_elemento
+                                                   AND lp.activo_linea_ppto      = 1
+                        JOIN presupuesto_version pv ON pv.id_version_presupuesto = lp.id_version_presupuesto
+                        JOIN presupuesto p          ON p.id_presupuesto          = pv.id_presupuesto
+                                                   AND p.activo_presupuesto      = 1
+                        WHERE e.id_elemento = ?
+                          AND p.fecha_inicio_evento_presupuesto IS NOT NULL
+                          AND p.fecha_inicio_evento_presupuesto >= DATE_SUB(NOW(), INTERVAL 24 MONTH)
+                    ) AS combined
+                    GROUP BY mes, mes_label
                     ORDER BY mes ASC";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(1, $id_elemento, PDO::PARAM_INT);
+            $stmt->bindValue(2, $id_elemento, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
