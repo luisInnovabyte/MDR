@@ -60,11 +60,6 @@ $(document).ready(function () {
   ///////////////////////////////////
   var datatable_articulosConfig = {
     processing: true,
-    scrollX: true, // Habilita el desplazamiento horizontal
-    scrollCollapse: true, // Permite que la tabla se ajuste al contenedor y que el scroll se oculte cuando no es necesario
-    fixedColumns: {
-      left: 2  // Fija columnas: control (0), id_articulo oculto (1) 
-    },
     layout: {
       bottomEnd: {
         paging: {
@@ -326,26 +321,7 @@ $(document).ready(function () {
         return json.data || json;
       },
     },
-    order: [[4, 'asc']], // Ordenar por columna de familia (índice 4)
-    rowGroup: {
-      dataSrc: 'nombre_familia',
-      startRender: function (rows, group) {
-        // Obtener información del grupo
-        var familiaData = rows.data()[0];
-        var codigoFamilia = familiaData.codigo_familia || 'Sin código';
-        var nombreFamilia = group || 'Sin familia';
-        var count = rows.count();
-        
-        return $('<tr/>')
-          .addClass('group-row bg-light')
-          .append('<td colspan="12" class="text-start fw-bold text-primary">' +
-            '<i class="bi bi-folder-fill me-2"></i>' +
-            '<span class="badge bg-primary me-2">' + codigoFamilia + '</span>' +
-            nombreFamilia + 
-            ' <span class="badge bg-secondary ms-2">' + count + ' artículo(s)</span>' +
-            '</td>');
-      }
-    }
+    order: [[2, 'asc']] // Ordenar por código de artículo
   };
   ////////////////////////////
   // FIN DE LA TABLA DE ARTÍCULOS //
