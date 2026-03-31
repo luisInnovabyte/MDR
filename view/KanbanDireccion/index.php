@@ -148,13 +148,13 @@
         .col-proximos  .kanban-col-header .count-badge { background: #1a3a6e; color: #58a6ff; }
         .col-en_curso  .kanban-col-header .count-badge { background: #1a5c2e; color: #56d364; }
 
-        /* Scrollable body — grid 2 columnas */
+        /* Scrollable body — grid 2 columnas (responsivo: baja a 1 si no hay espacio) */
         .kanban-col-body {
             overflow-y: auto;
             overflow-x: hidden;
             padding: 10px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 10px;
             align-content: start;
             flex: 1;

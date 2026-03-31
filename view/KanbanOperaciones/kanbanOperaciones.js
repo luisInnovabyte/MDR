@@ -182,9 +182,7 @@ function crearTarjeta(ev) {
             ${badgeEstado(ev.estado_codigo)}
         </div>
         <div class="card-numero">
-            <a href="../../view/Presupuesto/index.php?id=${ev.id_presupuesto}"
-               target="_blank" rel="noopener"
-               title="Abrir presupuesto">${ev.numero}</a>
+            <span>${ev.numero}</span>
         </div>
         <div class="card-nombre" title="${ev.nombre_evento || ''}">${ev.nombre_evento || '(Sin nombre)'}</div>
         <div class="card-cliente">

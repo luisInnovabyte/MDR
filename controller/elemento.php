@@ -596,11 +596,9 @@ switch ($op) {
 
             $fecha  = !empty($row['fecha_inicio_salida'])
                       ? date('d/m/Y', strtotime($row['fecha_inicio_salida']))
-
-            $fecha  = !empty($row['fecha_inicio_evento_presupuesto'])
-                      ? date('d/m/Y', strtotime($row['fecha_inicio_evento_presupuesto']))
-
-                      : '—';
+                      : (!empty($row['fecha_inicio_evento_presupuesto'])
+                          ? date('d/m/Y', strtotime($row['fecha_inicio_evento_presupuesto']))
+                          : '—');
             $data[] = [
                 "numero_presupuesto"       => htmlspecialchars($row['numero_presupuesto']       ?? '—', ENT_QUOTES, 'UTF-8'),
                 "nombre_evento_presupuesto"=> htmlspecialchars($row['nombre_evento_presupuesto']?? '—', ENT_QUOTES, 'UTF-8'),
