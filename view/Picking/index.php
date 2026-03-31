@@ -529,8 +529,129 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             border-radius: 10px;
         }
 
-        /* ── Fase 4 (completada) ─────────────────────── */
-        #phase4 {
+        /* ── Barra inferior comparación (fase 4) ──────── */
+        #bottom-bar-cmp {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 14px;
+            padding-bottom: calc(10px + var(--safe-bottom));
+            background: rgba(255, 255, 255, .97);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -1px 8px rgba(0, 0, 0, .13);
+            z-index: 100;
+            display: none;
+        }
+
+        #bottom-bar-cmp.visible {
+            display: block;
+        }
+
+        #phase4 .page-wrap {
+            padding-bottom: 90px;
+        }
+
+        /* ── Secciones de comparación ────────────────── */
+        .cmp-section {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.08);
+        }
+
+        .cmp-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: none;
+            border: none;
+            font-size: .95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .cmp-header-faltan {
+            background: #f8d7da;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .cmp-chevron {
+            font-size: .75rem;
+            color: #888;
+            transition: transform .2s;
+        }
+
+        .cmp-header:not(.collapsed) .cmp-chevron {
+            transform: rotate(180deg);
+        }
+
+        .cmp-list {
+            padding: 4px 0;
+        }
+
+        .cmp-list-correct { background: #d1e7dd; }
+        .cmp-list-falta   { background: #f8d7da; }
+        .cmp-list-sobra   { background: #e2e3e5; }
+        .cmp-list-norel   { background: #fff3cd; }
+
+        .cmp-row {
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(0,0,0,.06);
+            font-size: .88rem;
+            line-height: 1.4;
+        }
+
+        .cmp-row:last-child { border-bottom: none; }
+
+        .sust-panel {
+            background: #eef2ff;
+            border-top: 1px dashed #c5cae9;
+            padding: 10px 14px;
+            display: none;
+        }
+
+        .sust-panel.open { display: block; }
+
+        .sust-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #1a237e;
+            font-size: .78rem;
+            cursor: pointer;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            background: #fff;
+            color: #1a237e;
+            user-select: none;
+        }
+
+        .sust-chip.active {
+            background: #1a237e;
+            color: #fff;
+        }
+
+        /* ── Filas del pool (fase 3) ─────────────────── */
+        .pool-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(0,0,0,.06);
+            font-size: .9rem;
+            font-weight: 500;
+        }
+
+        .pool-row:last-child { border-bottom: none; }
+
+        /* ── Fase 5 (completada) ─────────────────────── */
+        #phase5 {
             min-height: 70vh;
             display: none;
             flex-direction: column;
@@ -540,7 +661,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             text-align: center;
         }
 
-        #phase4.active {
+        #phase5.active {
             display: flex;
         }
 
@@ -745,6 +866,19 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                 <div id="lista-elementos-escaneados"></div>
             </div>
 
+            <!-- Pool de elementos por comparar -->
+            <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
+                <span style="font-size:.85rem;font-weight:600;color:#555;">En el pool
+                    <span id="pool-count" class="badge bg-primary ms-1">0</span>
+                </span>
+            </div>
+            <div class="app-card">
+                <div id="pool-lista"></div>
+            </div>
+            <button id="btn-comparar" class="btn-app btn-app-primary" disabled>
+                <i class="fa fa-balance-scale me-2"></i> Comparar
+            </button>
+
         </div>
 
         <!-- Botón oculto usado por picking.js para volver a fase 2 -->
@@ -762,12 +896,95 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
     </div>
 
     <!-- ============================================================ -->
-    <!-- FASE 4 — Confirmación final                                  -->
+    <!-- FASE 4 — Comparación de pool                                 -->
     <!-- ============================================================ -->
     <div id="phase4" class="phase">
+        <div class="page-wrap">
+
+            <!-- Banner: alerta faltantes sin cubrir -->
+            <div id="cmp-alerta-faltan" class="fb-banner fb-err mb-3" style="display:none;">
+                <i class="fa fa-exclamation-triangle me-1"></i>
+                <span id="cmp-alerta-texto">Hay elementos sin cubrir</span>
+            </div>
+
+            <!-- CORRECTOS (colapsable) -->
+            <div class="cmp-section">
+                <button class="cmp-header collapsed" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#cmp-correctos">
+                    <span>
+                        <i class="fa fa-check-circle text-success me-1"></i> Correctos
+                        <span class="badge bg-success ms-1" id="badge-correctos">0</span>
+                    </span>
+                    <i class="fa fa-chevron-down cmp-chevron"></i>
+                </button>
+                <div class="collapse" id="cmp-correctos">
+                    <div id="cmp-correctos-list" class="cmp-list cmp-list-correct"></div>
+                </div>
+            </div>
+
+            <!-- FALTAN (siempre visible) -->
+            <div class="cmp-section">
+                <div class="cmp-header cmp-header-faltan">
+                    <span>
+                        <i class="fa fa-times-circle text-danger me-1"></i> Faltan
+                        <span class="badge bg-danger ms-1" id="badge-faltan">0</span>
+                    </span>
+                </div>
+                <div id="cmp-faltan-list" class="cmp-list cmp-list-falta"></div>
+            </div>
+
+            <!-- SOBRAN / BACKUP (colapsable) -->
+            <div class="cmp-section">
+                <button class="cmp-header collapsed" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#cmp-sobran">
+                    <span>
+                        <i class="fa fa-plus-circle text-secondary me-1"></i> Sobran / Backup
+                        <span class="badge bg-secondary ms-1" id="badge-sobran">0</span>
+                    </span>
+                    <i class="fa fa-chevron-down cmp-chevron"></i>
+                </button>
+                <div class="collapse" id="cmp-sobran">
+                    <div id="cmp-sobran-list" class="cmp-list cmp-list-sobra"></div>
+                </div>
+            </div>
+
+            <!-- NO RELACIONADOS (colapsable) -->
+            <div class="cmp-section">
+                <button class="cmp-header collapsed" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#cmp-no-relacionados">
+                    <span>
+                        <i class="fa fa-question-circle text-warning me-1"></i> No relacionados
+                        <span class="badge bg-warning text-dark ms-1" id="badge-norel">0</span>
+                    </span>
+                    <i class="fa fa-chevron-down cmp-chevron"></i>
+                </button>
+                <div class="collapse" id="cmp-no-relacionados">
+                    <div id="cmp-norel-list" class="cmp-list cmp-list-norel"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Barra inferior: Volver + Confirmar -->
+        <div id="bottom-bar-cmp">
+            <div class="d-flex gap-2">
+                <button id="btn-volver-escaneo" class="btn-app btn-app-outline flex-fill" style="height:52px;">
+                    <i class="fa fa-arrow-left me-1"></i> Volver
+                </button>
+                <button id="btn-confirmar" class="btn-app btn-app-success flex-fill" style="height:52px;" disabled>
+                    <i class="fa fa-check-double me-1"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- FASE 5 — Confirmación final                                  -->
+    <!-- ============================================================ -->
+    <div id="phase5" class="phase">
         <i class="fa fa-check-circle icon-done mb-3"></i>
         <h3 class="fw-bold mb-2">¡Salida Completada!</h3>
-        <p class="text-muted mb-4" id="p4-resumen"></p>
+        <p class="text-muted mb-4" id="p5-resumen"></p>
         <button id="btn-nueva-salida" class="btn-app btn-app-primary" style="max-width:280px;">
             <i class="fa fa-plus"></i> Nueva Salida
         </button>
@@ -959,7 +1176,10 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
     <script>
         // Botón atrás del app bar según fase
         function appBarBack() {
-            if (document.getElementById('phase3').classList.contains('active')) {
+            if (document.getElementById('phase4').classList.contains('active')) {
+                // fase4 → vuelve a fase3
+                mostrarFase(3);
+            } else if (document.getElementById('phase3').classList.contains('active')) {
                 // fase3 → vuelve a fase2
                 document.getElementById('btn-volver-p2')?.click();
             } else if (document.getElementById('phase2').classList.contains('active')) {
@@ -968,13 +1188,16 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                 mostrarFase(1);
             }
         }
-        // Control visibilidad btn-back
+        // Control visibilidad btn-back y barras inferiores
         document.addEventListener('phaseChange', function(e) {
             const btnBack = document.getElementById('btn-appbar-back');
-            btnBack.style.display = (e.detail.phase > 1 && e.detail.phase < 4) ? 'block' : 'none';
-            // Ocultar/mostrar barra inferior sólo en fase 3
+            btnBack.style.display = (e.detail.phase > 1 && e.detail.phase < 5) ? 'block' : 'none';
+            // Barra inferior fase 3
             const bb = document.getElementById('bottom-bar');
             if (bb) bb.classList.toggle('visible', e.detail.phase === 3);
+            // Barra inferior fase 4 (comparación)
+            const bbc = document.getElementById('bottom-bar-cmp');
+            if (bbc) bbc.classList.toggle('visible', e.detail.phase === 4);
         });
     </script>
 </body>

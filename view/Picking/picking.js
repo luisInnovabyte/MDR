@@ -15,7 +15,10 @@ const state = {
     nfcController: null,    // AbortController NFC
     qrScanner: null,        // instancia Html5QrcodeScanner
     elementoReubicacion: null,  // {id_elemento, id_linea_salida, nombre}
-    ubicacionesDisponibles: []
+    ubicacionesDisponibles: [],
+    pool: [],               // códigos escaneados pendientes de comparar
+    comparacion: null,      // resultado del último comparar_pool
+    sustituciones: {}       // {codigo_candidato: id_linea_ppto_faltante}
 };
 
 const CTR = '../../controller/salida_almacen.php';
@@ -344,105 +347,7 @@ function detenerNFC() {
 function procesarEscaneo(codigo, esBackup = false) {
     if (!codigo) return;
     document.getElementById('inp-codigo-elem').value = '';
-    feedback('fb-escaneo', 'Verificando ' + escHtml(codigo) + '...', 'info');
-
-    post('escanear', {
-        id_salida_almacen: state.salida.id_salida_almacen,
-        codigo_elemento: codigo,
-        es_backup: esBackup ? 1 : 0
-    }).done(function (data) {
-        switch (data.tipo) {
-            case 'correcto':
-                vibrar('ok');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — ' + escHtml(data.elemento.nombre_articulo), 'ok');
-                break;
-            case 'backup':
-                vibrar('ok');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> añadido como backup', 'warn');
-                break;
-            case 'ya_asignado':
-                vibrar('warn');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> ya está en la lista. ¿Reubicar?', 'warn');
-                if (data.progreso) { state.progreso = data.progreso; actualizarBarras(data.progreso); }
-                Swal.fire({
-                    title: 'Ya está preparado',
-                    html: '<strong>' + escHtml(codigo) + '</strong> ya se encuentra en la lista de esta salida.<br><small class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</small>',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: '<i class="fa fa-exchange-alt me-1"></i> Reubicar',
-                    cancelButtonText: 'Cerrar',
-                    confirmButtonColor: '#6c757d'
-                }).then(r => { if (r.isConfirmed) abrirModalReubicacion(data); });
-                return;
-            case 'ya_alquilado':
-                vibrar('warn');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> está alquilado. ¿Reubicar?', 'warn');
-                if (data.linea_salida) {
-                    Swal.fire({
-                        title: 'Elemento alquilado',
-                        html: '<strong>' + escHtml(codigo) + '</strong> ya está en estado alquilado.<br><small class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</small>',
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonText: '<i class="fa fa-exchange-alt me-1"></i> Reubicar',
-                        cancelButtonText: 'Cerrar',
-                        confirmButtonColor: '#6c757d'
-                    }).then(r => { if (r.isConfirmed) abrirModalReubicacion(data); });
-                }
-                return;
-            case 'cantidad_completada':
-                vibrar('warn');
-                Swal.fire({
-                    title: 'Cantidad cubierta',
-                    text: data.mensaje,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, añadir como backup',
-                    cancelButtonText: 'No'
-                }).then(r => {
-                    if (r.isConfirmed) procesarEscaneo(codigo, true);
-                });
-                return;
-            case 'articulo_no_pertenece_preguntar':
-                vibrar('warn');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> no está en el presupuesto', 'warn');
-                Swal.fire({
-                    title: 'No está en el presupuesto',
-                    html: '<strong>' + escHtml(codigo) + '</strong><br><span class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</span><br><br>¿Lo añades como <strong>material de repuesto</strong>?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: '<i class="fa fa-toolbox me-1"></i> Sí, es repuesto',
-                    cancelButtonText: 'No, descartar',
-                    confirmButtonColor: '#795548'
-                }).then(r => {
-                    if (r.isConfirmed) procesarEscaneo(codigo, true);
-                    else feedback('fb-escaneo', 'Elemento descartado', 'info');
-                });
-                return;
-            case 'articulo_no_pertenece':
-                vibrar('err');
-                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
-                break;
-            case 'no_disponible':
-                vibrar('err');
-                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
-                break;
-            case 'elemento_no_encontrado':
-                vibrar('err');
-                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
-                break;
-            default:
-                vibrar('err');
-                feedback('fb-escaneo', data.mensaje || 'Error desconocido', 'err');
-        }
-
-        if (data.progreso) {
-            state.progreso = data.progreso;
-            actualizarBarras(data.progreso);
-        }
-        cargarElementosEscaneados();
-    }).fail(function () {
-        feedback('fb-escaneo', 'Error de conexión', 'err');
-    });
+    agregarAlPool(codigo);
 }
 
 // --- Lista de elementos escaneados ---
@@ -546,7 +451,7 @@ function completarSalida() {
             .done(function (data) {
                 if (data.success) {
                     detenerNFC();
-                    mostrarFase4();
+                    mostrarFase5();
                 } else {
                     Swal.fire('Error', data.message, 'error');
                 }
@@ -580,13 +485,287 @@ function cancelarSalida() {
 }
 
 // ============================================================
-// FASE 4 — CONFIRMACIÓN FINAL
+// FASE 4 — POOL Y COMPARACIÓN (nuevo flujo)
 // ============================================================
-function mostrarFase4() {
+
+// D3 — Añadir código al pool (client-side)
+function agregarAlPool(codigo) {
+    if (!codigo) return;
+    if (state.pool.some(function (item) { return item.codigo === codigo; })) {
+        Swal.fire({ toast: true, position: 'top', icon: 'info', timer: 1800, showConfirmButton: false, title: 'Ya está en el pool' });
+        return;
+    }
+    state.pool.push({ codigo: codigo });
+    vibrar('ok');
+    feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> añadido al pool', 'ok');
+    renderPool();
+}
+
+// D4 — Renderizar lista del pool en fase 3
+function renderPool() {
+    var lista = document.getElementById('pool-lista');
+    var count = document.getElementById('pool-count');
+    var btnComparar = document.getElementById('btn-comparar');
+    if (count) count.textContent = state.pool.length;
+    if (!lista) return;
+    if (!state.pool.length) {
+        lista.innerHTML = '<p class="text-muted small text-center py-3">El pool está vacío — escanea elementos</p>';
+    } else {
+        lista.innerHTML = state.pool.map(function (item) {
+            return '<div class="pool-row">'
+                + '<span class="text-uppercase fw-semibold small">' + escHtml(item.codigo) + '</span>'
+                + '<button class="btn-icon text-danger" onclick="quitarDelPool(\'' + escJs(item.codigo) + '\')" title="Quitar">'
+                + '<i class="fa fa-times"></i></button>'
+                + '</div>';
+        }).join('');
+    }
+    if (btnComparar) {
+        btnComparar.disabled = state.pool.length === 0;
+        btnComparar.innerHTML = '<i class="fa fa-balance-scale me-2"></i> Comparar (' + state.pool.length + ')';
+    }
+}
+
+// D5 — Quitar código del pool
+function quitarDelPool(codigo) {
+    state.pool = state.pool.filter(function (item) { return item.codigo !== codigo; });
+    renderPool();
+}
+
+// D6 — Enviar pool al servidor y pasar a fase 4
+function compararPool() {
+    if (!state.pool.length) return;
+    feedback('fb-escaneo', 'Comparando...', 'info');
+    post('comparar', {
+        id_salida_almacen: state.salida.id_salida_almacen,
+        codigos: state.pool.map(function (item) { return item.codigo; })
+    }).done(function (data) {
+        if (!data.success) {
+            feedback('fb-escaneo', data.message || 'Error al comparar', 'err');
+            return;
+        }
+        state.comparacion = data;
+        state.sustituciones = {};
+        renderComparacion(data);
+        mostrarFase(4);
+    }).fail(function () {
+        feedback('fb-escaneo', 'Error de conexión', 'err');
+    });
+}
+
+// D7 — Renderizar las 4 secciones de comparación en fase 4
+function renderComparacion(data) {
+    // Correctos
+    var correctos = data.correctos || [];
+    document.getElementById('badge-correctos').textContent = correctos.length;
+    document.getElementById('cmp-correctos-list').innerHTML = correctos.length
+        ? correctos.map(function (c) {
+            return '<div class="cmp-row">'
+                + '<span class="fw-semibold small text-uppercase">' + escHtml(c.codigo_elemento) + '</span>'
+                + '<span class="text-muted small ms-2">' + escHtml(c.nombre_articulo || '') + '</span>'
+                + (c.estado_invalido ? '<span class="badge bg-warning text-dark ms-1 small"><i class="fa fa-exclamation-triangle"></i> estado</span>' : '')
+                + '</div>';
+        }).join('')
+        : '<p class="text-muted small text-center py-2">Ninguno</p>';
+
+    // Faltan
+    var faltan = data.faltan || [];
+    document.getElementById('badge-faltan').textContent = faltan.length;
+    document.getElementById('cmp-faltan-list').innerHTML = faltan.length
+        ? faltan.map(function (f) {
+            return '<div class="cmp-row" id="falta-row-' + f.id_linea_ppto + '">'
+                + '<div class="fw-semibold small">' + escHtml(f.nombre_articulo || '') + '</div>'
+                + '<div class="text-muted small fst-italic">— sin elemento asignado</div>'
+                + '<div id="sust-asignado-' + f.id_linea_ppto + '" style="display:none;" class="mt-1">'
+                + '<span class="badge bg-info text-dark" id="sust-badge-' + f.id_linea_ppto + '"></span>'
+                + '<button class="btn btn-sm btn-link text-danger p-0 ms-2" onclick="quitarSustitucion(' + f.id_linea_ppto + ')">'
+                + '<i class="fa fa-times"></i> Quitar</button>'
+                + '</div>'
+                + '<button class="btn btn-outline-primary btn-sm mt-2" id="btn-sust-' + f.id_linea_ppto + '"'
+                + ' onclick="abrirPanelSustitucion(' + f.id_linea_ppto + ', ' + (f.id_familia || 0) + ', \'' + escJs(f.nombre_familia || '') + '\')">'
+                + '<i class="fa fa-box me-1"></i> Asignar sustituto \u25bc</button>'
+                + '<div class="sust-panel" id="sust-panel-' + f.id_linea_ppto + '"></div>'
+                + '</div>';
+        }).join('')
+        : '<p class="text-muted small text-center py-2">Ninguno</p>';
+
+    // Sobran
+    var sobran = data.sobran || [];
+    document.getElementById('badge-sobran').textContent = sobran.length;
+    document.getElementById('cmp-sobran-list').innerHTML = sobran.length
+        ? sobran.map(function (s) {
+            return '<div class="cmp-row" id="cand-row-' + escHtml(s.codigo_elemento) + '">'
+                + '<span class="fw-semibold small text-uppercase">' + escHtml(s.codigo_elemento) + '</span>'
+                + '<span class="text-muted small ms-2">' + escHtml(s.nombre_articulo || '') + '</span>'
+                + (s.estado_invalido ? '<span class="badge bg-warning text-dark ms-1 small"><i class="fa fa-exclamation-triangle"></i></span>' : '')
+                + '<span class="badge bg-info text-dark ms-1 small" id="badge-cand-' + escHtml(s.codigo_elemento) + '" style="display:none;"></span>'
+                + '</div>';
+        }).join('')
+        : '<p class="text-muted small text-center py-2">Ninguno</p>';
+
+    // No relacionados
+    var norel = data.no_relacionados || [];
+    document.getElementById('badge-norel').textContent = norel.length;
+    document.getElementById('cmp-norel-list').innerHTML = norel.length
+        ? norel.map(function (n) {
+            return '<div class="cmp-row" id="cand-row-' + escHtml(n.codigo_elemento) + '">'
+                + '<span class="fw-semibold small text-uppercase">' + escHtml(n.codigo_elemento) + '</span>'
+                + (n.no_encontrado
+                    ? '<span class="badge bg-danger ms-1 small">no encontrado</span>'
+                    : '<span class="text-muted small ms-2">' + escHtml(n.nombre_articulo || '') + '</span>')
+                + (n.estado_invalido ? '<span class="badge bg-warning text-dark ms-1 small"><i class="fa fa-exclamation-triangle"></i></span>' : '')
+                + '<span class="badge bg-info text-dark ms-1 small" id="badge-cand-' + escHtml(n.codigo_elemento) + '" style="display:none;"></span>'
+                + '</div>';
+        }).join('')
+        : '<p class="text-muted small text-center py-2">Ninguno</p>';
+
+    actualizarEstadoConfirmar();
+}
+
+// D8a — Abrir panel de sustitución para un faltante
+function abrirPanelSustitucion(id_linea_ppto, id_familia, nombre_familia) {
+    document.querySelectorAll('.sust-panel.open').forEach(function (p) { p.classList.remove('open'); });
+    var panel = document.getElementById('sust-panel-' + id_linea_ppto);
+    if (!panel) return;
+    var asignados = Object.keys(state.sustituciones);
+    var candidatos = [].concat(state.comparacion.sobran || [], state.comparacion.no_relacionados || [])
+        .filter(function (c) { return !asignados.includes(c.codigo_elemento); });
+    renderPanelSustitucion(panel, id_linea_ppto, id_familia, nombre_familia, candidatos, true);
+    panel.classList.add('open');
+}
+
+function renderPanelSustitucion(panel, id_linea_ppto, id_familia, nombre_familia, candidatos, filtrarFamilia) {
+    var filtrados = filtrarFamilia
+        ? candidatos.filter(function (c) { return String(c.id_familia) === String(id_familia); })
+        : candidatos;
+    panel.innerHTML = '<div class="mb-2">'
+        + '<span class="sust-chip' + (filtrarFamilia ? ' active' : '') + '"'
+        + ' onclick="toggleFiltroFamilia(' + id_linea_ppto + ', ' + id_familia + ', \'' + escJs(nombre_familia) + '\', true)">'
+        + '<i class="fa fa-box me-1"></i> Misma familia</span>'
+        + '<span class="sust-chip' + (!filtrarFamilia ? ' active' : '') + '"'
+        + ' onclick="toggleFiltroFamilia(' + id_linea_ppto + ', ' + id_familia + ', \'' + escJs(nombre_familia) + '\', false)">'
+        + '<i class="fa fa-unlock me-1"></i> Todas</span>'
+        + '</div>'
+        + (filtrados.length === 0
+            ? '<p class="text-muted small fst-italic mb-0">Sin candidatos disponibles</p>'
+            : filtrados.map(function (c) {
+                return '<div class="d-flex justify-content-between align-items-center py-1">'
+                    + '<div><span class="fw-semibold small text-uppercase">' + escHtml(c.codigo_elemento) + '</span>'
+                    + (c.nombre_articulo ? '<span class="text-muted small ms-1">' + escHtml(c.nombre_articulo) + '</span>' : '')
+                    + '</div>'
+                    + '<button class="btn btn-sm btn-success ms-2" style="font-size:.78rem;"'
+                    + ' onclick="asignarSustitucion(\'' + escJs(c.codigo_elemento) + '\', ' + id_linea_ppto + ')">'
+                    + 'Asignar</button>'
+                    + '</div>';
+            }).join(''));
+}
+
+// D8b — Toggle filtro familia / todas
+function toggleFiltroFamilia(id_linea_ppto, id_familia, nombre_familia, filtrarFamilia) {
+    var panel = document.getElementById('sust-panel-' + id_linea_ppto);
+    if (!panel) return;
+    var asignados = Object.keys(state.sustituciones);
+    var candidatos = [].concat(state.comparacion.sobran || [], state.comparacion.no_relacionados || [])
+        .filter(function (c) { return !asignados.includes(c.codigo_elemento); });
+    renderPanelSustitucion(panel, id_linea_ppto, id_familia, nombre_familia, candidatos, filtrarFamilia);
+}
+
+// D8c — Asignar sustituto a un faltante
+function asignarSustitucion(codigo_candidato, id_linea_ppto) {
+    state.sustituciones[codigo_candidato] = id_linea_ppto;
+    var faltante = (state.comparacion.faltan || []).find(function (f) { return f.id_linea_ppto == id_linea_ppto; });
+    var btnSust = document.getElementById('btn-sust-' + id_linea_ppto);
+    var asignadoDiv = document.getElementById('sust-asignado-' + id_linea_ppto);
+    var badge = document.getElementById('sust-badge-' + id_linea_ppto);
+    if (btnSust) btnSust.style.display = 'none';
+    if (asignadoDiv) asignadoDiv.style.display = 'block';
+    if (badge) badge.textContent = '« cubre: ' + codigo_candidato + ' »';
+    var panel = document.getElementById('sust-panel-' + id_linea_ppto);
+    if (panel) panel.classList.remove('open');
+    var badgeCand = document.getElementById('badge-cand-' + codigo_candidato);
+    if (badgeCand) {
+        badgeCand.textContent = '« cubre a ' + (faltante ? faltante.nombre_articulo : '?') + ' »';
+        badgeCand.style.display = 'inline';
+    }
+    actualizarEstadoConfirmar();
+}
+
+// D8d — Quitar sustituto asignado
+function quitarSustitucion(id_linea_ppto) {
+    var codigo = Object.keys(state.sustituciones).find(function (k) { return state.sustituciones[k] == id_linea_ppto; });
+    if (!codigo) return;
+    delete state.sustituciones[codigo];
+    var btnSust = document.getElementById('btn-sust-' + id_linea_ppto);
+    var asignadoDiv = document.getElementById('sust-asignado-' + id_linea_ppto);
+    if (btnSust) btnSust.style.display = 'block';
+    if (asignadoDiv) asignadoDiv.style.display = 'none';
+    var badgeCand = document.getElementById('badge-cand-' + codigo);
+    if (badgeCand) { badgeCand.textContent = ''; badgeCand.style.display = 'none'; }
+    actualizarEstadoConfirmar();
+}
+
+// D9 — Habilitar/deshabilitar btn-confirmar según faltantes sin cubrir
+function actualizarEstadoConfirmar() {
+    var faltan = state.comparacion ? (state.comparacion.faltan || []) : [];
+    var faltanSinCubrir = faltan.filter(function (f) {
+        return !Object.values(state.sustituciones).some(function (v) { return v == f.id_linea_ppto; });
+    }).length;
+    var btnConfirmar = document.getElementById('btn-confirmar');
+    var alerta = document.getElementById('cmp-alerta-faltan');
+    var alertaTexto = document.getElementById('cmp-alerta-texto');
+    if (faltanSinCubrir === 0) {
+        if (btnConfirmar) btnConfirmar.disabled = false;
+        if (alerta) alerta.style.display = 'none';
+    } else {
+        if (btnConfirmar) btnConfirmar.disabled = true;
+        if (alerta) alerta.style.display = 'flex';
+        if (alertaTexto) alertaTexto.textContent = 'Faltan ' + faltanSinCubrir + ' elemento(s) sin cubrir';
+    }
+}
+
+// D10 — Confirmar pool: construye payload y hace POST
+function confirmarPool() {
+    if (!state.comparacion) return;
+    var pool = [];
+    (state.comparacion.correctos || []).forEach(function (c) {
+        pool.push({ codigo_elemento: c.codigo_elemento, modo: 'correcto', id_linea_ppto: c.id_linea_ppto });
+    });
+    (state.comparacion.sobran || []).forEach(function (s) {
+        if (state.sustituciones[s.codigo_elemento]) {
+            pool.push({ codigo_elemento: s.codigo_elemento, modo: 'sustituye', id_linea_ppto: state.sustituciones[s.codigo_elemento] });
+        } else {
+            pool.push({ codigo_elemento: s.codigo_elemento, modo: 'backup', id_linea_ppto: s.id_linea_ppto });
+        }
+    });
+    (state.comparacion.no_relacionados || []).forEach(function (n) {
+        if (state.sustituciones[n.codigo_elemento]) {
+            pool.push({ codigo_elemento: n.codigo_elemento, modo: 'sustituye', id_linea_ppto: state.sustituciones[n.codigo_elemento] });
+        } else {
+            pool.push({ codigo_elemento: n.codigo_elemento, modo: 'backup', id_linea_ppto: null });
+        }
+    });
+    post('confirmar', {
+        id_salida_almacen: state.salida.id_salida_almacen,
+        pool: JSON.stringify(pool)
+    }).done(function (data) {
+        if (data.success) {
+            detenerNFC();
+            mostrarFase5();
+        } else {
+            Swal.fire('Error', data.message || 'Error al confirmar', 'error');
+        }
+    }).fail(function () {
+        Swal.fire('Error', 'Error de conexión', 'error');
+    });
+}
+
+// ============================================================
+// FASE 5 — CONFIRMACIÓN FINAL
+// ============================================================
+function mostrarFase5() {
     const p = state.progreso;
     const resumen = p ? `${p.total_escaneado} elementos preparados` + (p.total_backup > 0 ? ` (${p.total_backup} backup)` : '') : '';
-    document.getElementById('p4-resumen').textContent = resumen;
-    mostrarFase(4);
+    document.getElementById('p5-resumen').textContent = resumen;
+    mostrarFase(5);
 }
 
 // ============================================================
@@ -597,6 +776,10 @@ function resetState() {
     state.salida = null;
     state.progreso = null;
     state.elementoReubicacion = null;
+    state.pool = [];
+    state.comparacion = null;
+    state.sustituciones = {};
+    renderPool();
     document.getElementById('inp-numero-ppto').value = '';
     document.getElementById('fb-busqueda').classList.add('fb-hidden');
     document.getElementById('nav-numero').textContent = '';
@@ -795,7 +978,12 @@ $(document).ready(function () {
         });
     });
 
-    // --- Fase 4 ---
+    // --- Fase 4 — Comparación ---
+    $('#btn-comparar').on('click', compararPool);
+    $('#btn-volver-escaneo').on('click', function () { mostrarFase(3); });
+    $('#btn-confirmar').on('click', confirmarPool);
+
+    // --- Fase 5 ---
     $('#btn-nueva-salida').on('click', function () {
         detenerNFC();
         resetState();

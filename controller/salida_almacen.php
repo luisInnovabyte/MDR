@@ -343,6 +343,50 @@ switch ($op) {
         ], JSON_UNESCAPED_UNICODE);
         break;
 
+    // ---------------------------------------------------------------
+    // comparar — compara pool de códigos contra necesidades del presupuesto
+    // POST: id_salida_almacen, codigos[] (array de códigos de elemento)
+    // Devuelve: { success, correctos[], sobran[], no_relacionados[], faltan[] }
+    // ---------------------------------------------------------------
+    case 'comparar':
+        $id_salida = (int)($_POST['id_salida_almacen'] ?? 0);
+        $codigos   = $_POST['codigos'] ?? [];
+        if (!$id_salida || empty($codigos)) {
+            echo json_encode(['success' => false, 'message' => 'Parámetros requeridos: id_salida_almacen, codigos[]'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+        $resultado = $model->comparar_pool($id_salida, (array)$codigos);
+        if (isset($resultado['error'])) {
+            echo json_encode(['success' => false, 'message' => $resultado['error']], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(array_merge(['success' => true], $resultado), JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // ---------------------------------------------------------------
+    // confirmar — persiste el pool validado en linea_salida_almacen
+    // POST: id_salida_almacen, pool (JSON string: [{codigo_elemento, modo, id_linea_ppto?},...])
+    // Devuelve: { success, message }
+    // ---------------------------------------------------------------
+    case 'confirmar':
+        $id_salida = (int)($_POST['id_salida_almacen'] ?? 0);
+        $pool_json = $_POST['pool'] ?? '';
+        if (!$id_salida || empty($pool_json)) {
+            echo json_encode(['success' => false, 'message' => 'Parámetros requeridos: id_salida_almacen, pool'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+        $pool = json_decode($pool_json, true);
+        if (!is_array($pool)) {
+            echo json_encode(['success' => false, 'message' => 'Pool JSON inválido'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+        $ok = $model->confirmar_pool($id_salida, $pool);
+        echo json_encode([
+            'success' => $ok,
+            'message' => $ok ? 'Picking confirmado correctamente' : 'Error al confirmar el pool'
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
     default:
         echo json_encode(['success' => false, 'message' => "Operación '$op' no reconocida."], JSON_UNESCAPED_UNICODE);
         break;
