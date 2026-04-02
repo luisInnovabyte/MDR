@@ -15,7 +15,10 @@ const state = {
     nfcController: null,    // AbortController NFC
     qrScanner: null,        // instancia Html5QrcodeScanner
     elementoReubicacion: null,  // {id_elemento, id_linea_salida, nombre}
-    ubicacionesDisponibles: []
+    ubicacionesDisponibles: [],
+    pool: [],               // códigos escaneados pendientes de comparar
+    comparacion: null,      // resultado del último comparar_pool
+    sustituciones: {}       // {codigo_candidato: id_linea_ppto_faltante}
 };
 
 const CTR = '../../controller/salida_almacen.php';
@@ -228,7 +231,6 @@ function cargarFase2(data) {
     // Si hay salida activa, refrescar progreso
     if (state.salida) {
         refrescarProgreso();
-        document.getElementById('btn-ver-mapa').style.display = 'block';
     }
 }
 
@@ -275,7 +277,6 @@ function actualizarBarras(progreso) {
 
     document.getElementById('p2-contadores').textContent = `${escaneado} / ${total}`;
     document.getElementById('p2-barra').style.width = pct + '%';
-    document.getElementById('p3-contadores').textContent = `${escaneado}/${total}`;
 
     (progreso.por_articulo || []).forEach(art => {
         const cnt = document.getElementById('cnt-' + art.id_articulo);
@@ -290,7 +291,6 @@ function actualizarBarras(progreso) {
         pb.style.width = pctArt + '%';
     });
 
-    // Habilitar btn completar
     const btnCompletar = document.getElementById('btn-completar');
     if (btnCompletar) {
         btnCompletar.disabled = !progreso.completo;
@@ -302,7 +302,6 @@ function actualizarBarras(progreso) {
 // FASE 3 — ESCANEO NFC / MANUAL DE ELEMENTOS
 // ============================================================
 function iniciarFase3() {
-    document.getElementById('p3-numero').textContent = state.presupuesto.numero_presupuesto;
     feedback('fb-escaneo', 'Acerca el tag NFC o introduce el c\u00f3digo', 'info');
     mostrarFase(3);
     iniciarNFC();
@@ -344,105 +343,26 @@ function detenerNFC() {
 function procesarEscaneo(codigo, esBackup = false) {
     if (!codigo) return;
     document.getElementById('inp-codigo-elem').value = '';
-    feedback('fb-escaneo', 'Verificando ' + escHtml(codigo) + '...', 'info');
-
-    post('escanear', {
-        id_salida_almacen: state.salida.id_salida_almacen,
-        codigo_elemento: codigo,
-        es_backup: esBackup ? 1 : 0
-    }).done(function (data) {
-        switch (data.tipo) {
-            case 'correcto':
-                vibrar('ok');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — ' + escHtml(data.elemento.nombre_articulo), 'ok');
-                break;
-            case 'backup':
-                vibrar('ok');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> añadido como backup', 'warn');
-                break;
-            case 'ya_asignado':
-                vibrar('warn');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> ya está en la lista. ¿Reubicar?', 'warn');
-                if (data.progreso) { state.progreso = data.progreso; actualizarBarras(data.progreso); }
-                Swal.fire({
-                    title: 'Ya está preparado',
-                    html: '<strong>' + escHtml(codigo) + '</strong> ya se encuentra en la lista de esta salida.<br><small class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</small>',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: '<i class="fa fa-exchange-alt me-1"></i> Reubicar',
-                    cancelButtonText: 'Cerrar',
-                    confirmButtonColor: '#6c757d'
-                }).then(r => { if (r.isConfirmed) abrirModalReubicacion(data); });
-                return;
-            case 'ya_alquilado':
-                vibrar('warn');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> está alquilado. ¿Reubicar?', 'warn');
-                if (data.linea_salida) {
-                    Swal.fire({
-                        title: 'Elemento alquilado',
-                        html: '<strong>' + escHtml(codigo) + '</strong> ya está en estado alquilado.<br><small class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</small>',
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonText: '<i class="fa fa-exchange-alt me-1"></i> Reubicar',
-                        cancelButtonText: 'Cerrar',
-                        confirmButtonColor: '#6c757d'
-                    }).then(r => { if (r.isConfirmed) abrirModalReubicacion(data); });
-                }
-                return;
-            case 'cantidad_completada':
-                vibrar('warn');
-                Swal.fire({
-                    title: 'Cantidad cubierta',
-                    text: data.mensaje,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, añadir como backup',
-                    cancelButtonText: 'No'
-                }).then(r => {
-                    if (r.isConfirmed) procesarEscaneo(codigo, true);
-                });
-                return;
-            case 'articulo_no_pertenece_preguntar':
-                vibrar('warn');
-                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> no está en el presupuesto', 'warn');
-                Swal.fire({
-                    title: 'No está en el presupuesto',
-                    html: '<strong>' + escHtml(codigo) + '</strong><br><span class="text-muted">' + escHtml(data.elemento.nombre_articulo) + '</span><br><br>¿Lo añades como <strong>material de repuesto</strong>?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: '<i class="fa fa-toolbox me-1"></i> Sí, es repuesto',
-                    cancelButtonText: 'No, descartar',
-                    confirmButtonColor: '#795548'
-                }).then(r => {
-                    if (r.isConfirmed) procesarEscaneo(codigo, true);
-                    else feedback('fb-escaneo', 'Elemento descartado', 'info');
-                });
-                return;
-            case 'articulo_no_pertenece':
+    codigo = codigo.trim().toUpperCase();
+    feedback('fb-escaneo', '<i class="fa fa-spinner fa-spin me-2"></i>Consultando <strong>' + escHtml(codigo) + '</strong>...', 'info');
+    post('buscar_elemento', { codigo_elemento: codigo })
+        .done(function (data) {
+            if (!data.success) {
                 vibrar('err');
-                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
-                break;
-            case 'no_disponible':
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — error de comunicación', 'err');
+                return;
+            }
+            if (!data.encontrado) {
                 vibrar('err');
-                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
-                break;
-            case 'elemento_no_encontrado':
-                vibrar('err');
-                feedback('fb-escaneo', escHtml(data.mensaje), 'err');
-                break;
-            default:
-                vibrar('err');
-                feedback('fb-escaneo', data.mensaje || 'Error desconocido', 'err');
-        }
-
-        if (data.progreso) {
-            state.progreso = data.progreso;
-            actualizarBarras(data.progreso);
-        }
-        cargarElementosEscaneados();
-    }).fail(function () {
-        feedback('fb-escaneo', 'Error de conexión', 'err');
-    });
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — elemento no encontrado en el sistema', 'err');
+                return;
+            }
+            agregarAlPool(data.elemento, data.foto_url);
+        })
+        .fail(function () {
+            vibrar('err');
+            feedback('fb-escaneo', 'Error de conexión al consultar el elemento', 'err');
+        });
 }
 
 // --- Lista de elementos escaneados ---
@@ -457,6 +377,7 @@ function cargarElementosEscaneados() {
 
 function renderElementosEscaneados(elementos) {
     const cont = document.getElementById('lista-elementos-escaneados');
+    if (!cont) return;
     if (!elementos.length) {
         cont.innerHTML = '<p class="text-muted small text-center py-3">Aún no se ha escaneado ningún elemento</p>';
         return;
@@ -546,7 +467,7 @@ function completarSalida() {
             .done(function (data) {
                 if (data.success) {
                     detenerNFC();
-                    mostrarFase4();
+                    mostrarFase6();
                 } else {
                     Swal.fire('Error', data.message, 'error');
                 }
@@ -580,13 +501,480 @@ function cancelarSalida() {
 }
 
 // ============================================================
-// FASE 4 — CONFIRMACIÓN FINAL
+// FASE 4 — POOL BUSCADOR + FASE 5 — COMPARACIÓN (nuevo flujo)
 // ============================================================
-function mostrarFase4() {
+
+// D3 — Añadir elemento enriquecido al pool
+function agregarAlPool(elemento, foto_url) {
+    var codigo = elemento.codigo_elemento;
+    if (!codigo) return;
+    if (state.pool.some(function (item) { return item.codigo === codigo; })) {
+        Swal.fire({ toast: true, position: 'top', icon: 'info', timer: 1800, showConfirmButton: false, title: 'Ya está en el pool' });
+        return;
+    }
+    state.pool.push({ codigo: codigo, elemento: elemento, foto_url: foto_url || null });
+    vibrar('ok');
+    feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — ' + escHtml(elemento.nombre_articulo || '') + ' añadido', 'ok');
+    mostrarUltimoEscaneado(elemento, foto_url);
+    actualizarContadoresPool();
+}
+
+// D3b — Mostrar tarjeta del último elemento escaneado en fase 3
+function mostrarUltimoEscaneado(elemento, foto_url) {
+    var card = document.getElementById('last-scan-card');
+    if (!card) return;
+    var e = elemento || {};
+    var imgEl = document.getElementById('lsc-img');
+    if (imgEl) {
+        imgEl.innerHTML = foto_url
+            ? '<img src="' + escHtml(foto_url) + '" style="width:33vw;height:33vw;object-fit:cover;border-radius:10px;border:1px solid rgba(0,0,0,.1);" alt="" onerror="this.style.display=\'none\'" />'
+            : '<div style="width:33vw;height:33vw;border-radius:10px;background:#f0f0f0;display:inline-flex;align-items:center;justify-content:center;color:#bbb;font-size:2.2rem;"><i class="fa fa-image"></i></div>';
+    }
+    var set = function(id, html) { var el = document.getElementById(id); if (el) el.innerHTML = html; };
+    var txt = function(id, val, icon, label) {
+        var el = document.getElementById(id);
+        if (el) {
+            if (val) {
+                var prefix = (icon  ? '<i class="fa ' + icon + '" style="margin-right:6px;"></i>' : '')
+                           + (label ? '<span style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#aaa;margin-right:6px;">' + label + '</span>' : '');
+                el.innerHTML = prefix + escHtml(val);
+                el.style.display = '';
+            } else {
+                el.style.display = 'none';
+            }
+        }
+    };
+    txt('lsc-codigo',  e.codigo_elemento || '',     'fa-hashtag', null);
+    var estadoEl = document.getElementById('lsc-estado');
+    if (estadoEl) {
+        estadoEl.textContent = e.descripcion_estado_elemento || '';
+        estadoEl.style.background = e.color_estado_elemento || '#6c757d';
+        estadoEl.style.color = '#fff';
+    }
+    txt('lsc-articulo', e.nombre_articulo || '',    'fa-box',           null);
+    txt('lsc-familia',  e.nombre_familia  || '',    'fa-tag',           null);
+    txt('lsc-modelo',   e.modelo_elemento || '',    'fa-cube',          'Modelo');
+    txt('lsc-serie',    e.numero_serie_elemento ? e.numero_serie_elemento : '', 'fa-barcode', 'Núm. Serie');
+    var ubicacion = [e.nave_elemento, e.pasillo_columna_elemento, e.altura_elemento].filter(Boolean).join(' · ');
+    txt('lsc-ubicacion', ubicacion,                 'fa-map-marker-alt','Ubicación');
+    card.style.display = '';
+}
+
+// D5 — Quitar código del pool
+function quitarDelPool(codigo) {
+    state.pool = state.pool.filter(function (item) { return item.codigo !== codigo; });
+    // Si fase4 está activa, re-renderizar la lista
+    var ph4 = document.getElementById('phase4');
+    if (ph4 && ph4.classList.contains('active')) {
+        renderFase4Pool(document.getElementById('pool-search') ? document.getElementById('pool-search').value : '', estadoCampoActivo());
+    }
+    actualizarContadoresPool();
+}
+
+// D5b — Actualizar todos los contadores/botones del pool en fase 3
+function actualizarContadoresPool() {
+    var n = state.pool.length;
+    // Badge del botón 'Elementos escaneados'
+    var badge1 = document.getElementById('pool-count-bar');
+    if (badge1) badge1.textContent = n;
+    // Badge del botón Comparar en bottom-bar
+    var badge2 = document.getElementById('pool-count-bar2');
+    if (badge2) badge2.textContent = n;
+    // Habilitar/deshabilitar btn-comparar-fase3
+    var btnCmp3 = document.getElementById('btn-comparar-fase3');
+    if (btnCmp3) btnCmp3.disabled = (n === 0);
+}
+
+// D5b — Obtener campo de filtro activo
+function estadoCampoActivo() {
+    var btn = document.getElementById('pool-campo-btn');
+    return btn ? (btn.dataset.campo || 'nombre_articulo') : 'nombre_articulo';
+}
+
+// D5c — Sugerencias de búsqueda
+function renderSugerencias(q) {
+    var panel = document.getElementById('pool-suggestions');
+    if (!panel) return;
+    if (!q || q.length < 1) { cerrarSugerencias(); return; }
+    var campo = estadoCampoActivo();
+    var ql = q.toLowerCase();
+    // Obtener valores únicos del pool que coincidan
+    var vistos = {};
+    var sugerencias = [];
+    state.pool.forEach(function (item) {
+        var val = '';
+        if (campo === 'nombre_articulo') val = item.elemento.nombre_articulo || '';
+        else if (campo === 'nombre_familia') val = item.elemento.nombre_familia || '';
+        else val = item.codigo || '';
+        if (val && val.toLowerCase().indexOf(ql) !== -1 && !vistos[val]) {
+            vistos[val] = true;
+            sugerencias.push(val);
+        }
+    });
+    if (!sugerencias.length) { cerrarSugerencias(); return; }
+    sugerencias = sugerencias.slice(0, 6); // máximo 6
+    var html = sugerencias.map(function (s) {
+        // Resaltar la parte que coincide
+        var idx = s.toLowerCase().indexOf(ql);
+        var highlighted = escHtml(s.substring(0, idx))
+            + '<strong>' + escHtml(s.substring(idx, idx + q.length)) + '</strong>'
+            + escHtml(s.substring(idx + q.length));
+        return '<div class="pool-sug-item" data-val="' + escHtml(s) + '" '
+            + 'style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:.95rem;">'
+            + '<i class="fa fa-search" style="color:#bbb;font-size:.85rem;flex-shrink:0;"></i>'
+            + '<span>' + highlighted + '</span>'
+            + '</div>';
+    }).join('');
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+}
+
+function cerrarSugerencias() {
+    var panel = document.getElementById('pool-suggestions');
+    if (panel) { panel.style.display = 'none'; panel.innerHTML = ''; }
+}
+
+
+// D6 — Enviar pool al servidor y pasar a fase 5
+function compararPool() {
+    if (!state.pool.length) return;
+    feedback('fb-escaneo', 'Comparando...', 'info');
+    post('comparar', {
+        id_salida_almacen: state.salida.id_salida_almacen,
+        codigos: state.pool.map(function (item) { return item.codigo; })
+    }).done(function (data) {
+        if (!data.success) {
+            feedback('fb-escaneo', data.message || 'Error al comparar', 'err');
+            return;
+        }
+        state.comparacion = data;
+        state.sustituciones = {};
+        renderComparacion(data);
+        mostrarFase(5);
+    }).fail(function () {
+        feedback('fb-escaneo', 'Error de conexión', 'err');
+    });
+}
+
+// D7 — Renderizar las 4 secciones de comparación en fase 4
+function renderComparacion(data) {
+    // Correctos
+    var correctos = data.correctos || [];
+    document.getElementById('badge-correctos').textContent = correctos.length;
+    document.getElementById('cmp-correctos-list').innerHTML = correctos.length
+        ? correctos.map(function (c) {
+            return '<div class="cmp-row">'
+                + '<span class="fw-semibold small text-uppercase">' + escHtml(c.codigo_elemento) + '</span>'
+                + '<span class="text-muted small ms-2">' + escHtml(c.nombre_articulo || '') + '</span>'
+                + (c.estado_invalido ? '<span class="badge bg-warning text-dark ms-1 small"><i class="fa fa-exclamation-triangle"></i> estado</span>' : '')
+                + '</div>';
+        }).join('')
+        : '<p class="text-muted small text-center py-2">Ninguno</p>';
+
+    // Faltan
+    var faltan = data.faltan || [];
+    document.getElementById('badge-faltan').textContent = faltan.length;
+    document.getElementById('cmp-faltan-list').innerHTML = faltan.length
+        ? faltan.map(function (f) {
+            return '<div class="cmp-row" id="falta-row-' + f.id_linea_ppto + '">'
+                + '<div class="fw-semibold small">' + escHtml(f.nombre_articulo || '') + '</div>'
+                + '<div class="text-muted small fst-italic">— sin elemento asignado</div>'
+                + '<div id="sust-asignado-' + f.id_linea_ppto + '" style="display:none;" class="mt-1">'
+                + '<span class="badge bg-info text-dark" id="sust-badge-' + f.id_linea_ppto + '"></span>'
+                + '<button class="btn btn-sm btn-link text-danger p-0 ms-2" onclick="quitarSustitucion(' + f.id_linea_ppto + ')">'
+                + '<i class="fa fa-times"></i> Quitar</button>'
+                + '</div>'
+                + '<button class="btn btn-outline-primary btn-sm mt-2" id="btn-sust-' + f.id_linea_ppto + '"'
+                + ' onclick="abrirPanelSustitucion(' + f.id_linea_ppto + ', ' + (f.id_familia || 0) + ', \'' + escJs(f.nombre_familia || '') + '\')">'
+                + '<i class="fa fa-box me-1"></i> Asignar sustituto \u25bc</button>'
+                + '<div class="sust-panel" id="sust-panel-' + f.id_linea_ppto + '"></div>'
+                + '</div>';
+        }).join('')
+        : '<p class="text-muted small text-center py-2">Ninguno</p>';
+
+    // Sobran
+    var sobran = data.sobran || [];
+    document.getElementById('badge-sobran').textContent = sobran.length;
+    document.getElementById('cmp-sobran-list').innerHTML = sobran.length
+        ? sobran.map(function (s) {
+            return '<div class="cmp-row" id="cand-row-' + escHtml(s.codigo_elemento) + '">'
+                + '<span class="fw-semibold small text-uppercase">' + escHtml(s.codigo_elemento) + '</span>'
+                + '<span class="text-muted small ms-2">' + escHtml(s.nombre_articulo || '') + '</span>'
+                + (s.estado_invalido ? '<span class="badge bg-warning text-dark ms-1 small"><i class="fa fa-exclamation-triangle"></i></span>' : '')
+                + '<span class="badge bg-info text-dark ms-1 small" id="badge-cand-' + escHtml(s.codigo_elemento) + '" style="display:none;"></span>'
+                + '</div>';
+        }).join('')
+        : '<p class="text-muted small text-center py-2">Ninguno</p>';
+
+    // No relacionados
+    var norel = data.no_relacionados || [];
+    document.getElementById('badge-norel').textContent = norel.length;
+    document.getElementById('cmp-norel-list').innerHTML = norel.length
+        ? norel.map(function (n) {
+            return '<div class="cmp-row" id="cand-row-' + escHtml(n.codigo_elemento) + '">'
+                + '<span class="fw-semibold small text-uppercase">' + escHtml(n.codigo_elemento) + '</span>'
+                + (n.no_encontrado
+                    ? '<span class="badge bg-danger ms-1 small">no encontrado</span>'
+                    : '<span class="text-muted small ms-2">' + escHtml(n.nombre_articulo || '') + '</span>')
+                + (n.estado_invalido ? '<span class="badge bg-warning text-dark ms-1 small"><i class="fa fa-exclamation-triangle"></i></span>' : '')
+                + '<span class="badge bg-info text-dark ms-1 small" id="badge-cand-' + escHtml(n.codigo_elemento) + '" style="display:none;"></span>'
+                + '</div>';
+        }).join('')
+        : '<p class="text-muted small text-center py-2">Ninguno</p>';
+
+    actualizarEstadoConfirmar();
+}
+
+// D8a — Abrir panel de sustitución para un faltante
+function abrirPanelSustitucion(id_linea_ppto, id_familia, nombre_familia) {
+    document.querySelectorAll('.sust-panel.open').forEach(function (p) { p.classList.remove('open'); });
+    var panel = document.getElementById('sust-panel-' + id_linea_ppto);
+    if (!panel) return;
+    var asignados = Object.keys(state.sustituciones);
+    var candidatos = [].concat(state.comparacion.sobran || [], state.comparacion.no_relacionados || [])
+        .filter(function (c) { return !asignados.includes(c.codigo_elemento); });
+    renderPanelSustitucion(panel, id_linea_ppto, id_familia, nombre_familia, candidatos, true);
+    panel.classList.add('open');
+}
+
+function renderPanelSustitucion(panel, id_linea_ppto, id_familia, nombre_familia, candidatos, filtrarFamilia) {
+    var filtrados = filtrarFamilia
+        ? candidatos.filter(function (c) { return String(c.id_familia) === String(id_familia); })
+        : candidatos;
+    panel.innerHTML = '<div class="mb-2">'
+        + '<span class="sust-chip' + (filtrarFamilia ? ' active' : '') + '"'
+        + ' onclick="toggleFiltroFamilia(' + id_linea_ppto + ', ' + id_familia + ', \'' + escJs(nombre_familia) + '\', true)">'
+        + '<i class="fa fa-box me-1"></i> Misma familia</span>'
+        + '<span class="sust-chip' + (!filtrarFamilia ? ' active' : '') + '"'
+        + ' onclick="toggleFiltroFamilia(' + id_linea_ppto + ', ' + id_familia + ', \'' + escJs(nombre_familia) + '\', false)">'
+        + '<i class="fa fa-unlock me-1"></i> Todas</span>'
+        + '</div>'
+        + (filtrados.length === 0
+            ? '<p class="text-muted small fst-italic mb-0">Sin candidatos disponibles</p>'
+            : filtrados.map(function (c) {
+                return '<div class="d-flex justify-content-between align-items-center py-1">'
+                    + '<div><span class="fw-semibold small text-uppercase">' + escHtml(c.codigo_elemento) + '</span>'
+                    + (c.nombre_articulo ? '<span class="text-muted small ms-1">' + escHtml(c.nombre_articulo) + '</span>' : '')
+                    + '</div>'
+                    + '<button class="btn btn-sm btn-success ms-2" style="font-size:.78rem;"'
+                    + ' onclick="asignarSustitucion(\'' + escJs(c.codigo_elemento) + '\', ' + id_linea_ppto + ')">'
+                    + 'Asignar</button>'
+                    + '</div>';
+            }).join(''));
+}
+
+// D8b — Toggle filtro familia / todas
+function toggleFiltroFamilia(id_linea_ppto, id_familia, nombre_familia, filtrarFamilia) {
+    var panel = document.getElementById('sust-panel-' + id_linea_ppto);
+    if (!panel) return;
+    var asignados = Object.keys(state.sustituciones);
+    var candidatos = [].concat(state.comparacion.sobran || [], state.comparacion.no_relacionados || [])
+        .filter(function (c) { return !asignados.includes(c.codigo_elemento); });
+    renderPanelSustitucion(panel, id_linea_ppto, id_familia, nombre_familia, candidatos, filtrarFamilia);
+}
+
+// D8c — Asignar sustituto a un faltante
+function asignarSustitucion(codigo_candidato, id_linea_ppto) {
+    state.sustituciones[codigo_candidato] = id_linea_ppto;
+    var faltante = (state.comparacion.faltan || []).find(function (f) { return f.id_linea_ppto == id_linea_ppto; });
+    var btnSust = document.getElementById('btn-sust-' + id_linea_ppto);
+    var asignadoDiv = document.getElementById('sust-asignado-' + id_linea_ppto);
+    var badge = document.getElementById('sust-badge-' + id_linea_ppto);
+    if (btnSust) btnSust.style.display = 'none';
+    if (asignadoDiv) asignadoDiv.style.display = 'block';
+    if (badge) badge.textContent = '« cubre: ' + codigo_candidato + ' »';
+    var panel = document.getElementById('sust-panel-' + id_linea_ppto);
+    if (panel) panel.classList.remove('open');
+    var badgeCand = document.getElementById('badge-cand-' + codigo_candidato);
+    if (badgeCand) {
+        badgeCand.textContent = '« cubre a ' + (faltante ? faltante.nombre_articulo : '?') + ' »';
+        badgeCand.style.display = 'inline';
+    }
+    actualizarEstadoConfirmar();
+}
+
+// D8d — Quitar sustituto asignado
+function quitarSustitucion(id_linea_ppto) {
+    var codigo = Object.keys(state.sustituciones).find(function (k) { return state.sustituciones[k] == id_linea_ppto; });
+    if (!codigo) return;
+    delete state.sustituciones[codigo];
+    var btnSust = document.getElementById('btn-sust-' + id_linea_ppto);
+    var asignadoDiv = document.getElementById('sust-asignado-' + id_linea_ppto);
+    if (btnSust) btnSust.style.display = 'block';
+    if (asignadoDiv) asignadoDiv.style.display = 'none';
+    var badgeCand = document.getElementById('badge-cand-' + codigo);
+    if (badgeCand) { badgeCand.textContent = ''; badgeCand.style.display = 'none'; }
+    actualizarEstadoConfirmar();
+}
+
+// D9 — Habilitar/deshabilitar btn-confirmar según faltantes sin cubrir
+function contarFaltanSinCubrir() {
+    var faltan = state.comparacion ? (state.comparacion.faltan || []) : [];
+    return faltan.filter(function (f) {
+        return !Object.values(state.sustituciones).some(function (v) { return v == f.id_linea_ppto; });
+    }).length;
+}
+
+function actualizarEstadoConfirmar() {
+    var faltanSinCubrir = contarFaltanSinCubrir();
+    var btnConfirmar = document.getElementById('btn-confirmar');
+    var alerta = document.getElementById('cmp-alerta-faltan');
+    var alertaTexto = document.getElementById('cmp-alerta-texto');
+    if (btnConfirmar) btnConfirmar.disabled = false;
+    if (faltanSinCubrir === 0) {
+        if (alerta) alerta.style.display = 'none';
+    } else {
+        if (alerta) alerta.style.display = 'flex';
+        if (alertaTexto) alertaTexto.textContent = 'Faltan ' + faltanSinCubrir + ' elemento(s) sin cubrir';
+    }
+}
+
+// D10 — Confirmar pool: construye payload y hace POST
+function confirmarPool() {
+    if (!state.comparacion) return;
+    var pool = [];
+    (state.comparacion.correctos || []).forEach(function (c) {
+        pool.push({ codigo_elemento: c.codigo_elemento, modo: 'correcto', id_linea_ppto: c.id_linea_ppto });
+    });
+    (state.comparacion.sobran || []).forEach(function (s) {
+        if (state.sustituciones[s.codigo_elemento]) {
+            pool.push({ codigo_elemento: s.codigo_elemento, modo: 'sustituye', id_linea_ppto: state.sustituciones[s.codigo_elemento] });
+        } else {
+            pool.push({ codigo_elemento: s.codigo_elemento, modo: 'backup', id_linea_ppto: s.id_linea_ppto });
+        }
+    });
+    (state.comparacion.no_relacionados || []).forEach(function (n) {
+        if (state.sustituciones[n.codigo_elemento]) {
+            pool.push({ codigo_elemento: n.codigo_elemento, modo: 'sustituye', id_linea_ppto: state.sustituciones[n.codigo_elemento] });
+        } else {
+            pool.push({ codigo_elemento: n.codigo_elemento, modo: 'backup', id_linea_ppto: null });
+        }
+    });
+    post('confirmar', {
+        id_salida_almacen: state.salida.id_salida_almacen,
+        pool: JSON.stringify(pool)
+    }).done(function (data) {
+        if (data.success) {
+            detenerNFC();
+            mostrarFase6();
+        } else {
+            Swal.fire('Error', data.message || 'Error al confirmar', 'error');
+        }
+    }).fail(function () {
+        Swal.fire('Error', 'Error de conexión', 'error');
+    });
+}
+
+// ============================================================
+// FASE 6 — CONFIRMACIÓN FINAL
+// ============================================================
+function mostrarFase6() {
     const p = state.progreso;
     const resumen = p ? `${p.total_escaneado} elementos preparados` + (p.total_backup > 0 ? ` (${p.total_backup} backup)` : '') : '';
-    document.getElementById('p4-resumen').textContent = resumen;
+    document.getElementById('p6-resumen').textContent = resumen;
+    mostrarFase(6);
+}
+
+// ============================================================
+// FASE 4 — POOL CON BUSCADOR
+// ============================================================
+function mostrarFase4Pool() {
+    var searchEl = document.getElementById('pool-search');
+    if (searchEl) searchEl.value = '';
+    // Resetear dropdown a Artículo
+    var btn = document.getElementById('pool-campo-btn');
+    var lbl = document.getElementById('pool-campo-label');
+    if (btn) btn.dataset.campo = 'nombre_articulo';
+    if (lbl) lbl.textContent = 'Artículo';
+    cerrarSugerencias();
+    renderFase4Pool('', 'nombre_articulo');
     mostrarFase(4);
+}
+
+function renderFase4Pool(query, campo) {
+    var lista = document.getElementById('phase4-pool-lista');
+    var btnComparar = document.getElementById('btn-comparar');
+    if (!lista) return;
+    var q = (query || '').toLowerCase().trim();
+    var filtrados = state.pool.filter(function (item) {
+        if (!q) return true;
+        var e = item.elemento || {};
+        if (campo === 'nombre_familia') return (e.nombre_familia || '').toLowerCase().includes(q);
+        if (campo === 'codigo') return (item.codigo || '').toLowerCase().includes(q) || (e.modelo_elemento || '').toLowerCase().includes(q);
+        // default: nombre_articulo
+        return (e.nombre_articulo || '').toLowerCase().includes(q);
+    });
+    if (!filtrados.length) {
+        lista.innerHTML = '<p class="text-muted small text-center py-3">' + (q ? 'Sin resultados para «' + escHtml(q) + '»' : 'No hay ningún elemento escaneado') + '</p>';
+    } else {
+        lista.innerHTML = filtrados.map(function (item) {
+            var e = item.elemento || {};
+            var estadoColor = e.color_estado_elemento || '#6c757d';
+            var noAlquiler  = e.permite_alquiler_estado_elemento == 0;
+            var ubicacion = [e.nave_elemento, e.pasillo_columna_elemento, e.altura_elemento].filter(Boolean).join(' · ');
+
+            // — Imagen para el detalle expandido (28vw × 28vw)
+            var imgDetalle = item.foto_url
+                ? '<img src="' + escHtml(item.foto_url) + '" style="width:28vw;height:28vw;object-fit:cover;border-radius:10px;border:1px solid rgba(0,0,0,.1);flex-shrink:0;" alt="" onerror="this.style.display=\'none\'" />'
+                : '<div style="width:28vw;height:28vw;border-radius:10px;background:#f0f0f0;display:inline-flex;align-items:center;justify-content:center;color:#bbb;font-size:2rem;flex-shrink:0;"><i class="fa fa-image"></i></div>';
+
+            // — Helper para campo con ícono + label en el detalle
+            function campo(val, icon, label) {
+                if (!val) return '';
+                var prefix = '<i class="fa ' + icon + '" style="margin-right:6px;"></i>'
+                           + (label ? '<span style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#aaa;margin-right:6px;">' + label + '</span>' : '');
+                return prefix + escHtml(val);
+            }
+
+            // — Fila compacta (siempre visible)
+            var filaCompacta = '<div class="pool-row' + (noAlquiler ? ' pool-row-warn' : '') + '">'
+                + '<div class="pool-row-info">'
+                + '<div style="font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;">' + escHtml(item.codigo) + '</div>'
+                + '<div class="text-muted" style="font-size:.78rem;">' + escHtml(e.nombre_articulo || '') + '</div>'
+                + '</div>'
+                + '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">'
+                + (noAlquiler ? '<span class="badge bg-warning text-dark" style="font-size:.68rem;"><i class="fa fa-exclamation-triangle"></i></span>' : '')
+                + '<span class="badge" style="background:' + estadoColor + ';color:#fff;font-size:.7rem;">' + escHtml(e.descripcion_estado_elemento || '') + '</span>'
+                + '<span class="pool-expand-btn"><i class="fa fa-chevron-down"></i></span>'
+                + '</div>'
+                + '</div>';
+
+            // — Panel de detalle (oculto por defecto, similar a last-scan-card)
+            var panelDetalle = '<div class="pool-detail" style="display:none;">'
+                // Fila imagen + info principal
+                + '<div style="display:flex;align-items:center;padding:10px 12px 8px;gap:0;">'
+                + '<div style="flex-shrink:0;margin-right:12px;">' + imgDetalle + '</div>'
+                + '<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;justify-content:center;">'
+                + '<div><span class="badge" style="background:' + estadoColor + ';color:#fff;font-size:.78rem;">' + escHtml(e.descripcion_estado_elemento || '') + '</span></div>'
+                + '<div style="font-size:1rem;font-weight:700;text-transform:uppercase;">' + escHtml(item.codigo) + '</div>'
+                + '<div style="font-size:.92rem;font-weight:600;">' + escHtml(e.nombre_articulo || '') + '</div>'
+                + (e.nombre_familia ? '<div class="text-muted" style="font-size:.82rem;"><i class="fa fa-tag" style="margin-right:6px;"></i>' + escHtml(e.nombre_familia) + '</div>' : '')
+                + '</div>'
+                + '</div>'
+                // Separador
+                + '<div style="border-top:1px solid #f0f0f0;margin:0 12px;"></div>'
+                // Fila modelo + serie + ubicación
+                + '<div style="padding:8px 12px 10px;display:flex;flex-direction:column;gap:5px;">'
+                + '<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:0 16px;row-gap:5px;">'
+                + (e.modelo_elemento      ? '<div class="text-muted" style="font-size:.82rem;">' + campo(e.modelo_elemento, 'fa-cube', 'Modelo') + '</div>' : '')
+                + (e.numero_serie_elemento ? '<div class="text-muted" style="font-size:.82rem;word-break:break-word;">' + campo(e.numero_serie_elemento, 'fa-barcode', 'Núm. Serie') + '</div>' : '')
+                + '</div>'
+                + (ubicacion ? '<div class="text-muted" style="font-size:.82rem;word-break:break-word;">' + campo(ubicacion, 'fa-map-marker-alt', 'Ubicación') + '</div>' : '')
+                + '</div>'
+                // Botón descartar
+                + '<div style="padding:0 12px 12px;">'
+                + '<button class="pool-quitar-btn" type="button" data-codigo="' + escHtml(item.codigo) + '"><i class="fa fa-trash" style="margin-right:6px;"></i>Descartar elemento</button>'
+                + '</div>'
+                + '</div>';
+
+            return '<div class="pool-item-wrap">' + filaCompacta + panelDetalle + '</div>';
+        }).join('');
+    }
+    if (btnComparar) {
+        btnComparar.disabled = state.pool.length === 0;
+        btnComparar.innerHTML = '<i class="fa fa-balance-scale me-1"></i> Comparar (' + state.pool.length + ')';
+    }
+    actualizarContadoresPool();
 }
 
 // ============================================================
@@ -597,6 +985,16 @@ function resetState() {
     state.salida = null;
     state.progreso = null;
     state.elementoReubicacion = null;
+    state.pool = [];
+    state.comparacion = null;
+    state.sustituciones = {};
+    actualizarContadoresPool();
+    // Ocultar tarjeta último escaneado
+    var lsc = document.getElementById('last-scan-card');
+    if (lsc) lsc.style.display = 'none';
+    // Limpiar búsqueda en fase4 si existe
+    var searchEl = document.getElementById('pool-search');
+    if (searchEl) searchEl.value = '';
     document.getElementById('inp-numero-ppto').value = '';
     document.getElementById('fb-busqueda').classList.add('fb-hidden');
     document.getElementById('nav-numero').textContent = '';
@@ -705,7 +1103,6 @@ $(document).ready(function () {
             }).done(function (data) {
                 if (data.success) {
                     state.salida = { id_salida_almacen: data.id_salida_almacen };
-                    document.getElementById('btn-ver-mapa').style.display = 'block';
                     iniciarFase3();
                 } else {
                     Swal.fire('Error', data.message, 'error');
@@ -714,10 +1111,6 @@ $(document).ready(function () {
         } else {
             iniciarFase3();
         }
-    });
-
-    $('#btn-ver-mapa').on('click', function () {
-        iniciarFase3();
     });
 
     // --- Fase 3 ---
@@ -740,11 +1133,6 @@ $(document).ready(function () {
 
     $('#btn-nfc').on('click', function () {
         feedback('fb-escaneo', 'NFC activo — acerca el tag', 'info');
-    });
-
-    $('#btn-refrescar-lista').on('click', function () {
-        cargarElementosEscaneados();
-        refrescarProgreso();
     });
 
     $('#btn-completar').on('click', completarSalida);
@@ -795,7 +1183,97 @@ $(document).ready(function () {
         });
     });
 
-    // --- Fase 4 ---
+    // --- Fase 4 — Pool buscador ---
+    // El botón btn-comparar vive en #phase4, se registra por delegación por si el DOM tarda
+    $(document).on('click', '#btn-comparar', compararPool);
+    $('#btn-volver-escaneo').on('click', function () { mostrarFase(3); });
+    $('#btn-confirmar').on('click', function () {
+        var n = contarFaltanSinCubrir();
+        if (n === 0) { confirmarPool(); return; }
+        Swal.fire({
+            title: '¿Confirmar con faltantes?',
+            text: 'Hay ' + n + ' elemento(s) sin cubrir. ¿Continuar igualmente?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#198754',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Confirmar de todas formas',
+            cancelButtonText: 'Cancelar'
+        }).then(function (result) {
+            if (result.isConfirmed) confirmarPool();
+        });
+    });
+
+    // Buscador en fase4
+    $(document).on('input', '#pool-search', function () {
+        var q = this.value;
+        renderFase4Pool(q, estadoCampoActivo());
+        renderSugerencias(q);
+    });
+    // Expandir/colapsar detalle al clicar la fila compacta
+    $(document).on('click', '.pool-item-wrap .pool-row', function () {
+        var wrap = $(this).closest('.pool-item-wrap');
+        var detail = wrap.find('.pool-detail')[0];
+        if (!detail) return;
+        var isOpen = detail.style.display !== 'none';
+        detail.style.display = isOpen ? 'none' : '';
+        wrap.find('.pool-expand-btn').toggleClass('open', !isOpen);
+    });
+    // Descartar elemento del pool con confirmación
+    $(document).on('click', '.pool-quitar-btn', function () {
+        var codigo = this.dataset.codigo;
+        Swal.fire({
+            title: '¿Descartar elemento?',
+            text: codigo,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, descartar',
+            cancelButtonText: 'Cancelar'
+        }).then(function (result) {
+            if (result.isConfirmed) quitarDelPool(codigo);
+        });
+    });
+    // Toggle menú campo
+    $(document).on('click', '#pool-campo-btn', function (e) {
+        e.stopPropagation();
+        var menu = document.getElementById('pool-campo-menu');
+        if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    });
+    // Cerrar sugerencias y menú de campo al hacer clic fuera
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('#pool-search-wrap').length) {
+            cerrarSugerencias();
+            var menu = document.getElementById('pool-campo-menu');
+            if (menu) menu.style.display = 'none';
+        }
+    });
+    // Seleccionar sugerencia
+    $(document).on('click', '.pool-sug-item', function () {
+        var val = this.dataset.val;
+        var searchEl = document.getElementById('pool-search');
+        if (searchEl) { searchEl.value = val; }
+        cerrarSugerencias();
+        renderFase4Pool(val, estadoCampoActivo());
+    });
+    // Opciones de campo en dropdown fase4
+    $(document).on('click', '.pool-campo-opt', function (e) {
+        e.preventDefault();
+        var campo = this.dataset.campo;
+        var label = this.textContent.trim();
+        var btn = document.getElementById('pool-campo-btn');
+        var lbl = document.getElementById('pool-campo-label');
+        if (btn) btn.dataset.campo = campo;
+        if (lbl) lbl.textContent = label;
+        var menu = document.getElementById('pool-campo-menu');
+        if (menu) menu.style.display = 'none';
+        var searchEl = document.getElementById('pool-search');
+        renderFase4Pool(searchEl ? searchEl.value : '', campo);
+        cerrarSugerencias();
+    });
+
+    // --- Fase 6 ---
     $('#btn-nueva-salida').on('click', function () {
         detenerNFC();
         resetState();
