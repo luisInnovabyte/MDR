@@ -344,6 +344,63 @@ switch ($op) {
         break;
 
     // ---------------------------------------------------------------
+    // buscar_elemento — consulta si un elemento existe por código/barras
+    // POST: codigo_elemento
+    // Devuelve: { success, encontrado, elemento{...}, foto_url }
+    // ---------------------------------------------------------------
+    case 'buscar_elemento':
+        require_once "../models/Elemento.php";
+        require_once "../models/Foto_elemento.php";
+
+        $codigo = htmlspecialchars(trim($_POST['codigo_elemento'] ?? ''), ENT_QUOTES, 'UTF-8');
+        if (empty($codigo)) {
+            echo json_encode(['success' => false, 'message' => 'Código requerido'], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        $modelElem  = new Elemento();
+        $modelFotos = new Foto_elemento();
+
+        $elem = $modelElem->get_elemento_by_codigo($codigo);
+        if (!$elem) {
+            echo json_encode(['success' => true, 'encontrado' => false], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+
+        // Primera foto pública activa
+        $fotos   = $modelFotos->get_fotos_por_elemento($elem['id_elemento']);
+        $foto_url = null;
+        if (is_array($fotos)) {
+            foreach ($fotos as $f) {
+                if ($f['activo_foto'] && !$f['privado_foto']) {
+                    $foto_url = '../../public/img/fotos_elementos/' . $f['archivo_foto'];
+                    break;
+                }
+            }
+        }
+
+        echo json_encode([
+            'success'    => true,
+            'encontrado' => true,
+            'elemento'   => [
+                'id_elemento'             => $elem['id_elemento'],
+                'codigo_elemento'         => $elem['codigo_elemento'],
+                'nombre_articulo'         => $elem['nombre_articulo']         ?? '',
+                'nombre_familia'          => $elem['nombre_familia']          ?? '',
+                'modelo_elemento'         => $elem['modelo_elemento']         ?? '',
+                'numero_serie_elemento'   => $elem['numero_serie_elemento']   ?? '',
+                'descripcion_estado_elemento' => $elem['descripcion_estado_elemento'] ?? '',
+                'color_estado_elemento'   => $elem['color_estado_elemento']   ?? '#6c757d',
+                'permite_alquiler_estado_elemento' => $elem['permite_alquiler_estado_elemento'] ?? 1,
+                'nave_elemento'           => $elem['nave_elemento']           ?? '',
+                'pasillo_columna_elemento'=> $elem['pasillo_columna_elemento']?? '',
+                'altura_elemento'         => $elem['altura_elemento']         ?? '',
+            ],
+            'foto_url'   => $foto_url,
+        ], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ---------------------------------------------------------------
     // comparar — compara pool de códigos contra necesidades del presupuesto
     // POST: id_salida_almacen, codigos[] (array de códigos de elemento)
     // Devuelve: { success, correctos[], sobran[], no_relacionados[], faltan[] }

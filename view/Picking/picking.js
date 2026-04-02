@@ -231,7 +231,6 @@ function cargarFase2(data) {
     // Si hay salida activa, refrescar progreso
     if (state.salida) {
         refrescarProgreso();
-        document.getElementById('btn-ver-mapa').style.display = 'block';
     }
 }
 
@@ -278,7 +277,6 @@ function actualizarBarras(progreso) {
 
     document.getElementById('p2-contadores').textContent = `${escaneado} / ${total}`;
     document.getElementById('p2-barra').style.width = pct + '%';
-    document.getElementById('p3-contadores').textContent = `${escaneado}/${total}`;
 
     (progreso.por_articulo || []).forEach(art => {
         const cnt = document.getElementById('cnt-' + art.id_articulo);
@@ -293,7 +291,6 @@ function actualizarBarras(progreso) {
         pb.style.width = pctArt + '%';
     });
 
-    // Habilitar btn completar
     const btnCompletar = document.getElementById('btn-completar');
     if (btnCompletar) {
         btnCompletar.disabled = !progreso.completo;
@@ -305,7 +302,6 @@ function actualizarBarras(progreso) {
 // FASE 3 — ESCANEO NFC / MANUAL DE ELEMENTOS
 // ============================================================
 function iniciarFase3() {
-    document.getElementById('p3-numero').textContent = state.presupuesto.numero_presupuesto;
     feedback('fb-escaneo', 'Acerca el tag NFC o introduce el c\u00f3digo', 'info');
     mostrarFase(3);
     iniciarNFC();
@@ -347,7 +343,26 @@ function detenerNFC() {
 function procesarEscaneo(codigo, esBackup = false) {
     if (!codigo) return;
     document.getElementById('inp-codigo-elem').value = '';
-    agregarAlPool(codigo);
+    codigo = codigo.trim().toUpperCase();
+    feedback('fb-escaneo', '<i class="fa fa-spinner fa-spin me-2"></i>Consultando <strong>' + escHtml(codigo) + '</strong>...', 'info');
+    post('buscar_elemento', { codigo_elemento: codigo })
+        .done(function (data) {
+            if (!data.success) {
+                vibrar('err');
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — error de comunicación', 'err');
+                return;
+            }
+            if (!data.encontrado) {
+                vibrar('err');
+                feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — elemento no encontrado en el sistema', 'err');
+                return;
+            }
+            agregarAlPool(data.elemento, data.foto_url);
+        })
+        .fail(function () {
+            vibrar('err');
+            feedback('fb-escaneo', 'Error de conexión al consultar el elemento', 'err');
+        });
 }
 
 // --- Lista de elementos escaneados ---
@@ -362,6 +377,7 @@ function cargarElementosEscaneados() {
 
 function renderElementosEscaneados(elementos) {
     const cont = document.getElementById('lista-elementos-escaneados');
+    if (!cont) return;
     if (!elementos.length) {
         cont.innerHTML = '<p class="text-muted small text-center py-3">Aún no se ha escaneado ningún elemento</p>';
         return;
@@ -451,7 +467,7 @@ function completarSalida() {
             .done(function (data) {
                 if (data.success) {
                     detenerNFC();
-                    mostrarFase5();
+                    mostrarFase6();
                 } else {
                     Swal.fire('Error', data.message, 'error');
                 }
@@ -485,53 +501,141 @@ function cancelarSalida() {
 }
 
 // ============================================================
-// FASE 4 — POOL Y COMPARACIÓN (nuevo flujo)
+// FASE 4 — POOL BUSCADOR + FASE 5 — COMPARACIÓN (nuevo flujo)
 // ============================================================
 
-// D3 — Añadir código al pool (client-side)
-function agregarAlPool(codigo) {
+// D3 — Añadir elemento enriquecido al pool
+function agregarAlPool(elemento, foto_url) {
+    var codigo = elemento.codigo_elemento;
     if (!codigo) return;
     if (state.pool.some(function (item) { return item.codigo === codigo; })) {
         Swal.fire({ toast: true, position: 'top', icon: 'info', timer: 1800, showConfirmButton: false, title: 'Ya está en el pool' });
         return;
     }
-    state.pool.push({ codigo: codigo });
+    state.pool.push({ codigo: codigo, elemento: elemento, foto_url: foto_url || null });
     vibrar('ok');
-    feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> añadido al pool', 'ok');
-    renderPool();
+    feedback('fb-escaneo', '<strong>' + escHtml(codigo) + '</strong> — ' + escHtml(elemento.nombre_articulo || '') + ' añadido', 'ok');
+    mostrarUltimoEscaneado(elemento, foto_url);
+    actualizarContadoresPool();
 }
 
-// D4 — Renderizar lista del pool en fase 3
-function renderPool() {
-    var lista = document.getElementById('pool-lista');
-    var count = document.getElementById('pool-count');
-    var btnComparar = document.getElementById('btn-comparar');
-    if (count) count.textContent = state.pool.length;
-    if (!lista) return;
-    if (!state.pool.length) {
-        lista.innerHTML = '<p class="text-muted small text-center py-3">El pool está vacío — escanea elementos</p>';
-    } else {
-        lista.innerHTML = state.pool.map(function (item) {
-            return '<div class="pool-row">'
-                + '<span class="text-uppercase fw-semibold small">' + escHtml(item.codigo) + '</span>'
-                + '<button class="btn-icon text-danger" onclick="quitarDelPool(\'' + escJs(item.codigo) + '\')" title="Quitar">'
-                + '<i class="fa fa-times"></i></button>'
-                + '</div>';
-        }).join('');
+// D3b — Mostrar tarjeta del último elemento escaneado en fase 3
+function mostrarUltimoEscaneado(elemento, foto_url) {
+    var card = document.getElementById('last-scan-card');
+    if (!card) return;
+    var e = elemento || {};
+    var imgEl = document.getElementById('lsc-img');
+    if (imgEl) {
+        imgEl.innerHTML = foto_url
+            ? '<img src="' + escHtml(foto_url) + '" style="width:33vw;height:33vw;object-fit:cover;border-radius:10px;border:1px solid rgba(0,0,0,.1);" alt="" onerror="this.style.display=\'none\'" />'
+            : '<div style="width:33vw;height:33vw;border-radius:10px;background:#f0f0f0;display:inline-flex;align-items:center;justify-content:center;color:#bbb;font-size:2.2rem;"><i class="fa fa-image"></i></div>';
     }
-    if (btnComparar) {
-        btnComparar.disabled = state.pool.length === 0;
-        btnComparar.innerHTML = '<i class="fa fa-balance-scale me-2"></i> Comparar (' + state.pool.length + ')';
+    var set = function(id, html) { var el = document.getElementById(id); if (el) el.innerHTML = html; };
+    var txt = function(id, val, icon, label) {
+        var el = document.getElementById(id);
+        if (el) {
+            if (val) {
+                var prefix = (icon  ? '<i class="fa ' + icon + '" style="margin-right:6px;"></i>' : '')
+                           + (label ? '<span style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#aaa;margin-right:6px;">' + label + '</span>' : '');
+                el.innerHTML = prefix + escHtml(val);
+                el.style.display = '';
+            } else {
+                el.style.display = 'none';
+            }
+        }
+    };
+    txt('lsc-codigo',  e.codigo_elemento || '',     'fa-hashtag', null);
+    var estadoEl = document.getElementById('lsc-estado');
+    if (estadoEl) {
+        estadoEl.textContent = e.descripcion_estado_elemento || '';
+        estadoEl.style.background = e.color_estado_elemento || '#6c757d';
+        estadoEl.style.color = '#fff';
     }
+    txt('lsc-articulo', e.nombre_articulo || '',    'fa-box',           null);
+    txt('lsc-familia',  e.nombre_familia  || '',    'fa-tag',           null);
+    txt('lsc-modelo',   e.modelo_elemento || '',    'fa-cube',          'Modelo');
+    txt('lsc-serie',    e.numero_serie_elemento ? e.numero_serie_elemento : '', 'fa-barcode', 'Núm. Serie');
+    var ubicacion = [e.nave_elemento, e.pasillo_columna_elemento, e.altura_elemento].filter(Boolean).join(' · ');
+    txt('lsc-ubicacion', ubicacion,                 'fa-map-marker-alt','Ubicación');
+    card.style.display = '';
 }
 
 // D5 — Quitar código del pool
 function quitarDelPool(codigo) {
     state.pool = state.pool.filter(function (item) { return item.codigo !== codigo; });
-    renderPool();
+    // Si fase4 está activa, re-renderizar la lista
+    var ph4 = document.getElementById('phase4');
+    if (ph4 && ph4.classList.contains('active')) {
+        renderFase4Pool(document.getElementById('pool-search') ? document.getElementById('pool-search').value : '', estadoCampoActivo());
+    }
+    actualizarContadoresPool();
 }
 
-// D6 — Enviar pool al servidor y pasar a fase 4
+// D5b — Actualizar todos los contadores/botones del pool en fase 3
+function actualizarContadoresPool() {
+    var n = state.pool.length;
+    // Badge del botón 'Elementos escaneados'
+    var badge1 = document.getElementById('pool-count-bar');
+    if (badge1) badge1.textContent = n;
+    // Badge del botón Comparar en bottom-bar
+    var badge2 = document.getElementById('pool-count-bar2');
+    if (badge2) badge2.textContent = n;
+    // Habilitar/deshabilitar btn-comparar-fase3
+    var btnCmp3 = document.getElementById('btn-comparar-fase3');
+    if (btnCmp3) btnCmp3.disabled = (n === 0);
+}
+
+// D5b — Obtener campo de filtro activo
+function estadoCampoActivo() {
+    var btn = document.getElementById('pool-campo-btn');
+    return btn ? (btn.dataset.campo || 'nombre_articulo') : 'nombre_articulo';
+}
+
+// D5c — Sugerencias de búsqueda
+function renderSugerencias(q) {
+    var panel = document.getElementById('pool-suggestions');
+    if (!panel) return;
+    if (!q || q.length < 1) { cerrarSugerencias(); return; }
+    var campo = estadoCampoActivo();
+    var ql = q.toLowerCase();
+    // Obtener valores únicos del pool que coincidan
+    var vistos = {};
+    var sugerencias = [];
+    state.pool.forEach(function (item) {
+        var val = '';
+        if (campo === 'nombre_articulo') val = item.elemento.nombre_articulo || '';
+        else if (campo === 'nombre_familia') val = item.elemento.nombre_familia || '';
+        else val = item.codigo || '';
+        if (val && val.toLowerCase().indexOf(ql) !== -1 && !vistos[val]) {
+            vistos[val] = true;
+            sugerencias.push(val);
+        }
+    });
+    if (!sugerencias.length) { cerrarSugerencias(); return; }
+    sugerencias = sugerencias.slice(0, 6); // máximo 6
+    var html = sugerencias.map(function (s) {
+        // Resaltar la parte que coincide
+        var idx = s.toLowerCase().indexOf(ql);
+        var highlighted = escHtml(s.substring(0, idx))
+            + '<strong>' + escHtml(s.substring(idx, idx + q.length)) + '</strong>'
+            + escHtml(s.substring(idx + q.length));
+        return '<div class="pool-sug-item" data-val="' + escHtml(s) + '" '
+            + 'style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:.95rem;">'
+            + '<i class="fa fa-search" style="color:#bbb;font-size:.85rem;flex-shrink:0;"></i>'
+            + '<span>' + highlighted + '</span>'
+            + '</div>';
+    }).join('');
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+}
+
+function cerrarSugerencias() {
+    var panel = document.getElementById('pool-suggestions');
+    if (panel) { panel.style.display = 'none'; panel.innerHTML = ''; }
+}
+
+
+// D6 — Enviar pool al servidor y pasar a fase 5
 function compararPool() {
     if (!state.pool.length) return;
     feedback('fb-escaneo', 'Comparando...', 'info');
@@ -546,7 +650,7 @@ function compararPool() {
         state.comparacion = data;
         state.sustituciones = {};
         renderComparacion(data);
-        mostrarFase(4);
+        mostrarFase(5);
     }).fail(function () {
         feedback('fb-escaneo', 'Error de conexión', 'err');
     });
@@ -704,19 +808,22 @@ function quitarSustitucion(id_linea_ppto) {
 }
 
 // D9 — Habilitar/deshabilitar btn-confirmar según faltantes sin cubrir
-function actualizarEstadoConfirmar() {
+function contarFaltanSinCubrir() {
     var faltan = state.comparacion ? (state.comparacion.faltan || []) : [];
-    var faltanSinCubrir = faltan.filter(function (f) {
+    return faltan.filter(function (f) {
         return !Object.values(state.sustituciones).some(function (v) { return v == f.id_linea_ppto; });
     }).length;
+}
+
+function actualizarEstadoConfirmar() {
+    var faltanSinCubrir = contarFaltanSinCubrir();
     var btnConfirmar = document.getElementById('btn-confirmar');
     var alerta = document.getElementById('cmp-alerta-faltan');
     var alertaTexto = document.getElementById('cmp-alerta-texto');
+    if (btnConfirmar) btnConfirmar.disabled = false;
     if (faltanSinCubrir === 0) {
-        if (btnConfirmar) btnConfirmar.disabled = false;
         if (alerta) alerta.style.display = 'none';
     } else {
-        if (btnConfirmar) btnConfirmar.disabled = true;
         if (alerta) alerta.style.display = 'flex';
         if (alertaTexto) alertaTexto.textContent = 'Faltan ' + faltanSinCubrir + ' elemento(s) sin cubrir';
     }
@@ -749,7 +856,7 @@ function confirmarPool() {
     }).done(function (data) {
         if (data.success) {
             detenerNFC();
-            mostrarFase5();
+            mostrarFase6();
         } else {
             Swal.fire('Error', data.message || 'Error al confirmar', 'error');
         }
@@ -759,13 +866,115 @@ function confirmarPool() {
 }
 
 // ============================================================
-// FASE 5 — CONFIRMACIÓN FINAL
+// FASE 6 — CONFIRMACIÓN FINAL
 // ============================================================
-function mostrarFase5() {
+function mostrarFase6() {
     const p = state.progreso;
     const resumen = p ? `${p.total_escaneado} elementos preparados` + (p.total_backup > 0 ? ` (${p.total_backup} backup)` : '') : '';
-    document.getElementById('p5-resumen').textContent = resumen;
-    mostrarFase(5);
+    document.getElementById('p6-resumen').textContent = resumen;
+    mostrarFase(6);
+}
+
+// ============================================================
+// FASE 4 — POOL CON BUSCADOR
+// ============================================================
+function mostrarFase4Pool() {
+    var searchEl = document.getElementById('pool-search');
+    if (searchEl) searchEl.value = '';
+    // Resetear dropdown a Artículo
+    var btn = document.getElementById('pool-campo-btn');
+    var lbl = document.getElementById('pool-campo-label');
+    if (btn) btn.dataset.campo = 'nombre_articulo';
+    if (lbl) lbl.textContent = 'Artículo';
+    cerrarSugerencias();
+    renderFase4Pool('', 'nombre_articulo');
+    mostrarFase(4);
+}
+
+function renderFase4Pool(query, campo) {
+    var lista = document.getElementById('phase4-pool-lista');
+    var btnComparar = document.getElementById('btn-comparar');
+    if (!lista) return;
+    var q = (query || '').toLowerCase().trim();
+    var filtrados = state.pool.filter(function (item) {
+        if (!q) return true;
+        var e = item.elemento || {};
+        if (campo === 'nombre_familia') return (e.nombre_familia || '').toLowerCase().includes(q);
+        if (campo === 'codigo') return (item.codigo || '').toLowerCase().includes(q) || (e.modelo_elemento || '').toLowerCase().includes(q);
+        // default: nombre_articulo
+        return (e.nombre_articulo || '').toLowerCase().includes(q);
+    });
+    if (!filtrados.length) {
+        lista.innerHTML = '<p class="text-muted small text-center py-3">' + (q ? 'Sin resultados para «' + escHtml(q) + '»' : 'No hay ningún elemento escaneado') + '</p>';
+    } else {
+        lista.innerHTML = filtrados.map(function (item) {
+            var e = item.elemento || {};
+            var estadoColor = e.color_estado_elemento || '#6c757d';
+            var noAlquiler  = e.permite_alquiler_estado_elemento == 0;
+            var ubicacion = [e.nave_elemento, e.pasillo_columna_elemento, e.altura_elemento].filter(Boolean).join(' · ');
+
+            // — Imagen para el detalle expandido (28vw × 28vw)
+            var imgDetalle = item.foto_url
+                ? '<img src="' + escHtml(item.foto_url) + '" style="width:28vw;height:28vw;object-fit:cover;border-radius:10px;border:1px solid rgba(0,0,0,.1);flex-shrink:0;" alt="" onerror="this.style.display=\'none\'" />'
+                : '<div style="width:28vw;height:28vw;border-radius:10px;background:#f0f0f0;display:inline-flex;align-items:center;justify-content:center;color:#bbb;font-size:2rem;flex-shrink:0;"><i class="fa fa-image"></i></div>';
+
+            // — Helper para campo con ícono + label en el detalle
+            function campo(val, icon, label) {
+                if (!val) return '';
+                var prefix = '<i class="fa ' + icon + '" style="margin-right:6px;"></i>'
+                           + (label ? '<span style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#aaa;margin-right:6px;">' + label + '</span>' : '');
+                return prefix + escHtml(val);
+            }
+
+            // — Fila compacta (siempre visible)
+            var filaCompacta = '<div class="pool-row' + (noAlquiler ? ' pool-row-warn' : '') + '">'
+                + '<div class="pool-row-info">'
+                + '<div style="font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;">' + escHtml(item.codigo) + '</div>'
+                + '<div class="text-muted" style="font-size:.78rem;">' + escHtml(e.nombre_articulo || '') + '</div>'
+                + '</div>'
+                + '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">'
+                + (noAlquiler ? '<span class="badge bg-warning text-dark" style="font-size:.68rem;"><i class="fa fa-exclamation-triangle"></i></span>' : '')
+                + '<span class="badge" style="background:' + estadoColor + ';color:#fff;font-size:.7rem;">' + escHtml(e.descripcion_estado_elemento || '') + '</span>'
+                + '<span class="pool-expand-btn"><i class="fa fa-chevron-down"></i></span>'
+                + '</div>'
+                + '</div>';
+
+            // — Panel de detalle (oculto por defecto, similar a last-scan-card)
+            var panelDetalle = '<div class="pool-detail" style="display:none;">'
+                // Fila imagen + info principal
+                + '<div style="display:flex;align-items:center;padding:10px 12px 8px;gap:0;">'
+                + '<div style="flex-shrink:0;margin-right:12px;">' + imgDetalle + '</div>'
+                + '<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;justify-content:center;">'
+                + '<div><span class="badge" style="background:' + estadoColor + ';color:#fff;font-size:.78rem;">' + escHtml(e.descripcion_estado_elemento || '') + '</span></div>'
+                + '<div style="font-size:1rem;font-weight:700;text-transform:uppercase;">' + escHtml(item.codigo) + '</div>'
+                + '<div style="font-size:.92rem;font-weight:600;">' + escHtml(e.nombre_articulo || '') + '</div>'
+                + (e.nombre_familia ? '<div class="text-muted" style="font-size:.82rem;"><i class="fa fa-tag" style="margin-right:6px;"></i>' + escHtml(e.nombre_familia) + '</div>' : '')
+                + '</div>'
+                + '</div>'
+                // Separador
+                + '<div style="border-top:1px solid #f0f0f0;margin:0 12px;"></div>'
+                // Fila modelo + serie + ubicación
+                + '<div style="padding:8px 12px 10px;display:flex;flex-direction:column;gap:5px;">'
+                + '<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:0 16px;row-gap:5px;">'
+                + (e.modelo_elemento      ? '<div class="text-muted" style="font-size:.82rem;">' + campo(e.modelo_elemento, 'fa-cube', 'Modelo') + '</div>' : '')
+                + (e.numero_serie_elemento ? '<div class="text-muted" style="font-size:.82rem;word-break:break-word;">' + campo(e.numero_serie_elemento, 'fa-barcode', 'Núm. Serie') + '</div>' : '')
+                + '</div>'
+                + (ubicacion ? '<div class="text-muted" style="font-size:.82rem;word-break:break-word;">' + campo(ubicacion, 'fa-map-marker-alt', 'Ubicación') + '</div>' : '')
+                + '</div>'
+                // Botón descartar
+                + '<div style="padding:0 12px 12px;">'
+                + '<button class="pool-quitar-btn" type="button" data-codigo="' + escHtml(item.codigo) + '"><i class="fa fa-trash" style="margin-right:6px;"></i>Descartar elemento</button>'
+                + '</div>'
+                + '</div>';
+
+            return '<div class="pool-item-wrap">' + filaCompacta + panelDetalle + '</div>';
+        }).join('');
+    }
+    if (btnComparar) {
+        btnComparar.disabled = state.pool.length === 0;
+        btnComparar.innerHTML = '<i class="fa fa-balance-scale me-1"></i> Comparar (' + state.pool.length + ')';
+    }
+    actualizarContadoresPool();
 }
 
 // ============================================================
@@ -779,7 +988,13 @@ function resetState() {
     state.pool = [];
     state.comparacion = null;
     state.sustituciones = {};
-    renderPool();
+    actualizarContadoresPool();
+    // Ocultar tarjeta último escaneado
+    var lsc = document.getElementById('last-scan-card');
+    if (lsc) lsc.style.display = 'none';
+    // Limpiar búsqueda en fase4 si existe
+    var searchEl = document.getElementById('pool-search');
+    if (searchEl) searchEl.value = '';
     document.getElementById('inp-numero-ppto').value = '';
     document.getElementById('fb-busqueda').classList.add('fb-hidden');
     document.getElementById('nav-numero').textContent = '';
@@ -888,7 +1103,6 @@ $(document).ready(function () {
             }).done(function (data) {
                 if (data.success) {
                     state.salida = { id_salida_almacen: data.id_salida_almacen };
-                    document.getElementById('btn-ver-mapa').style.display = 'block';
                     iniciarFase3();
                 } else {
                     Swal.fire('Error', data.message, 'error');
@@ -897,10 +1111,6 @@ $(document).ready(function () {
         } else {
             iniciarFase3();
         }
-    });
-
-    $('#btn-ver-mapa').on('click', function () {
-        iniciarFase3();
     });
 
     // --- Fase 3 ---
@@ -923,11 +1133,6 @@ $(document).ready(function () {
 
     $('#btn-nfc').on('click', function () {
         feedback('fb-escaneo', 'NFC activo — acerca el tag', 'info');
-    });
-
-    $('#btn-refrescar-lista').on('click', function () {
-        cargarElementosEscaneados();
-        refrescarProgreso();
     });
 
     $('#btn-completar').on('click', completarSalida);
@@ -978,12 +1183,97 @@ $(document).ready(function () {
         });
     });
 
-    // --- Fase 4 — Comparación ---
-    $('#btn-comparar').on('click', compararPool);
+    // --- Fase 4 — Pool buscador ---
+    // El botón btn-comparar vive en #phase4, se registra por delegación por si el DOM tarda
+    $(document).on('click', '#btn-comparar', compararPool);
     $('#btn-volver-escaneo').on('click', function () { mostrarFase(3); });
-    $('#btn-confirmar').on('click', confirmarPool);
+    $('#btn-confirmar').on('click', function () {
+        var n = contarFaltanSinCubrir();
+        if (n === 0) { confirmarPool(); return; }
+        Swal.fire({
+            title: '¿Confirmar con faltantes?',
+            text: 'Hay ' + n + ' elemento(s) sin cubrir. ¿Continuar igualmente?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#198754',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Confirmar de todas formas',
+            cancelButtonText: 'Cancelar'
+        }).then(function (result) {
+            if (result.isConfirmed) confirmarPool();
+        });
+    });
 
-    // --- Fase 5 ---
+    // Buscador en fase4
+    $(document).on('input', '#pool-search', function () {
+        var q = this.value;
+        renderFase4Pool(q, estadoCampoActivo());
+        renderSugerencias(q);
+    });
+    // Expandir/colapsar detalle al clicar la fila compacta
+    $(document).on('click', '.pool-item-wrap .pool-row', function () {
+        var wrap = $(this).closest('.pool-item-wrap');
+        var detail = wrap.find('.pool-detail')[0];
+        if (!detail) return;
+        var isOpen = detail.style.display !== 'none';
+        detail.style.display = isOpen ? 'none' : '';
+        wrap.find('.pool-expand-btn').toggleClass('open', !isOpen);
+    });
+    // Descartar elemento del pool con confirmación
+    $(document).on('click', '.pool-quitar-btn', function () {
+        var codigo = this.dataset.codigo;
+        Swal.fire({
+            title: '¿Descartar elemento?',
+            text: codigo,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, descartar',
+            cancelButtonText: 'Cancelar'
+        }).then(function (result) {
+            if (result.isConfirmed) quitarDelPool(codigo);
+        });
+    });
+    // Toggle menú campo
+    $(document).on('click', '#pool-campo-btn', function (e) {
+        e.stopPropagation();
+        var menu = document.getElementById('pool-campo-menu');
+        if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    });
+    // Cerrar sugerencias y menú de campo al hacer clic fuera
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('#pool-search-wrap').length) {
+            cerrarSugerencias();
+            var menu = document.getElementById('pool-campo-menu');
+            if (menu) menu.style.display = 'none';
+        }
+    });
+    // Seleccionar sugerencia
+    $(document).on('click', '.pool-sug-item', function () {
+        var val = this.dataset.val;
+        var searchEl = document.getElementById('pool-search');
+        if (searchEl) { searchEl.value = val; }
+        cerrarSugerencias();
+        renderFase4Pool(val, estadoCampoActivo());
+    });
+    // Opciones de campo en dropdown fase4
+    $(document).on('click', '.pool-campo-opt', function (e) {
+        e.preventDefault();
+        var campo = this.dataset.campo;
+        var label = this.textContent.trim();
+        var btn = document.getElementById('pool-campo-btn');
+        var lbl = document.getElementById('pool-campo-label');
+        if (btn) btn.dataset.campo = campo;
+        if (lbl) lbl.textContent = label;
+        var menu = document.getElementById('pool-campo-menu');
+        if (menu) menu.style.display = 'none';
+        var searchEl = document.getElementById('pool-search');
+        renderFase4Pool(searchEl ? searchEl.value : '', campo);
+        cerrarSugerencias();
+    });
+
+    // --- Fase 6 ---
     $('#btn-nueva-salida').on('click', function () {
         detenerNFC();
         resetState();

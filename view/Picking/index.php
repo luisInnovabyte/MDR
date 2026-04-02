@@ -529,7 +529,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             border-radius: 10px;
         }
 
-        /* ── Barra inferior comparación (fase 4) ──────── */
+        /* ── Barra inferior comparación (fase 5) ──────── */
         #bottom-bar-cmp {
             position: fixed;
             bottom: 0;
@@ -548,38 +548,12 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             display: block;
         }
 
-        #phase4 .page-wrap {
+        #phase4 .page-wrap,
+        #phase5 .page-wrap {
             padding-bottom: 90px;
         }
 
-        /* ── Secciones de comparación ────────────────── */
-        .cmp-section {
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 4px rgba(0,0,0,.08);
-        }
-
-        .cmp-header {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            background: none;
-            border: none;
-            font-size: .95rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: left;
-        }
-
-        .cmp-header-faltan {
-            background: #f8d7da;
-            border-radius: 12px 12px 0 0;
-        }
-
+        /* ── Comparación ─────────────────────────────── */
         .cmp-chevron {
             font-size: .75rem;
             color: #888;
@@ -589,15 +563,6 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
         .cmp-header:not(.collapsed) .cmp-chevron {
             transform: rotate(180deg);
         }
-
-        .cmp-list {
-            padding: 4px 0;
-        }
-
-        .cmp-list-correct { background: #d1e7dd; }
-        .cmp-list-falta   { background: #f8d7da; }
-        .cmp-list-sobra   { background: #e2e3e5; }
-        .cmp-list-norel   { background: #fff3cd; }
 
         .cmp-row {
             padding: 10px 16px;
@@ -637,21 +602,153 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             color: #fff;
         }
 
-        /* ── Filas del pool (fase 3) ─────────────────── */
+        /* ── Filas del pool (fase 4) ─────────────────── */
+        .pool-item-wrap {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.1);
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .pool-item-wrap:last-child { margin-bottom: 0; }
+
         .pool-row {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px 14px;
-            border-bottom: 1px solid rgba(0,0,0,.06);
-            font-size: .9rem;
-            font-weight: 500;
+            gap: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            user-select: none;
         }
 
-        .pool-row:last-child { border-bottom: none; }
+        .pool-row.pool-row-warn {
+            background: #fff8e1;
+        }
 
-        /* ── Fase 5 (completada) ─────────────────────── */
-        #phase5 {
+        .pool-expand-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f0f2f5;
+            color: #666;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+            transition: background .15s;
+        }
+
+        .pool-expand-btn:hover { background: #e2e5ea; }
+
+        .pool-expand-btn .fa {
+            transition: transform .2s;
+        }
+
+        .pool-expand-btn.open .fa {
+            transform: rotate(180deg);
+        }
+
+        .pool-detail {
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .pool-quitar-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #dc3545;
+            font-size: .88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .pool-quitar-btn:hover { background: #fde0e0; }
+
+        .pool-thumb {
+            width: 54px;
+            height: 54px;
+            object-fit: cover;
+            border-radius: 6px;
+            flex-shrink: 0;
+            border: 1px solid rgba(0,0,0,.08);
+        }
+
+        .pool-thumb-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            color: #999;
+            font-size: 1.3rem;
+        }
+
+        .pool-row-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .pool-row-info > div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ── Nueva fase 4: pool + buscador ────────────── */
+        #pool-search-wrap {
+            position: relative;
+            display: flex;
+            align-items: stretch;
+            margin-bottom: 10px;
+        }
+
+        #pool-search:focus { border-color: var(--color-brand); }
+
+        .pool-filter-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1.5px solid #c0c4cc;
+            font-size: .8rem;
+            font-weight: 600;
+            background: #fff;
+            color: #555;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .15s, color .15s;
+        }
+
+        .pool-filter-btn.active {
+            background: var(--color-brand);
+            color: #fff;
+            border-color: var(--color-brand);
+        }
+
+        #bottom-bar-pool {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 14px;
+            padding-bottom: calc(10px + var(--safe-bottom));
+            background: rgba(255, 255, 255, .97);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -1px 8px rgba(0, 0, 0, .13);
+            z-index: 100;
+            display: none;
+        }
+
+        #bottom-bar-pool.visible { display: block; }
+
+        /* ── Fase 6 (completada) ─────────────────────────── */
+        #phase6 {
             min-height: 70vh;
             display: none;
             flex-direction: column;
@@ -661,7 +758,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
             text-align: center;
         }
 
-        #phase5.active {
+        #phase6.active {
             display: flex;
         }
 
@@ -687,6 +784,25 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                 opacity: .4
             }
         }
+
+        /* ── DEBUG-PHASE-LABEL ─── quitar bloque completo al terminar pruebas ── */
+        .dbg-phase-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0,0,0,.72);
+            color: #ffe066;
+            font-size: .72rem;
+            font-weight: 700;
+            font-family: monospace;
+            letter-spacing: .06em;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin: 10px 0 6px;
+            pointer-events: none;
+            user-select: none;
+        }
+        /* ── /DEBUG-PHASE-LABEL ─── */
     </style>
 </head>
 
@@ -714,6 +830,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
     <!-- ============================================================ -->
     <div id="phase1" class="phase active">
         <div class="page-wrap">
+            <!-- DEBUG-PHASE-LABEL --><div class="dbg-phase-label"><i class="fa fa-bug"></i> FASE 1 — Escaneo QR del presupuesto</div><!-- /DEBUG-PHASE-LABEL -->
 
             <!-- Aviso HTTP (picking.js lo rellena y muestra si no es HTTPS) -->
             <div id="aviso-https" class="fb-banner fb-warn mb-3" style="display:none;"></div>
@@ -778,6 +895,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
     <!-- ============================================================ -->
     <div id="phase2" class="phase">
         <div class="page-wrap">
+            <!-- DEBUG-PHASE-LABEL --><div class="dbg-phase-label"><i class="fa fa-bug"></i> FASE 2 — Lista de necesidades + progreso</div><!-- /DEBUG-PHASE-LABEL -->
 
             <!-- Cabecera presupuesto -->
             <div class="ppto-strip">
@@ -811,11 +929,6 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                 <div id="lista-articulos"></div>
             </div>
 
-            <!-- Botones de acción -->
-            <button id="btn-ver-mapa" class="btn-app btn-app-outline mb-3" style="display:none;">
-                <i class="fa fa-wifi"></i> Escanear Elementos
-            </button>
-
         </div>
     </div>
 
@@ -824,14 +937,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
     <!-- ============================================================ -->
     <div id="phase3" class="phase">
         <div class="page-wrap">
-
-            <!-- Cabecera compacta -->
-            <div class="ppto-strip">
-                <div>
-                    <div class="num small" id="p3-numero"></div>
-                </div>
-                <span id="p3-contadores" class="badge bg-primary fs-6 px-3 py-2"></span>
-            </div>
+            <!-- DEBUG-PHASE-LABEL --><div class="dbg-phase-label"><i class="fa fa-bug"></i> FASE 3 — Escaneo NFC de elementos</div><!-- /DEBUG-PHASE-LABEL -->
 
             <!-- Input escaneo -->
             <div class="app-card">
@@ -855,39 +961,65 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                 </div>
             </div>
 
-            <!-- Lista elementos escaneados -->
-            <div class="d-flex justify-content-between align-items-center px-1 mb-2">
-                <span style="font-size:.85rem;font-weight:600;color:#555;">Elementos preparados</span>
-                <button class="btn-icon" id="btn-refrescar-lista" style="background:none;border:none;font-size:1rem;color:#888;">
-                    <i class="fa fa-sync"></i>
-                </button>
-            </div>
-            <div class="app-card">
-                <div id="lista-elementos-escaneados"></div>
-            </div>
-
-            <!-- Pool de elementos por comparar -->
-            <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
-                <span style="font-size:.85rem;font-weight:600;color:#555;">En el pool
-                    <span id="pool-count" class="badge bg-primary ms-1">0</span>
-                </span>
-            </div>
-            <div class="app-card">
-                <div id="pool-lista"></div>
-            </div>
-            <button id="btn-comparar" class="btn-app btn-app-primary" disabled>
-                <i class="fa fa-balance-scale me-2"></i> Comparar
+            <!-- Botón Elementos escaneados -->
+            <button class="btn-app btn-app-outline w-100 mt-3" onclick="mostrarFase4Pool()">
+                <i class="fa fa-list me-2"></i> Elementos escaneados
+                <span id="pool-count-bar" class="badge bg-primary ms-2">0</span>
             </button>
+
+            <!-- Último elemento escaneado -->
+            <div id="last-scan-card" style="display:none;" class="app-card mt-3">
+
+                <!-- Fila superior: imagen | código + artículo + familia -->
+                <div class="d-flex gap-3 align-items-center" style="padding:10px 10px 8px;">
+                    <!-- Imagen -->
+                    <div id="lsc-img" style="flex-shrink:0;margin-right:12px;"></div>
+                    <!-- Info principal -->
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;justify-content:center;">
+                        <!-- Estado -->
+                        <div>
+                            <span id="lsc-estado" class="badge" style="font-size:.78rem;"></span>
+                        </div>
+                        <!-- Código -->
+                        <div>
+                            <span id="lsc-codigo" class="fw-bold text-uppercase" style="font-size:1rem;"></span>
+                        </div>
+                        <!-- Artículo -->
+                        <div>
+                            <span id="lsc-articulo" class="fw-semibold" style="font-size:.92rem;"></span>
+                        </div>
+                        <!-- Familia -->
+                        <div>
+                            <span id="lsc-familia" class="text-muted" style="font-size:.82rem;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Separador -->
+                <div style="border-top:1px solid #f0f0f0;margin:0 10px;"></div>
+
+                <!-- Fila inferior: modelo + serie + ubicación (ancho completo) -->
+                <div style="padding:8px 12px 10px;display:flex;flex-direction:column;gap:5px;">
+                    <!-- Modelo + Serie en la misma fila -->
+                    <div class="d-flex flex-wrap align-items-baseline" style="gap:0 16px;row-gap:5px;">
+                        <div id="lsc-modelo" class="text-muted" style="font-size:.82rem;"></div>
+                        <span id="lsc-serie" class="text-muted" style="font-size:.82rem;word-break:break-word;"></span>
+                    </div>
+                    <!-- Ubicacion -->
+                    <div id="lsc-ubicacion" class="text-muted" style="font-size:.82rem;word-break:break-word;"></div>
+                </div>
+
+            </div>
 
         </div>
 
         <!-- Botón oculto usado por picking.js para volver a fase 2 -->
         <button id="btn-volver-p2" style="display:none;"></button>
 
-        <!-- Barra inferior fija: Completar / Cancelar -->
+        <!-- Barra inferior fija: Comparar / Cancelar -->
         <div id="bottom-bar" class="visible">
-            <button id="btn-completar" class="btn-app btn-app-success mb-2" disabled>
-                <i class="fa fa-check-double"></i> Completar Salida
+            <button id="btn-comparar-fase3" class="btn-app btn-app-primary mb-2" disabled onclick="compararPool()">
+                <i class="fa fa-balance-scale me-2"></i> Comparar <span id="pool-count-bar2" class="badge bg-white text-primary ms-1">0</span>
             </button>
             <button id="btn-cancelar-salida" class="btn-app btn-app-outline" style="color:var(--color-err); border-color:var(--color-err);">
                 Cancelar y devolver elementos
@@ -896,21 +1028,67 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
     </div>
 
     <!-- ============================================================ -->
-    <!-- FASE 4 — Comparación de pool                                 -->
+    <!-- FASE 4 — Pool completo con buscador                          -->
     <!-- ============================================================ -->
     <div id="phase4" class="phase">
+
+        <!-- Buscador — ancho completo con márgenes iguales a las tarjetas -->
+        <div style="padding:16px 14px 0;">
+            <!-- DEBUG-PHASE-LABEL --><div class="dbg-phase-label"><i class="fa fa-bug"></i> FASE 4 — Pool con buscador</div><!-- /DEBUG-PHASE-LABEL -->
+            <div id="pool-search-wrap">
+                <button id="pool-campo-btn" type="button" data-campo="nombre_articulo"
+                    style="flex-shrink:0;height:46px;border:2px solid #c0c4cc;border-right:none;border-radius:10px 0 0 10px;background:#f8f9fa;color:#444;font-size:.9rem;font-weight:600;padding:0 14px;white-space:nowrap;cursor:pointer;">
+                    <span id="pool-campo-label">Artículo</span>
+                    <i class="fa fa-caret-down" style="margin-left:5px;"></i>
+                </button>
+                <div id="pool-campo-menu" style="display:none;position:absolute;top:48px;left:0;background:#fff;border:1.5px solid #c0c4cc;border-radius:0 0 8px 8px;z-index:400;min-width:160px;box-shadow:0 4px 12px rgba(0,0,0,.12);">
+                    <a class="dropdown-item pool-campo-opt" href="#" data-campo="nombre_articulo">Artículo</a>
+                    <a class="dropdown-item pool-campo-opt" href="#" data-campo="nombre_familia">Familia</a>
+                    <a class="dropdown-item pool-campo-opt" href="#" data-campo="codigo">Código</a>
+                </div>
+                <input type="search" id="pool-search" placeholder="Buscar..." autocomplete="off"
+                    style="flex:1;min-width:0;height:46px;border:2px solid #c0c4cc;border-left:none;border-radius:0 10px 10px 0;font-size:1rem;padding:0 14px;outline:none;">
+                <!-- Panel de sugerencias -->
+                <div id="pool-suggestions" style="display:none;position:absolute;left:0;right:0;top:48px;background:#fff;border:1.5px solid #c0c4cc;border-radius:0 0 12px 12px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:300;overflow:hidden;"></div>
+            </div>
+        </div>
+
+        <div class="page-wrap" style="padding-top:12px;">
+            <!-- Lista del pool -->
+            <div id="phase4-pool-lista"></div>
+        </div>
+
+        <!-- Barra inferior: Volver a escaneo + Comparar -->
+        <div id="bottom-bar-pool" class="visible">
+            <div class="d-flex gap-2">
+                <button class="btn-app btn-app-outline flex-fill" style="height:52px;" onclick="mostrarFase(3)">
+                    <i class="fa fa-arrow-left me-1"></i> Volver
+                </button>
+                <button id="btn-comparar" class="btn-app btn-app-primary flex-fill" style="height:52px;" disabled>
+                    <i class="fa fa-balance-scale me-1"></i> Comparar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- FASE 5 — Comparación de pool                                 -->
+    <!-- ============================================================ -->
+    <div id="phase5" class="phase">
         <div class="page-wrap">
+            <!-- DEBUG-PHASE-LABEL --><div class="dbg-phase-label"><i class="fa fa-bug"></i> FASE 5 — Comparación de pool</div><!-- /DEBUG-PHASE-LABEL -->
 
             <!-- Banner: alerta faltantes sin cubrir -->
-            <div id="cmp-alerta-faltan" class="fb-banner fb-err mb-3" style="display:none;">
-                <i class="fa fa-exclamation-triangle me-1"></i>
+            <div id="cmp-alerta-faltan" class="alert alert-warning mb-3" role="alert" style="display:none;">
+                <i class="fa fa-exclamation-triangle me-2"></i>
                 <span id="cmp-alerta-texto">Hay elementos sin cubrir</span>
             </div>
 
             <!-- CORRECTOS (colapsable) -->
-            <div class="cmp-section">
-                <button class="cmp-header collapsed" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#cmp-correctos">
+            <div class="card border-success shadow-sm mb-3 overflow-hidden">
+                <button class="cmp-header card-header d-flex align-items-center justify-content-between w-100 border-0 collapsed"
+                    type="button" data-toggle="collapse" data-target="#cmp-correctos"
+                    style="background:rgba(25,135,84,.08);font-size:.95rem;font-weight:600;cursor:pointer;">
                     <span>
                         <i class="fa fa-check-circle text-success me-1"></i> Correctos
                         <span class="badge bg-success ms-1" id="badge-correctos">0</span>
@@ -918,25 +1096,27 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                     <i class="fa fa-chevron-down cmp-chevron"></i>
                 </button>
                 <div class="collapse" id="cmp-correctos">
-                    <div id="cmp-correctos-list" class="cmp-list cmp-list-correct"></div>
+                    <div id="cmp-correctos-list"></div>
                 </div>
             </div>
 
             <!-- FALTAN (siempre visible) -->
-            <div class="cmp-section">
-                <div class="cmp-header cmp-header-faltan">
+            <div class="card border-danger shadow-sm mb-3 overflow-hidden">
+                <div class="card-header d-flex align-items-center justify-content-between"
+                    style="background:rgba(220,53,69,.08);font-size:.95rem;font-weight:600;">
                     <span>
                         <i class="fa fa-times-circle text-danger me-1"></i> Faltan
                         <span class="badge bg-danger ms-1" id="badge-faltan">0</span>
                     </span>
                 </div>
-                <div id="cmp-faltan-list" class="cmp-list cmp-list-falta"></div>
+                <div id="cmp-faltan-list"></div>
             </div>
 
             <!-- SOBRAN / BACKUP (colapsable) -->
-            <div class="cmp-section">
-                <button class="cmp-header collapsed" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#cmp-sobran">
+            <div class="card border-secondary shadow-sm mb-3 overflow-hidden">
+                <button class="cmp-header card-header d-flex align-items-center justify-content-between w-100 border-0 collapsed"
+                    type="button" data-toggle="collapse" data-target="#cmp-sobran"
+                    style="background:rgba(108,117,125,.08);font-size:.95rem;font-weight:600;cursor:pointer;">
                     <span>
                         <i class="fa fa-plus-circle text-secondary me-1"></i> Sobran / Backup
                         <span class="badge bg-secondary ms-1" id="badge-sobran">0</span>
@@ -944,14 +1124,15 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                     <i class="fa fa-chevron-down cmp-chevron"></i>
                 </button>
                 <div class="collapse" id="cmp-sobran">
-                    <div id="cmp-sobran-list" class="cmp-list cmp-list-sobra"></div>
+                    <div id="cmp-sobran-list"></div>
                 </div>
             </div>
 
             <!-- NO RELACIONADOS (colapsable) -->
-            <div class="cmp-section">
-                <button class="cmp-header collapsed" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#cmp-no-relacionados">
+            <div class="card border-warning shadow-sm mb-3 overflow-hidden">
+                <button class="cmp-header card-header d-flex align-items-center justify-content-between w-100 border-0 collapsed"
+                    type="button" data-toggle="collapse" data-target="#cmp-no-relacionados"
+                    style="background:rgba(255,193,7,.1);font-size:.95rem;font-weight:600;cursor:pointer;">
                     <span>
                         <i class="fa fa-question-circle text-warning me-1"></i> No relacionados
                         <span class="badge bg-warning text-dark ms-1" id="badge-norel">0</span>
@@ -959,7 +1140,7 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
                     <i class="fa fa-chevron-down cmp-chevron"></i>
                 </button>
                 <div class="collapse" id="cmp-no-relacionados">
-                    <div id="cmp-norel-list" class="cmp-list cmp-list-norel"></div>
+                    <div id="cmp-norel-list"></div>
                 </div>
             </div>
 
@@ -968,10 +1149,10 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
         <!-- Barra inferior: Volver + Confirmar -->
         <div id="bottom-bar-cmp">
             <div class="d-flex gap-2">
-                <button id="btn-volver-escaneo" class="btn-app btn-app-outline flex-fill" style="height:52px;">
+                <button id="btn-volver-escaneo" class="btn btn-outline-secondary flex-fill" style="height:52px;">
                     <i class="fa fa-arrow-left me-1"></i> Volver
                 </button>
-                <button id="btn-confirmar" class="btn-app btn-app-success flex-fill" style="height:52px;" disabled>
+                <button id="btn-confirmar" class="btn btn-success flex-fill" style="height:52px;">
                     <i class="fa fa-check-double me-1"></i> Confirmar
                 </button>
             </div>
@@ -979,12 +1160,13 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
     </div>
 
     <!-- ============================================================ -->
-    <!-- FASE 5 — Confirmación final                                  -->
+    <!-- FASE 6 — Confirmación final                                  -->
     <!-- ============================================================ -->
-    <div id="phase5" class="phase">
+    <div id="phase6" class="phase">
+        <!-- DEBUG-PHASE-LABEL --><div class="dbg-phase-label"><i class="fa fa-bug"></i> FASE 6 — Confirmación final</div><!-- /DEBUG-PHASE-LABEL -->
         <i class="fa fa-check-circle icon-done mb-3"></i>
         <h3 class="fw-bold mb-2">¡Salida Completada!</h3>
-        <p class="text-muted mb-4" id="p5-resumen"></p>
+        <p class="text-muted mb-4" id="p6-resumen"></p>
         <button id="btn-nueva-salida" class="btn-app btn-app-primary" style="max-width:280px;">
             <i class="fa fa-plus"></i> Nueva Salida
         </button>
@@ -1176,7 +1358,10 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
     <script>
         // Botón atrás del app bar según fase
         function appBarBack() {
-            if (document.getElementById('phase4').classList.contains('active')) {
+            if (document.getElementById('phase5').classList.contains('active')) {
+                // fase5 → vuelve a fase4
+                mostrarFase(4);
+            } else if (document.getElementById('phase4').classList.contains('active')) {
                 // fase4 → vuelve a fase3
                 mostrarFase(3);
             } else if (document.getElementById('phase3').classList.contains('active')) {
@@ -1191,13 +1376,16 @@ $idUsuario = (int)($_SESSION['id_usuario'] ?? 0);
         // Control visibilidad btn-back y barras inferiores
         document.addEventListener('phaseChange', function(e) {
             const btnBack = document.getElementById('btn-appbar-back');
-            btnBack.style.display = (e.detail.phase > 1 && e.detail.phase < 5) ? 'block' : 'none';
+            btnBack.style.display = (e.detail.phase > 1 && e.detail.phase < 6) ? 'block' : 'none';
             // Barra inferior fase 3
             const bb = document.getElementById('bottom-bar');
             if (bb) bb.classList.toggle('visible', e.detail.phase === 3);
-            // Barra inferior fase 4 (comparación)
+            // Barra inferior fase 4 (pool buscador)
+            const bbp = document.getElementById('bottom-bar-pool');
+            if (bbp) bbp.classList.toggle('visible', e.detail.phase === 4);
+            // Barra inferior fase 5 (comparación)
             const bbc = document.getElementById('bottom-bar-cmp');
-            if (bbc) bbc.classList.toggle('visible', e.detail.phase === 4);
+            if (bbc) bbc.classList.toggle('visible', e.detail.phase === 5);
         });
     </script>
 </body>
