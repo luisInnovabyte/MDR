@@ -144,7 +144,7 @@ function puedeVerMenu($idRol, $modulo) {
     </li>
 
    <li class="br-menu-item">
-        <a href="#" class="br-menu-link with-sub">
+        <a href="../Dashboard/dash_presupuestos.php" class="br-menu-link with-sub">
             <i class="menu-item-icon icon ion-ios-calculator tx-24"></i>
             <span class="menu-item-label">Presupuestos</span>
         </a>
@@ -194,7 +194,7 @@ function puedeVerMenu($idRol, $modulo) {
             <span class="menu-item-label">Informes</span>
         </a>
         <ul class="br-menu-sub">
-            <li class="sub-item"><a href="../Informe_ventas/index.php" class="sub-link">Ventas por Período(PRG)</a></li>
+            <li class="sub-item"><a href="../Informe_ventas/index.php" class="sub-link">Ventas por Período</a></li>
             <li class="sub-item"><a href="../Informe_rotacion/index.php" class="sub-link">Rotación de Inventario</a></li>
             <li class="sub-item"><a href="../Informe_vigencia/index.php" class="sub-link">Calendarios Garantías</a></li>
             <li class="sub-item"><a href="../Informe_mantenimiento/index.php" class="sub-link">Calendarios Mantenimientos</a></li>
@@ -253,8 +253,8 @@ function puedeVerMenu($idRol, $modulo) {
             <li class="sub-item" style="pointer-events: none; color: #333; font-weight: bold; font-size: 12px; text-transform: uppercase; padding: 8px 15px; background-color: #f8f9fa; margin: 2px 0;">
                 🏬 ALMACÉN
             </li>
-            <li class="sub-item"><a href="../Picking/index.php" class="sub-link" target="_blank">Picking / Salida de Almacén</a></li>
-            <li class="sub-item"><a href="../GestionElementosAlmacen/index.php" class="sub-link" target="_blank">Gestión de Elementos</a></li>
+            <li class="sub-item"><a href="../Picking/index.php" class="sub-link" target="_blank">Picking / Salida Almacén(M)</a></li>
+            <li class="sub-item"><a href="../GestionElementosAlmacen/index.php" class="sub-link" target="_blank">Gestión de Elementos(M)</a></li>
             <li class="sub-item"><a href="../AlbaranesCarga/index.php" class="sub-link" target="_blank">Albaranes de Carga</a></li>
             <li class="sub-item"><a href="../CalendarioTecnicos/index.php" class="sub-link" target="_blank">Calendario de Servicios</a></li>
 
