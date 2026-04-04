@@ -190,6 +190,7 @@ class FacturaAgrupada
                         fap.total_iva_fap,
                         fap.total_bruto_fap,
                         fap.total_anticipos_reales_fap,
+                        fap.total_proformas_fap,
                         fap.resto_fap,
                         fap.orden_fap,
                         p.numero_presupuesto,
@@ -236,13 +237,14 @@ class FacturaAgrupada
                         vt.total_base_imponible,
                         vt.total_iva,
                         vt.total_con_iva,
-                        COALESCE(ant.total_anticipos, 0) AS total_anticipos_reales,
-                        (vt.total_con_iva - COALESCE(ant.total_anticipos, 0)) AS resto_pendiente
+                        COALESCE(ant.total_anticipos, 0)                              AS total_anticipos_reales,
+                        COALESCE(prf.total_proformas, 0)                              AS total_proformas,
+                        (vt.total_con_iva - COALESCE(ant.total_anticipos, 0))         AS resto_pendiente
                     FROM presupuesto p
                     LEFT JOIN empresa e ON e.id_empresa = p.id_empresa
-                    -- Totales calculados
                     LEFT JOIN v_presupuesto_totales vt ON vt.id_presupuesto = p.id_presupuesto
-                    -- Suma de anticipos facturados y activos
+                                                      AND vt.estado_version_presupuesto = 'aprobado'
+                    -- Suma de anticipos reales activos
                     LEFT JOIN (
                         SELECT dp.id_presupuesto,
                                SUM(dp.total_documento_ppto) AS total_anticipos
@@ -251,16 +253,26 @@ class FacturaAgrupada
                           AND dp.activo_documento_ppto = 1
                         GROUP BY dp.id_presupuesto
                     ) ant ON ant.id_presupuesto = p.id_presupuesto
+                    -- Suma de proformas activas (para mostrar nota de anticipo en wizard)
+                    LEFT JOIN (
+                        SELECT dp.id_presupuesto,
+                               SUM(dp.total_documento_ppto) AS total_proformas
+                        FROM documento_presupuesto dp
+                        WHERE dp.tipo_documento_ppto = 'factura_proforma'
+                          AND dp.activo_documento_ppto = 1
+                        GROUP BY dp.id_presupuesto
+                    ) prf ON prf.id_presupuesto = p.id_presupuesto
                     WHERE p.id_cliente = ?
                       AND p.activo_presupuesto = 1
-                      -- Sin factura_final activa
+                      -- Condición: no facturado al 100% (ni por factura_final ni por anticipos reales)
                       AND NOT EXISTS (
                           SELECT 1 FROM documento_presupuesto dp2
                           WHERE dp2.id_presupuesto = p.id_presupuesto
                             AND dp2.tipo_documento_ppto = 'factura_final'
                             AND dp2.activo_documento_ppto = 1
                       )
-                      -- No incluido en ninguna factura agrupada activa
+                      AND vt.total_con_iva > COALESCE(ant.total_anticipos, 0)
+                      -- Condición: no incluido en ninguna factura agrupada activa no abonada
                       AND NOT EXISTS (
                           SELECT 1 FROM factura_agrupada_presupuesto fap
                           INNER JOIN factura_agrupada fa ON fa.id_factura_agrupada = fap.id_factura_agrupada
@@ -352,10 +364,13 @@ class FacturaAgrupada
                 $id_cliente = (int) $clientes[0];
             }
 
-            if (count($empresas) > 1) {
+            // Filtrar nulls: un presupuesto sin empresa asignada es compatible con cualquier empresa.
+            // El conflicto real se detecta más abajo comparando la empresa de los documentos existentes.
+            $empresas_asignadas = array_values(array_filter($empresas, fn($e) => $e !== null));
+            if (count(array_unique($empresas_asignadas)) > 1) {
                 $errores[] = 'Todos los presupuestos deben pertenecer a la misma empresa emisora.';
             } else {
-                $id_empresa = ($empresas[0] !== null) ? (int) $empresas[0] : null;
+                $id_empresa = !empty($empresas_asignadas) ? (int) $empresas_asignadas[0] : null;
             }
 
             // Verificar que no tienen factura_final activa
@@ -482,7 +497,9 @@ class FacturaAgrupada
             $this->conexion->exec("CALL sp_obtener_siguiente_numero('$codigo_empresa', 'factura', @numero_completo)");
             $row_num = $this->conexion->query("SELECT @numero_completo AS numero")->fetch(PDO::FETCH_ASSOC);
             $numero_factura = $row_num['numero'];
-            $serie_factura  = substr($numero_factura, 0, 1); // Ej: 'F' de 'F240001'
+            $serie_factura  = strpos($numero_factura, '-') !== false
+                ? substr($numero_factura, 0, strpos($numero_factura, '-'))
+                : substr($numero_factura, 0, 1); // Ej: 'FE' de 'FE-0003/2026'
 
             // --- 2. Calcular totales consolidados de los presupuestos ---
             $placeholders = implode(',', array_fill(0, count($ids_presupuesto), '?'));
@@ -491,7 +508,8 @@ class FacturaAgrupada
                                 SUM(vt.total_base_imponible)                          AS total_base,
                                 SUM(vt.total_iva)                                      AS total_iva,
                                 SUM(vt.total_con_iva)                                  AS total_bruto,
-                                SUM(COALESCE(ant.total_anticipos, 0))                  AS total_anticipos
+                                SUM(COALESCE(ant.total_anticipos, 0))                  AS total_anticipos,
+                                SUM(COALESCE(prf.total_proformas, 0))                  AS total_proformas
                             FROM v_presupuesto_totales vt
                             LEFT JOIN (
                                 SELECT dp.id_presupuesto, SUM(dp.total_documento_ppto) AS total_anticipos
@@ -500,7 +518,15 @@ class FacturaAgrupada
                                   AND dp.activo_documento_ppto = 1
                                 GROUP BY dp.id_presupuesto
                             ) ant ON ant.id_presupuesto = vt.id_presupuesto
-                            WHERE vt.id_presupuesto IN ($placeholders)";
+                            LEFT JOIN (
+                                SELECT dp.id_presupuesto, SUM(dp.total_documento_ppto) AS total_proformas
+                                FROM documento_presupuesto dp
+                                WHERE dp.tipo_documento_ppto = 'factura_proforma'
+                                  AND dp.activo_documento_ppto = 1
+                                GROUP BY dp.id_presupuesto
+                            ) prf ON prf.id_presupuesto = vt.id_presupuesto
+                            WHERE vt.id_presupuesto IN ($placeholders)
+                              AND vt.estado_version_presupuesto = 'aprobado'";
 
             $stmt_t = $this->conexion->prepare($sql_totales);
             foreach ($ids_presupuesto as $k => $id) {
@@ -513,7 +539,16 @@ class FacturaAgrupada
             $total_iva       = round((float)($totales['total_iva']       ?? 0), 2);
             $total_bruto     = round((float)($totales['total_bruto']     ?? 0), 2);
             $total_anticipos = round((float)($totales['total_anticipos'] ?? 0), 2);
+            $total_proformas = round((float)($totales['total_proformas'] ?? 0), 2);
             $total_a_cobrar  = round($total_bruto - $total_anticipos, 2);
+
+            // Añadir nota de proformas a las observaciones si las hay
+            if ($total_proformas > 0) {
+                $nota_proformas = 'Se ha recibido un anticipo de ' . number_format($total_proformas, 2, ',', '.') . '€ en concepto de factura/s proforma previas.';
+                $observaciones  = !empty($observaciones)
+                    ? trim($observaciones) . "\n\n" . $nota_proformas
+                    : $nota_proformas;
+            }
 
             // --- 3. INSERT factura_agrupada ---
             $sql_ins = "INSERT INTO factura_agrupada (
@@ -527,11 +562,12 @@ class FacturaAgrupada
                             total_iva_agrupada,
                             total_bruto_agrupada,
                             total_anticipos_agrupada,
+                            total_proformas_agrupada,
                             total_a_cobrar_agrupada,
                             is_abono_agrupada,
                             activo_factura_agrupada,
                             created_at_factura_agrupada
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, NOW())";
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, NOW())";
 
             $stmt_ins = $this->conexion->prepare($sql_ins);
             $stmt_ins->bindValue(1,  $numero_factura, PDO::PARAM_STR);
@@ -540,11 +576,12 @@ class FacturaAgrupada
             $stmt_ins->bindValue(4,  $id_cliente,     PDO::PARAM_INT);
             $stmt_ins->bindValue(5,  $fecha,          PDO::PARAM_STR);
             $stmt_ins->bindValue(6,  $observaciones,  !empty($observaciones) ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt_ins->bindValue(7,  $total_base,     PDO::PARAM_STR);
-            $stmt_ins->bindValue(8,  $total_iva,      PDO::PARAM_STR);
-            $stmt_ins->bindValue(9,  $total_bruto,    PDO::PARAM_STR);
-            $stmt_ins->bindValue(10, $total_anticipos,PDO::PARAM_STR);
-            $stmt_ins->bindValue(11, $total_a_cobrar, PDO::PARAM_STR);
+            $stmt_ins->bindValue(7,  $total_base,      PDO::PARAM_STR);
+            $stmt_ins->bindValue(8,  $total_iva,       PDO::PARAM_STR);
+            $stmt_ins->bindValue(9,  $total_bruto,     PDO::PARAM_STR);
+            $stmt_ins->bindValue(10, $total_anticipos, PDO::PARAM_STR);
+            $stmt_ins->bindValue(11, $total_proformas, PDO::PARAM_STR);
+            $stmt_ins->bindValue(12, $total_a_cobrar,  PDO::PARAM_STR);
             $stmt_ins->execute();
 
             $id_factura_agrupada = (int) $this->conexion->lastInsertId();
@@ -559,28 +596,38 @@ class FacturaAgrupada
                                 COALESCE(vt.total_base_imponible, 0) AS total_base_imponible,
                                 COALESCE(vt.total_iva, 0)            AS total_iva,
                                 COALESCE(vt.total_con_iva, 0)        AS total_con_iva,
-                                COALESCE(ant.total_anticipos, 0)     AS total_anticipos_reales
+                                COALESCE(ant.total_anticipos, 0)     AS total_anticipos_reales,
+                                COALESCE(prf.total_proformas, 0)     AS total_proformas
                             FROM (SELECT ? AS id_presupuesto) AS base
                             LEFT JOIN v_presupuesto_totales vt
                                 ON vt.id_presupuesto = base.id_presupuesto
+                               AND vt.estado_version_presupuesto = 'aprobado'
                             LEFT JOIN (
                                 SELECT id_presupuesto, SUM(total_documento_ppto) AS total_anticipos
                                 FROM documento_presupuesto
                                 WHERE tipo_documento_ppto = 'factura_anticipo'
                                   AND activo_documento_ppto = 1
                                 GROUP BY id_presupuesto
-                            ) ant ON ant.id_presupuesto = base.id_presupuesto";
+                            ) ant ON ant.id_presupuesto = base.id_presupuesto
+                            LEFT JOIN (
+                                SELECT id_presupuesto, SUM(total_documento_ppto) AS total_proformas
+                                FROM documento_presupuesto
+                                WHERE tipo_documento_ppto = 'factura_proforma'
+                                  AND activo_documento_ppto = 1
+                                GROUP BY id_presupuesto
+                            ) prf ON prf.id_presupuesto = base.id_presupuesto";
 
                 $stmt_ind = $this->conexion->prepare($sql_ind);
                 $stmt_ind->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
                 $stmt_ind->execute();
                 $ind = $stmt_ind->fetch(PDO::FETCH_ASSOC);
 
-                $ind_base     = round((float)($ind['total_base_imponible']    ?? 0), 2);
-                $ind_iva      = round((float)($ind['total_iva']               ?? 0), 2);
-                $ind_bruto    = round((float)($ind['total_con_iva']           ?? 0), 2);
-                $ind_anticipo = round((float)($ind['total_anticipos_reales']  ?? 0), 2);
-                $ind_resto    = max(0, round($ind_bruto - $ind_anticipo, 2));
+                $ind_base      = round((float)($ind['total_base_imponible']   ?? 0), 2);
+                $ind_iva       = round((float)($ind['total_iva']              ?? 0), 2);
+                $ind_bruto     = round((float)($ind['total_con_iva']          ?? 0), 2);
+                $ind_anticipo  = round((float)($ind['total_anticipos_reales'] ?? 0), 2);
+                $ind_proformas = round((float)($ind['total_proformas']        ?? 0), 2);
+                $ind_resto     = max(0, round($ind_bruto - $ind_anticipo, 2));
 
                 $sql_fap = "INSERT INTO factura_agrupada_presupuesto (
                                 id_factura_agrupada,
@@ -589,11 +636,12 @@ class FacturaAgrupada
                                 total_iva_fap,
                                 total_bruto_fap,
                                 total_anticipos_reales_fap,
+                                total_proformas_fap,
                                 resto_fap,
                                 orden_fap,
                                 activo_fap,
                                 created_at_fap
-                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())";
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())";
 
                 $stmt_fap = $this->conexion->prepare($sql_fap);
                 $stmt_fap->bindValue(1, $id_factura_agrupada, PDO::PARAM_INT);
@@ -602,18 +650,25 @@ class FacturaAgrupada
                 $stmt_fap->bindValue(4, $ind_iva,             PDO::PARAM_STR);
                 $stmt_fap->bindValue(5, $ind_bruto,           PDO::PARAM_STR);
                 $stmt_fap->bindValue(6, $ind_anticipo,        PDO::PARAM_STR);
-                $stmt_fap->bindValue(7, $ind_resto,           PDO::PARAM_STR);
-                $stmt_fap->bindValue(8, $orden + 1,           PDO::PARAM_INT);
+                $stmt_fap->bindValue(7, $ind_proformas,       PDO::PARAM_STR);
+                $stmt_fap->bindValue(8, $ind_resto,           PDO::PARAM_STR);
+                $stmt_fap->bindValue(9, $orden + 1,           PDO::PARAM_INT);
                 $stmt_fap->execute();
 
-                // --- 4c. Anular proforma activa del presupuesto (si existe) ---
-                $sql_anular_pf = "UPDATE documento_presupuesto
-                                  SET activo_documento_ppto = 0, updated_at_documento_ppto = NOW()
-                                  WHERE id_presupuesto = ? AND tipo_documento_ppto = 'factura_proforma'
-                                  AND activo_documento_ppto = 1";
-                $stmt_pf = $this->conexion->prepare($sql_anular_pf);
-                $stmt_pf->bindValue(1, $id_presupuesto, PDO::PARAM_INT);
-                $stmt_pf->execute();
+                // --- 4c. Anular proformas activas del presupuesto (registrando qué FA las anuló) ---
+                if ($ind_proformas > 0) {
+                    $sql_anular_pf = "UPDATE documento_presupuesto
+                                      SET activo_documento_ppto = 0,
+                                          anulada_por_fa_id = ?,
+                                          updated_at_documento_ppto = NOW()
+                                      WHERE id_presupuesto = ?
+                                        AND tipo_documento_ppto = 'factura_proforma'
+                                        AND activo_documento_ppto = 1";
+                    $stmt_pf = $this->conexion->prepare($sql_anular_pf);
+                    $stmt_pf->bindValue(1, $id_factura_agrupada, PDO::PARAM_INT);
+                    $stmt_pf->bindValue(2, $id_presupuesto,      PDO::PARAM_INT);
+                    $stmt_pf->execute();
+                }
 
                 // --- 4b. Registrar pago pendiente en pago_presupuesto ---
                 $tipo_pago = ($ind_anticipo > 0) ? 'resto' : 'total';
@@ -705,14 +760,17 @@ class FacturaAgrupada
             $this->conexion->exec("CALL sp_obtener_siguiente_numero('$codigo_empresa', 'abono', @numero_abono)");
             $row_num = $this->conexion->query("SELECT @numero_abono AS numero")->fetch(PDO::FETCH_ASSOC);
             $numero_abono = $row_num['numero'];
-            $serie_abono  = substr($numero_abono, 0, 1);
+            $serie_abono  = strpos($numero_abono, '-') !== false
+                ? substr($numero_abono, 0, strpos($numero_abono, '-'))
+                : substr($numero_abono, 0, 1); // Ej: 'R' de 'R-0001/2026'
 
             // --- 2. Importes negativos (abono) ---
-            $base_abono      = round(-(float)$original['total_base_agrupada'], 2);
-            $iva_abono       = round(-(float)$original['total_iva_agrupada'], 2);
-            $bruto_abono     = round(-(float)$original['total_bruto_agrupada'], 2);
+            $base_abono      = round(-(float)$original['total_base_agrupada'],      2);
+            $iva_abono       = round(-(float)$original['total_iva_agrupada'],       2);
+            $bruto_abono     = round(-(float)$original['total_bruto_agrupada'],     2);
             $anticipos_abono = round(-(float)$original['total_anticipos_agrupada'], 2);
-            $cobrar_abono    = round(-(float)$original['total_a_cobrar_agrupada'], 2);
+            $proformas_abono = round(-(float)$original['total_proformas_agrupada'], 2);
+            $cobrar_abono    = round(-(float)$original['total_a_cobrar_agrupada'],  2);
 
             // --- 3. INSERT abono ---
             $sql_ab = "INSERT INTO factura_agrupada (
@@ -726,13 +784,14 @@ class FacturaAgrupada
                             total_iva_agrupada,
                             total_bruto_agrupada,
                             total_anticipos_agrupada,
+                            total_proformas_agrupada,
                             total_a_cobrar_agrupada,
                             is_abono_agrupada,
                             id_factura_agrupada_ref,
                             motivo_abono_agrupada,
                             activo_factura_agrupada,
                             created_at_factura_agrupada
-                        ) VALUES (?, ?, ?, ?, CURDATE(), ?, ?, ?, ?, ?, ?, 1, ?, ?, 1, NOW())";
+                        ) VALUES (?, ?, ?, ?, CURDATE(), ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, 1, NOW())";
 
             $stmt_ab = $this->conexion->prepare($sql_ab);
             $stmt_ab->bindValue(1,  $numero_abono,                PDO::PARAM_STR);
@@ -741,13 +800,14 @@ class FacturaAgrupada
             $stmt_ab->bindValue(4,  (int)$original['id_cliente'], PDO::PARAM_INT);
             $stmt_ab->bindValue(5,  !empty($original['observaciones_agrupada']) ? $original['observaciones_agrupada'] : null,
                                         !empty($original['observaciones_agrupada']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
-            $stmt_ab->bindValue(6,  $base_abono,                  PDO::PARAM_STR);
-            $stmt_ab->bindValue(7,  $iva_abono,                   PDO::PARAM_STR);
-            $stmt_ab->bindValue(8,  $bruto_abono,                 PDO::PARAM_STR);
-            $stmt_ab->bindValue(9,  $anticipos_abono,             PDO::PARAM_STR);
-            $stmt_ab->bindValue(10, $cobrar_abono,                PDO::PARAM_STR);
-            $stmt_ab->bindValue(11, $id_factura_agrupada_original,PDO::PARAM_INT);
-            $stmt_ab->bindValue(12, trim($motivo),                PDO::PARAM_STR);
+            $stmt_ab->bindValue(6,  $base_abono,                   PDO::PARAM_STR);
+            $stmt_ab->bindValue(7,  $iva_abono,                    PDO::PARAM_STR);
+            $stmt_ab->bindValue(8,  $bruto_abono,                  PDO::PARAM_STR);
+            $stmt_ab->bindValue(9,  $anticipos_abono,              PDO::PARAM_STR);
+            $stmt_ab->bindValue(10, $proformas_abono,              PDO::PARAM_STR);
+            $stmt_ab->bindValue(11, $cobrar_abono,                 PDO::PARAM_STR);
+            $stmt_ab->bindValue(12, $id_factura_agrupada_original, PDO::PARAM_INT);
+            $stmt_ab->bindValue(13, trim($motivo),                 PDO::PARAM_STR);
             $stmt_ab->execute();
 
             $id_abono = (int) $this->conexion->lastInsertId();
@@ -763,23 +823,35 @@ class FacturaAgrupada
             $sql_fap = "INSERT INTO factura_agrupada_presupuesto (
                             id_factura_agrupada, id_presupuesto,
                             total_base_fap, total_iva_fap, total_bruto_fap,
-                            total_anticipos_reales_fap, resto_fap, orden_fap, activo_fap, created_at_fap
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())";
+                            total_anticipos_reales_fap, total_proformas_fap, resto_fap,
+                            orden_fap, activo_fap, created_at_fap
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())";
 
             foreach ($lineas as $linea) {
                 $stmt_fap2 = $this->conexion->prepare($sql_fap);
-                $stmt_fap2->bindValue(1, $id_abono,                        PDO::PARAM_INT);
-                $stmt_fap2->bindValue(2, (int)$linea['id_presupuesto'],    PDO::PARAM_INT);
-                $stmt_fap2->bindValue(3, round(-(float)$linea['total_base_fap'], 2),            PDO::PARAM_STR);
-                $stmt_fap2->bindValue(4, round(-(float)$linea['total_iva_fap'], 2),             PDO::PARAM_STR);
-                $stmt_fap2->bindValue(5, round(-(float)$linea['total_bruto_fap'], 2),           PDO::PARAM_STR);
-                $stmt_fap2->bindValue(6, round(-(float)$linea['total_anticipos_reales_fap'], 2),PDO::PARAM_STR);
-                $stmt_fap2->bindValue(7, round(-(float)$linea['resto_fap'], 2),                 PDO::PARAM_STR);
-                $stmt_fap2->bindValue(8, (int)$linea['orden_fap'],         PDO::PARAM_INT);
+                $stmt_fap2->bindValue(1, $id_abono,                                              PDO::PARAM_INT);
+                $stmt_fap2->bindValue(2, (int)$linea['id_presupuesto'],                          PDO::PARAM_INT);
+                $stmt_fap2->bindValue(3, round(-(float)$linea['total_base_fap'],             2), PDO::PARAM_STR);
+                $stmt_fap2->bindValue(4, round(-(float)$linea['total_iva_fap'],              2), PDO::PARAM_STR);
+                $stmt_fap2->bindValue(5, round(-(float)$linea['total_bruto_fap'],            2), PDO::PARAM_STR);
+                $stmt_fap2->bindValue(6, round(-(float)$linea['total_anticipos_reales_fap'], 2), PDO::PARAM_STR);
+                $stmt_fap2->bindValue(7, round(-(float)$linea['total_proformas_fap'],        2), PDO::PARAM_STR);
+                $stmt_fap2->bindValue(8, round(-(float)$linea['resto_fap'],                  2), PDO::PARAM_STR);
+                $stmt_fap2->bindValue(9, (int)$linea['orden_fap'],                               PDO::PARAM_INT);
                 $stmt_fap2->execute();
             }
 
-            // --- 5. Desactivar factura original ---
+            // --- 5. Reactivar proformas que fueron anuladas por esta FA ---
+            $sql_reactiv_pf = "UPDATE documento_presupuesto
+                               SET activo_documento_ppto = 1,
+                                   anulada_por_fa_id = NULL,
+                                   updated_at_documento_ppto = NOW()
+                               WHERE anulada_por_fa_id = ?";
+            $stmt_rpf = $this->conexion->prepare($sql_reactiv_pf);
+            $stmt_rpf->bindValue(1, $id_factura_agrupada_original, PDO::PARAM_INT);
+            $stmt_rpf->execute();
+
+            // --- 5b. Desactivar factura original ---
             $sql_deact = "UPDATE factura_agrupada
                           SET activo_factura_agrupada = 0, updated_at_factura_agrupada = NOW()
                           WHERE id_factura_agrupada = ?";
@@ -787,13 +859,13 @@ class FacturaAgrupada
             $stmt_deact->bindValue(1, $id_factura_agrupada_original, PDO::PARAM_INT);
             $stmt_deact->execute();
 
-            // --- 5b. Anular pagos pendientes de la FA original ---
+            // --- 5c. Anular pagos pendientes de la FA original ---
             $sql_anular_pagos = "UPDATE pago_presupuesto
                                  SET estado_pago_ppto = 'anulado',
                                      updated_at_pago_ppto = NOW()
                                  WHERE id_factura_agrupada = ?
                                    AND activo_pago_ppto = 1
-                                   AND estado_pago_ppto != 'anulado'";
+                                   AND estado_pago_ppto = 'pendiente'";
             $stmt_ap = $this->conexion->prepare($sql_anular_pagos);
             $stmt_ap->bindValue(1, $id_factura_agrupada_original, PDO::PARAM_INT);
             $stmt_ap->execute();
@@ -912,6 +984,7 @@ class FacturaAgrupada
                         fa.total_iva_agrupada,
                         fa.total_bruto_agrupada,
                         fa.total_anticipos_agrupada,
+                        fa.total_proformas_agrupada,
                         fa.total_a_cobrar_agrupada,
                         fa.is_abono_agrupada,
                         fa.motivo_abono_agrupada,
@@ -995,7 +1068,13 @@ class FacturaAgrupada
                          WHERE fap2.id_factura_agrupada = fa.id_factura_agrupada
                            AND fap2.activo_fap = 1
                            AND p2.id_contacto_cliente IS NOT NULL
-                         ORDER BY fap2.orden_fap ASC LIMIT 1) AS email_contacto_cliente
+                         ORDER BY fap2.orden_fap ASC LIMIT 1) AS email_contacto_cliente,
+                        -- Número de la FA original (solo si es abono)
+                        fa.id_factura_agrupada_ref,
+                        (SELECT fa_orig.numero_factura_agrupada
+                         FROM factura_agrupada fa_orig
+                         WHERE fa_orig.id_factura_agrupada = fa.id_factura_agrupada_ref
+                         LIMIT 1) AS numero_factura_agrupada_original
                     FROM factura_agrupada fa
                     INNER JOIN empresa e  ON e.id_empresa = fa.id_empresa
                     INNER JOIN cliente c  ON c.id_cliente = fa.id_cliente
@@ -1033,16 +1112,29 @@ class FacturaAgrupada
             foreach ($presupuestos as $ppto) {
                 $id_ppto = (int) $ppto['id_presupuesto'];
 
-                $sql_lineas = "SELECT
-                                    vlc.*
-                                FROM v_linea_presupuesto_calculada vlc
-                                WHERE vlc.id_presupuesto = ?
-                                ORDER BY vlc.orden_linea_ppto ASC";
-
+                $sql_lineas = "SELECT vlc.*
+                               FROM v_linea_presupuesto_calculada vlc
+                               WHERE vlc.id_presupuesto = ?
+                               ORDER BY vlc.orden_linea_ppto ASC";
                 $stmt_l = $this->conexion->prepare($sql_lineas);
                 $stmt_l->bindValue(1, $id_ppto, PDO::PARAM_INT);
                 $stmt_l->execute();
                 $lineas = $stmt_l->fetchAll(PDO::FETCH_ASSOC);
+
+                // Facturas anticipo activas (referencia + importes base/iva/total para PDF)
+                $sql_ant = "SELECT numero_documento_ppto,
+                                   COALESCE(subtotal_documento_ppto, 0)   AS subtotal_documento_ppto,
+                                   COALESCE(total_iva_documento_ppto, 0)  AS total_iva_documento_ppto,
+                                   COALESCE(total_documento_ppto, 0)      AS total_documento_ppto
+                            FROM documento_presupuesto
+                            WHERE id_presupuesto = ?
+                              AND tipo_documento_ppto = 'factura_anticipo'
+                              AND activo_documento_ppto = 1
+                            ORDER BY fecha_emision_documento_ppto ASC";
+                $stmt_a = $this->conexion->prepare($sql_ant);
+                $stmt_a->bindValue(1, $id_ppto, PDO::PARAM_INT);
+                $stmt_a->execute();
+                $ppto['anticipos_documentos'] = $stmt_a->fetchAll(PDO::FETCH_ASSOC);
 
                 $resultado[] = [
                     'presupuesto' => $ppto,

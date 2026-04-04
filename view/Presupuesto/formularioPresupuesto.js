@@ -242,6 +242,15 @@ $(document).ready(function () {
                         }
                     });
                 }
+
+                // Pre-seleccionar cliente si llega ?id_cliente=X (ej. desde Panel 360)
+                var idClienteUrl = getUrlParameter('id_cliente');
+                if (idClienteUrl) {
+                    select.val(idClienteUrl);
+                    if (select.val()) {
+                        select.trigger('change');
+                    }
+                }
             },
             error: function(xhr, status, error) {
                 console.error('Error al cargar clientes:', error);

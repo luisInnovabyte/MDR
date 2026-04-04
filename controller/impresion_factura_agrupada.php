@@ -536,15 +536,27 @@ function _generar_pdf_agrupada(
     // ══════════════════════════════════════════════════════════════
     // BLOQUE: MOTIVO ABONO (solo si es abono)
     // ══════════════════════════════════════════════════════════════
-    if ($es_abono && !empty($cabecera['motivo_abono_agrupada'])) {
+    if ($es_abono) {
+        $num_original = $cabecera['numero_factura_agrupada_original'] ?? '';
+        $motivo       = $cabecera['motivo_abono_agrupada'] ?? '';
+
         $pdf->SetFont('helvetica', 'B', 8.5);
         $pdf->SetFillColor(255, 243, 230);
         $pdf->SetTextColor($cr, $cg, $cb);
         $pdf->Cell(0, 5, 'NOTA DE ABONO / RECTIFICACIÓN', 1, 1, 'C', true);
+
         $pdf->SetFont('helvetica', '', 8);
         $pdf->SetTextColor(44, 62, 80);
         $pdf->SetFillColor(255, 250, 245);
-        $pdf->Cell(0, 6, 'Motivo: ' . $cabecera['motivo_abono_agrupada'], 'LRB', 1, 'L', true);
+
+        if (!empty($num_original)) {
+            $border_num = !empty($motivo) ? 'LR' : 'LRB';
+            $pdf->Cell(0, 6, 'Abona la factura: ' . $num_original, $border_num, 1, 'L', true);
+        }
+        if (!empty($motivo)) {
+            $pdf->Cell(0, 6, 'Motivo: ' . $motivo, 'LRB', 1, 'L', true);
+        }
+
         $pdf->Ln(4);
     }
 
@@ -926,6 +938,7 @@ function _generar_pdf_agrupada(
         $pdf->Cell(24,  5, number_format($subtotal_ppto, 2, ',', '.'), 1, 1, 'R', 1);
         $pdf->SetDrawColor(0, 0, 0);
         $pdf->SetTextColor(0, 0, 0);
+
         $pdf->Ln(4);
 
     } // fin foreach grupos
@@ -936,27 +949,54 @@ function _generar_pdf_agrupada(
     // ══════════════════════════════════════════════════════════════
     $total_base      = (float)$cabecera['total_base_agrupada'];
     $total_iva       = (float)$cabecera['total_iva_agrupada'];
-    $total_bruto     = (float)$cabecera['total_bruto_agrupada'];
-    $total_anticipos = (float)$cabecera['total_anticipos_agrupada'];
+    $total_proformas = (float)($cabecera['total_proformas_agrupada'] ?? 0);
     $total_a_cobrar  = (float)$cabecera['total_a_cobrar_agrupada'];
+
+    // Calcular base + IVA de los anticipos reales sumando los documentos de cada presupuesto
+    $anticipo_base_total = 0.0;
+    $anticipo_iva_total  = 0.0;
+    foreach ($grupos as $grupo_tot) {
+        foreach (($grupo_tot['presupuesto']['anticipos_documentos'] ?? []) as $doc_ant) {
+            $anticipo_base_total += (float)($doc_ant['subtotal_documento_ppto'] ?? 0);
+            $anticipo_iva_total  += (float)($doc_ant['total_iva_documento_ppto'] ?? 0);
+        }
+    }
+    $anticipo_base_total = round($anticipo_base_total, 2);
+    $anticipo_iva_total  = round($anticipo_iva_total,  2);
+    $hay_anticipos = ($anticipo_base_total > 0 || $anticipo_iva_total > 0);
 
     $pdf->Ln(5);
     $pdf->SetDrawColor(200, 200, 200);
     $pdf->Line(131, $pdf->GetY(), 202, $pdf->GetY());
     $pdf->Ln(3);
 
-    // Base Imponible
+    // ── Fila: Base Imponible (total bruto) ──────────────────────
     $pdf->SetFont('helvetica', '', 9);
     $pdf->SetFillColor(248, 249, 250);
     $pdf->SetDrawColor(220, 220, 220);
+    $pdf->SetTextColor(44, 62, 80);
     $pdf->Cell(130, 6, '', 0, 0);
     $pdf->Cell(44, 6, 'Base Imponible:', 1, 0, 'R', 1);
     $pdf->SetFont('helvetica', 'B', 9);
     $pdf->Cell(20, 6, number_format($total_base, 2, ',', '.') . ' €', 1, 1, 'R', 1);
 
-    // Desglose IVA (si hay más de un tipo)
+    // ── Fila: Menos base anticipos (si los hay) ──────────────────
+    if ($hay_anticipos) {
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->SetFillColor(248, 249, 250);
+        $pdf->SetDrawColor(220, 220, 220);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->Cell(130, 6, '', 0, 0);
+        $pdf->Cell(44, 6, 'B.I. anticipos:', 1, 0, 'R', 1);
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->Cell(20, 6, '-' . number_format($anticipo_base_total, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+        $pdf->SetTextColor(0, 0, 0);
+    }
+
+    // ── Desglose IVA (si hay más de un tipo) ────────────────────
     if (count($desglose_iva) > 1) {
         $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(44, 62, 80);
         $pdf->Cell(130, 5, '', 0, 0);
         $pdf->Cell(44, 5, 'Desglose de IVA:', 0, 1, 'R');
         foreach ($desglose_iva as $pct => $vals) {
@@ -969,10 +1009,11 @@ function _generar_pdf_agrupada(
         }
     }
 
-    // Total IVA
+    // ── Fila: Total IVA ─────────────────────────────────────────
     $pdf->SetFont('helvetica', '', 9);
     $pdf->SetFillColor(248, 249, 250);
     $pdf->SetDrawColor(220, 220, 220);
+    $pdf->SetTextColor(44, 62, 80);
     $pdf->Cell(130, 6, '', 0, 0);
     if (count($desglose_iva) == 1) {
         $pct_unico = key($desglose_iva);
@@ -983,39 +1024,32 @@ function _generar_pdf_agrupada(
     $pdf->SetFont('helvetica', 'B', 9);
     $pdf->Cell(20, 6, number_format($total_iva, 2, ',', '.') . ' €', 1, 1, 'R', 1);
 
-    $pdf->Ln(2);
+    // ── Fila: Menos IVA anticipos (si los hay) ───────────────────
+    if ($hay_anticipos) {
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->SetFillColor(248, 249, 250);
+        $pdf->SetDrawColor(220, 220, 220);
+        $pdf->SetTextColor(44, 62, 80);
+        $pdf->Cell(130, 6, '', 0, 0);
+        $pdf->Cell(44, 6, 'IVA anticipos:', 1, 0, 'R', 1);
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->Cell(20, 6, '-' . number_format($anticipo_iva_total, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+        $pdf->SetTextColor(0, 0, 0);
+    }
 
-    // TOTAL BRUTO destacado
+    // ── Fila: TOTAL (destacado) ──────────────────────────────────
+    $pdf->Ln(2);
     $pdf->SetFont('helvetica', 'B', 10);
     $pdf->SetFillColor($cr, $cg, $cb);
     $pdf->SetTextColor(255, 255, 255);
     $pdf->SetDrawColor($cr, $cg, $cb);
     $pdf->SetLineWidth(0.5);
     $pdf->Cell(130, 8, '', 0, 0);
-    $pdf->Cell(34, 8, 'TOTAL BRUTO:', 1, 0, 'R', 1);
-    $pdf->Cell(30, 8, number_format($total_bruto, 2, ',', '.') . ' €', 1, 1, 'R', 1);
+    $pdf->Cell(34, 8, 'TOTAL:', 1, 0, 'R', 1);
+    $pdf->Cell(30, 8, number_format(max(0, $total_a_cobrar), 2, ',', '.') . ' €', 1, 1, 'R', 1);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetDrawColor(0, 0, 0);
     $pdf->SetLineWidth(0.2);
-
-    // Anticipos y saldo a pagar
-    if ($total_anticipos > 0) {
-        $pdf->Ln(5);
-        $pdf->SetFont('helvetica', '', 9);
-        $pdf->SetTextColor(44, 62, 80);
-        $pdf->Write(5, 'Anticipos previos: ');
-        $pdf->SetFont('helvetica', 'B', 9);
-        $pdf->SetTextColor(192, 57, 43);
-        $pdf->Write(5, '-' . number_format($total_anticipos, 2, ',', '.') . ' €');
-        $pdf->SetFont('helvetica', '', 9);
-        $pdf->SetTextColor(44, 62, 80);
-        $pdf->Write(5, ', saldo a pagar: ');
-        $pdf->SetFont('helvetica', 'B', 9);
-        $pdf->SetTextColor(39, 174, 96);
-        $pdf->Write(5, number_format(max(0, $total_a_cobrar), 2, ',', '.') . ' €');
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->Ln();
-    }
 
     // =====================================================================
     // FORMA DE PAGO Y DATOS BANCARIOS

@@ -93,7 +93,7 @@ function inicializarTabla() {
                     if (estaAbonada && row.id_abono_asociado) {
                         btns += `<button class="btn btn-sm btn-outline-warning me-1"
                                          title="PDF Rectificativa: ${row.numero_abono_asociado || ''}"
-                                         onclick="descargarPDF(${row.id_abono_asociado})">
+                                         onclick="generarPDF(${row.id_abono_asociado})">
                                      <i class="fas fa-file-pdf"></i> <small>RECT.</small>
                                  </button>`;
                     }
@@ -687,7 +687,7 @@ function confirmarAbono() {
                     showCancelButton : true,
                     confirmButtonText: 'Generar PDF',
                     confirmButtonColor: '#d35400',
-                }).then(r => { if (r.isConfirmed) generarPDF(resp.id_abono); });
+                }).then(r => { if (r.isConfirmed) generarPDF(resp.id); });
             } else {
                 Swal.fire('Error', resp.message || 'No se pudo crear la rectificativa.', 'error');
             }

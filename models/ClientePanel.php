@@ -43,7 +43,10 @@ class ClientePanel
                  INNER  JOIN v_presupuesto_totales vt
                         ON  vt.id_presupuesto = p.id_presupuesto
                         AND vt.numero_version_presupuesto = p.version_actual_presupuesto
-                 WHERE  p.id_cliente = ? AND p.activo_presupuesto = 1"
+                 INNER  JOIN estado_presupuesto ep
+                        ON  ep.id_estado_ppto = p.id_estado_ppto
+                 WHERE  p.id_cliente = ? AND p.activo_presupuesto = 1
+                   AND  ep.codigo_estado_ppto != 'CANC'"
             );
             $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
             $stmt->execute();
@@ -70,7 +73,11 @@ class ClientePanel
             $totalCobrado = (float) $stmt->fetchColumn();
 
             $stmt = $this->conexion->prepare(
-                "SELECT COUNT(*) FROM presupuesto WHERE id_cliente = ? AND activo_presupuesto = 1"
+                "SELECT COUNT(*)
+                 FROM   presupuesto p
+                 INNER  JOIN estado_presupuesto ep ON ep.id_estado_ppto = p.id_estado_ppto
+                 WHERE  p.id_cliente = ? AND p.activo_presupuesto = 1
+                   AND  ep.codigo_estado_ppto != 'CANC'"
             );
             $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
             $stmt->execute();
@@ -145,10 +152,13 @@ class ClientePanel
     public function getContadoresTabsCliente(int $id_cliente): array
     {
         try {
-            // Presupuestos activos
+            // Presupuestos activos (excluyendo cancelados)
             $stmt = $this->conexion->prepare(
-                "SELECT COUNT(*) FROM presupuesto
-                 WHERE id_cliente = ? AND activo_presupuesto = 1"
+                "SELECT COUNT(*)
+                 FROM   presupuesto p
+                 INNER  JOIN estado_presupuesto ep ON ep.id_estado_ppto = p.id_estado_ppto
+                 WHERE  p.id_cliente = ? AND p.activo_presupuesto = 1
+                   AND  ep.codigo_estado_ppto != 'CANC'"
             );
             $stmt->bindValue(1, $id_cliente, PDO::PARAM_INT);
             $stmt->execute();
